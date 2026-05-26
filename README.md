@@ -1,0 +1,2 @@
+# CLIPHacker
+resource ai project
