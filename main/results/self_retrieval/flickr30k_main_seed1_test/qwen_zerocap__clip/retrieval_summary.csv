@@ -1,0 +1,2 @@
+method_id,prompt_id,run_id,prompt_name,prompt_text,model,n,r@1,r@5,r@10,mrr,median_rank,mean_rank,mean_positive_score,mean_hardest_negative_score,mean_margin
+qwen_zerocap_greedy,qwen_zerocap,qwen_zerocap_greedy__flickr30k_main_seed1_test,Qwen ZeroCap,"Write a short, natural caption for this image.",Qwen/Qwen3-VL-8B-Instruct,150,0.94,0.9933333333333333,1.0,0.9675,1.0,1.1,0.3189512207110723,0.2659313854575157,0.05301983525355657

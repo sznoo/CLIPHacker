@@ -1,0 +1,663 @@
+split_id,method_id,run_id,order,dataset_index,image_id,image_relpath,reference_captions,prompt_id,prompt_name,prompt_text,caption,candidate_id,selected,model,max_new_tokens,generation_config
+flickr30k_main_seed1_val,qwen_zerocap_strong_guidance,qwen_zerocap_strong_guidance__flickr30k_main_seed1_val,0,25248,flickr30k_test_025248,images/flickr30k/flickr30k_test_025248.jpg,"[""A little girl in a black jumper is climbing a chain link gate."", ""Young child in black overalls attempting to climb over a fence"", ""A child in overalls tries to climb a chain link fence."", ""A little kid is climbing a gate to a wire fence."", ""A boy is trying to climb over a gate.""]",qwen_zerocap,qwen_zerocap_strong_guidance,"Write a short, natural caption for this image.","A) The
+
+1,2
+
+90,2
+
+90,2
+
+90,2
+
+90,2
+
+90,2",0,1,Qwen/Qwen3-VL-8B-Instruct,32,"{""caption_model"": ""Qwen/Qwen3-VL-8B-Instruct"", ""device_map"": ""auto"", ""dtype"": ""auto"", ""attn_implementation"": null, ""clip_model_name"": ""ViT-B-32"", ""clip_pretrained"": ""openai"", ""clip_device"": ""cuda:0"", ""prompt"": ""Write a short, natural caption for this image."", ""clip_text_prefix"": ""A photo of "", ""max_new_tokens"": 32, ""min_new_tokens"": 5, ""top_size"": 128, ""num_iterations"": 2, ""clip_loss_temperature"": 0.01, ""clip_scale"": 1.0, ""ce_scale"": 0.2, ""stepsize"": 0.1, ""grad_norm_factor"": 0.9, ""fusion_factor"": 0.9, ""repetition_penalty"": 1.1, ""end_factor"": 1.01, ""verbose_cache"": false}"
+flickr30k_main_seed1_val,qwen_zerocap_strong_guidance,qwen_zerocap_strong_guidance__flickr30k_main_seed1_val,1,6537,flickr30k_test_006537,images/flickr30k/flickr30k_test_006537.jpg,"[""A worker in an orange vest with a matching hard hat is walking with a blue folder at a train station."", ""The back of a train worker in an orange vest and jeans at the Kilburn station platform."", ""A man wearing an orange hat and vest is walking next to railroad tracks."", ""A English man wears a bright orange safety vest."", ""A worker is walking next to a train line.""]",qwen_zerocap,qwen_zerocap_strong_guidance,"Write a short, natural caption for this image.","A
+
+d
+
+,
+
+d
+
+, \
+d
+
+, \
+d
+
+, \
+d
+
+, \
+d
+
+, \",0,1,Qwen/Qwen3-VL-8B-Instruct,32,"{""caption_model"": ""Qwen/Qwen3-VL-8B-Instruct"", ""device_map"": ""auto"", ""dtype"": ""auto"", ""attn_implementation"": null, ""clip_model_name"": ""ViT-B-32"", ""clip_pretrained"": ""openai"", ""clip_device"": ""cuda:0"", ""prompt"": ""Write a short, natural caption for this image."", ""clip_text_prefix"": ""A photo of "", ""max_new_tokens"": 32, ""min_new_tokens"": 5, ""top_size"": 128, ""num_iterations"": 2, ""clip_loss_temperature"": 0.01, ""clip_scale"": 1.0, ""ce_scale"": 0.2, ""stepsize"": 0.1, ""grad_norm_factor"": 0.9, ""fusion_factor"": 0.9, ""repetition_penalty"": 1.1, ""end_factor"": 1.01, ""verbose_cache"": false}"
+flickr30k_main_seed1_val,qwen_zerocap_strong_guidance,qwen_zerocap_strong_guidance__flickr30k_main_seed1_val,2,17682,flickr30k_test_017682,images/flickr30k/flickr30k_test_017682.jpg,"[""A father, wearing a white puma brand shirt, holding his smiling daughter."", ""A man in a Puma shirt holds a blond baby in a plaid dress."", ""A man wearing a Puma brand shirt is holding a little girl."", ""A man with short hair and a beard is holding a baby."", ""A man holding a little girl smiling and laughing.""]",qwen_zerocap,qwen_zerocap_strong_guidance,"Write a short, natural caption for this image.","A
+
+:)
+, \n90
+
+:)
+
+, \n0
+
+9, \n0
+
+9, \n0
+
+, \",0,1,Qwen/Qwen3-VL-8B-Instruct,32,"{""caption_model"": ""Qwen/Qwen3-VL-8B-Instruct"", ""device_map"": ""auto"", ""dtype"": ""auto"", ""attn_implementation"": null, ""clip_model_name"": ""ViT-B-32"", ""clip_pretrained"": ""openai"", ""clip_device"": ""cuda:0"", ""prompt"": ""Write a short, natural caption for this image."", ""clip_text_prefix"": ""A photo of "", ""max_new_tokens"": 32, ""min_new_tokens"": 5, ""top_size"": 128, ""num_iterations"": 2, ""clip_loss_temperature"": 0.01, ""clip_scale"": 1.0, ""ce_scale"": 0.2, ""stepsize"": 0.1, ""grad_norm_factor"": 0.9, ""fusion_factor"": 0.9, ""repetition_penalty"": 1.1, ""end_factor"": 1.01, ""verbose_cache"": false}"
+flickr30k_main_seed1_val,qwen_zerocap_strong_guidance,qwen_zerocap_strong_guidance__flickr30k_main_seed1_val,3,30149,flickr30k_test_030149,images/flickr30k/flickr30k_test_030149.jpg,"[""A right-handed man in jeans and black t-shirt is in a well-lit bowling alley holding his ball up as he is just beginning his bowl."", ""At a bowling alley, a man in a black shirt is holding a bowling ball and looking down the lane."", ""A man starts walking towards a bowling lane, appearing to be winding up for a bowl."", ""A man is preparing to throw a bowling ball."", ""Man in black prepares to ten-pin bowl.""]",qwen_zerocap,qwen_zerocap_strong_guidance,"Write a short, natural caption for this image.","A \n9**d
+
+0
+, \n9**d0
+
+)
+, \n90**d
+
+)
+, \n",0,1,Qwen/Qwen3-VL-8B-Instruct,32,"{""caption_model"": ""Qwen/Qwen3-VL-8B-Instruct"", ""device_map"": ""auto"", ""dtype"": ""auto"", ""attn_implementation"": null, ""clip_model_name"": ""ViT-B-32"", ""clip_pretrained"": ""openai"", ""clip_device"": ""cuda:0"", ""prompt"": ""Write a short, natural caption for this image."", ""clip_text_prefix"": ""A photo of "", ""max_new_tokens"": 32, ""min_new_tokens"": 5, ""top_size"": 128, ""num_iterations"": 2, ""clip_loss_temperature"": 0.01, ""clip_scale"": 1.0, ""ce_scale"": 0.2, ""stepsize"": 0.1, ""grad_norm_factor"": 0.9, ""fusion_factor"": 0.9, ""repetition_penalty"": 1.1, ""end_factor"": 1.01, ""verbose_cache"": false}"
+flickr30k_main_seed1_val,qwen_zerocap_strong_guidance,qwen_zerocap_strong_guidance__flickr30k_main_seed1_val,4,28189,flickr30k_test_028189,images/flickr30k/flickr30k_test_028189.jpg,"[""A man in a white cap and shirt is working is looking at a construction project."", ""A construction working wearing a white hat is holding on to a piece of siding."", ""A man in a white t-shirt and white ball cap stands next to Insulfoam."", ""A black man looking at something located near a manufacture building."", ""A man is standing in a field with a green plant in it.""]",qwen_zerocap,qwen_zerocap_strong_guidance,"Write a short, natural caption for this image.","A
+
+)
+d,
+
+9**d
+)
+
+9**d
+)
+
+9**d
+)
+
+9**d
+)
+
+9",0,1,Qwen/Qwen3-VL-8B-Instruct,32,"{""caption_model"": ""Qwen/Qwen3-VL-8B-Instruct"", ""device_map"": ""auto"", ""dtype"": ""auto"", ""attn_implementation"": null, ""clip_model_name"": ""ViT-B-32"", ""clip_pretrained"": ""openai"", ""clip_device"": ""cuda:0"", ""prompt"": ""Write a short, natural caption for this image."", ""clip_text_prefix"": ""A photo of "", ""max_new_tokens"": 32, ""min_new_tokens"": 5, ""top_size"": 128, ""num_iterations"": 2, ""clip_loss_temperature"": 0.01, ""clip_scale"": 1.0, ""ce_scale"": 0.2, ""stepsize"": 0.1, ""grad_norm_factor"": 0.9, ""fusion_factor"": 0.9, ""repetition_penalty"": 1.1, ""end_factor"": 1.01, ""verbose_cache"": false}"
+flickr30k_main_seed1_val,qwen_zerocap_strong_guidance,qwen_zerocap_strong_guidance__flickr30k_main_seed1_val,5,17967,flickr30k_test_017967,images/flickr30k/flickr30k_test_017967.jpg,"[""An older man sits on a subway or bus reading a tabloid in front of an Uncle Sam poster as a hanging plant sits beside him on the floor."", ""A man with a large plant reads a newspaper about how someone (besides him) is an idiot."", ""A man reading a newspaper on the subway with a houseplant beside him."", ""An old man reading a periodical sitting in a bus beside a houseplant."", ""A man reading a newspaper while riding the subway.""]",qwen_zerocap,qwen_zerocap_strong_guidance,"Write a short, natural caption for this image.","d.
+**:)
+d9**)
+d9**)
+:)
+
+d9
+
+)
+d8**
+
+)
+d8**",0,1,Qwen/Qwen3-VL-8B-Instruct,32,"{""caption_model"": ""Qwen/Qwen3-VL-8B-Instruct"", ""device_map"": ""auto"", ""dtype"": ""auto"", ""attn_implementation"": null, ""clip_model_name"": ""ViT-B-32"", ""clip_pretrained"": ""openai"", ""clip_device"": ""cuda:0"", ""prompt"": ""Write a short, natural caption for this image."", ""clip_text_prefix"": ""A photo of "", ""max_new_tokens"": 32, ""min_new_tokens"": 5, ""top_size"": 128, ""num_iterations"": 2, ""clip_loss_temperature"": 0.01, ""clip_scale"": 1.0, ""ce_scale"": 0.2, ""stepsize"": 0.1, ""grad_norm_factor"": 0.9, ""fusion_factor"": 0.9, ""repetition_penalty"": 1.1, ""end_factor"": 1.01, ""verbose_cache"": false}"
+flickr30k_main_seed1_val,qwen_zerocap_strong_guidance,qwen_zerocap_strong_guidance__flickr30k_main_seed1_val,6,7607,flickr30k_test_007607,images/flickr30k/flickr30k_test_007607.jpg,"[""A young boy making a big mess on the floor and table while eating cereal"", ""A young boy sits at a table and eats as food is spilled all around."", ""The boy in blue and white pajamas is sitting at the table eating."", ""A young boy in pajamas eats out of a red bowl at a wood table."", ""A boy eating at a table.""]",qwen_zerocap,qwen_zerocap_strong_guidance,"Write a short, natural caption for this image.","A
+
+:)
+
+, \
+)
+
+:)
+
+, \
+)
+
+0
+
+, \
+)
+
+90
+
+1, \
+)",0,1,Qwen/Qwen3-VL-8B-Instruct,32,"{""caption_model"": ""Qwen/Qwen3-VL-8B-Instruct"", ""device_map"": ""auto"", ""dtype"": ""auto"", ""attn_implementation"": null, ""clip_model_name"": ""ViT-B-32"", ""clip_pretrained"": ""openai"", ""clip_device"": ""cuda:0"", ""prompt"": ""Write a short, natural caption for this image."", ""clip_text_prefix"": ""A photo of "", ""max_new_tokens"": 32, ""min_new_tokens"": 5, ""top_size"": 128, ""num_iterations"": 2, ""clip_loss_temperature"": 0.01, ""clip_scale"": 1.0, ""ce_scale"": 0.2, ""stepsize"": 0.1, ""grad_norm_factor"": 0.9, ""fusion_factor"": 0.9, ""repetition_penalty"": 1.1, ""end_factor"": 1.01, ""verbose_cache"": false}"
+flickr30k_main_seed1_val,qwen_zerocap_strong_guidance,qwen_zerocap_strong_guidance__flickr30k_main_seed1_val,7,13253,flickr30k_test_013253,images/flickr30k/flickr30k_test_013253.jpg,"[""A tan and white dog looks scared while splashing in the water."", ""A brown dog is making a big splash whilst trying to swim."", ""Dog swimming and splashing through water."", ""A brown and white dog swimming in water"", ""A dog swims and splashes.""]",qwen_zerocap,qwen_zerocap_strong_guidance,"Write a short, natural caption for this image.","A90
+
+)
+, \n
+
+90
+)
+
+90
+)
+
+)
+, \n90
+
+:
+)",0,1,Qwen/Qwen3-VL-8B-Instruct,32,"{""caption_model"": ""Qwen/Qwen3-VL-8B-Instruct"", ""device_map"": ""auto"", ""dtype"": ""auto"", ""attn_implementation"": null, ""clip_model_name"": ""ViT-B-32"", ""clip_pretrained"": ""openai"", ""clip_device"": ""cuda:0"", ""prompt"": ""Write a short, natural caption for this image."", ""clip_text_prefix"": ""A photo of "", ""max_new_tokens"": 32, ""min_new_tokens"": 5, ""top_size"": 128, ""num_iterations"": 2, ""clip_loss_temperature"": 0.01, ""clip_scale"": 1.0, ""ce_scale"": 0.2, ""stepsize"": 0.1, ""grad_norm_factor"": 0.9, ""fusion_factor"": 0.9, ""repetition_penalty"": 1.1, ""end_factor"": 1.01, ""verbose_cache"": false}"
+flickr30k_main_seed1_val,qwen_zerocap_strong_guidance,qwen_zerocap_strong_guidance__flickr30k_main_seed1_val,8,16835,flickr30k_test_016835,images/flickr30k/flickr30k_test_016835.jpg,"[""A man wearing a black hat, buttoned shirt, tie, dark shorts, and black and red shoes speaks loudly as bystanders see flames in the street."", ""A street busker wearing a top hat is performing with fire in front of a large crowd, some seated and some standing."", ""A magician performs with a burning bar placed in his front on the floor while the crowd watches closely."", ""A sidewalk artist performing magic tricks."", ""A street performer entertains a crowd.""]",qwen_zerocap,qwen_zerocap_strong_guidance,"Write a short, natural caption for this image.","A
+
+d9,2
+
+90,2
+
+90,2
+
+90,2
+
+90,2
+
+90,2",0,1,Qwen/Qwen3-VL-8B-Instruct,32,"{""caption_model"": ""Qwen/Qwen3-VL-8B-Instruct"", ""device_map"": ""auto"", ""dtype"": ""auto"", ""attn_implementation"": null, ""clip_model_name"": ""ViT-B-32"", ""clip_pretrained"": ""openai"", ""clip_device"": ""cuda:0"", ""prompt"": ""Write a short, natural caption for this image."", ""clip_text_prefix"": ""A photo of "", ""max_new_tokens"": 32, ""min_new_tokens"": 5, ""top_size"": 128, ""num_iterations"": 2, ""clip_loss_temperature"": 0.01, ""clip_scale"": 1.0, ""ce_scale"": 0.2, ""stepsize"": 0.1, ""grad_norm_factor"": 0.9, ""fusion_factor"": 0.9, ""repetition_penalty"": 1.1, ""end_factor"": 1.01, ""verbose_cache"": false}"
+flickr30k_main_seed1_val,qwen_zerocap_strong_guidance,qwen_zerocap_strong_guidance__flickr30k_main_seed1_val,9,11266,flickr30k_test_011266,images/flickr30k/flickr30k_test_011266.jpg,"[""A snowboarder jumps off of a ramp in the snowy mountains"", ""A snowboarder is leaping of a jump in the mountains."", ""A snowboarder in midair, hovering over a snow ramp."", ""A snowboarder flies through the air."", ""A snowboarder in midair""]",qwen_zerocap,qwen_zerocap_strong_guidance,"Write a short, natural caption for this image.","A
+
+:)
+, \n.
+
+:)
+
+, \n0
+
+9, \n0
+
+, \n)
+, \n)",0,1,Qwen/Qwen3-VL-8B-Instruct,32,"{""caption_model"": ""Qwen/Qwen3-VL-8B-Instruct"", ""device_map"": ""auto"", ""dtype"": ""auto"", ""attn_implementation"": null, ""clip_model_name"": ""ViT-B-32"", ""clip_pretrained"": ""openai"", ""clip_device"": ""cuda:0"", ""prompt"": ""Write a short, natural caption for this image."", ""clip_text_prefix"": ""A photo of "", ""max_new_tokens"": 32, ""min_new_tokens"": 5, ""top_size"": 128, ""num_iterations"": 2, ""clip_loss_temperature"": 0.01, ""clip_scale"": 1.0, ""ce_scale"": 0.2, ""stepsize"": 0.1, ""grad_norm_factor"": 0.9, ""fusion_factor"": 0.9, ""repetition_penalty"": 1.1, ""end_factor"": 1.01, ""verbose_cache"": false}"
+flickr30k_main_seed1_val,qwen_zerocap_strong_guidance,qwen_zerocap_strong_guidance__flickr30k_main_seed1_val,10,27769,flickr30k_test_027769,images/flickr30k/flickr30k_test_027769.jpg,"[""Two young men play roller hockey on an indoor rink while a referee looks on near the goal net."", ""Two young men playing a game on rollerskates with curved sticks, while a referee looks on."", ""A roller-hockey player is attempting to make a shot that the goalie is blocking."", ""A young man in s green and white striped shirt playing roller hockey."", ""Roller-Hockey player saving the puck""]",qwen_zerocap,qwen_zerocap_strong_guidance,"Write a short, natural caption for this image.","A
+
+d
+n, \d
+
+)
+, \d
+
+)
+, \d
+
+)
+, \d:
+)
+
+)
+:",0,1,Qwen/Qwen3-VL-8B-Instruct,32,"{""caption_model"": ""Qwen/Qwen3-VL-8B-Instruct"", ""device_map"": ""auto"", ""dtype"": ""auto"", ""attn_implementation"": null, ""clip_model_name"": ""ViT-B-32"", ""clip_pretrained"": ""openai"", ""clip_device"": ""cuda:0"", ""prompt"": ""Write a short, natural caption for this image."", ""clip_text_prefix"": ""A photo of "", ""max_new_tokens"": 32, ""min_new_tokens"": 5, ""top_size"": 128, ""num_iterations"": 2, ""clip_loss_temperature"": 0.01, ""clip_scale"": 1.0, ""ce_scale"": 0.2, ""stepsize"": 0.1, ""grad_norm_factor"": 0.9, ""fusion_factor"": 0.9, ""repetition_penalty"": 1.1, ""end_factor"": 1.01, ""verbose_cache"": false}"
+flickr30k_main_seed1_val,qwen_zerocap_strong_guidance,qwen_zerocap_strong_guidance__flickr30k_main_seed1_val,11,18933,flickr30k_test_018933,images/flickr30k/flickr30k_test_018933.jpg,"[""Young lady dressed in black shorts and light blue shirt sitting outside at a public table looking at a picture on her camera with her left hand on her face."", ""A girl wearing a blue shirt, shorts, and sneakers is seated on a stool at a round table, looking at her phone."", ""A woman in a blue shirt is sitting at a table and looking at her cellphone."", ""A woman sitting at a table, taking a picture."", ""Young woman in a cafe checking her cellphone.""]",qwen_zerocap,qwen_zerocap_strong_guidance,"Write a short, natural caption for this image.","A)
+d
+
+1:
+d
+
+0:
+d
+
+)
+, \n
+
+)
+, \n)
+, \n",0,1,Qwen/Qwen3-VL-8B-Instruct,32,"{""caption_model"": ""Qwen/Qwen3-VL-8B-Instruct"", ""device_map"": ""auto"", ""dtype"": ""auto"", ""attn_implementation"": null, ""clip_model_name"": ""ViT-B-32"", ""clip_pretrained"": ""openai"", ""clip_device"": ""cuda:0"", ""prompt"": ""Write a short, natural caption for this image."", ""clip_text_prefix"": ""A photo of "", ""max_new_tokens"": 32, ""min_new_tokens"": 5, ""top_size"": 128, ""num_iterations"": 2, ""clip_loss_temperature"": 0.01, ""clip_scale"": 1.0, ""ce_scale"": 0.2, ""stepsize"": 0.1, ""grad_norm_factor"": 0.9, ""fusion_factor"": 0.9, ""repetition_penalty"": 1.1, ""end_factor"": 1.01, ""verbose_cache"": false}"
+flickr30k_main_seed1_val,qwen_zerocap_strong_guidance,qwen_zerocap_strong_guidance__flickr30k_main_seed1_val,12,11576,flickr30k_test_011576,images/flickr30k/flickr30k_test_011576.jpg,"[""A brown and white dog with a black collar and gold tag licking the snow from its nose."", ""The brown and white dog licks the snow off of his cold nose."", ""A white and brown dog licks his lips during winter."", ""A shaggy dog dusted with snow licks its nose."", ""A dog licking its lips while snowfalls.""]",qwen_zerocap,qwen_zerocap_strong_guidance,"Write a short, natural caption for this image.","A
+
+)
+d0,2
+
+90,2
+
+90,2
+
+90,2
+
+90,2
+
+90,",0,1,Qwen/Qwen3-VL-8B-Instruct,32,"{""caption_model"": ""Qwen/Qwen3-VL-8B-Instruct"", ""device_map"": ""auto"", ""dtype"": ""auto"", ""attn_implementation"": null, ""clip_model_name"": ""ViT-B-32"", ""clip_pretrained"": ""openai"", ""clip_device"": ""cuda:0"", ""prompt"": ""Write a short, natural caption for this image."", ""clip_text_prefix"": ""A photo of "", ""max_new_tokens"": 32, ""min_new_tokens"": 5, ""top_size"": 128, ""num_iterations"": 2, ""clip_loss_temperature"": 0.01, ""clip_scale"": 1.0, ""ce_scale"": 0.2, ""stepsize"": 0.1, ""grad_norm_factor"": 0.9, ""fusion_factor"": 0.9, ""repetition_penalty"": 1.1, ""end_factor"": 1.01, ""verbose_cache"": false}"
+flickr30k_main_seed1_val,qwen_zerocap_strong_guidance,qwen_zerocap_strong_guidance__flickr30k_main_seed1_val,13,15044,flickr30k_test_015044,images/flickr30k/flickr30k_test_015044.jpg,"[""A motorcycle goes by a crowd with its rear wheel in the air."", ""Person riding a racing motorcycle while other people watch."", ""Spectators watching a motorcyclist ground around a track."", ""A man on a motorcycle is racing at a track."", ""A guy racing his motorcycle.""]",qwen_zerocap,qwen_zerocap_strong_guidance,"Write a short, natural caption for this image.","A90
+
+:)
+
+[20, \n
+
+0, \n90
+
+, \n90
+
+, \n0
+
+,",0,1,Qwen/Qwen3-VL-8B-Instruct,32,"{""caption_model"": ""Qwen/Qwen3-VL-8B-Instruct"", ""device_map"": ""auto"", ""dtype"": ""auto"", ""attn_implementation"": null, ""clip_model_name"": ""ViT-B-32"", ""clip_pretrained"": ""openai"", ""clip_device"": ""cuda:0"", ""prompt"": ""Write a short, natural caption for this image."", ""clip_text_prefix"": ""A photo of "", ""max_new_tokens"": 32, ""min_new_tokens"": 5, ""top_size"": 128, ""num_iterations"": 2, ""clip_loss_temperature"": 0.01, ""clip_scale"": 1.0, ""ce_scale"": 0.2, ""stepsize"": 0.1, ""grad_norm_factor"": 0.9, ""fusion_factor"": 0.9, ""repetition_penalty"": 1.1, ""end_factor"": 1.01, ""verbose_cache"": false}"
+flickr30k_main_seed1_val,qwen_zerocap_strong_guidance,qwen_zerocap_strong_guidance__flickr30k_main_seed1_val,14,29810,flickr30k_test_029810,images/flickr30k/flickr30k_test_029810.jpg,"[""A goal has just been scored in a soccer game between two teams, one wearing red and the other wearing yellow."", ""A player on the red soccer team has just scored a goal while the opposing team watches the ball go in."", ""A few soccer players intently watch the ball and goalie."", ""Several footballers watch a goalie try to defend a kick."", ""Men playing soccer on an outdoor field.""]",qwen_zerocap,qwen_zerocap_strong_guidance,"Write a short, natural caption for this image.","A90
+
+*:d, \
+
+
+d, \
+
+
+d, \
+
+
+90, \
+
+
+d, \",0,1,Qwen/Qwen3-VL-8B-Instruct,32,"{""caption_model"": ""Qwen/Qwen3-VL-8B-Instruct"", ""device_map"": ""auto"", ""dtype"": ""auto"", ""attn_implementation"": null, ""clip_model_name"": ""ViT-B-32"", ""clip_pretrained"": ""openai"", ""clip_device"": ""cuda:0"", ""prompt"": ""Write a short, natural caption for this image."", ""clip_text_prefix"": ""A photo of "", ""max_new_tokens"": 32, ""min_new_tokens"": 5, ""top_size"": 128, ""num_iterations"": 2, ""clip_loss_temperature"": 0.01, ""clip_scale"": 1.0, ""ce_scale"": 0.2, ""stepsize"": 0.1, ""grad_norm_factor"": 0.9, ""fusion_factor"": 0.9, ""repetition_penalty"": 1.1, ""end_factor"": 1.01, ""verbose_cache"": false}"
+flickr30k_main_seed1_val,qwen_zerocap_strong_guidance,qwen_zerocap_strong_guidance__flickr30k_main_seed1_val,15,8823,flickr30k_test_008823,images/flickr30k/flickr30k_test_008823.jpg,"[""A large brown dog climbs over a tall fence while three people look on."", ""A brown dog jumping a wooden wall a few people standind around also"", ""People watch as a dog scales a wooden wall in a grass field."", ""A police dog in training jumping over a large wall"", ""Dog climbing over wall""]",qwen_zerocap,qwen_zerocap_strong_guidance,"Write a short, natural caption for this image.","A, \n91, \n91.",0,1,Qwen/Qwen3-VL-8B-Instruct,32,"{""caption_model"": ""Qwen/Qwen3-VL-8B-Instruct"", ""device_map"": ""auto"", ""dtype"": ""auto"", ""attn_implementation"": null, ""clip_model_name"": ""ViT-B-32"", ""clip_pretrained"": ""openai"", ""clip_device"": ""cuda:0"", ""prompt"": ""Write a short, natural caption for this image."", ""clip_text_prefix"": ""A photo of "", ""max_new_tokens"": 32, ""min_new_tokens"": 5, ""top_size"": 128, ""num_iterations"": 2, ""clip_loss_temperature"": 0.01, ""clip_scale"": 1.0, ""ce_scale"": 0.2, ""stepsize"": 0.1, ""grad_norm_factor"": 0.9, ""fusion_factor"": 0.9, ""repetition_penalty"": 1.1, ""end_factor"": 1.01, ""verbose_cache"": false}"
+flickr30k_main_seed1_val,qwen_zerocap_strong_guidance,qwen_zerocap_strong_guidance__flickr30k_main_seed1_val,16,21601,flickr30k_test_021601,images/flickr30k/flickr30k_test_021601.jpg,"[""A painting of a city with a old person with a walker, some people running, a person with a grocery cart, bald eagle in the sky, and a person floating above the ground."", ""A older man with a walker walking in front of a colorful wall, with multiple things going on it."", ""A man with a walker walking on the sidewalk in front of a mural of different things painted."", ""A mural with vivid colors and people of various ages is displayed."", ""Woman in green cap walks in front of city mural.""]",qwen_zerocap,qwen_zerocap_strong_guidance,"Write a short, natural caption for this image.","A, \n0
+
+9**d, \n9
+
+0**d, \n9**d
+
+90**d9
+
+1,",0,1,Qwen/Qwen3-VL-8B-Instruct,32,"{""caption_model"": ""Qwen/Qwen3-VL-8B-Instruct"", ""device_map"": ""auto"", ""dtype"": ""auto"", ""attn_implementation"": null, ""clip_model_name"": ""ViT-B-32"", ""clip_pretrained"": ""openai"", ""clip_device"": ""cuda:0"", ""prompt"": ""Write a short, natural caption for this image."", ""clip_text_prefix"": ""A photo of "", ""max_new_tokens"": 32, ""min_new_tokens"": 5, ""top_size"": 128, ""num_iterations"": 2, ""clip_loss_temperature"": 0.01, ""clip_scale"": 1.0, ""ce_scale"": 0.2, ""stepsize"": 0.1, ""grad_norm_factor"": 0.9, ""fusion_factor"": 0.9, ""repetition_penalty"": 1.1, ""end_factor"": 1.01, ""verbose_cache"": false}"
+flickr30k_main_seed1_val,qwen_zerocap_strong_guidance,qwen_zerocap_strong_guidance__flickr30k_main_seed1_val,17,17956,flickr30k_test_017956,images/flickr30k/flickr30k_test_017956.jpg,"[""Tourists visiting China have come to see it's amazing architecture."", ""A group of people are standing outside taking pictures."", ""Tourist taken pictures at a building in China."", ""Many people are outside of a large building."", ""Tourists are taking pictures in china.""]",qwen_zerocap,qwen_zerocap_strong_guidance,"Write a short, natural caption for this image.","A
+
+90
+,2
+
+90
+,2
+
+90
+,2
+
+90
+,2
+
+90
+,2",0,1,Qwen/Qwen3-VL-8B-Instruct,32,"{""caption_model"": ""Qwen/Qwen3-VL-8B-Instruct"", ""device_map"": ""auto"", ""dtype"": ""auto"", ""attn_implementation"": null, ""clip_model_name"": ""ViT-B-32"", ""clip_pretrained"": ""openai"", ""clip_device"": ""cuda:0"", ""prompt"": ""Write a short, natural caption for this image."", ""clip_text_prefix"": ""A photo of "", ""max_new_tokens"": 32, ""min_new_tokens"": 5, ""top_size"": 128, ""num_iterations"": 2, ""clip_loss_temperature"": 0.01, ""clip_scale"": 1.0, ""ce_scale"": 0.2, ""stepsize"": 0.1, ""grad_norm_factor"": 0.9, ""fusion_factor"": 0.9, ""repetition_penalty"": 1.1, ""end_factor"": 1.01, ""verbose_cache"": false}"
+flickr30k_main_seed1_val,qwen_zerocap_strong_guidance,qwen_zerocap_strong_guidance__flickr30k_main_seed1_val,18,19953,flickr30k_test_019953,images/flickr30k/flickr30k_test_019953.jpg,"[""A damaged red car with the back glass completely taped over and a smashed fender sits parked on a public street."", ""A silver car is passing by a red car that has tape over the back windshield."", ""A gray car is parked and has its wheels turned to the right."", ""A damaged car is parked across from people in a gray car."", ""Two passengers are sitting inside a parked car.""]",qwen_zerocap,qwen_zerocap_strong_guidance,"Write a short, natural caption for this image.","A90
+
+1,2
+
+90
+
+1:  \
+
+
+]
+
+)
+, \n
+
+:
+)
+, \n0",0,1,Qwen/Qwen3-VL-8B-Instruct,32,"{""caption_model"": ""Qwen/Qwen3-VL-8B-Instruct"", ""device_map"": ""auto"", ""dtype"": ""auto"", ""attn_implementation"": null, ""clip_model_name"": ""ViT-B-32"", ""clip_pretrained"": ""openai"", ""clip_device"": ""cuda:0"", ""prompt"": ""Write a short, natural caption for this image."", ""clip_text_prefix"": ""A photo of "", ""max_new_tokens"": 32, ""min_new_tokens"": 5, ""top_size"": 128, ""num_iterations"": 2, ""clip_loss_temperature"": 0.01, ""clip_scale"": 1.0, ""ce_scale"": 0.2, ""stepsize"": 0.1, ""grad_norm_factor"": 0.9, ""fusion_factor"": 0.9, ""repetition_penalty"": 1.1, ""end_factor"": 1.01, ""verbose_cache"": false}"
+flickr30k_main_seed1_val,qwen_zerocap_strong_guidance,qwen_zerocap_strong_guidance__flickr30k_main_seed1_val,19,23900,flickr30k_test_023900,images/flickr30k/flickr30k_test_023900.jpg,"[""A young man smiles and points at something off-camera, while standing in front of a display."", ""A woman wearing a black shirt is pointing to glass that has the word Utiah written on it."", ""A museum guide describing an exhibit to some tourists."", ""A black man is pointing at a sign."", ""A woman selling ethnic goods.""]",qwen_zerocap,qwen_zerocap_strong_guidance,"Write a short, natural caption for this image.","A
+
+d90
+)dL
+
+90
+)d
+
+90
+)d
+
+90
+)d
+
+90
+)",0,1,Qwen/Qwen3-VL-8B-Instruct,32,"{""caption_model"": ""Qwen/Qwen3-VL-8B-Instruct"", ""device_map"": ""auto"", ""dtype"": ""auto"", ""attn_implementation"": null, ""clip_model_name"": ""ViT-B-32"", ""clip_pretrained"": ""openai"", ""clip_device"": ""cuda:0"", ""prompt"": ""Write a short, natural caption for this image."", ""clip_text_prefix"": ""A photo of "", ""max_new_tokens"": 32, ""min_new_tokens"": 5, ""top_size"": 128, ""num_iterations"": 2, ""clip_loss_temperature"": 0.01, ""clip_scale"": 1.0, ""ce_scale"": 0.2, ""stepsize"": 0.1, ""grad_norm_factor"": 0.9, ""fusion_factor"": 0.9, ""repetition_penalty"": 1.1, ""end_factor"": 1.01, ""verbose_cache"": false}"
+flickr30k_main_seed1_val,qwen_zerocap_strong_guidance,qwen_zerocap_strong_guidance__flickr30k_main_seed1_val,20,187,flickr30k_test_000187,images/flickr30k/flickr30k_test_000187.jpg,"[""A young boy in swimming trunks is walking with his arms outstretched on the beach."", ""The boy is playing on the shore of an ocean."", ""A boy in his blue swim shorts at the beach."", ""A boy smiles for the camera at a beach."", ""Children playing on the beach.""]",qwen_zerocap,qwen_zerocap_strong_guidance,"Write a short, natural caption for this image.","A
+
+0
+, \n9
+
+0
+, \n0
+
+9  \n
+
+)
+, \n
+
+:
+, \n",0,1,Qwen/Qwen3-VL-8B-Instruct,32,"{""caption_model"": ""Qwen/Qwen3-VL-8B-Instruct"", ""device_map"": ""auto"", ""dtype"": ""auto"", ""attn_implementation"": null, ""clip_model_name"": ""ViT-B-32"", ""clip_pretrained"": ""openai"", ""clip_device"": ""cuda:0"", ""prompt"": ""Write a short, natural caption for this image."", ""clip_text_prefix"": ""A photo of "", ""max_new_tokens"": 32, ""min_new_tokens"": 5, ""top_size"": 128, ""num_iterations"": 2, ""clip_loss_temperature"": 0.01, ""clip_scale"": 1.0, ""ce_scale"": 0.2, ""stepsize"": 0.1, ""grad_norm_factor"": 0.9, ""fusion_factor"": 0.9, ""repetition_penalty"": 1.1, ""end_factor"": 1.01, ""verbose_cache"": false}"
+flickr30k_main_seed1_val,qwen_zerocap_strong_guidance,qwen_zerocap_strong_guidance__flickr30k_main_seed1_val,21,12572,flickr30k_test_012572,images/flickr30k/flickr30k_test_012572.jpg,"[""A girl with a purple beanie sits and waits at Domino's Pizza."", ""The girl is standing outside and holding on to her necklace."", ""A girl wearing a hat near a Domino's Pizza sign."", ""A little girl in a purple hat is starring."", ""A girl waits outside a Domino's Pizza""]",qwen_zerocap,qwen_zerocap_strong_guidance,"Write a short, natural caption for this image.","A0
+
+)
+, \n90
+
+)
+, \n90
+
+:
+)
+, \n
+
+)
+, \n",0,1,Qwen/Qwen3-VL-8B-Instruct,32,"{""caption_model"": ""Qwen/Qwen3-VL-8B-Instruct"", ""device_map"": ""auto"", ""dtype"": ""auto"", ""attn_implementation"": null, ""clip_model_name"": ""ViT-B-32"", ""clip_pretrained"": ""openai"", ""clip_device"": ""cuda:0"", ""prompt"": ""Write a short, natural caption for this image."", ""clip_text_prefix"": ""A photo of "", ""max_new_tokens"": 32, ""min_new_tokens"": 5, ""top_size"": 128, ""num_iterations"": 2, ""clip_loss_temperature"": 0.01, ""clip_scale"": 1.0, ""ce_scale"": 0.2, ""stepsize"": 0.1, ""grad_norm_factor"": 0.9, ""fusion_factor"": 0.9, ""repetition_penalty"": 1.1, ""end_factor"": 1.01, ""verbose_cache"": false}"
+flickr30k_main_seed1_val,qwen_zerocap_strong_guidance,qwen_zerocap_strong_guidance__flickr30k_main_seed1_val,22,25678,flickr30k_test_025678,images/flickr30k/flickr30k_test_025678.jpg,"[""A boy wearing red and blue swim trunks jumping headfirst into a swimming pool."", ""A brown-haired boy in swim trunks is flipped backwards over a swimming pool."", ""A boy doing a back flip into a swimming pool."", ""A young boy jumping upside-down into a pool."", ""A boy falling headfirst into a pool""]",qwen_zerocap,qwen_zerocap_strong_guidance,"Write a short, natural caption for this image.","A90
+d
+
+9**  \
+d
+
+9**  \
+d
+
+9**  \
+d
+
+9**  \",0,1,Qwen/Qwen3-VL-8B-Instruct,32,"{""caption_model"": ""Qwen/Qwen3-VL-8B-Instruct"", ""device_map"": ""auto"", ""dtype"": ""auto"", ""attn_implementation"": null, ""clip_model_name"": ""ViT-B-32"", ""clip_pretrained"": ""openai"", ""clip_device"": ""cuda:0"", ""prompt"": ""Write a short, natural caption for this image."", ""clip_text_prefix"": ""A photo of "", ""max_new_tokens"": 32, ""min_new_tokens"": 5, ""top_size"": 128, ""num_iterations"": 2, ""clip_loss_temperature"": 0.01, ""clip_scale"": 1.0, ""ce_scale"": 0.2, ""stepsize"": 0.1, ""grad_norm_factor"": 0.9, ""fusion_factor"": 0.9, ""repetition_penalty"": 1.1, ""end_factor"": 1.01, ""verbose_cache"": false}"
+flickr30k_main_seed1_val,qwen_zerocap_strong_guidance,qwen_zerocap_strong_guidance__flickr30k_main_seed1_val,23,28080,flickr30k_test_028080,images/flickr30k/flickr30k_test_028080.jpg,"[""Two football players on the field one from different teams, the blue and black player is attempting to tackle the blue and white player who is holding the football."", ""A football player in a black uniform appears ready to tackle an opponent in a white uniform who is in possession of the ball."", ""A football player wearing black attempts to tackle a football player wearing white."", ""One football player runs with the ball, while another prepares to tackle him."", ""An american football player is attempting to make a tackle.""]",qwen_zerocap,qwen_zerocap_strong_guidance,"Write a short, natural caption for this image.","A
+
+0
+d1
+
+n90
+d
+
+n90
+d
+
+)  \n90
+
+: \n90",0,1,Qwen/Qwen3-VL-8B-Instruct,32,"{""caption_model"": ""Qwen/Qwen3-VL-8B-Instruct"", ""device_map"": ""auto"", ""dtype"": ""auto"", ""attn_implementation"": null, ""clip_model_name"": ""ViT-B-32"", ""clip_pretrained"": ""openai"", ""clip_device"": ""cuda:0"", ""prompt"": ""Write a short, natural caption for this image."", ""clip_text_prefix"": ""A photo of "", ""max_new_tokens"": 32, ""min_new_tokens"": 5, ""top_size"": 128, ""num_iterations"": 2, ""clip_loss_temperature"": 0.01, ""clip_scale"": 1.0, ""ce_scale"": 0.2, ""stepsize"": 0.1, ""grad_norm_factor"": 0.9, ""fusion_factor"": 0.9, ""repetition_penalty"": 1.1, ""end_factor"": 1.01, ""verbose_cache"": false}"
+flickr30k_main_seed1_val,qwen_zerocap_strong_guidance,qwen_zerocap_strong_guidance__flickr30k_main_seed1_val,24,26885,flickr30k_test_026885,images/flickr30k/flickr30k_test_026885.jpg,"[""An Asian chef is in the foreground, working over a steaming grill while a younger man is behind him."", ""Chefs prepare food on a grill in front of their customers."", ""Two asian chefs cooking with white suits and hats."", ""Men in a kitchen preparing food."", ""Two asian chefs cooking.""]",qwen_zerocap,qwen_zerocap_strong_guidance,"Write a short, natural caption for this image.","A9,2
+
+d:  \n9,2
+
+d:  \n
+
+:  \n
+
+0, \n9
+
+1",0,1,Qwen/Qwen3-VL-8B-Instruct,32,"{""caption_model"": ""Qwen/Qwen3-VL-8B-Instruct"", ""device_map"": ""auto"", ""dtype"": ""auto"", ""attn_implementation"": null, ""clip_model_name"": ""ViT-B-32"", ""clip_pretrained"": ""openai"", ""clip_device"": ""cuda:0"", ""prompt"": ""Write a short, natural caption for this image."", ""clip_text_prefix"": ""A photo of "", ""max_new_tokens"": 32, ""min_new_tokens"": 5, ""top_size"": 128, ""num_iterations"": 2, ""clip_loss_temperature"": 0.01, ""clip_scale"": 1.0, ""ce_scale"": 0.2, ""stepsize"": 0.1, ""grad_norm_factor"": 0.9, ""fusion_factor"": 0.9, ""repetition_penalty"": 1.1, ""end_factor"": 1.01, ""verbose_cache"": false}"
+flickr30k_main_seed1_val,qwen_zerocap_strong_guidance,qwen_zerocap_strong_guidance__flickr30k_main_seed1_val,25,29038,flickr30k_test_029038,images/flickr30k/flickr30k_test_029038.jpg,"[""A young boy is wading in the waters of some body of water, there are plants on the bottom of the picture."", ""A blond-haired boy, wearing blue patterned shorts, running through the water, as a wave recedes."", ""A young child in tropical shorts is in the water on a beach."", ""A boy in swimming trunks wades out into the water."", ""A young blond boy walks into the foamy water.""]",qwen_zerocap,qwen_zerocap_strong_guidance,"Write a short, natural caption for this image.","A90
+
+1,2
+d
+
+90
+d
+
+90
+d
+
+90
+d
+
+90
+d
+
+90",0,1,Qwen/Qwen3-VL-8B-Instruct,32,"{""caption_model"": ""Qwen/Qwen3-VL-8B-Instruct"", ""device_map"": ""auto"", ""dtype"": ""auto"", ""attn_implementation"": null, ""clip_model_name"": ""ViT-B-32"", ""clip_pretrained"": ""openai"", ""clip_device"": ""cuda:0"", ""prompt"": ""Write a short, natural caption for this image."", ""clip_text_prefix"": ""A photo of "", ""max_new_tokens"": 32, ""min_new_tokens"": 5, ""top_size"": 128, ""num_iterations"": 2, ""clip_loss_temperature"": 0.01, ""clip_scale"": 1.0, ""ce_scale"": 0.2, ""stepsize"": 0.1, ""grad_norm_factor"": 0.9, ""fusion_factor"": 0.9, ""repetition_penalty"": 1.1, ""end_factor"": 1.01, ""verbose_cache"": false}"
+flickr30k_main_seed1_val,qwen_zerocap_strong_guidance,qwen_zerocap_strong_guidance__flickr30k_main_seed1_val,26,30751,flickr30k_test_030751,images/flickr30k/flickr30k_test_030751.jpg,"[""A man sleeping with a young boy sleeping on his lap."", ""Sleeping man in chair holding sleeping boy."", ""A boy is napping in a sleeping man's lap."", ""A man and young boy asleep in a chair."", ""A man is sleeping holding his son.""]",qwen_zerocap,qwen_zerocap_strong_guidance,"Write a short, natural caption for this image.","d
+
+90,2
+
+)
+d
+
+0,2
+
+)
+d
+
+0,2
+
+90,2
+
+)
+d",0,1,Qwen/Qwen3-VL-8B-Instruct,32,"{""caption_model"": ""Qwen/Qwen3-VL-8B-Instruct"", ""device_map"": ""auto"", ""dtype"": ""auto"", ""attn_implementation"": null, ""clip_model_name"": ""ViT-B-32"", ""clip_pretrained"": ""openai"", ""clip_device"": ""cuda:0"", ""prompt"": ""Write a short, natural caption for this image."", ""clip_text_prefix"": ""A photo of "", ""max_new_tokens"": 32, ""min_new_tokens"": 5, ""top_size"": 128, ""num_iterations"": 2, ""clip_loss_temperature"": 0.01, ""clip_scale"": 1.0, ""ce_scale"": 0.2, ""stepsize"": 0.1, ""grad_norm_factor"": 0.9, ""fusion_factor"": 0.9, ""repetition_penalty"": 1.1, ""end_factor"": 1.01, ""verbose_cache"": false}"
+flickr30k_main_seed1_val,qwen_zerocap_strong_guidance,qwen_zerocap_strong_guidance__flickr30k_main_seed1_val,27,24264,flickr30k_test_024264,images/flickr30k/flickr30k_test_024264.jpg,"[""Several people walk in an open area next to a large building."", ""A Sealife aquarium in a round brick building."", ""A spherical shaped sea aquarium building."", ""Outside of an aquarium on a sunny day."", ""People visiting a stadium.""]",qwen_zerocap,qwen_zerocap_strong_guidance,"Write a short, natural caption for this image.","A, \n0
+, \n0
+, \n9**d
+
+1)
+, \n
+
+9**d
+, \n",0,1,Qwen/Qwen3-VL-8B-Instruct,32,"{""caption_model"": ""Qwen/Qwen3-VL-8B-Instruct"", ""device_map"": ""auto"", ""dtype"": ""auto"", ""attn_implementation"": null, ""clip_model_name"": ""ViT-B-32"", ""clip_pretrained"": ""openai"", ""clip_device"": ""cuda:0"", ""prompt"": ""Write a short, natural caption for this image."", ""clip_text_prefix"": ""A photo of "", ""max_new_tokens"": 32, ""min_new_tokens"": 5, ""top_size"": 128, ""num_iterations"": 2, ""clip_loss_temperature"": 0.01, ""clip_scale"": 1.0, ""ce_scale"": 0.2, ""stepsize"": 0.1, ""grad_norm_factor"": 0.9, ""fusion_factor"": 0.9, ""repetition_penalty"": 1.1, ""end_factor"": 1.01, ""verbose_cache"": false}"
+flickr30k_main_seed1_val,qwen_zerocap_strong_guidance,qwen_zerocap_strong_guidance__flickr30k_main_seed1_val,28,16793,flickr30k_test_016793,images/flickr30k/flickr30k_test_016793.jpg,"[""This Man is Fishing around a bunch of Boats, He hasn't Caught one, yet."", ""A young man pulling in a net from a fishing boat."", ""A fleet of small fishing boats coming to shore."", ""Men using fishing boats and nets by the beach."", ""A fisherman drags his boat into land.""]",qwen_zerocap,qwen_zerocap_strong_guidance,"Write a short, natural caption for this image.","A
+
+90
+, \n
+
+90
+, \n90
+, \n
+
+90
+, \n
+
+90",0,1,Qwen/Qwen3-VL-8B-Instruct,32,"{""caption_model"": ""Qwen/Qwen3-VL-8B-Instruct"", ""device_map"": ""auto"", ""dtype"": ""auto"", ""attn_implementation"": null, ""clip_model_name"": ""ViT-B-32"", ""clip_pretrained"": ""openai"", ""clip_device"": ""cuda:0"", ""prompt"": ""Write a short, natural caption for this image."", ""clip_text_prefix"": ""A photo of "", ""max_new_tokens"": 32, ""min_new_tokens"": 5, ""top_size"": 128, ""num_iterations"": 2, ""clip_loss_temperature"": 0.01, ""clip_scale"": 1.0, ""ce_scale"": 0.2, ""stepsize"": 0.1, ""grad_norm_factor"": 0.9, ""fusion_factor"": 0.9, ""repetition_penalty"": 1.1, ""end_factor"": 1.01, ""verbose_cache"": false}"
+flickr30k_main_seed1_val,qwen_zerocap_strong_guidance,qwen_zerocap_strong_guidance__flickr30k_main_seed1_val,29,26513,flickr30k_test_026513,images/flickr30k/flickr30k_test_026513.jpg,"[""A film crew in colorful coats get ready to shoot a scene."", ""A camera crew prepares to film with a video camera."", ""A man in a yellow jacket works with a film camera."", ""A woman in a blue jacket is filmed on a camera."", ""A photographer sets up to take pictures.""]",qwen_zerocap,qwen_zerocap_strong_guidance,"Write a short, natural caption for this image.","A90
+
+2, \n0
+
+9, \n)
+, \n9
+
+)
+, \n)
+, \n9",0,1,Qwen/Qwen3-VL-8B-Instruct,32,"{""caption_model"": ""Qwen/Qwen3-VL-8B-Instruct"", ""device_map"": ""auto"", ""dtype"": ""auto"", ""attn_implementation"": null, ""clip_model_name"": ""ViT-B-32"", ""clip_pretrained"": ""openai"", ""clip_device"": ""cuda:0"", ""prompt"": ""Write a short, natural caption for this image."", ""clip_text_prefix"": ""A photo of "", ""max_new_tokens"": 32, ""min_new_tokens"": 5, ""top_size"": 128, ""num_iterations"": 2, ""clip_loss_temperature"": 0.01, ""clip_scale"": 1.0, ""ce_scale"": 0.2, ""stepsize"": 0.1, ""grad_norm_factor"": 0.9, ""fusion_factor"": 0.9, ""repetition_penalty"": 1.1, ""end_factor"": 1.01, ""verbose_cache"": false}"
+flickr30k_main_seed1_val,qwen_zerocap_strong_guidance,qwen_zerocap_strong_guidance__flickr30k_main_seed1_val,30,4235,flickr30k_test_004235,images/flickr30k/flickr30k_test_004235.jpg,"[""A red-haired girl with a black and white striped shirt talking on a cellphone"", ""A girl with dyed red-hair wearing striped clothing talking on a cellphone."", ""A woman with red-hair and a black striped shirt talking on the phone."", ""A woman with bright red-hair and striped clothing talks on a phone."", ""A girl with red dreadlocks is talking on the phone.""]",qwen_zerocap,qwen_zerocap_strong_guidance,"Write a short, natural caption for this image.","d
+
+90
+d
+
+90
+d
+
+90
+d
+
+90
+d
+
+90
+d
+
+90
+d",0,1,Qwen/Qwen3-VL-8B-Instruct,32,"{""caption_model"": ""Qwen/Qwen3-VL-8B-Instruct"", ""device_map"": ""auto"", ""dtype"": ""auto"", ""attn_implementation"": null, ""clip_model_name"": ""ViT-B-32"", ""clip_pretrained"": ""openai"", ""clip_device"": ""cuda:0"", ""prompt"": ""Write a short, natural caption for this image."", ""clip_text_prefix"": ""A photo of "", ""max_new_tokens"": 32, ""min_new_tokens"": 5, ""top_size"": 128, ""num_iterations"": 2, ""clip_loss_temperature"": 0.01, ""clip_scale"": 1.0, ""ce_scale"": 0.2, ""stepsize"": 0.1, ""grad_norm_factor"": 0.9, ""fusion_factor"": 0.9, ""repetition_penalty"": 1.1, ""end_factor"": 1.01, ""verbose_cache"": false}"
+flickr30k_main_seed1_val,qwen_zerocap_strong_guidance,qwen_zerocap_strong_guidance__flickr30k_main_seed1_val,31,16996,flickr30k_test_016996,images/flickr30k/flickr30k_test_016996.jpg,"[""A red vehicle is being reflected in a store window while two casually dressed middle-aged men walk and converse."", ""A man in a yellow shirt and a man in a dark blue shirt talking."", ""Two older men are standing outside talking."", ""A guy explains something to his friend."", ""Two men converse along the sidewalk.""]",qwen_zerocap,qwen_zerocap_strong_guidance,"Write a short, natural caption for this image.","A,2
+
+0
+,2
+
+0
+,2
+
+0
+,2
+
+0
+,2
+
+0
+,2
+
+9  \",0,1,Qwen/Qwen3-VL-8B-Instruct,32,"{""caption_model"": ""Qwen/Qwen3-VL-8B-Instruct"", ""device_map"": ""auto"", ""dtype"": ""auto"", ""attn_implementation"": null, ""clip_model_name"": ""ViT-B-32"", ""clip_pretrained"": ""openai"", ""clip_device"": ""cuda:0"", ""prompt"": ""Write a short, natural caption for this image."", ""clip_text_prefix"": ""A photo of "", ""max_new_tokens"": 32, ""min_new_tokens"": 5, ""top_size"": 128, ""num_iterations"": 2, ""clip_loss_temperature"": 0.01, ""clip_scale"": 1.0, ""ce_scale"": 0.2, ""stepsize"": 0.1, ""grad_norm_factor"": 0.9, ""fusion_factor"": 0.9, ""repetition_penalty"": 1.1, ""end_factor"": 1.01, ""verbose_cache"": false}"
+flickr30k_main_seed1_val,qwen_zerocap_strong_guidance,qwen_zerocap_strong_guidance__flickr30k_main_seed1_val,32,25473,flickr30k_test_025473,images/flickr30k/flickr30k_test_025473.jpg,"[""A person with blond-hair stands on their head while two other people, also standing on their heads, are in the background."", ""Three people standing on their heads, one on cement and the other two in greenery behind the first."", ""Three people are standing on their heads in unison."", ""Three people are doing handstands by some trees."", ""Three people are standing on their heads.""]",qwen_zerocap,qwen_zerocap_strong_guidance,"Write a short, natural caption for this image.","A
+
+9,2
+
+)
+, \n0
+
+9, \n0
+
+9, \n
+
+0
+, \n
+
+0",0,1,Qwen/Qwen3-VL-8B-Instruct,32,"{""caption_model"": ""Qwen/Qwen3-VL-8B-Instruct"", ""device_map"": ""auto"", ""dtype"": ""auto"", ""attn_implementation"": null, ""clip_model_name"": ""ViT-B-32"", ""clip_pretrained"": ""openai"", ""clip_device"": ""cuda:0"", ""prompt"": ""Write a short, natural caption for this image."", ""clip_text_prefix"": ""A photo of "", ""max_new_tokens"": 32, ""min_new_tokens"": 5, ""top_size"": 128, ""num_iterations"": 2, ""clip_loss_temperature"": 0.01, ""clip_scale"": 1.0, ""ce_scale"": 0.2, ""stepsize"": 0.1, ""grad_norm_factor"": 0.9, ""fusion_factor"": 0.9, ""repetition_penalty"": 1.1, ""end_factor"": 1.01, ""verbose_cache"": false}"
+flickr30k_main_seed1_val,qwen_zerocap_strong_guidance,qwen_zerocap_strong_guidance__flickr30k_main_seed1_val,33,18394,flickr30k_test_018394,images/flickr30k/flickr30k_test_018394.jpg,"[""A large hole in concrete being dug by a large digging machine."", ""Three men and a machine are doing demolition on a street."", ""A sky-view of men digging a hole through concrete."", ""A blue excavator digging a large hold in cement."", ""There is a large hole in the road.""]",qwen_zerocap,qwen_zerocap_strong_guidance,"Write a short, natural caption for this image.","A
+
+0
+d
+
+)  \
+d
+
+)  \
+d
+
+)  \
+d
+
+)  \
+d
+
+)",0,1,Qwen/Qwen3-VL-8B-Instruct,32,"{""caption_model"": ""Qwen/Qwen3-VL-8B-Instruct"", ""device_map"": ""auto"", ""dtype"": ""auto"", ""attn_implementation"": null, ""clip_model_name"": ""ViT-B-32"", ""clip_pretrained"": ""openai"", ""clip_device"": ""cuda:0"", ""prompt"": ""Write a short, natural caption for this image."", ""clip_text_prefix"": ""A photo of "", ""max_new_tokens"": 32, ""min_new_tokens"": 5, ""top_size"": 128, ""num_iterations"": 2, ""clip_loss_temperature"": 0.01, ""clip_scale"": 1.0, ""ce_scale"": 0.2, ""stepsize"": 0.1, ""grad_norm_factor"": 0.9, ""fusion_factor"": 0.9, ""repetition_penalty"": 1.1, ""end_factor"": 1.01, ""verbose_cache"": false}"
+flickr30k_main_seed1_val,qwen_zerocap_strong_guidance,qwen_zerocap_strong_guidance__flickr30k_main_seed1_val,34,6733,flickr30k_test_006733,images/flickr30k/flickr30k_test_006733.jpg,"[""A group of boys in swim gear is playing in a field surrounded by trees."", ""Three boys are playing with sponges and buckets of water."", ""Three kids throwing water balloons."", ""Boys in shorts jump and play outside"", ""Three young boys play outside.""]",qwen_zerocap,qwen_zerocap_strong_guidance,"Write a short, natural caption for this image.",")
+
+
+
+90, \
+)
+
+)
+, \n
+
+0, \
+)
+
+)
+
+, \n)
+, \n",0,1,Qwen/Qwen3-VL-8B-Instruct,32,"{""caption_model"": ""Qwen/Qwen3-VL-8B-Instruct"", ""device_map"": ""auto"", ""dtype"": ""auto"", ""attn_implementation"": null, ""clip_model_name"": ""ViT-B-32"", ""clip_pretrained"": ""openai"", ""clip_device"": ""cuda:0"", ""prompt"": ""Write a short, natural caption for this image."", ""clip_text_prefix"": ""A photo of "", ""max_new_tokens"": 32, ""min_new_tokens"": 5, ""top_size"": 128, ""num_iterations"": 2, ""clip_loss_temperature"": 0.01, ""clip_scale"": 1.0, ""ce_scale"": 0.2, ""stepsize"": 0.1, ""grad_norm_factor"": 0.9, ""fusion_factor"": 0.9, ""repetition_penalty"": 1.1, ""end_factor"": 1.01, ""verbose_cache"": false}"
+flickr30k_main_seed1_val,qwen_zerocap_strong_guidance,qwen_zerocap_strong_guidance__flickr30k_main_seed1_val,35,13962,flickr30k_test_013962,images/flickr30k/flickr30k_test_013962.jpg,"[""An infant girl, in a white summer blouse and yellow skirt with white leggings, plays with a yellow party decoration, surrounded by white paper mache butterflies."", ""A toddler in a white and yellow outfit is reaching for a yellow paper Japanese lantern on a wooden fence."", ""Little girl, dressed up, playing with balls at party."", ""A child is outside touching a yellow paper lantern."", ""Child hanging decorations on a wooden fence.""]",qwen_zerocap,qwen_zerocap_strong_guidance,"Write a short, natural caption for this image.","A
+
+90
+d
+
+90
+d
+
+, \
+d
+
+0
+
+)
+d
+
+0
+
+)
+d
+
+0
+
+9",0,1,Qwen/Qwen3-VL-8B-Instruct,32,"{""caption_model"": ""Qwen/Qwen3-VL-8B-Instruct"", ""device_map"": ""auto"", ""dtype"": ""auto"", ""attn_implementation"": null, ""clip_model_name"": ""ViT-B-32"", ""clip_pretrained"": ""openai"", ""clip_device"": ""cuda:0"", ""prompt"": ""Write a short, natural caption for this image."", ""clip_text_prefix"": ""A photo of "", ""max_new_tokens"": 32, ""min_new_tokens"": 5, ""top_size"": 128, ""num_iterations"": 2, ""clip_loss_temperature"": 0.01, ""clip_scale"": 1.0, ""ce_scale"": 0.2, ""stepsize"": 0.1, ""grad_norm_factor"": 0.9, ""fusion_factor"": 0.9, ""repetition_penalty"": 1.1, ""end_factor"": 1.01, ""verbose_cache"": false}"
+flickr30k_main_seed1_val,qwen_zerocap_strong_guidance,qwen_zerocap_strong_guidance__flickr30k_main_seed1_val,36,1839,flickr30k_test_001839,images/flickr30k/flickr30k_test_001839.jpg,"[""The man wearing a colorful outfit is holding something in both hands and smiling for the camera."", ""A man in a yellow jacket with many colorful wristbands is smiling."", ""A man in a yellow shirt wearing multicolored plastic jewelry."", ""A man is wearing a rainbow colored necklace and smiling."", ""Black man poses for photo.""]",qwen_zerocap,qwen_zerocap_strong_guidance,"Write a short, natural caption for this image.","d
+
+)
+
+d
+
+Answer0
+d
+
+90
+d
+
+)
+
+d
+
+0
+
+910
+d
+
+)",0,1,Qwen/Qwen3-VL-8B-Instruct,32,"{""caption_model"": ""Qwen/Qwen3-VL-8B-Instruct"", ""device_map"": ""auto"", ""dtype"": ""auto"", ""attn_implementation"": null, ""clip_model_name"": ""ViT-B-32"", ""clip_pretrained"": ""openai"", ""clip_device"": ""cuda:0"", ""prompt"": ""Write a short, natural caption for this image."", ""clip_text_prefix"": ""A photo of "", ""max_new_tokens"": 32, ""min_new_tokens"": 5, ""top_size"": 128, ""num_iterations"": 2, ""clip_loss_temperature"": 0.01, ""clip_scale"": 1.0, ""ce_scale"": 0.2, ""stepsize"": 0.1, ""grad_norm_factor"": 0.9, ""fusion_factor"": 0.9, ""repetition_penalty"": 1.1, ""end_factor"": 1.01, ""verbose_cache"": false}"
+flickr30k_main_seed1_val,qwen_zerocap_strong_guidance,qwen_zerocap_strong_guidance__flickr30k_main_seed1_val,37,15764,flickr30k_test_015764,images/flickr30k/flickr30k_test_015764.jpg,"[""A man in a white shirt in front of a big crowd with bright lights."", ""Nightclub scene with disc jockey playing music to dance by."", ""A DJ is spinning records at a club full of people."", ""A DJ is spinning tracks at a club."", ""A DJ playing music at a club.""]",qwen_zerocap,qwen_zerocap_strong_guidance,"Write a short, natural caption for this image.","A
+
+:)d90
+
+)d
+, \n90
+)d
+
+, \n90
+)d
+
+, \n",0,1,Qwen/Qwen3-VL-8B-Instruct,32,"{""caption_model"": ""Qwen/Qwen3-VL-8B-Instruct"", ""device_map"": ""auto"", ""dtype"": ""auto"", ""attn_implementation"": null, ""clip_model_name"": ""ViT-B-32"", ""clip_pretrained"": ""openai"", ""clip_device"": ""cuda:0"", ""prompt"": ""Write a short, natural caption for this image."", ""clip_text_prefix"": ""A photo of "", ""max_new_tokens"": 32, ""min_new_tokens"": 5, ""top_size"": 128, ""num_iterations"": 2, ""clip_loss_temperature"": 0.01, ""clip_scale"": 1.0, ""ce_scale"": 0.2, ""stepsize"": 0.1, ""grad_norm_factor"": 0.9, ""fusion_factor"": 0.9, ""repetition_penalty"": 1.1, ""end_factor"": 1.01, ""verbose_cache"": false}"
+flickr30k_main_seed1_val,qwen_zerocap_strong_guidance,qwen_zerocap_strong_guidance__flickr30k_main_seed1_val,38,28508,flickr30k_test_028508,images/flickr30k/flickr30k_test_028508.jpg,"[""A baby is being coddled to calm him down as he finishes a crying tantrum."", ""Lady in a blue polo holding a baby and a small box."", ""People at the park are watching the game."", ""A woman is giving food to a baby boy."", ""A little boy is watching a woman.""]",qwen_zerocap,qwen_zerocap_strong_guidance,"Write a short, natural caption for this image.","A
+
+90,2
+
+90,2
+
+90,2
+
+90,2
+
+90,2
+
+90,2",0,1,Qwen/Qwen3-VL-8B-Instruct,32,"{""caption_model"": ""Qwen/Qwen3-VL-8B-Instruct"", ""device_map"": ""auto"", ""dtype"": ""auto"", ""attn_implementation"": null, ""clip_model_name"": ""ViT-B-32"", ""clip_pretrained"": ""openai"", ""clip_device"": ""cuda:0"", ""prompt"": ""Write a short, natural caption for this image."", ""clip_text_prefix"": ""A photo of "", ""max_new_tokens"": 32, ""min_new_tokens"": 5, ""top_size"": 128, ""num_iterations"": 2, ""clip_loss_temperature"": 0.01, ""clip_scale"": 1.0, ""ce_scale"": 0.2, ""stepsize"": 0.1, ""grad_norm_factor"": 0.9, ""fusion_factor"": 0.9, ""repetition_penalty"": 1.1, ""end_factor"": 1.01, ""verbose_cache"": false}"
+flickr30k_main_seed1_val,qwen_zerocap_strong_guidance,qwen_zerocap_strong_guidance__flickr30k_main_seed1_val,39,11951,flickr30k_test_011951,images/flickr30k/flickr30k_test_011951.jpg,"[""Six men, all wearing identifying number plaques, are participating in an outdoor race."", ""There are several runners racing on a grassy surface with a blue tent behind them."", ""Men with numbered shirts jog through the grass in a race."", ""A group of people race across a grass field."", ""Four men running a marathon.""]",qwen_zerocap,qwen_zerocap_strong_guidance,"Write a short, natural caption for this image.","A, \n)
+d
+
+0 =9**d
+
+0
+)d
+
+90
+)
+
+90
+)d",0,1,Qwen/Qwen3-VL-8B-Instruct,32,"{""caption_model"": ""Qwen/Qwen3-VL-8B-Instruct"", ""device_map"": ""auto"", ""dtype"": ""auto"", ""attn_implementation"": null, ""clip_model_name"": ""ViT-B-32"", ""clip_pretrained"": ""openai"", ""clip_device"": ""cuda:0"", ""prompt"": ""Write a short, natural caption for this image."", ""clip_text_prefix"": ""A photo of "", ""max_new_tokens"": 32, ""min_new_tokens"": 5, ""top_size"": 128, ""num_iterations"": 2, ""clip_loss_temperature"": 0.01, ""clip_scale"": 1.0, ""ce_scale"": 0.2, ""stepsize"": 0.1, ""grad_norm_factor"": 0.9, ""fusion_factor"": 0.9, ""repetition_penalty"": 1.1, ""end_factor"": 1.01, ""verbose_cache"": false}"
+flickr30k_main_seed1_val,qwen_zerocap_strong_guidance,qwen_zerocap_strong_guidance__flickr30k_main_seed1_val,40,18677,flickr30k_test_018677,images/flickr30k/flickr30k_test_018677.jpg,"[""A man and a woman standing on a landing between flights of stairs with a plate in the hands of the woman."", ""The girl with the tattoo is standing by the man in the green plaid shirt."", ""Women with white shirt and tattoo next to man with plaid shirt"", ""A man and woman are standing on the stairwell"", ""A young couple standing on the stairs.""]",qwen_zerocap,qwen_zerocap_strong_guidance,"Write a short, natural caption for this image.","A9,2
+
+)
+, \n9
+
+)
+, \n9
+
+)
+, \n)
+, \n9
+
+0",0,1,Qwen/Qwen3-VL-8B-Instruct,32,"{""caption_model"": ""Qwen/Qwen3-VL-8B-Instruct"", ""device_map"": ""auto"", ""dtype"": ""auto"", ""attn_implementation"": null, ""clip_model_name"": ""ViT-B-32"", ""clip_pretrained"": ""openai"", ""clip_device"": ""cuda:0"", ""prompt"": ""Write a short, natural caption for this image."", ""clip_text_prefix"": ""A photo of "", ""max_new_tokens"": 32, ""min_new_tokens"": 5, ""top_size"": 128, ""num_iterations"": 2, ""clip_loss_temperature"": 0.01, ""clip_scale"": 1.0, ""ce_scale"": 0.2, ""stepsize"": 0.1, ""grad_norm_factor"": 0.9, ""fusion_factor"": 0.9, ""repetition_penalty"": 1.1, ""end_factor"": 1.01, ""verbose_cache"": false}"
+flickr30k_main_seed1_val,qwen_zerocap_strong_guidance,qwen_zerocap_strong_guidance__flickr30k_main_seed1_val,41,18166,flickr30k_test_018166,images/flickr30k/flickr30k_test_018166.jpg,"[""A woman with a long brown coat stands under a black umbrella in a street full of people with a smirk on her face."", ""A woman wears her hair down and does not have her head covered like those around her."", ""There are many people walking through a town that has worn out buildings."", ""People are walking down a street, one is carrying an umbrella."", ""Crowd of people walking down a city street.""]",qwen_zerocap,qwen_zerocap_strong_guidance,"Write a short, natural caption for this image.","A \n
+
+d
+, \n0
+
+d
+, \n0
+
+91:
+, \n0
+
+91:
+,",0,1,Qwen/Qwen3-VL-8B-Instruct,32,"{""caption_model"": ""Qwen/Qwen3-VL-8B-Instruct"", ""device_map"": ""auto"", ""dtype"": ""auto"", ""attn_implementation"": null, ""clip_model_name"": ""ViT-B-32"", ""clip_pretrained"": ""openai"", ""clip_device"": ""cuda:0"", ""prompt"": ""Write a short, natural caption for this image."", ""clip_text_prefix"": ""A photo of "", ""max_new_tokens"": 32, ""min_new_tokens"": 5, ""top_size"": 128, ""num_iterations"": 2, ""clip_loss_temperature"": 0.01, ""clip_scale"": 1.0, ""ce_scale"": 0.2, ""stepsize"": 0.1, ""grad_norm_factor"": 0.9, ""fusion_factor"": 0.9, ""repetition_penalty"": 1.1, ""end_factor"": 1.01, ""verbose_cache"": false}"
+flickr30k_main_seed1_val,qwen_zerocap_strong_guidance,qwen_zerocap_strong_guidance__flickr30k_main_seed1_val,42,6548,flickr30k_test_006548,images/flickr30k/flickr30k_test_006548.jpg,"[""There is staging and men working on platform 2 at the Burnt Oak underground stop."", ""Many people in bright orange vests seem to be working in a large building."", ""Construction workers who seem to be doing a job in a subway station."", ""Construction workers do maintenance on a train station stop."", ""Construction workers are working on Platform 2.""]",qwen_zerocap,qwen_zerocap_strong_guidance,"Write a short, natural caption for this image.","B.
+:)
+, \n
+
+)
+, \n
+
+)
+, \n0
+
+)
+, \n
+
+)
+, \",0,1,Qwen/Qwen3-VL-8B-Instruct,32,"{""caption_model"": ""Qwen/Qwen3-VL-8B-Instruct"", ""device_map"": ""auto"", ""dtype"": ""auto"", ""attn_implementation"": null, ""clip_model_name"": ""ViT-B-32"", ""clip_pretrained"": ""openai"", ""clip_device"": ""cuda:0"", ""prompt"": ""Write a short, natural caption for this image."", ""clip_text_prefix"": ""A photo of "", ""max_new_tokens"": 32, ""min_new_tokens"": 5, ""top_size"": 128, ""num_iterations"": 2, ""clip_loss_temperature"": 0.01, ""clip_scale"": 1.0, ""ce_scale"": 0.2, ""stepsize"": 0.1, ""grad_norm_factor"": 0.9, ""fusion_factor"": 0.9, ""repetition_penalty"": 1.1, ""end_factor"": 1.01, ""verbose_cache"": false}"
+flickr30k_main_seed1_val,qwen_zerocap_strong_guidance,qwen_zerocap_strong_guidance__flickr30k_main_seed1_val,43,30835,flickr30k_test_030835,images/flickr30k/flickr30k_test_030835.jpg,"[""Two men clean the side of a gas service station canopy below a blue sky."", ""Two men wearing caps and yellow raincoats on a roof working."", ""Two men clean the outside of a building under a blue sky."", ""Men in yellow jackets are cleaning a red and green sign."", ""Two men with scrubbers wash a building.""]",qwen_zerocap,qwen_zerocap_strong_guidance,"Write a short, natural caption for this image.","d:  \n0
+
+d:  \n0
+
+d:  \n0
+
+:  \n
+
+90
+d:",0,1,Qwen/Qwen3-VL-8B-Instruct,32,"{""caption_model"": ""Qwen/Qwen3-VL-8B-Instruct"", ""device_map"": ""auto"", ""dtype"": ""auto"", ""attn_implementation"": null, ""clip_model_name"": ""ViT-B-32"", ""clip_pretrained"": ""openai"", ""clip_device"": ""cuda:0"", ""prompt"": ""Write a short, natural caption for this image."", ""clip_text_prefix"": ""A photo of "", ""max_new_tokens"": 32, ""min_new_tokens"": 5, ""top_size"": 128, ""num_iterations"": 2, ""clip_loss_temperature"": 0.01, ""clip_scale"": 1.0, ""ce_scale"": 0.2, ""stepsize"": 0.1, ""grad_norm_factor"": 0.9, ""fusion_factor"": 0.9, ""repetition_penalty"": 1.1, ""end_factor"": 1.01, ""verbose_cache"": false}"
+flickr30k_main_seed1_val,qwen_zerocap_strong_guidance,qwen_zerocap_strong_guidance__flickr30k_main_seed1_val,44,16538,flickr30k_test_016538,images/flickr30k/flickr30k_test_016538.jpg,"[""A man on horseback in a rodeo arena is trying to lasso a black calf."", ""A man riding a horse is chasing after a young cow with a lasso."", ""A man on a horse is attempting to lasso a dog."", ""Cowboy roping a black calf from a brown horse."", ""A man on a horse throws a lasso at a calf.""]",qwen_zerocap,qwen_zerocap_strong_guidance,"Write a short, natural caption for this image.","R90
+
+23:)d
+
+0,2
+
+d
+
+:)
+
+,2
+
+d
+
+)
+,2
+
+d
+
+0,",0,1,Qwen/Qwen3-VL-8B-Instruct,32,"{""caption_model"": ""Qwen/Qwen3-VL-8B-Instruct"", ""device_map"": ""auto"", ""dtype"": ""auto"", ""attn_implementation"": null, ""clip_model_name"": ""ViT-B-32"", ""clip_pretrained"": ""openai"", ""clip_device"": ""cuda:0"", ""prompt"": ""Write a short, natural caption for this image."", ""clip_text_prefix"": ""A photo of "", ""max_new_tokens"": 32, ""min_new_tokens"": 5, ""top_size"": 128, ""num_iterations"": 2, ""clip_loss_temperature"": 0.01, ""clip_scale"": 1.0, ""ce_scale"": 0.2, ""stepsize"": 0.1, ""grad_norm_factor"": 0.9, ""fusion_factor"": 0.9, ""repetition_penalty"": 1.1, ""end_factor"": 1.01, ""verbose_cache"": false}"
