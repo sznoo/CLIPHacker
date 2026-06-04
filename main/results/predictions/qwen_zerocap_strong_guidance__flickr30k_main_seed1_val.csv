@@ -661,3 +661,166 @@ d
 d
 
 0,",0,1,Qwen/Qwen3-VL-8B-Instruct,32,"{""caption_model"": ""Qwen/Qwen3-VL-8B-Instruct"", ""device_map"": ""auto"", ""dtype"": ""auto"", ""attn_implementation"": null, ""clip_model_name"": ""ViT-B-32"", ""clip_pretrained"": ""openai"", ""clip_device"": ""cuda:0"", ""prompt"": ""Write a short, natural caption for this image."", ""clip_text_prefix"": ""A photo of "", ""max_new_tokens"": 32, ""min_new_tokens"": 5, ""top_size"": 128, ""num_iterations"": 2, ""clip_loss_temperature"": 0.01, ""clip_scale"": 1.0, ""ce_scale"": 0.2, ""stepsize"": 0.1, ""grad_norm_factor"": 0.9, ""fusion_factor"": 0.9, ""repetition_penalty"": 1.1, ""end_factor"": 1.01, ""verbose_cache"": false}"
+flickr30k_main_seed1_val,qwen_zerocap_strong_guidance,qwen_zerocap_strong_guidance__flickr30k_main_seed1_val,45,13546,flickr30k_test_013546,images/flickr30k/flickr30k_test_013546.jpg,"[""A young boy rides a blue and yellow merry-go-round with an adult male hand in the foreground."", ""The boy is standing on the playground equipment in the blue triangle."", ""A boy spinning on a blue and yellow merry-go-round."", ""A child on a spinning wheel holding on for dear life"", ""A young kid is standing up on the merry-go-round.""]",qwen_zerocap,qwen_zerocap_strong_guidance,"Write a short, natural caption for this image.","A
+
+)
+, \n90
+)
+
+9**d, \n
+
+9**d90
+
+0, \n9
+
+0",0,1,Qwen/Qwen3-VL-8B-Instruct,32,"{""caption_model"": ""Qwen/Qwen3-VL-8B-Instruct"", ""device_map"": ""auto"", ""dtype"": ""auto"", ""attn_implementation"": null, ""clip_model_name"": ""ViT-B-32"", ""clip_pretrained"": ""openai"", ""clip_device"": ""cuda:0"", ""prompt"": ""Write a short, natural caption for this image."", ""clip_text_prefix"": ""A photo of "", ""max_new_tokens"": 32, ""min_new_tokens"": 5, ""top_size"": 128, ""num_iterations"": 2, ""clip_loss_temperature"": 0.01, ""clip_scale"": 1.0, ""ce_scale"": 0.2, ""stepsize"": 0.1, ""grad_norm_factor"": 0.9, ""fusion_factor"": 0.9, ""repetition_penalty"": 1.1, ""end_factor"": 1.01, ""verbose_cache"": false}"
+flickr30k_main_seed1_val,qwen_zerocap_strong_guidance,qwen_zerocap_strong_guidance__flickr30k_main_seed1_val,46,15890,flickr30k_test_015890,images/flickr30k/flickr30k_test_015890.jpg,"[""An extreme bicyclist is performing a jump with his bicycle and rotating the bicycle while he is in the air."", ""A man does a bicycle trick on a concrete obstacle."", ""Person doing a trick bike move in a skatepark."", ""A boy performs a stunt on a BMX bike."", ""A man doing tricks on a bmx bike""]",qwen_zerocap,qwen_zerocap_strong_guidance,"Write a short, natural caption for this image.","B
+
+90,2
+
+90,2
+
+90,2
+
+:)
+
+)
+, \n0
+
+)
+, \n9",0,1,Qwen/Qwen3-VL-8B-Instruct,32,"{""caption_model"": ""Qwen/Qwen3-VL-8B-Instruct"", ""device_map"": ""auto"", ""dtype"": ""auto"", ""attn_implementation"": null, ""clip_model_name"": ""ViT-B-32"", ""clip_pretrained"": ""openai"", ""clip_device"": ""cuda:0"", ""prompt"": ""Write a short, natural caption for this image."", ""clip_text_prefix"": ""A photo of "", ""max_new_tokens"": 32, ""min_new_tokens"": 5, ""top_size"": 128, ""num_iterations"": 2, ""clip_loss_temperature"": 0.01, ""clip_scale"": 1.0, ""ce_scale"": 0.2, ""stepsize"": 0.1, ""grad_norm_factor"": 0.9, ""fusion_factor"": 0.9, ""repetition_penalty"": 1.1, ""end_factor"": 1.01, ""verbose_cache"": false}"
+flickr30k_main_seed1_val,qwen_zerocap_strong_guidance,qwen_zerocap_strong_guidance__flickr30k_main_seed1_val,47,26651,flickr30k_test_026651,images/flickr30k/flickr30k_test_026651.jpg,"[""A skateboarder tries a courageous trick - soaring over a grocery cart poised carefully at the edge of a skate park's bowl."", ""A man on a skateboard is jumping over an empty grocery cart, there is a group of people in the background with bicycles."", ""A man in his skateboard jumping over a grocery cart as his friends in the back watch."", ""A bearded man in blue jeans on a skateboard is jumping over a shopping cart."", ""A bearded man jumps his skateboard over a shopping cart.""]",qwen_zerocap,qwen_zerocap_strong_guidance,"Write a short, natural caption for this image.","A
+
+)
+d,
+
+)
+d,
+
+)
+d,
+
+)
+d,
+
+)
+d,
+
+)
+d9",0,1,Qwen/Qwen3-VL-8B-Instruct,32,"{""caption_model"": ""Qwen/Qwen3-VL-8B-Instruct"", ""device_map"": ""auto"", ""dtype"": ""auto"", ""attn_implementation"": null, ""clip_model_name"": ""ViT-B-32"", ""clip_pretrained"": ""openai"", ""clip_device"": ""cuda:0"", ""prompt"": ""Write a short, natural caption for this image."", ""clip_text_prefix"": ""A photo of "", ""max_new_tokens"": 32, ""min_new_tokens"": 5, ""top_size"": 128, ""num_iterations"": 2, ""clip_loss_temperature"": 0.01, ""clip_scale"": 1.0, ""ce_scale"": 0.2, ""stepsize"": 0.1, ""grad_norm_factor"": 0.9, ""fusion_factor"": 0.9, ""repetition_penalty"": 1.1, ""end_factor"": 1.01, ""verbose_cache"": false}"
+flickr30k_main_seed1_val,qwen_zerocap_strong_guidance,qwen_zerocap_strong_guidance__flickr30k_main_seed1_val,48,11691,flickr30k_test_011691,images/flickr30k/flickr30k_test_011691.jpg,"[""A man with a black vest makes the \""rock on\"" sign at a concert."", ""A young man shows his excitement at an outdoor event at night."", ""An excited man in a black vest poses at a concert."", ""The dude at the party is raging!"", ""A man in a bar dancing""]",qwen_zerocap,qwen_zerocap_strong_guidance,"Write a short, natural caption for this image.","d
+
+n, \d
+)
+
+0, \d
+
+)
+, \d
+
+)
+, \d
+
+0, \d
+)",0,1,Qwen/Qwen3-VL-8B-Instruct,32,"{""caption_model"": ""Qwen/Qwen3-VL-8B-Instruct"", ""device_map"": ""auto"", ""dtype"": ""auto"", ""attn_implementation"": null, ""clip_model_name"": ""ViT-B-32"", ""clip_pretrained"": ""openai"", ""clip_device"": ""cuda:0"", ""prompt"": ""Write a short, natural caption for this image."", ""clip_text_prefix"": ""A photo of "", ""max_new_tokens"": 32, ""min_new_tokens"": 5, ""top_size"": 128, ""num_iterations"": 2, ""clip_loss_temperature"": 0.01, ""clip_scale"": 1.0, ""ce_scale"": 0.2, ""stepsize"": 0.1, ""grad_norm_factor"": 0.9, ""fusion_factor"": 0.9, ""repetition_penalty"": 1.1, ""end_factor"": 1.01, ""verbose_cache"": false}"
+flickr30k_main_seed1_val,qwen_zerocap_strong_guidance,qwen_zerocap_strong_guidance__flickr30k_main_seed1_val,49,13579,flickr30k_test_013579,images/flickr30k/flickr30k_test_013579.jpg,"[""A group of people sitting in a grassy area under a pink and white blossoming tree."", ""The students sitting on the grass are eating a lunch from a red backpack."", ""Young people sit on the grass near a crooked tree with pink blossoms."", ""People outside sitting on the grass under cherry blossom trees."", ""People are sitting at a park under flowering trees.""]",qwen_zerocap,qwen_zerocap_strong_guidance,"Write a short, natural caption for this image.","B
+
+90,  \n0
+
+9**d0
+, \n9**d
+
+90
+, \n90
+,",0,1,Qwen/Qwen3-VL-8B-Instruct,32,"{""caption_model"": ""Qwen/Qwen3-VL-8B-Instruct"", ""device_map"": ""auto"", ""dtype"": ""auto"", ""attn_implementation"": null, ""clip_model_name"": ""ViT-B-32"", ""clip_pretrained"": ""openai"", ""clip_device"": ""cuda:0"", ""prompt"": ""Write a short, natural caption for this image."", ""clip_text_prefix"": ""A photo of "", ""max_new_tokens"": 32, ""min_new_tokens"": 5, ""top_size"": 128, ""num_iterations"": 2, ""clip_loss_temperature"": 0.01, ""clip_scale"": 1.0, ""ce_scale"": 0.2, ""stepsize"": 0.1, ""grad_norm_factor"": 0.9, ""fusion_factor"": 0.9, ""repetition_penalty"": 1.1, ""end_factor"": 1.01, ""verbose_cache"": false}"
+flickr30k_main_seed1_val,qwen_zerocap_strong_guidance,qwen_zerocap_strong_guidance__flickr30k_main_seed1_val,50,11340,flickr30k_test_011340,images/flickr30k/flickr30k_test_011340.jpg,"[""A person with sunglasses, blue shorts and a white shirt hitting a tennis ball."", ""A kid in a black cap and light blue shorts playing tennis."", ""A boy in a white shirt and blue shirts is playing tennis."", ""A boy swings his tennis racket at a tennis ball."", ""A woman is hitting a tennis ball.""]",qwen_zerocap,qwen_zerocap_strong_guidance,"Write a short, natural caption for this image.","A
+
+:)
+d1:)
+d1
+
+, \
+d:)
+
+:)
+
+, \
+d:)
+
+
+
+, \",0,1,Qwen/Qwen3-VL-8B-Instruct,32,"{""caption_model"": ""Qwen/Qwen3-VL-8B-Instruct"", ""device_map"": ""auto"", ""dtype"": ""auto"", ""attn_implementation"": null, ""clip_model_name"": ""ViT-B-32"", ""clip_pretrained"": ""openai"", ""clip_device"": ""cuda:0"", ""prompt"": ""Write a short, natural caption for this image."", ""clip_text_prefix"": ""A photo of "", ""max_new_tokens"": 32, ""min_new_tokens"": 5, ""top_size"": 128, ""num_iterations"": 2, ""clip_loss_temperature"": 0.01, ""clip_scale"": 1.0, ""ce_scale"": 0.2, ""stepsize"": 0.1, ""grad_norm_factor"": 0.9, ""fusion_factor"": 0.9, ""repetition_penalty"": 1.1, ""end_factor"": 1.01, ""verbose_cache"": false}"
+flickr30k_main_seed1_val,qwen_zerocap_strong_guidance,qwen_zerocap_strong_guidance__flickr30k_main_seed1_val,51,51,flickr30k_test_000051,images/flickr30k/flickr30k_test_000051.jpg,"[""A young female student performing a downward kick to break a board held by her Karate instructor."", ""Girl about to kick a piece of wood in half while karate instructor holds it"", ""A girl kicking a stick that a man is holding in tae kwon do class."", ""A girl in karate uniform breaking a stick with a front kick."", ""A girl breaking boards by using karate.""]",qwen_zerocap,qwen_zerocap_strong_guidance,"Write a short, natural caption for this image.","A
+
+90
+d:)
+
+0
+d:)
+
+
+
+90
+d:)
+
+
+
+90
+d:)
+
+
+
+90",0,1,Qwen/Qwen3-VL-8B-Instruct,32,"{""caption_model"": ""Qwen/Qwen3-VL-8B-Instruct"", ""device_map"": ""auto"", ""dtype"": ""auto"", ""attn_implementation"": null, ""clip_model_name"": ""ViT-B-32"", ""clip_pretrained"": ""openai"", ""clip_device"": ""cuda:0"", ""prompt"": ""Write a short, natural caption for this image."", ""clip_text_prefix"": ""A photo of "", ""max_new_tokens"": 32, ""min_new_tokens"": 5, ""top_size"": 128, ""num_iterations"": 2, ""clip_loss_temperature"": 0.01, ""clip_scale"": 1.0, ""ce_scale"": 0.2, ""stepsize"": 0.1, ""grad_norm_factor"": 0.9, ""fusion_factor"": 0.9, ""repetition_penalty"": 1.1, ""end_factor"": 1.01, ""verbose_cache"": false}"
+flickr30k_main_seed1_val,qwen_zerocap_strong_guidance,qwen_zerocap_strong_guidance__flickr30k_main_seed1_val,52,17644,flickr30k_test_017644,images/flickr30k/flickr30k_test_017644.jpg,"[""Two blond children are laying in orange and purple sleeping bags in a closed-in patio."", ""Two young blond-haired children are laying in their sleeping bags."", ""One child looks around while his friend sleeps away outside."", ""Two young children are lying on a porch in sleeping bags."", ""Two young girls are out camping in sleeping bags.""]",qwen_zerocap,qwen_zerocap_strong_guidance,"Write a short, natural caption for this image.","d
+
+0
+)d
+
+0
+)d
+
+0
+)d
+
+90
+)d
+
+90
+)d
+
+90",0,1,Qwen/Qwen3-VL-8B-Instruct,32,"{""caption_model"": ""Qwen/Qwen3-VL-8B-Instruct"", ""device_map"": ""auto"", ""dtype"": ""auto"", ""attn_implementation"": null, ""clip_model_name"": ""ViT-B-32"", ""clip_pretrained"": ""openai"", ""clip_device"": ""cuda:0"", ""prompt"": ""Write a short, natural caption for this image."", ""clip_text_prefix"": ""A photo of "", ""max_new_tokens"": 32, ""min_new_tokens"": 5, ""top_size"": 128, ""num_iterations"": 2, ""clip_loss_temperature"": 0.01, ""clip_scale"": 1.0, ""ce_scale"": 0.2, ""stepsize"": 0.1, ""grad_norm_factor"": 0.9, ""fusion_factor"": 0.9, ""repetition_penalty"": 1.1, ""end_factor"": 1.01, ""verbose_cache"": false}"
+flickr30k_main_seed1_val,qwen_zerocap_strong_guidance,qwen_zerocap_strong_guidance__flickr30k_main_seed1_val,53,17698,flickr30k_test_017698,images/flickr30k/flickr30k_test_017698.jpg,"[""Soldiers with hard hats standing along side what appears to be local civilians, while listening to another soldier with a regular soldier cap reading some sort of material."", ""These soldiers are making a presentation in front of an audience."", ""Civilians and military personnel gather outside a building."", ""A group of woman stands near a group of Army men."", ""Man from the army speaking with civilian women.""]",qwen_zerocap,qwen_zerocap_strong_guidance,"Write a short, natural caption for this image.","A
+
+)
+
+d
+
+90
+d
+
+9**)
+d
+
+9**
+d
+
+9**
+d
+
+9**
+d",0,1,Qwen/Qwen3-VL-8B-Instruct,32,"{""caption_model"": ""Qwen/Qwen3-VL-8B-Instruct"", ""device_map"": ""auto"", ""dtype"": ""auto"", ""attn_implementation"": null, ""clip_model_name"": ""ViT-B-32"", ""clip_pretrained"": ""openai"", ""clip_device"": ""cuda:0"", ""prompt"": ""Write a short, natural caption for this image."", ""clip_text_prefix"": ""A photo of "", ""max_new_tokens"": 32, ""min_new_tokens"": 5, ""top_size"": 128, ""num_iterations"": 2, ""clip_loss_temperature"": 0.01, ""clip_scale"": 1.0, ""ce_scale"": 0.2, ""stepsize"": 0.1, ""grad_norm_factor"": 0.9, ""fusion_factor"": 0.9, ""repetition_penalty"": 1.1, ""end_factor"": 1.01, ""verbose_cache"": false}"
+flickr30k_main_seed1_val,qwen_zerocap_strong_guidance,qwen_zerocap_strong_guidance__flickr30k_main_seed1_val,54,20430,flickr30k_test_020430,images/flickr30k/flickr30k_test_020430.jpg,"[""A Old man washing the windows of city lights books."", ""A window washer is cleaning the bookstore windows."", ""A gray-haired man washing windows on a building."", ""A man washes a plate glass window of a store."", ""A man cleaning a large window.""]",qwen_zerocap,qwen_zerocap_strong_guidance,"Write a short, natural caption for this image.","A0
+
+9**d, \
+)
+
+)d9**
+
+)
+d9**
+
+)
+d9**
+
+)
+d,",0,1,Qwen/Qwen3-VL-8B-Instruct,32,"{""caption_model"": ""Qwen/Qwen3-VL-8B-Instruct"", ""device_map"": ""auto"", ""dtype"": ""auto"", ""attn_implementation"": null, ""clip_model_name"": ""ViT-B-32"", ""clip_pretrained"": ""openai"", ""clip_device"": ""cuda:0"", ""prompt"": ""Write a short, natural caption for this image."", ""clip_text_prefix"": ""A photo of "", ""max_new_tokens"": 32, ""min_new_tokens"": 5, ""top_size"": 128, ""num_iterations"": 2, ""clip_loss_temperature"": 0.01, ""clip_scale"": 1.0, ""ce_scale"": 0.2, ""stepsize"": 0.1, ""grad_norm_factor"": 0.9, ""fusion_factor"": 0.9, ""repetition_penalty"": 1.1, ""end_factor"": 1.01, ""verbose_cache"": false}"
