@@ -1,0 +1,21 @@
+image_id            new_prompt_id  new_clip    old_best_prompt  old_best_clip  diff_vs_old_best
+   12623 focused_semantic_anchors    0.3455 main_subject_first         0.3606           -0.0152
+   12623   subject_action_anchors    0.3249 main_subject_first         0.3606           -0.0358
+    1326 focused_semantic_anchors    0.3381      clip_friendly         0.3539           -0.0159
+    1326   subject_action_anchors    0.3413      clip_friendly         0.3539           -0.0127
+   13268 focused_semantic_anchors    0.3701      clip_friendly         0.4048           -0.0347
+   13268   subject_action_anchors    0.3735      clip_friendly         0.4048           -0.0314
+   13781 focused_semantic_anchors    0.2957 main_subject_first         0.3369           -0.0412
+   13781   subject_action_anchors    0.3335 main_subject_first         0.3369           -0.0035
+   15922 focused_semantic_anchors    0.3034    grounded_detail         0.3086           -0.0052
+   15922   subject_action_anchors    0.2687    grounded_detail         0.3086           -0.0399
+   16753 focused_semantic_anchors    0.2842 main_subject_first         0.3533           -0.0691
+   16753   subject_action_anchors    0.2939 main_subject_first         0.3533           -0.0594
+   24836 focused_semantic_anchors    0.3175       dense_visual         0.3438           -0.0262
+   24836   subject_action_anchors    0.3156       dense_visual         0.3438           -0.0282
+   27670 focused_semantic_anchors    0.3312       no_inference         0.3883           -0.0571
+   27670   subject_action_anchors    0.3492       no_inference         0.3883           -0.0391
+   29171 focused_semantic_anchors    0.2831    grounded_detail         0.3166           -0.0336
+   29171   subject_action_anchors    0.2882    grounded_detail         0.3166           -0.0284
+    8484 focused_semantic_anchors    0.3032      clip_friendly         0.3058           -0.0026
+    8484   subject_action_anchors    0.2859      clip_friendly         0.3058           -0.0199

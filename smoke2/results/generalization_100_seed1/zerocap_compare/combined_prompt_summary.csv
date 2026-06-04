@@ -1,0 +1,4 @@
+prompt_id,prompt_name,mean_clip,mean_delta_clip,clip_win_rate,mean_siglip,mean_delta_siglip,siglip_win_rate,mean_caption_len,generic_rate
+observer_specific_supported,Observer Specific Supported,0.33412668719887734,0.01084722831845283,0.58,0.21037177994847295,0.015257963016629218,0.75,48.99,0.1
+zerocap,ZeroCap,0.32476972430944445,0.0014902654290199502,0.5,0.1323802861943841,-0.06273353073745963,0.1,11.64,0.02
+baseline,Baseline,0.3232794588804245,0.0,0.0,0.1951138169318437,0.0,0.0,27.92,0.0

@@ -1,0 +1,6 @@
+        new_prompt_id  mean_new_clip  mean_old_best_clip  mean_diff_vs_old_best  win_rate_vs_old_best  max_diff_vs_old_best  min_diff_vs_old_best  num_images
+       scene_anchored         0.3327              0.3473                -0.0146                0.2000                0.0032               -0.0413          10
+   contextual_objects         0.3323              0.3473                -0.0150                0.1000                0.0001               -0.0480          10
+     clip_friendly_bg         0.3289              0.3473                -0.0184                0.1000                0.0073               -0.0451          10
+natural_subject_scene         0.3246              0.3473                -0.0227                0.0000               -0.0087               -0.0387          10
+flickr_style_grounded         0.3007              0.3473                -0.0466                0.0000               -0.0082               -0.1179          10
