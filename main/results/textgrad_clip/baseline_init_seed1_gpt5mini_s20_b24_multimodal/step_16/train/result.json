@@ -1,0 +1,142 @@
+{
+  "prompt": "Output exactly one concise, information‑dense caption: a single grammatical sentence composed of comma‑separated short phrases. Produce only that single sentence and nothing else.\n\nAssembly order and allowed tokens (fill slots in this order; place the first subject group + any VERIFIED high‑value prop within the first 6–8 words):\n1) Subject group(s) + high‑value prop(s) (0–3 groups, must appear first). If no subject verification → emit plural fallback noun (people/dogs/vehicles).\n2) exactly one micro‑action/contact phrase (verified) or conservative part‑near‑object fallback.\n3) fine class token (verified) or dataset lexicon fallback.\n4) clothing / clear pose / orientation (only if verified).\n5) up to two nearby anchors/signage (only if verified; otherwise use compact positional lexicon token).\n6) cropping/foreground token (only if depth verified).\nAlways emit only the specified token for any slot; if verification fails for a slot, substitute the explicit allowed fallback and continue.\n\nMulti‑signal verification (tiered evidence)\nFor every verification gate compute evidence_set = {geometry, segmentation mask, detector_confidence, contact_confidence, motion_confidence, OCR_confidence, saliency_score, textspot_confidence}. Treat confirmations with three confidence bands:\n- HIGH verified: any single evidence ≥ high threshold → allow full VERIFIED emission.\n- MEDIUM verified: two complementary evidences ≥ medium threshold (e.g., detector_conf≥0.70 and saliency high OR contact_conf≥0.50 and motion_conf≥0.60) → allow a controlled low‑risk descriptor or detector‑verified emission per slot rules.\n- LOW/unverified: otherwise → require strict lexicon fallback.\n(Implementors: thresholds are fixed numerics in the pipeline; the captioner uses the band labels, not raw numbers.)\n\nCount verification (digits and counts)\n- Emit a digit only when Count is HIGH verified by geometry/segmentation OR when detector_count_confidence ≥ 0.70 (detector‑verified). If neither → use plural lexicon fallback (people/dogs/vehicles/group of people). Do not append meta qualifiers; use the digit directly.\n\nMicro‑action / contact rules\n- Emit a micro‑action only when HIGH verified OR when combined evidence (contact_conf≥0.50 AND motion_conf≥0.60 or hand_detector+saliency agree) → use exact template: \"left|right [hand|foot|part] [strong‑verb] [object]\" (example: \"right hand holding woven basket\"). Motion verbs allowed only with verified motion evidence.\n- If micro‑action is MEDIUM verified → allow a restrained action or detector‑verified verb only from a controlled short list; if not, emit conservative fallback: \"[part] near [object]\" (example: \"right hand near woven basket\").\n- Never use hedging words (\"probably\", \"maybe\") in the final caption.\n\nFine‑class & cue pairs\n- Emit a fine class (bicycle, motorbike/scooter, vendor/produce stand, ladder, performer, etc.) only when HIGH verified (classifier_conf≥0.60 OR cue‑pair satisfied) or when MEDIUM verified allow one of the controlled detector labels. Otherwise use dataset lexicon fallback: storefront, painted metal shutter, two‑wheeled vehicle, woven basket, cart, minivan, marquee.\n\nOCR / signage policy (quote only when strongly verified)\n- Quote exact text only when OCR_quote_verified HIGH (OCR_confidence ≥ 0.65 AND text_bbox_area and contrast meet thresholds; exception for short marquee ≤3 words with OCR_confidence ≥ 0.60). If OCR_quote_verified HIGH → quote exact text (counts toward length).\n- If OCR_confidence is MEDIUM (≈0.50–0.65) AND text_bbox_area or saliency is large → emit a controlled low‑risk descriptor from the allowed set (e.g., \"large red sign upper right\", \"marquee above entrance\", \"three red rectangular signs upper right\"). Do NOT invent characters or partial text.\n- If OCR low/unverified → emit compact positional fallback tokens (storefront behind, marquee behind, painted metal shutter).\n\nHigh‑value anchor checklist\n- Attempt verification of anchors in priority order: marquee/storefront, corrugated metal shutter, flagpole, red rectangular signs, ladder, bicycle/two‑wheeled vehicle, guitar/amp case, boats/canopies. If an anchor is unverified, use the prescribed lexicon fallback (e.g., \"storefront behind\", \"flagpole left\", \"red rectangular sign upper right\"). Emit at most two anchor tokens.\n\nDepth, cropping, occlusion\n- Emit \"foreground\"/\"background\" or \"partially cropped at [top|bottom|left|right]\" only when depth/cropping is HIGH verified by segmentation or bbox area ratios. Otherwise omit these tokens.\n\nSaliency tie‑breaking\n- When multiple VERIFIED candidates compete, prefer tokens with higher saliency: text → face → large color patch/prop → clothing. Use saliency to choose between equally verified anchors or subject groups.\n\nPruning, compression, and length control\n- Target caption length: 10–14 words; hard cap 18 words. Allow up to 20 words only when an exact quoted text string is emitted or two HIGH VERIFIED fine classes are present.\n- Before pruning, compress adjective chains into compact noun phrases (e.g., \"rustic wooden facade\" rather than several separate adjectives). Then, if still over cap, iteratively remove descriptors in this exact priority: lighting/reflection → object state/material → background. NEVER remove HIGH VERIFIED discriminative props, micro‑actions, or fine classes (slots 1–3).\n- Maintain a simple token budget while assembling: accept a token only if the estimated cumulative length remains ≤ hard cap; otherwise compress/prune per above.\n\nAllowed lexicon and low‑risk descriptor examples (use only these forms when fallbacks required)\n- Dataset lexicon fallbacks: storefront, painted metal shutter, two‑wheeled vehicle, woven basket, cart, minivan, marquee, group of people.\n- Low‑risk signage descriptors (MEDIUM OCR): \"large red sign upper right\", \"marquee above entrance\", \"three red rectangular signs upper right\", \"storefront behind\".\n- Anchor fallbacks: \"storefront behind\", \"flagpole left\", \"marquee above\", \"painted metal shutter\".\n\nAnti‑hallucination absolute rules\n- Never invent brand names, quoted text, partial words, celebrity names, ages, emotions, intentions, or unsupported attributes. Do not output hedges. If uncertainty prevents a verified token, use the controlled fallback lexicon above.\n\nPreferred micro‑template shapes (use these shapes when slots allow)\n- Examples the caption should prefer to match to verified tokens:\n  - \"1 woman center foreground, right hand holding woven basket of oranges, storefront behind.\"\n  - \"two dogs left foreground, small white dog jumping at car passenger window, woman leaning out.\"\n  - \"1 person right foreground, standing by two‑wheeled vehicle with visible pedals and chain, metal shutter behind.\"\n  - \"many dancers center foreground, line of red/gold sequined costumes, marquee behind.\"\n\nFinal emission rule\n- Execute the verification steps in order, choose HIGH/MEDIUM/LOW bands per multi‑signal evidence, fill assembly slots deterministically with VERIFIED or fallback tokens, compress/prune to meet length budget, and output exactly one comma‑separated grammatical sentence and nothing else.",
+  "prompt_id": "textgrad_3ce3501452",
+  "split_csv": "data/splits/flickr30k_main_seed1_train.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal/step_16/train/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal/step_16/train/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal/step_16/train/scores.csv",
+  "data_root": "data",
+  "summary": {
+    "n": 24,
+    "mean_clip": 0.31067133074005443,
+    "mean_siglip": 0.2129230356464783,
+    "mean_caption_len": 23.625,
+    "generic_rate": 0.0,
+    "mean_delta_clip": -0.013879772275686259,
+    "mean_delta_siglip": 0.010344160099824274,
+    "clip_win_rate": 0.3333333333333333,
+    "siglip_win_rate": 0.7083333333333334
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_013247",
+      "image_relpath": "images/flickr30k/flickr30k_test_013247.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_013247.jpg",
+      "caption": "Two people walking in front of Outdoor World storefront, right hand near backpack, cloudy sky above.",
+      "clip_score": 0.2449075281620025,
+      "siglip_score": 0.1809378564357757,
+      "delta_clip": -0.0944620668888092,
+      "delta_siglip": 0.029747322201728793
+    },
+    {
+      "image_id": "flickr30k_test_006091",
+      "image_relpath": "images/flickr30k/flickr30k_test_006091.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_006091.jpg",
+      "caption": "child in pink shirt and denim jeans, barefoot on countertop, playing with kitchen faucet, wearing red sunglasses, smiling, barefoot on countertop, smiling, barefoot on countertop, smiling, barefoot on countertop, smiling, barefoot on countertop, smiling, barefoot on countertop, smiling",
+      "clip_score": 0.3256332576274872,
+      "siglip_score": 0.245082676410675,
+      "delta_clip": -0.05933913588523859,
+      "delta_siglip": 0.0019015222787857056
+    },
+    {
+      "image_id": "flickr30k_test_016246",
+      "image_relpath": "images/flickr30k/flickr30k_test_016246.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_016246.jpg",
+      "caption": "child in blue shorts and flip‑flops carries cluster of colorful balloons down street, motorbike parked nearby, storefront behind.",
+      "clip_score": 0.2779374122619629,
+      "siglip_score": 0.2411997616291046,
+      "delta_clip": -0.0567066073417663,
+      "delta_siglip": 0.033767521381378174
+    },
+    {
+      "image_id": "flickr30k_test_007436",
+      "image_relpath": "images/flickr30k/flickr30k_test_007436.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_007436.jpg",
+      "caption": "woman center foreground, right hand holding phone, patterned blouse, yellow truck behind, pedestrian left foreground, bicycle rack nearby.",
+      "clip_score": 0.2421371042728424,
+      "siglip_score": 0.254529058933258,
+      "delta_clip": -0.05628958344459528,
+      "delta_siglip": 0.006904423236846896
+    },
+    {
+      "image_id": "flickr30k_test_022494",
+      "image_relpath": "images/flickr30k/flickr30k_test_022494.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_022494.jpg",
+      "caption": "man in orange shirt holding orange ladder, standing near brick chimney, bicycle behind, white cloth draped object nearby.",
+      "clip_score": 0.3122286200523376,
+      "siglip_score": 0.2342134416103363,
+      "delta_clip": -0.04888948798179632,
+      "delta_siglip": 0.018508568406105097
+    },
+    {
+      "image_id": "flickr30k_test_009311",
+      "image_relpath": "images/flickr30k/flickr30k_test_009311.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_009311.jpg",
+      "caption": "child with blonde hair, tongue out, leaning on fountain edge, water spraying foreground, wearing light plaid shirt, outdoors in greenery.",
+      "clip_score": 0.2926728725433349,
+      "siglip_score": 0.2028198540210724,
+      "delta_clip": -0.037888735532760676,
+      "delta_siglip": 0.0351415425539017
+    },
+    {
+      "image_id": "flickr30k_test_028876",
+      "image_relpath": "images/flickr30k/flickr30k_test_028876.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_028876.jpg",
+      "caption": "Player in blue jersey number 14 performs a flip on grass, while player in red jersey number 23 kneels nearby, both on a field with stadium seating and red rectangular signs in background.",
+      "clip_score": 0.2997931540012359,
+      "siglip_score": 0.1336159408092498,
+      "delta_clip": -0.033586591482162476,
+      "delta_siglip": -0.024914026260376004
+    },
+    {
+      "image_id": "flickr30k_test_000069",
+      "image_relpath": "images/flickr30k/flickr30k_test_000069.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_000069.jpg",
+      "caption": "man in dark suit standing near large red inflatable submarine prop, hand touching side, illuminated at night, metal barricade left, building facade with lit sign behind.",
+      "clip_score": 0.3018810749053955,
+      "siglip_score": 0.1924654990434646,
+      "delta_clip": -0.026878714561462402,
+      "delta_siglip": 0.013086289167404203
+    },
+    {
+      "image_id": "flickr30k_test_030685",
+      "image_relpath": "images/flickr30k/flickr30k_test_030685.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_030685.jpg",
+      "caption": "man in black shirt holding red cup talks to another man gesturing near wall with Squidoo and Flock logos, wooden floor hallway behind.",
+      "clip_score": 0.3210242986679077,
+      "siglip_score": 0.2789609432220459,
+      "delta_clip": -0.01838314533233637,
+      "delta_siglip": 0.045432448387145996
+    },
+    {
+      "image_id": "flickr30k_test_008727",
+      "image_relpath": "images/flickr30k/flickr30k_test_008727.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_008727.jpg",
+      "caption": "girl in pajamas holding magazine, toddler in blue onesie reaching, adult in patterned pajamas seated behind, carpeted floor with scattered wrapping paper.",
+      "clip_score": 0.3319951891899109,
+      "siglip_score": 0.1674485951662063,
+      "delta_clip": -0.01585996150970459,
+      "delta_siglip": -0.06584297120571139
+    },
+    {
+      "image_id": "flickr30k_test_010109",
+      "image_relpath": "images/flickr30k/flickr30k_test_010109.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_010109.jpg",
+      "caption": "Two women in conical hats, right hands sorting leafy greens into woven baskets, seated at a market stall with colorful sacks and a scale nearby.",
+      "clip_score": 0.3216009736061096,
+      "siglip_score": 0.2181439697742462,
+      "delta_clip": -0.015186190605163574,
+      "delta_siglip": -0.0009204000234604159
+    },
+    {
+      "image_id": "flickr30k_test_007954",
+      "image_relpath": "images/flickr30k/flickr30k_test_007954.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_007954.jpg",
+      "caption": "two people crouched on sandy beach near water, one wearing patterned swimsuit, both focused on sand, hair tied up, sunglasses on face.",
+      "clip_score": 0.2769352197647095,
+      "siglip_score": 0.1684750318527221,
+      "delta_clip": -0.012901127338409424,
+      "delta_siglip": -0.00036536157131197844
+    }
+  ]
+}

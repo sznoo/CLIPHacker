@@ -1,0 +1,117 @@
+{
+  "prompt": "Output exactly one short, literal, factual sentence (8–20 words) describing only visible content in the image. Do not add labels, examples, lists, annotations, explanations, or any extra text—one sentence only.\n\nDefinitions and counting\n- A single leading article (a/an/the) and punctuation do not count as content words when computing \"first N content words.\"\n- Treat a hyphenated color‑class cluster (e.g., \"white-and-brown dog\") as a single attribute+noun cluster for positional rules. Treat slashes or compound nouns similarly when they form one visual token.\n- High‑signal tokens = visible color or pattern, a concrete specific object class (use the most specific multiword class available), a clear Arabic numeral count (digits), clothing/accessory, or legible text/logo copied exactly as seen.\n\nPrimary constraints (must)\n1. Early high‑signal tokens:\n   - If two high‑signal tokens are clearly visible, both must appear within the first three content words.\n   - Otherwise at least one high‑signal token must appear within the first two content words.\n2. Color/pattern adjacency:\n   - Any visible color/pattern adjective must appear immediately before its noun with no intervening words or commas (e.g., \"red bicycle\"). Use \"noun with [attribute]\" only if the attribute cannot legally appear within the required early content words.\n3. Specific class requirement:\n   - Use the most specific visible concrete class (multiword when available, e.g., \"electric guitar\", \"police car\"). Never use generic placeholders such as \"object\", \"item\", or \"instrument.\" Use \"person\" only when no more specific role/class is confidently visible.\n4. Counts and legible text:\n   - Use Arabic numerals (digits) for clear counts and place any numeral within the first three content words.\n   - If any legible text or logo is confidently readable, copy it exactly (including visible case) and place it within the first five content words.\n5. Syntax and style:\n   - Prefer a short present‑tense sentence (subject + verb) as the default form. A bare noun phrase (no verb) is allowed only when a verb would prevent meeting the early high‑signal requirements.\n6. Spatial connectors:\n   - Allow at most one short spatial connector (\"next to\", \"on\", \"near\", \"in front of\") and only when it disambiguates the primary subject’s relation to a nearby object or surface. Do not stack connectors or use commas to push high‑signal tokens later.\n7. Deterministic primary subject selection:\n   - Choose the primary subject deterministically: prefer centermost → largest → highest‑contrast → object with a visible attribute (color/number/logo). If tied, prefer the item with the most legible text/logo.\n8. Conservative fallbacks and prohibited inferences:\n   - If a specific class, color, or text is not confidently visible, use a conservative, generic safe term (e.g., \"person\", \"vehicle\", \"building\") rather than guessing. Never infer unseen attributes such as age, emotion, intent, relationships, or otherwise invent specifics.\n9. Punctuation and token positioning:\n   - Commas, parentheticals, or additional punctuation may not be used to delay required early high‑signal tokens. Hyphens and compound forms count as described above.\n10. Length guidance:\n   - Follow the 8–20 total words limit while aiming for about 10–14 content words to include multiple discriminative tokens.\n\nExamples of forbidden choices: do not output generic templates like \"There is...\" when a more specific subject is visible; do not output invented attributes or unverifiable labels.\n\nOutput exactly one short sentence only—no extra text.",
+  "prompt_id": "textgrad_8d6b4a6a56",
+  "split_csv": "data/splits/flickr30k_main_seed1_train.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_07/train/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_07/train/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_07/train/scores.csv",
+  "summary": {
+    "n": 24,
+    "mean_clip": 0.31748247270782787,
+    "mean_siglip": 0.19404690464337662,
+    "mean_caption_len": 13.291666666666666,
+    "generic_rate": 0.20833333333333334,
+    "mean_delta_clip": 0.00018454467256863102,
+    "mean_delta_siglip": 0.002672653024395307,
+    "clip_win_rate": 0.5,
+    "siglip_win_rate": 0.5
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_012278",
+      "caption": "Three people sit on a rooftop terrace near a black-and-white goat.",
+      "clip_score": 0.2399216592311859,
+      "siglip_score": 0.1711556613445282,
+      "delta_clip": -0.05801492929458618,
+      "delta_siglip": -0.035792082548141396
+    },
+    {
+      "image_id": "flickr30k_test_030024",
+      "caption": "Four people sit at a table with wine glasses, bottles, and napkins.",
+      "clip_score": 0.2493090629577636,
+      "siglip_score": 0.1721098124980926,
+      "delta_clip": -0.05316239595413211,
+      "delta_siglip": -0.0121054798364639
+    },
+    {
+      "image_id": "flickr30k_test_023641",
+      "caption": "A woman in striped shirt walks on wet cobblestone path under leafy trees.",
+      "clip_score": 0.2935720682144165,
+      "siglip_score": 0.1731818467378616,
+      "delta_clip": -0.044670939445495605,
+      "delta_siglip": -0.006456285715103094
+    },
+    {
+      "image_id": "flickr30k_test_012491",
+      "caption": "Person on bicycle above brown train car with graffiti and \"CHWX 396160\" visible.",
+      "clip_score": 0.322822242975235,
+      "siglip_score": 0.1808017790317535,
+      "delta_clip": -0.028211414813995306,
+      "delta_siglip": -0.030426040291786194
+    },
+    {
+      "image_id": "flickr30k_test_021284",
+      "caption": "A group of people wearing black hats and coats gather near a barricade with Palestinian flags.",
+      "clip_score": 0.2971662878990173,
+      "siglip_score": 0.205108493566513,
+      "delta_clip": -0.0251001119613648,
+      "delta_siglip": -0.030750498175621088
+    },
+    {
+      "image_id": "flickr30k_test_013247",
+      "caption": "Outdoor World building with \"Bass Pro Shops\" sign, people walking in front.",
+      "clip_score": 0.3147765696048736,
+      "siglip_score": 0.2302912026643753,
+      "delta_clip": -0.02459302544593811,
+      "delta_siglip": 0.0791006684303284
+    },
+    {
+      "image_id": "flickr30k_test_014594",
+      "caption": "Jockey in green-and-black jacket rides brown horse over wooden fence.",
+      "clip_score": 0.3184652924537658,
+      "siglip_score": 0.1811231076717376,
+      "delta_clip": -0.018586874008178766,
+      "delta_siglip": -0.012910485267639216
+    },
+    {
+      "image_id": "flickr30k_test_015474",
+      "caption": "Three people row wooden boats near a riverside shop with \"DUNG ANH\" sign.",
+      "clip_score": 0.3132303953170776,
+      "siglip_score": 0.1844434440135955,
+      "delta_clip": -0.015553027391433716,
+      "delta_siglip": 0.013682842254638589
+    },
+    {
+      "image_id": "flickr30k_test_009311",
+      "caption": "A young child with blonde hair sits near a water fountain, tongue out.",
+      "clip_score": 0.3213732242584228,
+      "siglip_score": 0.2129370868206024,
+      "delta_clip": -0.009188383817672785,
+      "delta_siglip": 0.0452587753534317
+    },
+    {
+      "image_id": "flickr30k_test_007496",
+      "caption": "Two men play accordions next to vintage cars with license plate 6ZE 638.",
+      "clip_score": 0.3061479926109314,
+      "siglip_score": 0.2346101254224777,
+      "delta_clip": -0.006553709506988525,
+      "delta_siglip": 0.027772501111030606
+    },
+    {
+      "image_id": "flickr30k_test_030359",
+      "caption": "Goalkeeper in red dives as players in yellow and white compete for ball near \"THAT CALLS FOR A\" sign.",
+      "clip_score": 0.2862913012504577,
+      "siglip_score": 0.1464830636978149,
+      "delta_clip": -0.005942165851593073,
+      "delta_siglip": -0.007330268621444674
+    },
+    {
+      "image_id": "flickr30k_test_017289",
+      "caption": "Man in blue hoodie and cap mops wooden floor with black-handled mop.",
+      "clip_score": 0.3306540846824646,
+      "siglip_score": 0.1508257538080215,
+      "delta_clip": -0.0034085512161254883,
+      "delta_siglip": -0.006511121988296509
+    }
+  ]
+}

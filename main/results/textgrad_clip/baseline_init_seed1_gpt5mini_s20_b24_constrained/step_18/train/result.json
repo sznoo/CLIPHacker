@@ -1,0 +1,117 @@
+{
+  "prompt": "Generate exactly one short, literal, factual caption: one grammatically correct sentence describing only visibly present content. Output exactly one sentence and nothing else. Sentence length: 9–11 words (prefer 9–10). Follow these rules in order:\n\n1) Subject selection: choose the detection with the highest score = area_fraction × detector_confidence. If two candidates’ scores are within 10%, prefer the candidate whose high‑signal token meets the token gating (see rule 3). Do not bias against people—choose a person when its score is highest.\n\n2) Detection usability: treat a detection as usable only if area_fraction × detector_confidence ≥ 0.0015. Allow smaller detections only when OCR_confidence ≥ 0.75 or an explicit large clear numeral is detected.\n\n3) High‑signal tokens and placement: high‑signal tokens are visible colors/patterns, concrete multiword classes (e.g., \"stop sign\", \"double‑decker bus\"), clear Arabic numerals, clothing/accessory names, or short readable text/logos (1–3 tokens). Require at least one high‑signal token to appear as the first or second content word (leading articles \"a/an/the\" do not count as content words). If two distinct high‑signal tokens are visible, place the second no later than the fourth content word.\n\n4) OCR/text copying: copy short readable text/logos (1–3 tokens) only if either (OCR_confidence ≥ 0.60 and OCR_bbox_area ≥ 0.2% of the image) or (OCR_confidence ≥ 0.75 when OCR_bbox_area < 0.2%). Never copy runs of ≥5 consecutive digits or low‑confidence/unreadable text.\n\n5) Token gating for subject selection: apply a token bonus only when the candidate’s high‑signal token bbox_area ≥ 0.2% and token/OCR confidence meets the thresholds above. The token bonus may break ties but must not allow tiny, low‑confidence tokens to win.\n\n6) Second‑object allowance: you may append one compact post‑nominal relation (≤3 tokens, e.g., \"on the sidewalk\", \"with number 7\") only if it adds a distinct high‑signal token. Do not chain relations or add longer descriptive chains.\n\n7) Wording and grammar: prefer starting with a high‑signal modifier plus class (e.g., \"red bicycle\", \"two dogs\", \"striped shirt\"). Use present‑tense active phrasing with a concrete visible verb when action is clear (standing, walking, holding, jumping, playing); otherwise use \"is/are.\" Use Arabic numerals for visible counts that meet visibility rules. Avoid leading filler words and long weak modifiers.\n\n8) Safety and literalness: do not invent unseen attributes, emotions, intentions, dialogue, or unreadable text. Avoid generic placeholders like \"object\" or broad \"person\" when a more specific visible class, color, number, or logo is present.\n\nFinal constraints: one sentence only, 9–11 words, literal description of visible content, include required high‑signal token early, follow the OCR and usability rules above, do not output fallback phrases or any extra commentary.",
+  "prompt_id": "textgrad_7ff1e4fb81",
+  "split_csv": "data/splits/flickr30k_main_seed1_train.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_18/train/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_18/train/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_18/train/scores.csv",
+  "summary": {
+    "n": 24,
+    "mean_clip": 0.30603671198089916,
+    "mean_siglip": 0.1845827835301558,
+    "mean_caption_len": 9.25,
+    "generic_rate": 0.0,
+    "mean_delta_clip": -0.018458046019077308,
+    "mean_delta_siglip": -0.014214682392776004,
+    "clip_win_rate": 0.25,
+    "siglip_win_rate": 0.3333333333333333
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_023643",
+      "caption": "Girl with pink headband smiles under large black umbrella.",
+      "clip_score": 0.2315311729907989,
+      "siglip_score": 0.1298863589763641,
+      "delta_clip": -0.0953808724880219,
+      "delta_siglip": -0.14603862166404727
+    },
+    {
+      "image_id": "flickr30k_test_015736",
+      "caption": "White and brown dog walks through shallow water.",
+      "clip_score": 0.2995041012763977,
+      "siglip_score": 0.1850560456514358,
+      "delta_clip": -0.048241496086120605,
+      "delta_siglip": -0.024714335799217196
+    },
+    {
+      "image_id": "flickr30k_test_030685",
+      "caption": "Man in black shirt holds red cup while talking.",
+      "clip_score": 0.2944403886795044,
+      "siglip_score": 0.1751893907785415,
+      "delta_clip": -0.04496705532073969,
+      "delta_siglip": -0.05833910405635839
+    },
+    {
+      "image_id": "flickr30k_test_013247",
+      "caption": "People walk near the Outdoor World store entrance.",
+      "clip_score": 0.3019352257251739,
+      "siglip_score": 0.1868728846311569,
+      "delta_clip": -0.03743436932563782,
+      "delta_siglip": 0.035682350397109985
+    },
+    {
+      "image_id": "flickr30k_test_021206",
+      "caption": "Man in gray suit plays acoustic guitar on sidewalk.",
+      "clip_score": 0.2882875800132751,
+      "siglip_score": 0.1633346676826477,
+      "delta_clip": -0.03554868698120123,
+      "delta_siglip": -0.008012652397155706
+    },
+    {
+      "image_id": "flickr30k_test_008358",
+      "caption": "Red goalkeeper dives to make a save on grass field.",
+      "clip_score": 0.3231971859931946,
+      "siglip_score": 0.1732553541660308,
+      "delta_clip": -0.03491616249084473,
+      "delta_siglip": -0.028256475925445612
+    },
+    {
+      "image_id": "flickr30k_test_010401",
+      "caption": "Girl in patterned sweater jumps toward leaf pile.",
+      "clip_score": 0.3018675446510315,
+      "siglip_score": 0.2409410774707794,
+      "delta_clip": -0.033903717994689886,
+      "delta_siglip": 0.058765530586242704
+    },
+    {
+      "image_id": "flickr30k_test_009495",
+      "caption": "Woman in yellow bag stands near man holding phone.",
+      "clip_score": 0.2586250007152557,
+      "siglip_score": 0.1356416195631027,
+      "delta_clip": -0.03135833144187933,
+      "delta_siglip": -0.0655155926942825
+    },
+    {
+      "image_id": "flickr30k_test_024978",
+      "caption": "Blue car parked beside man sitting on bench.",
+      "clip_score": 0.3030016422271728,
+      "siglip_score": 0.2052878886461258,
+      "delta_clip": -0.031123667955398615,
+      "delta_siglip": -0.0397629886865615
+    },
+    {
+      "image_id": "flickr30k_test_019300",
+      "caption": "Man in white shirt climbs wooden roof frame structure.",
+      "clip_score": 0.3102388978004455,
+      "siglip_score": 0.1667851656675338,
+      "delta_clip": -0.021323025226593073,
+      "delta_siglip": 0.05585508793592449
+    },
+    {
+      "image_id": "flickr30k_test_003961",
+      "caption": "Woman holds red American Girl Place bag near window.",
+      "clip_score": 0.3325275778770447,
+      "siglip_score": 0.2196719646453857,
+      "delta_clip": -0.016921043395996038,
+      "delta_siglip": -0.050973415374755915
+    },
+    {
+      "image_id": "flickr30k_test_016246",
+      "caption": "Child in blue shorts walks holding colorful balloons.",
+      "clip_score": 0.3211900591850281,
+      "siglip_score": 0.1599864363670349,
+      "delta_clip": -0.013453960418701116,
+      "delta_siglip": -0.0474458038806915
+    }
+  ]
+}

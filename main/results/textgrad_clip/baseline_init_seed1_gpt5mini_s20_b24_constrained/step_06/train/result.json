@@ -1,0 +1,117 @@
+{
+  "prompt": "Output exactly one literal, factual sentence (8–20 words) describing only visible content in the image. Do not add labels, examples, lists, annotations, or any extra text.\n\nDefinitions: content words exclude a single leading article (a/an/the) and punctuation. A high‑signal token is one of: visible color or pattern, a concrete object class (prefer the most specific multiword class available, e.g., \"electric guitar\", \"motorbike\"), a clear count (Arabic numeral), clothing/accessory, or legible text/logo copied verbatim.\n\nPrimary rules:\n- Include at least two high‑signal tokens within the first four content words when two are clearly visible; otherwise include at least one high‑signal token within the first three content words.\n- If a visible color/pattern exists, place it immediately before its noun (e.g., \"red bicycle\"). Use \"noun with [attribute]\" only if the color cannot appear within the required early content words.\n- Prefer the most specific visible concrete class; do not use generic nouns like \"object\", \"instrument\", or \"item\" when a specific class is clearly visible. Use \"person\" only when a more specific subject is not visually identifiable.\n- If any legible text or logo is present and confidently readable, copy it exactly and place it within the first six content words.\n- Use Arabic numerals for clear counts and place them early. Use \"several\" only for indistinct groups (>3).\n- Allow either a short noun‑phrase caption (no verb) or a concise present‑tense sentence (present simple or present‑participle). If you use a verb, you may place it after the first four content words to keep high‑signal tokens early.\n- Include at most one short spatial connector (\"next to\", \"on\", \"near\", \"in front of\") to link the primary subject to a nearby object or surface.\n- Choose the primary subject deterministically: prefer the centermost, largest, highest‑contrast, or the object with an explicit visible attribute (color/number/logo).\n- Do not infer unseen attributes (age, emotion, intent, relationships) and avoid figurative or subjective language. Do not invent specific attributes when they are not visually evident; fall back to a safe generic only if the specific class or attribute is not clearly visible.\n- Count content words carefully (exclude the single leading article and punctuation) when locating the first N content words.\n- Avoid leading generic templates like \"A person...\" or \"There is...\" when a more specific subject is visible.\n\nOutput exactly one short sentence only—no extra text.",
+  "prompt_id": "textgrad_2946798e90",
+  "split_csv": "data/splits/flickr30k_main_seed1_train.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_06/train/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_06/train/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_06/train/scores.csv",
+  "summary": {
+    "n": 24,
+    "mean_clip": 0.3150925288597743,
+    "mean_siglip": 0.1974886242921153,
+    "mean_caption_len": 10.416666666666666,
+    "generic_rate": 0.0,
+    "mean_delta_clip": 0.0004761405289173103,
+    "mean_delta_siglip": 0.0002016018455227245,
+    "clip_win_rate": 0.4583333333333333,
+    "siglip_win_rate": 0.5
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_015736",
+      "caption": "White and brown dog walks through shallow water with reflection.",
+      "clip_score": 0.302884429693222,
+      "siglip_score": 0.186677023768425,
+      "delta_clip": -0.04486116766929632,
+      "delta_siglip": -0.023093357682228005
+    },
+    {
+      "image_id": "flickr30k_test_005364",
+      "caption": "Silver incense burner with lotus design in front of Buddha statue.",
+      "clip_score": 0.2994632124900818,
+      "siglip_score": 0.1948028206825256,
+      "delta_clip": -0.043355643749237005,
+      "delta_siglip": -0.006842866539955084
+    },
+    {
+      "image_id": "flickr30k_test_012278",
+      "caption": "Men sit on rooftop with satellite dishes and goat nearby.",
+      "clip_score": 0.2667389810085296,
+      "siglip_score": 0.1803899705410003,
+      "delta_clip": -0.031197607517242487,
+      "delta_siglip": -0.026557773351669284
+    },
+    {
+      "image_id": "flickr30k_test_021750",
+      "caption": "Two women embrace while holding takeout containers and bags.",
+      "clip_score": 0.2985503077507019,
+      "siglip_score": 0.218451589345932,
+      "delta_clip": -0.02538561820983881,
+      "delta_siglip": 0.05157636106014252
+    },
+    {
+      "image_id": "flickr30k_test_015378",
+      "caption": "Man in red shirt and black hat stands near woman holding plastic bag.",
+      "clip_score": 0.2814605236053467,
+      "siglip_score": 0.2131704688072204,
+      "delta_clip": -0.022985458374023438,
+      "delta_siglip": -0.023288577795028687
+    },
+    {
+      "image_id": "flickr30k_test_007264",
+      "caption": "Woman in white top kneels on sidewalk near small dog.",
+      "clip_score": 0.30875363945961,
+      "siglip_score": 0.1918863654136657,
+      "delta_clip": -0.02295032143592829,
+      "delta_siglip": -0.052864074707031306
+    },
+    {
+      "image_id": "flickr30k_test_010401",
+      "caption": "Girl in blue sweater jumps toward pile of autumn leaves.",
+      "clip_score": 0.3139170110225677,
+      "siglip_score": 0.2129531800746917,
+      "delta_clip": -0.021854251623153687,
+      "delta_siglip": 0.030777633190155
+    },
+    {
+      "image_id": "flickr30k_test_028925",
+      "caption": "Child in red hoodie repairs typewriter with screwdriver on table.",
+      "clip_score": 0.307734340429306,
+      "siglip_score": 0.2397237718105316,
+      "delta_clip": -0.014398574829101618,
+      "delta_siglip": -0.03200891613960269
+    },
+    {
+      "image_id": "flickr30k_test_024189",
+      "caption": "Subway OPEN sign visible as person bends near bags on sidewalk.",
+      "clip_score": 0.3130131363868713,
+      "siglip_score": 0.1843482851982116,
+      "delta_clip": -0.01360121369361883,
+      "delta_siglip": -0.053067699074745206
+    },
+    {
+      "image_id": "flickr30k_test_025027",
+      "caption": "Three women in colorful headscarves sit on a green bench.",
+      "clip_score": 0.3175482153892517,
+      "siglip_score": 0.1976211965084076,
+      "delta_clip": -0.011814236640930176,
+      "delta_siglip": -0.016600936651229803
+    },
+    {
+      "image_id": "flickr30k_test_027768",
+      "caption": "Red-haired person in red sweatshirt holds beige pillow over head.",
+      "clip_score": 0.3355385363101959,
+      "siglip_score": 0.2344734072685241,
+      "delta_clip": -0.0066494047641753595,
+      "delta_siglip": 0.00265608727931968
+    },
+    {
+      "image_id": "flickr30k_test_007496",
+      "caption": "Two men play accordions next to vintage cars with license plate 6ZE 638.",
+      "clip_score": 0.3061479926109314,
+      "siglip_score": 0.2346101254224777,
+      "delta_clip": -0.006553709506988525,
+      "delta_siglip": 0.027772501111030606
+    }
+  ]
+}

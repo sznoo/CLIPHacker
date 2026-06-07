@@ -1,0 +1,117 @@
+{
+  "prompt": "Output 1–3 candidate captions. Each candidate must be exactly two lines (Line 1 = tags; Line 2 = caption). If multiple candidates are produced, separate candidates with a single blank line. Integrators should rerank candidates externally with CLIP; if you cannot rely on external reranking, produce only one candidate.\n\nLine 1 — tags (format rules; required)\n- Format: 2–5 comma‑separated lower‑case tokens (prefer exactly 3). No punctuation except commas. No surrounding whitespace beyond single spaces around commas.\n- Token types: visible concrete noun(s) or a single visible adjective (color/size) as the sole attribute token. Multiword fused objects (e.g., \"traffic light\", \"wine bottle\") count as one token.\n- Upstream canonicalization (assumed done before this prompt): map detector/classifier labels to a fixed canonical inventory (recommended: COCO / Visual Genome / CLIP‑common). Normalize plurals→singular and map synonyms→canonical ID. Only accept attribute tokens (colors/sizes) if attribute_confidence ≥ attribute_confidence_threshold.\n- Deduplicate tokens. Order tokens by visual discriminativeness (combine detector confidence + CLIP retrieval frequency; prefer higher score first). Prefer fine‑grained nouns when reliably detected.\n- Forbidden tokens: meta/tooling words, proper nouns/brands, dates/events that are identity‑sensitive, inferred identities/emotions/speculation. Scene/event nouns (e.g., parade, stadium) are permitted only if a scene classifier gives high confidence and they map to canonical inventory.\n- If fewer than two high‑confidence specific nouns remain after filtering, do not invent tags. Still produce a conservative fallback (see Line 2 Option B) when at least one reliable noun exists. If no reliable noun exists, leave Line 1 empty and follow the image unclear rule.\n\nLine 2 — caption (format rules; required)\n- Option A (preferred when possible): one factual sentence in present simple or present progressive, 7–13 words long, containing exactly one clear visible verb or one concrete spatial relation. Grammatical structure should be subject + verb + object/prepositional phrase. Allowed verbs: common visible actions (e.g., sits, stands, rides, holds, carries, walks, leans, looks, points, reads, opens, plays, wears, pushes, pulls, places, covers, is holding, is sitting, dances, performs, marches, runs, climbs, jumps, throws, catches, skates). Domain‑specific verbs are allowed only if supported by an activity/pose detector or strong co‑occurrence confidence.\n- Option B (fallback; use when fewer than two high‑confidence nouns or generator uncertainty): a conservative 2–6 word noun + location/scene phrase (e.g., \"dog on sidewalk\", \"man near tree\", \"red car in street\"). No sentence punctuation.\n- Main noun requirement: the canonical main noun (Line 1 first token) must appear verbatim or as a canonical synonym (same canonical ID) in Line 2 and appear early in the sentence (within the first 3–4 tokens or within the subject phrase such as \"a/the <main_noun> ...\").\n- Token overlap: Option A captions should share at least two canonical tokens with Line 1 (one must be the main noun). Synonyms are allowed if they map to the same canonical ID. Attributes included in Line 1 must appear verbatim or as canonical synonyms in Line 2 if the attribute_confidence ≥ threshold; otherwise omit them.\n- Allowed extra words: determiners (a, the), prepositions (on, in, near, by, next to, in front of, behind), conjunction \"and\", and small function words. One optional trailing period only. No other punctuation or added objects/attributes not in Line 1 (unless they map to the same canonical ID).\n- Anti‑hallucination: do not introduce new objects, attributes, identities, emotions, or speculative actions not present in Line 1 or supported by detectors (attribute_confidence ≥ threshold). If a required check would fail (main noun missing, insufficient token overlap for Option A, verb unsupported, attribute below threshold, or forbidden token introduced), prefer Option B fallback when possible; if no reliable fallback exists, output exactly: image unclear\n\nOperational parameters and tie‑breaking\n- Parameters (defaults & recommendations): attribute_confidence_threshold = 65% (recommend sweep 60/70/75%), preferred_tag_count = 3, tie_break_delta_confidence = 10 percentage points (adaptive: if two classes' detector confidences are close, prefer the noun with higher CLIP retrieval frequency).\n- Prefer a specific canonical noun when its detector confidence exceeds the next-best by tie_break_delta_confidence. If confidences are close, prefer the noun with higher CLIP retrieval frequency or canonical inventory coverage.\n- When ambiguous, be conservative: omit low‑confidence tokens rather than guessing; prefer Option B when only one reliable noun exists; prefer Option A only when all non‑determiner nouns in the sentence can be traced to Line 1 via canonical IDs.\n- Candidate generation: you may produce up to 2–3 alternate candidates (each as two-line blocks) derived from alternate high‑confidence Line 1 sets if upstream canonicalization provides them. If multiple candidates are not supported, produce a single compliant candidate.\n- Diagnostics (must be logged per candidate, not necessarily exposed to end users): for each candidate, record canonical tokens used (IDs), detector confidences, CLIP retrieval frequencies, which Option (A/B) was used, omitted attributes due to thresholding, and any checks that failed or why a fallback/image unclear was chosen. Use these logs to tune thresholds and preferred_tag_count.\n\nSafety and scoring guidance\n- Maximize canonical lexical overlap between Line 1 and Line 2 to improve CLIP alignment while avoiding hallucination. Prefer discriminative, fine‑grained nouns. Do not use proper nouns, inferred identities, or emotions.\n- Allow canonical synonym mapping rather than literal string matching between Line 1 and Line 2 (both must map to same canonical inventory ID). This reduces brittle rejections while preserving traceability.\n- Scene/event nouns are allowed only with high scene classifier confidence and canonical mapping; keep identity/emotion tokens forbidden.\n\nIf you cannot produce a reliable caption even with the conservative fallback rules, output exactly: image unclear\n\nBrief examples (illustrative only)\n- Example A (Option A): Line1: child, motorcycle, red\n  Line2: a child rides a red motorcycle down the street.\n- Example B (fallback Option B): Line1: dog\n  Line2: dog on sidewalk\n- Example C (image unclear): Line1:\n  Line2: image unclear\n\nStrictly follow the rules above. If no valid caption candidate passes these checks after attempting a conservative fallback, return Line 2 = \"image unclear\". Log diagnostics for every candidate to aid tuning and CLIP reranking.",
+  "prompt_id": "textgrad_899a7f1892",
+  "split_csv": "data/splits/flickr30k_main_seed1_train.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24/step_12/train/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24/step_12/train/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24/step_12/train/scores.csv",
+  "summary": {
+    "n": 24,
+    "mean_clip": 0.2864499017596245,
+    "mean_siglip": 0.16901179403066632,
+    "mean_caption_len": 30.5,
+    "generic_rate": 0.125,
+    "mean_delta_clip": -0.0347863572339217,
+    "mean_delta_siglip": -0.020154066694279504,
+    "clip_win_rate": 0.16666666666666666,
+    "siglip_win_rate": 0.20833333333333334
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_018651",
+      "caption": "man near bicycle\nman sits near bicycle with fruit baskets\n\nman near motorcycle\nman sits near motorcycle with fruit baskets\n\nman near street\nman sits near street with fruit baskets",
+      "clip_score": 0.3017184734344482,
+      "siglip_score": 0.1569026708602905,
+      "delta_clip": -0.10050520300865179,
+      "delta_siglip": -0.03964100778102869
+    },
+    {
+      "image_id": "flickr30k_test_028178",
+      "caption": "man playing trumpet\nman holds trumpet near decorated tree\n\nman in red shirt plays trumpet\nman wears red shirt while playing trumpet\n\nimage unclear",
+      "clip_score": 0.292722076177597,
+      "siglip_score": 0.2003621906042099,
+      "delta_clip": -0.09500297904014593,
+      "delta_siglip": -0.024314150214195196
+    },
+    {
+      "image_id": "flickr30k_test_001002",
+      "caption": "person wearing hat sits on blanket\nperson wearing hat sits on blanket holding sword\n\nperson wearing hat sits on blanket\nperson wearing hat sits on blanket with colorful textiles\n\nperson wearing hat sits on blanket\nperson wearing hat sits on blanket near shoes",
+      "clip_score": 0.2743521630764007,
+      "siglip_score": 0.13035349547863,
+      "delta_clip": -0.08455875515937811,
+      "delta_siglip": -0.1018273085355759
+    },
+    {
+      "image_id": "flickr30k_test_003075",
+      "caption": "child, raincoat, boy\na child in a raincoat walks through puddles while a boy stands nearby.",
+      "clip_score": 0.2981851696968078,
+      "siglip_score": 0.1438326239585876,
+      "delta_clip": -0.07236963510513311,
+      "delta_siglip": -0.07571734488010412
+    },
+    {
+      "image_id": "flickr30k_test_023784",
+      "caption": "woman wearing blue vest\na woman wearing a blue vest smiles while standing near bags\n\nwoman smiling\na woman smiles while standing near bags\n\nwoman in blue vest\na woman in a blue vest stands near bags",
+      "clip_score": 0.2543286383152008,
+      "siglip_score": 0.178458034992218,
+      "delta_clip": -0.07041779160499567,
+      "delta_siglip": -0.0395393967628479
+    },
+    {
+      "image_id": "flickr30k_test_003536",
+      "caption": "child, tree, jacket\nchild holds paper near tree\n\nchild, tree, jacket\nchild stands near tree holding paper\n\nchild, tree, jacket\nchild examines paper by tree",
+      "clip_score": 0.2839463353157043,
+      "siglip_score": 0.1721133291721344,
+      "delta_clip": -0.058344423770904597,
+      "delta_siglip": -0.0248574018478393
+    },
+    {
+      "image_id": "flickr30k_test_030218",
+      "caption": "man playing flute on sidewalk\na man plays a flute on the sidewalk near a building\n\nman holding flute\na man holds a flute while standing on the sidewalk\n\nimage unclear",
+      "clip_score": 0.2973411381244659,
+      "siglip_score": 0.1883793473243713,
+      "delta_clip": -0.05675426125526434,
+      "delta_siglip": -0.034226775169372586
+    },
+    {
+      "image_id": "flickr30k_test_015378",
+      "caption": "man in red shirt\nman in red shirt stands near woman holding plastic bag\n\nwoman with sunglasses\nwoman with sunglasses holds plastic bag near man in red shirt\n\nimage unclear",
+      "clip_score": 0.2536242008209228,
+      "siglip_score": 0.2022534012794494,
+      "delta_clip": -0.05082178115844732,
+      "delta_siglip": -0.03420564532279968
+    },
+    {
+      "image_id": "flickr30k_test_007436",
+      "caption": "woman holding phone\nwoman stands near yellow truck\n\nman wearing cap\nman walks near fire hydrant\n\nyellow truck parked\nyellow truck parked on street",
+      "clip_score": 0.2499780654907226,
+      "siglip_score": 0.2430114448070526,
+      "delta_clip": -0.04844862222671509,
+      "delta_siglip": -0.004613190889358493
+    },
+    {
+      "image_id": "flickr30k_test_012897",
+      "caption": "person painting outdoors\na person paints on an easel in a grassy area\n\nperson, easel, painting\nperson paints on an easel outdoors\n\nimage unclear",
+      "clip_score": 0.3074909746646881,
+      "siglip_score": 0.1460780203342437,
+      "delta_clip": -0.04330936074256897,
+      "delta_siglip": -0.0346508324146271
+    },
+    {
+      "image_id": "flickr30k_test_000731",
+      "caption": "child, sand, beach\nchildren play on the sandy beach near the ocean\n\nchild, sand, beach\na child stands on the sand at the beach while others play nearby\n\nchild, sand, beach\nchildren are on the sand at the beach with ocean in background",
+      "clip_score": 0.2612474858760834,
+      "siglip_score": 0.106489211320877,
+      "delta_clip": -0.03718075156211853,
+      "delta_siglip": -0.04596704244613649
+    },
+    {
+      "image_id": "flickr30k_test_008358",
+      "caption": "goalkeeper in red dives to save ball\ngoalkeeper dives across grass field",
+      "clip_score": 0.3233337998390198,
+      "siglip_score": 0.1769874095916748,
+      "delta_clip": -0.03477954864501953,
+      "delta_siglip": -0.024524420499801608
+    }
+  ]
+}

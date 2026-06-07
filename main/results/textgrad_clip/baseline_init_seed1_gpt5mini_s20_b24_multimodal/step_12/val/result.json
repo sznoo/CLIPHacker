@@ -1,0 +1,142 @@
+{
+  "prompt": "Output exactly one concise, information‑dense caption: a single grammatical sentence composed of comma‑separated short phrases. Produce only that single sentence and nothing else. Do not print checklists, logs, or any intermediate reasoning.\n\nFollow this mandatory seven‑step deterministic pipeline before emitting the caption.\n\n1) Detect and propose subject groups (1–3) in prominence order. For each proposed subject record: bounding box, visible_fraction, centroid, pairwise IoU, and any segmentation mask evidence. Emit 1–3 subject groups in the final caption; each group must be formatted as: [digit if Count VERIFIED] + noun(s) + spatial anchor (left/center/right). Include \"foreground\"/\"background\" only when Depth/Separability is VERIFIED (rule 4).\n\n2) Count verification (numeric): emit a digit only if ALL of the following hold for each instance: visible_fraction ≥ 0.50, centroid distance between instances ≥ 0.10 × image_width, and pairwise IoU < 0.10. Otherwise use singular/plural noun form (person/people, dog/dogs, vehicle/vehicles).\n\n3) Contact / micro‑action verification (numeric): assert a contact micro‑action only if overlap_area / min(bbox_area) ≥ 0.12 AND there is contiguous boundary evidence ≥8 adjacent overlap pixels OR contact_classifier_confidence ≥ 0.60. If VERIFIED, include exactly one micro‑action using this template with left/right required: \"[left|right] [hand|foot|part] [strong‑verb] [object]\" (e.g., \"right hand holding woven basket\"). If overlap ratio is between 0.08 and 0.12 (borderline), do not assert contact; instead use \"near\" phrasing (e.g., \"right hand near woven basket\").\n\n4) Depth / foreground verification (numeric): include \"foreground\"/\"background\" when EITHER (a) subject_bbox_area ≥ 1.5 × any overlapping bbox_area AND pairwise IoU < 0.20 AND subject centroid is lower (visually in front), OR (b) segmentation mask shows >60% unoccluded area. If neither holds, omit depth tokens.\n\n5) Fine class & cue‑pairs (numeric): emit a fine class (e.g., bicycle, motorbike/scooter, vendor) only when EITHER classifier_confidence ≥ 0.60 OR the prescribed cue‑pair is spatially satisfied within 10% image width proximity. Recognized cue‑pairs include:\n   - bicycle: (spokes + pedals) OR (pedals + chain) ⇒ \"bicycle\"\n   - motorbike/scooter: (engine casing + exhaust) OR (frame + exhaust) ⇒ \"motorbike/scooter\"\n   - vendor/produce stand: (baskets/piles + scale) OR (counter + stacks) ⇒ \"vendor\" or \"produce stand\"\n   - ladder: (rungs + side rails)\n   - performer: (stage/canopy + audience) OR (headset/microphone + facing audience)\nIf cue‑pair fails and no classifier_confidence, use a required fallback from this lexicon: woven basket, pile of fruit, two‑wheeled vehicle, painted metal shutter, signboard, storefront, cart, minivan, pillow.\n\n6) OCR / signage (numeric): quote exact text only when OCR_confidence ≥ 0.70 AND text_bbox_area ≥ 0.005 × image_area AND contrast_ratio ≥ 1.5 (or font_size_estimate ≥ 8pt). Otherwise do NOT invent characters; instead emit a compact positional descriptor (e.g., \"two red rectangular signs reading 'Le Mignon'\" only when quoted allowed; otherwise \"two red rectangular signs at upper right\"). Never guess unreadable text.\n\n7) Assemble tokens, enforce descriptor priority, and prune deterministically:\n   - Descriptor priority (descending): (A) VERIFIED discriminative props or quoted text, (B) VERIFIED part‑relations/micro‑actions, (C) VERIFIED fine class, (D) clothing & clear pose/orientation, (E) object state/material, (F) viewpoint/orientation, (G) color, (H) lighting/reflection, (I) background.\n   - Target length: 10–14 words. Hard cap: 18 words. Allow up to 20 words only when a quoted text string is emitted or two VERIFIED fine classes are present.\n   - Pruning order (apply iteratively until within cap): remove G (color) → E (material/texture) → H (reflections/lighting) → I (background) unless background_area ≥ 0.05 × image_area (then keep). Never drop any VERIFIED tokens from categories A–C or VERIFIED part‑relations.\n   - Token retention algorithm: first collect all VERIFIED tokens in priority order; if still over cap, iteratively remove lowest‑priority non‑VERIFIED single tokens (prefer shorter tokens). Tie‑break removals by token length then lexicographic order.\n\nAdditional rules (must follow)\n- Subject placement & naming: front‑load subject nouns and any VERIFIED discriminative props so they appear within the first 6–8 words.\n- Use digits only when Count VERIFIED. If Count fails for identical small subjects, use plural noun without digit.\n- Motion verbs (jumping, diving, running, holding) may be used only when Contact or motion evidence is VERIFIED (motion evidence: airborne pose, strong motion blur, or classifier_confidence for motion ≥ 0.60). Do not infer intentions, emotions, age, relationships, brand names, or unseen attributes.\n- Background inclusion: include a background anchor only when it occupies ≥ 5% image area or is a distinct structure (storefront, metal shutter, stage). Use compact phrases: \"storefront behind\", \"metal shutter at left\".\n- Tie‑breakers for subject prominence: larger bbox area → lower centroid (closer to camera) → leftmost centroid.\n- Cropping: if subject_bbox_intersection_area / subject_bbox_area < 0.95, append \"partially cropped at [top|bottom|left|right]\" indicating the side(s) clipped.\n- Anti‑hallucination prohibitions: never invent brand names, celebrity names, ages, emotions, or inferred relationships. When uncertain about fine class, use the fallback lexicon above.\n\nMicro‑templates and edge examples (follow patterns exactly for formatting)\n1) \"1 woman center foreground, right hand holding woven basket of oranges, storefront behind.\"  \n2) \"two dogs left foreground, small white dog jumping at car passenger window, woman leaning out.\"  \n3) \"1 person right foreground, standing by two‑wheeled vehicle with visible pedals and chain, metal shutter behind.\"  \n4) \"1 boy center foreground, seated on red toy ride, blue Mets jersey visible, playground court behind.\"  \n5) \"many dancers center foreground, line of red/gold sequined costumes, 'RADIO CITY' marquee behind.\"  \nBorderline examples:\nA) OCR borderline → \"1 man left foreground, three red rectangular signs at upper right, bridge behind.\"  \nB) Contact borderline → \"1 child center foreground, right hand near woven basket, wet pavement reflecting light.\"  \nC) Failed Count (too occluded) → \"people center foreground, clustered near storefront, raincoats visible.\"\n\nFinal emission rule: apply the seven‑step pipeline, verify tokens numerically, assemble a single comma‑separated sentence that obeys length/pruning rules, then output only that one caption sentence.",
+  "prompt_id": "textgrad_015fd7b498",
+  "split_csv": "data/splits/flickr30k_main_seed1_val.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal/step_12/val/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal/step_12/val/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal/step_12/val/scores.csv",
+  "data_root": "data",
+  "summary": {
+    "n": 150,
+    "mean_clip": 0.3014699733257294,
+    "mean_siglip": 0.20114948640267055,
+    "mean_caption_len": 21.893333333333334,
+    "generic_rate": 0.0,
+    "mean_delta_clip": -0.023095474988222123,
+    "mean_delta_siglip": 0.002308940713604297,
+    "clip_win_rate": 0.23,
+    "siglip_win_rate": 0.4866666666666667
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_011250",
+      "image_relpath": "images/flickr30k/flickr30k_test_011250.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_011250.jpg",
+      "caption": "two boys center foreground, right hand holding yellow caution tape, grassy field with distant airplane and yellow vehicle behind.",
+      "clip_score": 0.3048831820487976,
+      "siglip_score": 0.2531775236129761,
+      "delta_clip": -0.10771059989929199,
+      "delta_siglip": 0.03266189992427829
+    },
+    {
+      "image_id": "flickr30k_test_023900",
+      "image_relpath": "images/flickr30k/flickr30k_test_023900.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_023900.jpg",
+      "caption": "1 man right foreground, right hand near bundle of skewers, vendor stand with illuminated sign reading \"UTIAH\" behind.",
+      "clip_score": 0.2617706656455993,
+      "siglip_score": 0.2523888349533081,
+      "delta_clip": -0.10003596544265747,
+      "delta_siglip": -0.03842678666114807
+    },
+    {
+      "image_id": "flickr30k_test_007385",
+      "image_relpath": "images/flickr30k/flickr30k_test_007385.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_007385.jpg",
+      "caption": "1 dancer center foreground, right foot lifted high, colorful patterned suit, tossing green frisbee, group of dancers behind, storefront with \"Foods\" sign visible.",
+      "clip_score": 0.272226870059967,
+      "siglip_score": 0.1616259068250656,
+      "delta_clip": -0.09662997722625732,
+      "delta_siglip": -0.013302519917488098
+    },
+    {
+      "image_id": "flickr30k_test_010223",
+      "image_relpath": "images/flickr30k/flickr30k_test_010223.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_010223.jpg",
+      "caption": "1 man center foreground, right hand holding glass, left hand near bottle of whiskey, seated on brown leather chair, window with blinds at right.",
+      "clip_score": 0.2566622495651245,
+      "siglip_score": 0.1916084885597229,
+      "delta_clip": -0.0951231718063354,
+      "delta_siglip": -0.0057392865419386985
+    },
+    {
+      "image_id": "flickr30k_test_001063",
+      "image_relpath": "images/flickr30k/flickr30k_test_001063.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_001063.jpg",
+      "caption": "1 man center foreground, right hand pointing downward, olive tank top, light-colored couch behind.",
+      "clip_score": 0.2464250326156616,
+      "siglip_score": 0.1953330934047699,
+      "delta_clip": -0.09359619021415713,
+      "delta_siglip": -0.040648475289344704
+    },
+    {
+      "image_id": "flickr30k_test_012572",
+      "image_relpath": "images/flickr30k/flickr30k_test_012572.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_012572.jpg",
+      "caption": "1 woman right foreground, wearing purple knitted beanie, right hand near dark jacket, Domino’s Pizza sign visible at upper left.",
+      "clip_score": 0.3028728067874908,
+      "siglip_score": 0.274936318397522,
+      "delta_clip": -0.08691906929016119,
+      "delta_siglip": -0.01770851016044611
+    },
+    {
+      "image_id": "flickr30k_test_028445",
+      "image_relpath": "images/flickr30k/flickr30k_test_028445.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_028445.jpg",
+      "caption": "1 man center foreground, right hand holding blue mesh laundry basket, bicycle with visible pedals and chain, red pickup truck at right, beige building behind.",
+      "clip_score": 0.2834558188915252,
+      "siglip_score": 0.1809530556201934,
+      "delta_clip": -0.08391770720481878,
+      "delta_siglip": -0.03608351945877081
+    },
+    {
+      "image_id": "flickr30k_test_023317",
+      "image_relpath": "images/flickr30k/flickr30k_test_023317.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_023317.jpg",
+      "caption": "1 woman center foreground, pink jacket, blue skirt, white hat, right hand near black bag, guest services counter behind, man in cowboy hat seated right, red barrel with WM logo at lower right.",
+      "clip_score": 0.3112199306488037,
+      "siglip_score": 0.2833328247070312,
+      "delta_clip": -0.07992798089981079,
+      "delta_siglip": 0.06494426727294919
+    },
+    {
+      "image_id": "flickr30k_test_001063",
+      "image_relpath": "images/flickr30k/flickr30k_test_001063.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_001063.jpg",
+      "caption": "1 man center foreground, right hand pointing downward, olive tank top, light-colored couch behind.",
+      "clip_score": 0.2464250326156616,
+      "siglip_score": 0.1953330934047699,
+      "delta_clip": -0.0791670382022858,
+      "delta_siglip": -0.019220739603042603
+    },
+    {
+      "image_id": "flickr30k_test_028445",
+      "image_relpath": "images/flickr30k/flickr30k_test_028445.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_028445.jpg",
+      "caption": "1 man center foreground, right hand holding blue mesh laundry basket, bicycle with visible pedals and chain, red pickup truck at right, beige building behind.",
+      "clip_score": 0.2834558188915252,
+      "siglip_score": 0.1809530556201934,
+      "delta_clip": -0.0762080848217011,
+      "delta_siglip": -0.04039525985717779
+    },
+    {
+      "image_id": "flickr30k_test_015764",
+      "image_relpath": "images/flickr30k/flickr30k_test_015764.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_015764.jpg",
+      "caption": "1 DJ center foreground, back to camera, hands near mixing console, crowd dancing under purple and red lights, stage canopy above.",
+      "clip_score": 0.2664465308189392,
+      "siglip_score": 0.1902874261140823,
+      "delta_clip": -0.07568693161010737,
+      "delta_siglip": -0.020834028720855685
+    },
+    {
+      "image_id": "flickr30k_test_009512",
+      "image_relpath": "images/flickr30k/flickr30k_test_009512.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_009512.jpg",
+      "caption": "Five women center foreground, red and black uniforms, tattoos visible, standing near blue canopy, banner with \"AVIREX\" at upper right.",
+      "clip_score": 0.3041867017745971,
+      "siglip_score": 0.1463093161582946,
+      "delta_clip": -0.07500505447387701,
+      "delta_siglip": -0.04208135604858401
+    }
+  ]
+}

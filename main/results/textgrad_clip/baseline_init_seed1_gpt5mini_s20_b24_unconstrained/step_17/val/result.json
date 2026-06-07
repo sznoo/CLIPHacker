@@ -1,0 +1,117 @@
+{
+  "prompt": "Default behavior (enforceable, but no early rejects)\n\nPrimary objective\n- Maximize CLIP image–text similarity (primary). SigLIP is diagnostic only.\n\nHigh-level policy\n- Never return \"image unclear\" prior to generating rerankable candidates. Always produce up to 3 deterministic candidate caption proposals, then apply CLIP-based reranking/acceptance logic (or calibrated heuristic if reranker is unavailable). Only return \"image unclear\" after candidates + reranking + margin logic and formatting/unit checks fail.\n\nCanonical vocabulary: CLIP-validated whitelist (mandatory, empirical)\n- Integrator MUST run per-surface-token CLIP validation on dev and label each surface-token as keep (CLIP-preferred), neutral, or demote/remove based on average CLIP delta and stability.\n- Generator SHOULD use keep tokens by default. Use neutral tokens only for candidate generation when no clear keep exists for a required slot; neutral usage must be logged per-example for later pruning.\n- Do NOT hard-block candidate generation when a keep verb is absent; instead include neutral/fallback verbs in candidate set (dev-validated) before rejecting.\n\nTokenization-normalization (must-match CLIP tokenizer)\n- Define and use the exact same normalization as the CLIP tokenizer used for reranking:\n  - Unicode normalization (NFC), lowercase, collapse repeated whitespace to single space, normalize hyphens to ASCII hyphen, strip surrounding punctuation except permitted terminal period, and canonicalize diacritics consistently.\n- Document and version the normalization function. Log normalized strings used for all subject-matching and whitelist checks.\n\nOutput format (strict but generation-first)\n- Emit exactly one final candidate (two-line format) when accepted; otherwise return exactly and only:\nimage unclear\n- Candidate format (for each generated candidate):\n  Line 1: exactly 3 canonical tags by default, comma-separated, no trailing comma. Hyphens allowed for multiword tokens.\n  Line 2: one concise sentence ending with a single period.\n\nLine 1 (tags) — conservative defaults, validated expansion allowed\n- Default: exactly 3 tags, ordered:\n  1) primary object token — REQUIRED and should be supported by detector_primary_tag_threshold.\n  2) action token — include only if action_detector_confidence ≥ action_inclusion_threshold AND token ∈ keep ∪ (neutral if no keep and neutral-allowed-dev-flag true).\n  3) one salient attribute token — exactly one of {color OR count OR position}, chosen from keep ∪ neutral (neutral only when no keep exists).\n- Allow deterministic expansion to 4 tags when BOTH:\n  a) every extra tag has detector_confidence ≥ high_confidence_threshold, AND\n  b) per-token CLIP benefit validated on dev (positive delta & stability).\n- Scene/texture tokens are allowed only if validated (keep) for the primary id and detector_confidence ≥ scene_inclusion_threshold.\n- No synonyms/repeats within a candidate; synonyms may appear across different candidates only if CLIP-validated.\n\nLine 2 (caption) — subject-first, CLIP-validated verbs, but candidates may vary\n- Must begin with the primary Line1 tag's preferred-surface-token AFTER tokenization-normalization (subject-first constraint). Normalize both sides with the CLIP tokenizer; if mismatch is purely cosmetic (hyphenation/case/Unicode), allow soft match (log the cosmetic diffs) rather than immediate rejection.\n- Sentence shape: [Subject] [active-verb] [object/relationship (optional)] [single salient attribute phrase]. Use active verbs from the CLIP-validated verb-list (keep preferred). If no keep verbs available for this primary, include neutral/fallback verbs in candidates (must be dev-validated).\n- Include exactly ONE salient attribute and reuse the exact attribute token from Line 1.\n- Target token length: 10–13 tokens. Hard max: 15 tokens. Fewer tokens allowed only if constraints satisfied.\n- No commas, no lists, no subordinate clauses, no speculative language. End with a single period and no extra punctuation.\n\nCandidate generation (unconditional) and deterministic variation\n- Always generate up to 3 deterministic candidates before any verifier rejection. Candidate variations MUST include:\n  a) alternate CLIP-validated attribute tokens or attribute types (color/count/position) when available;\n  b) alternate CLIP-validated verbs (keep or neutral/fallback when no keep) for the primary id;\n  c) alternate CLIP-preferred synonym variants for Line1 tags when CLIP-validated.\n- Permit Line2 surface-level variation across candidates (verbs, attribute words, small permissible reorderings while keeping subject-first). Do not lock Line2 identical across candidates.\n- All candidate generation must be deterministic (canonical priority lists, tie-breakers documented).\n\nReranking and acceptance (must-run)\n- If any CLIP reranker is available (external or internal), rerank all generated candidates with CLIP and choose the highest-scoring candidate.\n- Internal CLIP reranker is REQUIRED if external reranker unavailable. If NO CLIP reranker exists at all, use the calibrated internal heuristic (see fallback) but log reranker_absent and proceed cautiously.\n- After reranking, apply acceptance checks (formatting, subject-match, thresholds, margin logic). Only then may \"image unclear\" be returned.\n\nAcceptance thresholds and margin-based acceptance\n- Default starting clip_threshold = 0.20 (integrator must sweep [0.20,0.24] on dev and set final value).\n- If top_CLIP ≥ clip_threshold → accept (subject to format/unit tests).\n- If top_CLIP < clip_threshold: allow margin-based acceptance when BOTH:\n  a) top_vs_next_margin ≥ margin_accept_threshold (tunable on dev), AND\n  b) TagPrecisionScore (per-token grounding) is high (tuned threshold).\n  Require dev evidence to enable margin_accept_path for production. Log per-example reasoning.\n- Only after reranking + margin logic fails should the verifier return \"image unclear\".\n\nNo-reranker heuristic (calibrated fallback; used only when reranker absent)\n- Score = w1 * TagPrecisionScore + w2 * RerankMarginProxy - w3 * LengthPenalty - w4 * SubjectMismatchPenalty\n  - Default weight hints (integrator must retune on dev): increase TagPrecision and RerankMarginProxy importance; increase SubjectMismatchPenalty for substantive mismatches but ignore cosmetic tokenization diffs.\n  - LengthPenalty = max(0, token_count - 13).\n  - SubjectMismatchPenalty = 0 if normalized(Line2 subject) == normalized(Line1 primary) or only cosmetic diffs; else 1.\n  - RerankMarginProxy = normalized difference between best and second-best TagPrecisionScore.\n- Tune weights on dev to maximize correlation with CLIP ranking; log calibration results.\n\nVerifier / \"image unclear\" (conservative, enforced but post-generation)\n- After candidate generation and reranking/fallback, return exactly and only:\nimage unclear\n  if ANY of these apply:\n  1) No primary object detected above detector_primary_tag_threshold AND no high-confidence alternative primary candidate exists in generated candidates.\n  2) After CLIP reranking: top candidate CLIP score < clip_threshold AND (top_vs_next_margin < margin_accept_threshold OR TagPrecisionScore insufficient). (If reranker absent: analogous check using tuned heuristic and heuristic_accept_threshold.)\n  3) Any strict formatting/unit test fails after normalization and cosmetic-tolerant subject match rules are applied (Line1 tags not all in keep ∪ allowed-neutral per dev policy, Line1 tag count ≠ required unless validated expansion allowed, Line2 contains commas/multiple attributes, Line2 token_count > 15, or Line2 verb is disallowed by dev policy).\n  4) Active-verb unavailability: no verb (keep or neutral/fallback validated) included in any candidate and no dev-approved fallback exists.\n- When returning \"image unclear\", output exactly that string and nothing else.\n\nFormatting and automated checks (programmatic)\n- Unit tests (must-run after reranking/fallback):\n  1) Whitelist/CLIP-preference check: every Line1 tag ∈ keep ∪ allowed-neutral-for-this-id (as documented for dev); otherwise candidate may still be allowed if neutral was explicitly used by generation policy, but must be logged.\n  2) Tag count and composition: default exactly 3 tags; expansions only allowed per validated expansion rule.\n  3) Subject reuse check: normalized(Line2 subject) must match normalized Line1 primary. If mismatch is cosmetic (hyphens/case/Unicode), allow and log; if substantive, fail.\n  4) Length check: token_count(Line2) ≤ 15; prefer 10–13.\n  5) No commas; no trailing commas; Line2 ends with single period.\n  6) Active-verb check: at least one candidate must contain a verb that is keep or neutral/fallback per dev validation; final chosen candidate verb must be permitted under dev policy.\n  7) Grounding check: detector confidences for included tags must meet thresholds (unless neutral tokens were used per dev fallback rules).\n  8) Tokenization-normalization check: ensure normalization identical to CLIP tokenizer; log mismatches. Cosmetic mismatches should not cause immediate failure.\n- If automated checks fail after full candidate generation + reranking + margin path, return \"image unclear\". Do not auto-repair formatting beyond canonical normalization.\n\nThresholds, calibration, and dev validation (must-run before deployment)\n- Required dev sweeps:\n  - Sweep clip_threshold in [0.20, 0.24] and set value that optimizes mean_CLIP vs coverage.\n  - Sweep action_inclusion_threshold, scene_inclusion_threshold, detector_primary_tag_threshold; choose conservative defaults balancing coverage.\n  - Set margin_accept_threshold and require dev evidence for its use.\n  - Build per-primary-id keep/neutral/demote verb and attribute lists via per-surface-token CLIP ablation; lock keep tokens only when deltas are positive and stable.\n  - Tune no-reranker heuristic weights to correlate with CLIP rankings.\n  - Validate expansion rules (4th tag) with per-token CLIP delta checks.\n\nTelemetry and diagnostics (mandatory logging)\n- For every captioning decision log:\n  - All generated candidates (Line1+Line2), normalized forms, and which tokens were keep vs neutral.\n  - Candidate-level CLIP scores and margins; final chosen candidate and score.\n  - Per-token average CLIP contribution (from dev) and per-example per-token CLIP deltas (if reranker used).\n  - Detector confidences for all candidate tags.\n  - Final decision and single failure reason if returning \"image unclear\" (detector_low_confidence, clip_threshold_fail, margin_reject, formatting_check_fail, verb_unavailable, subject_mismatch_substantive, etc.).\n  - Flag reranker_absent when applicable and store heuristic scores used.\n  - Aggregate metrics: frequency of \"image unclear\" and breakdown by failure reason; per-token pruning suggestions.\n\nOperational notes and rationale\n- Deterministic generation must be preserved (canonical priority lists, tie-breakers) while allowing CLIP-validated lexical variation to surface for reranking.\n- Prefer higher-precision validated tokens but permit neutral/fallback candidates when keep tokens do not exist for common primaries.\n- Regularly re-run per-token CLIP validation when CLIP model versions or surfaced data change.\n\nFinal requirement\n- If, after unconditional candidate generation, reranking/fallback, margin consideration, and formatting/unit checks (with cosmetic-tolerant subject matching), no acceptable candidate remains, output exactly and only:\nimage unclear",
+  "prompt_id": "textgrad_b0211113d5",
+  "split_csv": "data/splits/flickr30k_main_seed1_val.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24/step_17/val/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24/step_17/val/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24/step_17/val/scores.csv",
+  "summary": {
+    "n": 150,
+    "mean_clip": 0.2752946734428406,
+    "mean_siglip": 0.12147943569657703,
+    "mean_caption_len": 13.046666666666667,
+    "generic_rate": 0.04,
+    "mean_delta_clip": -0.049270774871110916,
+    "mean_delta_siglip": -0.0773611099924892,
+    "clip_win_rate": 0.17333333333333334,
+    "siglip_win_rate": 0.14
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_011250",
+      "caption": "image unclear",
+      "clip_score": 0.2112563848495483,
+      "siglip_score": 0.0513599924743175,
+      "delta_clip": -0.2013373970985413,
+      "delta_siglip": -0.1691556312143803
+    },
+    {
+      "image_id": "flickr30k_test_026513",
+      "caption": "image unclear",
+      "clip_score": 0.214854896068573,
+      "siglip_score": -0.0025274720974266,
+      "delta_clip": -0.18781912326812739,
+      "delta_siglip": -0.2625461486168205
+    },
+    {
+      "image_id": "flickr30k_test_015524",
+      "caption": "image unclear",
+      "clip_score": 0.1946061551570892,
+      "siglip_score": -0.035730630159378,
+      "delta_clip": -0.18491494655609128,
+      "delta_siglip": -0.2309052944183349
+    },
+    {
+      "image_id": "flickr30k_test_003587",
+      "caption": "image unclear",
+      "clip_score": 0.1857940703630447,
+      "siglip_score": -0.0346404314041137,
+      "delta_clip": -0.17949287593364718,
+      "delta_siglip": -0.2989445030689239
+    },
+    {
+      "image_id": "flickr30k_test_029485",
+      "caption": "image unclear",
+      "clip_score": 0.1920551061630249,
+      "siglip_score": -0.0147124975919723,
+      "delta_clip": -0.1787693202495575,
+      "delta_siglip": -0.2773730605840682
+    },
+    {
+      "image_id": "flickr30k_test_007385",
+      "caption": "image unclear",
+      "clip_score": 0.1934927105903625,
+      "siglip_score": 0.0103401709347963,
+      "delta_clip": -0.17536413669586182,
+      "delta_siglip": -0.1645882558077574
+    },
+    {
+      "image_id": "flickr30k_test_012572",
+      "caption": "image unclear",
+      "clip_score": 0.2149634659290313,
+      "siglip_score": 0.0413151867687702,
+      "delta_clip": -0.1748284101486207,
+      "delta_siglip": -0.25132964178919787
+    },
+    {
+      "image_id": "flickr30k_test_006851",
+      "caption": "image unclear",
+      "clip_score": 0.2180254608392715,
+      "siglip_score": -0.012481115758419,
+      "delta_clip": -0.17466767132282263,
+      "delta_siglip": -0.26972263306379307
+    },
+    {
+      "image_id": "flickr30k_test_029485",
+      "caption": "image unclear",
+      "clip_score": 0.1920551061630249,
+      "siglip_score": -0.0147124975919723,
+      "delta_clip": -0.1718741357326507,
+      "delta_siglip": -0.2367344647645949
+    },
+    {
+      "image_id": "flickr30k_test_027769",
+      "caption": "image unclear",
+      "clip_score": 0.1997563540935516,
+      "siglip_score": -0.0490306168794631,
+      "delta_clip": -0.17139825224876407,
+      "delta_siglip": -0.2291976362466811
+    },
+    {
+      "image_id": "flickr30k_test_009512",
+      "caption": "image unclear",
+      "clip_score": 0.2134578227996826,
+      "siglip_score": -0.0570645630359649,
+      "delta_clip": -0.16573393344879153,
+      "delta_siglip": -0.24545523524284352
+    },
+    {
+      "image_id": "flickr30k_test_017644",
+      "caption": "image unclear",
+      "clip_score": 0.20767143368721,
+      "siglip_score": -0.0642816647887229,
+      "delta_clip": -0.1643038094043732,
+      "delta_siglip": -0.3202175125479697
+    }
+  ]
+}

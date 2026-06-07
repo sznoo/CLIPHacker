@@ -1,0 +1,142 @@
+{
+  "prompt": "Produce exactly one concise, information-dense caption (one grammatical sentence) describing only visibly present facts. Follow this ordered checklist and include each item only if clearly visible; omit any field you cannot verify:\n\n- 1) Exact count(s) using numerals (e.g., \"3 people\") and arrangement with left/center/right or foreground/midground/background.\n- 2) Main subject(s) and precise action naming specific body/vehicle parts involved (e.g., \"pushing bicycle by the handlebars,\" \"rear wheel lifted,\" \"holding puppet by right hand\").\n- 3) Salient object descriptors: colors, materials, and distinctive accessories (e.g., \"red bag on right handlebar,\" \"chrome frame,\" \"striped shirt\").\n- 4) One short camera viewpoint token (e.g., \"wide shot,\" \"high-angle,\" \"close-up\").\n- 5) One short lighting/shadow token (e.g., \"backlit,\" \"long shadow to left,\" \"spotlight\").\n- 6) One background landmark or surface texture (e.g., \"cracked salt flat,\" \"red-tiled roof,\" \"draped blue tent\").\n\nUse concrete positional language (left/center/right, foreground/midground/background). Do not use vague quantifiers (\"several,\" \"some,\" \"a group\"), do not infer relationships, motivations, emotions, or use metaphors; state only what is directly visible. Keep the sentence concise and information-dense, following the approximate order: count + subject + action/part + descriptors + viewpoint + lighting + background.",
+  "prompt_id": "textgrad_2e7920a9d2",
+  "split_csv": "data/splits/flickr30k_main_seed1_train.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal/step_01/train/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal/step_01/train/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal/step_01/train/scores.csv",
+  "data_root": "data",
+  "summary": {
+    "n": 24,
+    "mean_clip": 0.3308677449822426,
+    "mean_siglip": 0.20049412486453852,
+    "mean_caption_len": 41.583333333333336,
+    "generic_rate": 0.041666666666666664,
+    "mean_delta_clip": 0.00024286657571791445,
+    "mean_delta_siglip": 0.010806648060679455,
+    "clip_win_rate": 0.4166666666666667,
+    "siglip_win_rate": 0.625
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_003075",
+      "image_relpath": "images/flickr30k/flickr30k_test_003075.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_003075.jpg",
+      "caption": "Three children in foreground/midground: left, a child in blue raincoat with red belt; center, a boy in white shirt with red belt and sunglasses on head; right, partial view of child in pink sleeve; all standing in water, with beige van and wet pavement in background.",
+      "clip_score": 0.3319130837917328,
+      "siglip_score": 0.2138537764549255,
+      "delta_clip": -0.03864172101020813,
+      "delta_siglip": -0.005696192383766202
+    },
+    {
+      "image_id": "flickr30k_test_019300",
+      "image_relpath": "images/flickr30k/flickr30k_test_019300.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_019300.jpg",
+      "caption": "One person in a white shirt and blue shorts climbs upward on a wooden roof frame under a clear blue sky, viewed from a side angle with bright daylight and a grassy field in the background.",
+      "clip_score": 0.2986178398132324,
+      "siglip_score": 0.1732112467288971,
+      "delta_clip": -0.03294408321380615,
+      "delta_siglip": 0.06228116899728779
+    },
+    {
+      "image_id": "flickr30k_test_012141",
+      "image_relpath": "images/flickr30k/flickr30k_test_012141.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_012141.jpg",
+      "caption": "Two boys, one in a green shirt with red/white stripes and blue jeans stepping forward with right foot, the other in a patterned shirt and blue jeans behind, are walking through a large, curved, perforated metal tube in the foreground, with a yellow picnic table and trees visible in the midground under bright",
+      "clip_score": 0.3040748834609985,
+      "siglip_score": 0.2075991779565811,
+      "delta_clip": -0.025442779064178522,
+      "delta_siglip": 0.03456778824329379
+    },
+    {
+      "image_id": "flickr30k_test_009311",
+      "image_relpath": "images/flickr30k/flickr30k_test_009311.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_009311.jpg",
+      "caption": "One child with blonde hair and a light-colored plaid shirt is leaning forward with mouth open, viewed through falling water in a close-up, backlit shot against a blurred green background.",
+      "clip_score": 0.3101287484169006,
+      "siglip_score": 0.1938415467739105,
+      "delta_clip": -0.020432859659195002,
+      "delta_siglip": 0.026163235306739807
+    },
+    {
+      "image_id": "flickr30k_test_019437",
+      "image_relpath": "images/flickr30k/flickr30k_test_019437.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_019437.jpg",
+      "caption": "One woman in a dark blue dress and high heels walks from right to left in the foreground, passing a closed metal roll-up door with yellow \"NO PARKING ANY TIME\" stenciled on it, under bright sunlight casting a long shadow to her left, with a brick wall and two warning signs visible in the mid",
+      "clip_score": 0.3113432228565216,
+      "siglip_score": 0.2447988241910934,
+      "delta_clip": -0.019064009189605713,
+      "delta_siglip": 0.0953711420297623
+    },
+    {
+      "image_id": "flickr30k_test_017741",
+      "image_relpath": "images/flickr30k/flickr30k_test_017741.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_017741.jpg",
+      "caption": "Two people sit side-by-side on a black bench in midground, facing away, with one person’s right arm resting on the bench; the bench has metal legs and a circular base, and the background features a large glass-paneled wall with horizontal metal bars.",
+      "clip_score": 0.3057618737220764,
+      "siglip_score": 0.1997729539871215,
+      "delta_clip": -0.013614952564239502,
+      "delta_siglip": -0.042396724224090604
+    },
+    {
+      "image_id": "flickr30k_test_000833",
+      "image_relpath": "images/flickr30k/flickr30k_test_000833.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_000833.jpg",
+      "caption": "Three boys in foreground, one left holding blue paddle, one center holding red paddle, one right holding blue paddle, all standing in shallow water; wide shot, backlit, beach with waves.",
+      "clip_score": 0.2902133166790008,
+      "siglip_score": 0.178880974650383,
+      "delta_clip": -0.01346376538276678,
+      "delta_siglip": -0.006644651293754494
+    },
+    {
+      "image_id": "flickr30k_test_023641",
+      "image_relpath": "images/flickr30k/flickr30k_test_023641.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_023641.jpg",
+      "caption": "One woman in a pink-and-white striped shirt walks left in the foreground while another woman in a black top walks away from the camera in the midground; people sit on benches under trees on a wet cobblestone plaza, viewed from a low angle with dappled sunlight.",
+      "clip_score": 0.3256472051143646,
+      "siglip_score": 0.1832310557365417,
+      "delta_clip": -0.012595802545547485,
+      "delta_siglip": 0.003592923283576993
+    },
+    {
+      "image_id": "flickr30k_test_006091",
+      "image_relpath": "images/flickr30k/flickr30k_test_006091.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_006091.jpg",
+      "caption": "One child, wearing a pink shirt, blue cap, and red sunglasses, sits barefoot on a kitchen counter while holding a metallic pull-down faucet that is spraying water downward in the foreground.",
+      "clip_score": 0.3770690858364105,
+      "siglip_score": 0.2563496232032776,
+      "delta_clip": -0.007903307676315252,
+      "delta_siglip": 0.0131684690713883
+    },
+    {
+      "image_id": "flickr30k_test_030359",
+      "image_relpath": "images/flickr30k/flickr30k_test_030359.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_030359.jpg",
+      "caption": "Three players in midground: goalkeeper in red jersey diving left with arms raised, one player in yellow jersey with number 9 on back jumping center with right leg extended, and another player in white jersey with number 22 on back lunging right with left leg extended, all contesting a white soccer ball above them",
+      "clip_score": 0.2847509682178497,
+      "siglip_score": 0.1469649374485016,
+      "delta_clip": -0.007482498884201105,
+      "delta_siglip": -0.006848394870758001
+    },
+    {
+      "image_id": "flickr30k_test_026274",
+      "image_relpath": "images/flickr30k/flickr30k_test_026274.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_026274.jpg",
+      "caption": "One person in a light-colored shirt and black hat rides a brown horse with its front legs lifted, holding two silver batons above its head, in a wide shot under daylight with spectators and red-and-white tents in the midground.",
+      "clip_score": 0.3053756356239319,
+      "siglip_score": 0.1754595041275024,
+      "delta_clip": -0.004368841648101807,
+      "delta_siglip": 0.07836916297674182
+    },
+    {
+      "image_id": "flickr30k_test_003349",
+      "image_relpath": "images/flickr30k/flickr30k_test_003349.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_003349.jpg",
+      "caption": "One child in a red jacket stands in the foreground left, facing a glass storefront window displaying a fiery orange-red abstract art piece and a brown leather handbag, with reflections of pedestrians and buildings visible in the midground and background; wide shot, ambient daylight, urban sidewalk.",
+      "clip_score": 0.3607663512229919,
+      "siglip_score": 0.2422254681587219,
+      "delta_clip": -0.0032323002815247137,
+      "delta_siglip": -0.03333210945129392
+    }
+  ]
+}

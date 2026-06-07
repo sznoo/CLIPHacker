@@ -1,0 +1,142 @@
+{
+  "prompt": "Produce exactly one concise, information‑dense caption: a single grammatical sentence composed of comma‑separated short phrases. Produce only that one sentence and nothing else.\n\nOutput structure (emit in this order; slots 1–3 are mandatory and protected from pruning):\n1) Subject group(s) and one HIGH or MEDIUM anchor/prop or, if no MEDIUM/HIGH anchor exists, a neutral positional anchor fallback (0–3 subject groups; must appear first).\n2) Micro‑action / contact using strict templates (always emit one): \n   - HIGH evidence: exact form \"left|right [hand|foot|part] [strong‑verb] [object]\" (e.g., \"right hand holding basket\").\n   - MEDIUM evidence: use one verb from the whitelist {jumping, pawing, clearing, showing, speaking, holding, carrying, pushing, pulling, strumming, leaning}.\n   - LOW evidence: fallback \"[part] near [object]\" (e.g., \"right hand near object\").\n   Never hedge or omit this slot.\n3) Fine class (verified label or dataset lexicon token; if no verified fine class, use a safe plural fallback such as \"people/dogs/vehicles/vendor stand\").\n4) Clothing / clear pose / orientation — include only when MEDIUM/HIGH verified.\n5) Up to two anchors/signage (only if MEDIUM/HIGH verified; otherwise use neutral positional fallback tokens such as \"marquee above\", \"storefront behind\").\n6) Spatial/cropping/depth token if verified.\n\nVerification bands and numeric thresholds (use detector outputs where available):\n- HIGH: OCR_confidence ≥ 0.85 OR segmentation_iou ≥ 0.75 OR motion_confidence ≥ 0.85.\n- MEDIUM: OCR_confidence ≥ 0.50 OR segmentation_iou ≥ 0.40 OR motion_confidence ≥ 0.60 OR detector_count_confidence ≥ 0.70.\n- LOW: otherwise.\n- Digit counts: emit digits only if detector_count_confidence ≥ 0.70; otherwise use plural fallback nouns.\n\nOCR and signage rules:\n- If OCR is HIGH: emit exact quoted text (quote counts toward length).\n- If OCR is MEDIUM and saliency is high: emit at most one short quoted token (single word or ≤6 characters); do not invent or complete partial names.\n- If OCR is LOW: use a neutral positional anchor fallback (e.g., \"marquee above\", \"large sign upper right\").\n\nFirst‑words requirement:\n- The first 6–8 words must contain the subject group token (or a plural fallback noun) and a HIGH anchor OR a MEDIUM anchor from the MEDIUM anchor whitelist. If this fails, the caption must be auto‑rewritten into the minimal safe form: plural subject fallback + neutral anchor fallback + micro‑action LOW fallback + fine‑class fallback, all within the first 8 words.\n\nSaliency tie‑breaking and selection:\n- When multiple candidates are present, prefer in order: 1) OCR text, 2) large prop/signage, 3) face/people, 4) large color patch/clothing. Chosen anchor must appear early (within first 6–8 words).\n\nMEDIUM whitelist (emit these exact tokens only under MEDIUM):\n- Fine classes: boat, canoe, shrine/temple, ghats/steps, children, performer, vendor, vendor stand, parade participant.\n- Anchors: marquee, boats, canopies, flagpole, ladder, bicycle, hedgerow, trees.\n- Clothing tokens allowed under MEDIUM: \"navy sweater\", \"red patterned dress\", \"white blouse\".\n\nPruning, compression, and length control:\n- Target length: 10–16 words. Hard cap: 20 words. Allow +2 words beyond target when EITHER a HIGH anchor OR a HIGH fine class is present.\n- Pruning priority (apply deterministically until within cap):\n   1) Compress adjective chains into compact noun phrases.\n   2) Remove lighting/reflection descriptors first.\n   3) Remove object state/material next.\n   4) Remove background/ancillary context last.\n- NEVER remove or prune tokens from slots 1–3. Preserve MEDIUM tokens in slots 1–3 when present. If still over cap, construct a minimal safe caption that preserves any HIGH/MEDIUM tokens in slots 1–3 and uses neutral fallbacks elsewhere.\n\nAnti‑hallucination absolutes:\n- Do not invent brand names, partial/complete text, ages, emotions, intentions, or unsupported attributes.\n- No hedges, qualifiers, or speculative language.\n- When verification is LOW, use prescribed neutral fallbacks (e.g., \"storefront behind\", \"marquee above\", \"object on table\", \"group of people\").\n\nFinal validator (must pass before emitting):\n- One grammatical sentence of comma‑separated short phrases.\n- Length within caps and target rules.\n- First 6–8 words include subject token (or plural fallback) plus a HIGH or MEDIUM anchor (or neutral anchor fallback if no MEDIUM/HIGH).\n- Micro‑action slot present and follows template rules.\n- No hedges, no invented brands/text, no duplicated phrases.\n- Only allowed MEDIUM tokens are emitted under MEDIUM band.\n- If validator would fail, emit the deterministic minimal safe caption described above.\n\nShort positive example (ideal):\n- \"group of people, right hand holding red shopping bag, storefront behind, marquee above.\"\n\nShort negative example (avoid):\n- \"Several people maybe near a building with an unclear sign and someone possibly holding something.\"\n\nMachine‑readable checklist to append internally (for validation):\n- OCR → include if HIGH/MEDIUM; quote only if HIGH (MEDIUM only one short token ≤6 chars).\n- Micro‑action → always emit (HIGH template or MEDIUM whitelist or LOW fallback).\n- Anchor/text → must appear within first 8 words if MEDIUM/HIGH, else include neutral anchor fallback early.\n- Counts → digits only if detector_count_confidence ≥ 0.70.\n- Prune per priority; never prune slots 1–3.\n- If validation fails → auto‑rewrite to minimal safe caption template.\n\nAdhere strictly to these rules when generating the single final caption.",
+  "prompt_id": "textgrad_29727dbd0c",
+  "split_csv": "data/splits/flickr30k_main_seed1_train.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal/step_19/train/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal/step_19/train/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal/step_19/train/scores.csv",
+  "data_root": "data",
+  "summary": {
+    "n": 24,
+    "mean_clip": 0.2932204492390156,
+    "mean_siglip": 0.1759731819232305,
+    "mean_caption_len": 16.791666666666668,
+    "generic_rate": 0.0,
+    "mean_delta_clip": -0.031568378830949456,
+    "mean_delta_siglip": -0.02901815374692282,
+    "clip_win_rate": 0.125,
+    "siglip_win_rate": 0.375
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_013247",
+      "image_relpath": "images/flickr30k/flickr30k_test_013247.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_013247.jpg",
+      "caption": "group of people, left hand holding shopping bag, people/dogs/vehicles/vendor stand, wearing casual clothes, marquee above, flagpole behind",
+      "clip_score": 0.1958114504814148,
+      "siglip_score": 0.0620713829994201,
+      "delta_clip": -0.14355814456939692,
+      "delta_siglip": -0.08911915123462681
+    },
+    {
+      "image_id": "flickr30k_test_017741",
+      "image_relpath": "images/flickr30k/flickr30k_test_017741.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_017741.jpg",
+      "caption": "two people, sitting side by side on bench, left hand near bag, people/dogs/vehicles/vendor stand, both facing window, large glass panels behind",
+      "clip_score": 0.2348196655511856,
+      "siglip_score": 0.1745854467153549,
+      "delta_clip": -0.08455716073513031,
+      "delta_siglip": -0.06758423149585721
+    },
+    {
+      "image_id": "flickr30k_test_019904",
+      "image_relpath": "images/flickr30k/flickr30k_test_019904.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_019904.jpg",
+      "caption": "man, right foot stepping on railing, people/dogs/vehicles/vendor stand, beige jacket, red railing in front, \"Le Mignon\" sign on wall behind",
+      "clip_score": 0.2471255213022232,
+      "siglip_score": 0.2476586401462555,
+      "delta_clip": -0.08419625461101532,
+      "delta_siglip": -0.03686600923538208
+    },
+    {
+      "image_id": "flickr30k_test_029824",
+      "image_relpath": "images/flickr30k/flickr30k_test_029824.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_029824.jpg",
+      "caption": "woman, right hand holding badge, vendor stand, navy polo shirt, \"Bienvenue Welcome\" sign above, London 2012 logo on table",
+      "clip_score": 0.3348391354084015,
+      "siglip_score": 0.2044320404529571,
+      "delta_clip": -0.056816160678863525,
+      "delta_siglip": -0.041574418544769315
+    },
+    {
+      "image_id": "flickr30k_test_023643",
+      "image_relpath": "images/flickr30k/flickr30k_test_023643.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_023643.jpg",
+      "caption": "girl, right hand holding umbrella, vendor stand, red patterned dress, marquee above, 15 sign visible",
+      "clip_score": 0.2740256190299988,
+      "siglip_score": 0.1313497126102447,
+      "delta_clip": -0.05288642644882202,
+      "delta_siglip": -0.14457526803016668
+    },
+    {
+      "image_id": "flickr30k_test_021046",
+      "image_relpath": "images/flickr30k/flickr30k_test_021046.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_021046.jpg",
+      "caption": "man, woman, right hand holding paper, people, green shirt, yellow hoodie, 21000 sign above",
+      "clip_score": 0.2775130271911621,
+      "siglip_score": 0.1029089093208313,
+      "delta_clip": -0.044958412647247314,
+      "delta_siglip": -0.10235229134559631
+    },
+    {
+      "image_id": "flickr30k_test_016636",
+      "image_relpath": "images/flickr30k/flickr30k_test_016636.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_016636.jpg",
+      "caption": "girl, right hand holding orange bowl, children, pink sweater, blue skirt, backpack on back, rocky path ahead",
+      "clip_score": 0.330039918422699,
+      "siglip_score": 0.1875864863395691,
+      "delta_clip": -0.0411409437656402,
+      "delta_siglip": -0.00021654367446891087
+    },
+    {
+      "image_id": "flickr30k_test_027768",
+      "image_relpath": "images/flickr30k/flickr30k_test_027768.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_027768.jpg",
+      "caption": "woman with red hair, right hand holding beige pillow, people/dogs/vehicles/vendor stand, red sweater, group of people behind",
+      "clip_score": 0.3025581240653991,
+      "siglip_score": 0.2494920790195465,
+      "delta_clip": -0.03962981700897217,
+      "delta_siglip": 0.017674759030342102
+    },
+    {
+      "image_id": "flickr30k_test_015736",
+      "image_relpath": "images/flickr30k/flickr30k_test_015736.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_015736.jpg",
+      "caption": "dog, right foot stepping in water, dog, wearing collar, standing in shallow water",
+      "clip_score": 0.3121631145477295,
+      "siglip_score": 0.1351270973682403,
+      "delta_clip": -0.03558248281478882,
+      "delta_siglip": -0.07464328408241269
+    },
+    {
+      "image_id": "flickr30k_test_003961",
+      "image_relpath": "images/flickr30k/flickr30k_test_003961.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_003961.jpg",
+      "caption": "woman, right hand holding red shopping bag, American Girl Place bag, white blouse, flag behind, window view",
+      "clip_score": 0.3151138722896576,
+      "siglip_score": 0.1599601507186889,
+      "delta_clip": -0.03433474898338312,
+      "delta_siglip": -0.11068522930145269
+    },
+    {
+      "image_id": "flickr30k_test_006091",
+      "image_relpath": "images/flickr30k/flickr30k_test_006091.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_006091.jpg",
+      "caption": "child, right foot near faucet, children, pink shirt, blue cap, barefoot on counter, kitchen sink behind",
+      "clip_score": 0.3516768217086792,
+      "siglip_score": 0.1739720404148101,
+      "delta_clip": -0.033295571804046575,
+      "delta_siglip": -0.06920911371707919
+    },
+    {
+      "image_id": "flickr30k_test_003863",
+      "image_relpath": "images/flickr30k/flickr30k_test_003863.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_003863.jpg",
+      "caption": "group of people, ball mid-air, jumping, people/dogs/vehicles/vendor stand, wearing varied clothing, salt flats below",
+      "clip_score": 0.3155989050865173,
+      "siglip_score": 0.2250874489545822,
+      "delta_clip": -0.02995055913925171,
+      "delta_siglip": 0.0023275464773177823
+    }
+  ]
+}

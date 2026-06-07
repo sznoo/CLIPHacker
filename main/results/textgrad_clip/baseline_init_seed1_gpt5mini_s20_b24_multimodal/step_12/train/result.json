@@ -1,0 +1,142 @@
+{
+  "prompt": "Output exactly one concise, information‑dense caption: a single grammatical sentence composed of comma‑separated short phrases. Produce only that single sentence and no other text.\n\nTwo‑pass internal checklist (do not print logs)\n1) Proposal: internally enumerate candidate tokens for each slot: up to 3 subject groups (prominence order), optional single micro‑action, one part‑relation (if contact VERIFIED), up to 3 descriptors, optional viewpoint/orientation, lighting, and background/text.\n2) Verification: apply the deterministic checks below to every candidate; mark tokens that pass as VERIFIED and protect VERIFIED discriminative props, VERIFIED fine classes, and VERIFIED part‑relations from any pruning. Do not output the checklist or intermediate candidates.\n\nSubject groups & placement (hard constraints)\n- Emit 1–3 subject groups in prominence order. Each group must be: [digit if Count VERIFIED] + noun(s) + spatial anchor (left/center/right) and include \"foreground\"/\"background\" only when depth/separability VERIFIED.\n- Front‑load subject nouns and any VERIFIED discriminative props so they appear within the first 6–8 words.\n- Use digits only when Count verification passes (rule below); otherwise use singular/plural nouns (\"person/people\", \"dog/dogs\", \"vehicle/vehicles\").\n\nDeterministic verification rules (must be followed)\n- Count: include a digit only if every instance is ≥50% unobstructed AND centroid spacing ≥10% image width AND IOU between subject bboxes <0.10. If any check fails, do not emit digits — use singular/plural.\n- Contact (micro‑action): assert contact only if overlap area / smaller bbox area ≥12% AND visible attachment or contiguous boundary pixels or clear occlusion consistent with grasp. If VERIFIED, include exactly one micro‑action using the template: \"[left|right] [hand|foot|part] [strong‑verb] [object]\" (e.g., \"right hand holding woven basket\"). Always specify left/right. If Contact not VERIFIED, do not invent a micro‑action.\n- Fine class (cue‑pair): emit a fine class only when the required cue‑pair passes OR classifier confidence >0.60. Example cue‑pairs (apply only as checks): vendor = (table/counter + stacks of produce) OR (baskets/piles + scale); bicycle = (spokes + pedals) OR (pedals + chain); motorbike/scooter = (frame + exhaust) OR (engine casing + exhaust); ladder = (rungs + side rails); performer = (stage/canopy + audience) OR (headset/microphone + facing audience). If cue‑pair fails, use a concrete fallback noun (see fallbacks).\n- OCR/text: quote exact text only when OCR confidence high AND text bbox ≥0.5% image area AND legibility ≳8pt equivalent with high contrast. Otherwise emit a compact positional descriptor (e.g., \"phone number on yellow board at center\") including dominant sign color/shape when legible.\n\nDescriptor priority (must preserve VERIFIED tokens)\nPriority order for including descriptors: (1) VERIFIED discriminative props or quoted text, (2) VERIFIED part‑relations/micro‑actions, (3) VERIFIED fine class, (4) clothing & clear pose/gaze, (5) object state/material, (6) viewpoint/orientation, (7) color, (8) lighting/reflection. Never prune VERIFIED items.\n\nAllowed verbs and motion\n- Use dynamic contact/motion verbs (jumping, swinging, reaching, holding) only when Contact or clear motion evidence is VERIFIED. Do not infer intentions, emotions, or unseen attributes.\n\nPruning, length, and determinism\n- Target caption length: 10–14 words. Hard cap: 18 words (allow up to 24 only if a VERIFIED quoted text string is included).\n- If over length, prune deterministically in this order until within cap: color → material/texture → reflections → lighting → background (unless background ≥5% image area or contains VERIFIED text) → low‑priority descriptors. Never drop VERIFIED discriminative props, VERIFIED fine classes, or VERIFIED part relations. When tokens tie, prefer shorter tokens and prefer nouns/props over adjectives.\n\nBackground & spatial rules\n- Include a background anchor only when that anchor occupies ≥5% image area or is a distinct structure (storefront, metal shutter, stage). Use compact phrases (\"storefront behind\", \"metal shutter at left\"). For text follow OCR rule above.\n- When multiple humans/animals are present, require short relational clauses connecting them (e.g., \"man left foreground, woman leaning over cart right foreground\").\n\nAnti‑hallucination fallbacks (use when cue/OCR fails)\n- Use concrete fallbacks: \"woven basket\", \"pile of fruit\", \"two‑wheeled vehicle\", \"toy ride\", \"minivan\", \"painted metal shutter\", \"signboard\", \"storefront\", \"cart\", \"pillow\". Do not invent fine classes beyond verification.\n\nTie‑breakers & cropping\n- If subject prominence ties, choose larger bbox area; if tied, choose leftmost centroid. If subject width >50% image width, emit \"center\". Append \"partially cropped at [top|bottom|left|right]\" only when >5% of subject area lies outside image.\n\nMandatory style constraints\n- Single sentence, comma‑separated short phrases; front‑load nouns/VERIFIED props; use digits only when Count VERIFIED; do not infer age, emotion, intention, or any unseen attributes; output nothing but the caption.\n\nMicro‑templates (follow these exact patterns)\n1) \"1 woman center foreground, right hand holding woven basket of oranges, storefront behind.\"  \n2) \"two dogs left foreground, small white dog jumping at car passenger window, woman leaning out.\"  \n3) \"1 person right foreground, standing by two‑wheeled vehicle with visible pedals and chain, metal shutter behind.\"  \n4) \"1 boy center foreground, seated on red toy ride, blue Mets jersey visible, playground court behind.\"  \n5) \"many dancers center foreground, line of red/gold sequined costumes, 'RADIO CITY' marquee behind.\"  \n6) \"1 man center foreground, chain attached to yellow cart with stickers, phone number on blue board at center.\"  \n\nFollow all rules above exactly; perform the internal verification and pruning, then emit the single final caption that satisfies these constraints.",
+  "prompt_id": "textgrad_bb96c46b5c",
+  "split_csv": "data/splits/flickr30k_main_seed1_train.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal/step_12/train/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal/step_12/train/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal/step_12/train/scores.csv",
+  "data_root": "data",
+  "summary": {
+    "n": 24,
+    "mean_clip": 0.3113118726760149,
+    "mean_siglip": 0.20004702731966972,
+    "mean_caption_len": 21.208333333333332,
+    "generic_rate": 0.0,
+    "mean_delta_clip": -0.00992438631753127,
+    "mean_delta_siglip": 0.010881166594723867,
+    "clip_win_rate": 0.5416666666666666,
+    "siglip_win_rate": 0.625
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_018651",
+      "image_relpath": "images/flickr30k/flickr30k_test_018651.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_018651.jpg",
+      "caption": "Man center foreground, straw hat, gray jacket, blue shirt, holding woven basket of oranges, red bicycle with black bag beside, orange wall behind.",
+      "clip_score": 0.3182317316532135,
+      "siglip_score": 0.2136166095733642,
+      "delta_clip": -0.08399194478988647,
+      "delta_siglip": 0.01707293093204501
+    },
+    {
+      "image_id": "flickr30k_test_019904",
+      "image_relpath": "images/flickr30k/flickr30k_test_019904.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_019904.jpg",
+      "caption": "man walking on bridge, beige jacket, dark pants, yellow brick building with red signs reading \"Le Mignon\", black lanterns, glass door visible",
+      "clip_score": 0.2560587227344513,
+      "siglip_score": 0.3005639910697937,
+      "delta_clip": -0.07526305317878723,
+      "delta_siglip": 0.016039341688156128
+    },
+    {
+      "image_id": "flickr30k_test_003536",
+      "image_relpath": "images/flickr30k/flickr30k_test_003536.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_003536.jpg",
+      "caption": "Boy center foreground, wearing blue jacket and beige pants, holding white paper, tree trunk right side, fallen leaves on ground.",
+      "clip_score": 0.2710423469543457,
+      "siglip_score": 0.1545429229736328,
+      "delta_clip": -0.07124841213226318,
+      "delta_siglip": -0.04242780804634089
+    },
+    {
+      "image_id": "flickr30k_test_008358",
+      "image_relpath": "images/flickr30k/flickr30k_test_008358.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_008358.jpg",
+      "caption": "Goalkeeper in red jersey number one dives full stretch to save shot, grass field under bright sunlight, trees lining background.",
+      "clip_score": 0.3013092279434204,
+      "siglip_score": 0.1779584437608719,
+      "delta_clip": -0.056804120540618896,
+      "delta_siglip": -0.023553386330604525
+    },
+    {
+      "image_id": "flickr30k_test_003075",
+      "image_relpath": "images/flickr30k/flickr30k_test_003075.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_003075.jpg",
+      "caption": "boy center foreground wearing white shirt and khaki pants, girl left foreground in blue raincoat with red belt, wet pavement reflecting light, minivan parked behind, child right foreground partially cropped.",
+      "clip_score": 0.3262149095535278,
+      "siglip_score": 0.2016322314739227,
+      "delta_clip": -0.04433989524841314,
+      "delta_siglip": -0.01791773736476901
+    },
+    {
+      "image_id": "flickr30k_test_030218",
+      "image_relpath": "images/flickr30k/flickr30k_test_030218.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_030218.jpg",
+      "caption": "Man center foreground, playing wooden flute, blue jeans, brown shoes, black bag beside, storefront behind.",
+      "clip_score": 0.3131396770477295,
+      "siglip_score": 0.1974759995937347,
+      "delta_clip": -0.04095572233200073,
+      "delta_siglip": -0.025130122900009183
+    },
+    {
+      "image_id": "flickr30k_test_012897",
+      "image_relpath": "images/flickr30k/flickr30k_test_012897.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_012897.jpg",
+      "caption": "woman center foreground, right hand holding paintbrush, canvas on easel, green foliage background, bright sunlight",
+      "clip_score": 0.3109196722507477,
+      "siglip_score": 0.1918070614337921,
+      "delta_clip": -0.0398806631565094,
+      "delta_siglip": 0.011078208684921292
+    },
+    {
+      "image_id": "flickr30k_test_025508",
+      "image_relpath": "images/flickr30k/flickr30k_test_025508.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_025508.jpg",
+      "caption": "One person mid-air flipping over sand dune, another person crouched at crest, clear blue sky above.",
+      "clip_score": 0.3322992324829101,
+      "siglip_score": 0.2030011862516403,
+      "delta_clip": -0.03337967395782471,
+      "delta_siglip": 0.008518204092979403
+    },
+    {
+      "image_id": "flickr30k_test_028178",
+      "image_relpath": "images/flickr30k/flickr30k_test_028178.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_028178.jpg",
+      "caption": "Man in red shirt and glasses plays trumpet under string lights, holding gold ornament, evergreen branches behind.",
+      "clip_score": 0.3572062849998474,
+      "siglip_score": 0.2106094062328338,
+      "delta_clip": -0.030518770217895508,
+      "delta_siglip": -0.014066934585571289
+    },
+    {
+      "image_id": "flickr30k_test_030831",
+      "image_relpath": "images/flickr30k/flickr30k_test_030831.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_030831.jpg",
+      "caption": "Person center foreground, hand holding stack of pancakes, kitchen cabinets behind, microwave on counter, blue wall to right.",
+      "clip_score": 0.2343046218156814,
+      "siglip_score": 0.1239188462495803,
+      "delta_clip": -0.016450360417366083,
+      "delta_siglip": -0.008866831660270691
+    },
+    {
+      "image_id": "flickr30k_test_005524",
+      "image_relpath": "images/flickr30k/flickr30k_test_005524.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_005524.jpg",
+      "caption": "Little girl center foreground, wearing party hat, blowing balloon tied with string, adult legs visible left side.",
+      "clip_score": 0.2862905263900757,
+      "siglip_score": 0.1979849636554718,
+      "delta_clip": -0.01542061567306513,
+      "delta_siglip": 0.018437057733535794
+    },
+    {
+      "image_id": "flickr30k_test_000833",
+      "image_relpath": "images/flickr30k/flickr30k_test_000833.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_000833.jpg",
+      "caption": "Three boys play paddleball on wet sand, one holding blue paddle, another red, waves rolling behind them.",
+      "clip_score": 0.3037825524806976,
+      "siglip_score": 0.2117890119552612,
+      "delta_clip": 0.0001054704189299982,
+      "delta_siglip": 0.026263386011123713
+    }
+  ]
+}

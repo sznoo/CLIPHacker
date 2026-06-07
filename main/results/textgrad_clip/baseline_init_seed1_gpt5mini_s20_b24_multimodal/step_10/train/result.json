@@ -1,0 +1,142 @@
+{
+  "prompt": "Output exactly one concise, information‑dense caption: a single grammatical sentence composed of comma‑separated short phrases. Produce only that single sentence (no lists, tags, JSON, diagnostics, or extra lines). Use digits for counts only when the Count verification below passes. Do not infer age, emotion, intention, or any unseen attributes.\n\nMandatory generation procedure (two‑pass)\n1) Proposal: internally enumerate candidate tokens for each slot: 1–3 subject groups (prominence order), optional single micro‑action slot, one part‑level relation (if contact verified), up to three descriptors, optional viewpoint/orientation, lighting, and background/text tokens.  \n2) Verification & pruning: apply all numeric and cue checks below to every candidate; drop any token that fails; then deterministically recompose exactly one grammatical comma‑separated sentence from the remaining verified tokens. If pruning removes a slot, ensure the sentence remains grammatical.\n\nRequired overall format & hard limits\n- Render 1–3 clearly separable subject groups in prominence order. Each group: [digit if verified] + subject noun(s) + spatial anchor (left/center/right) and optional depth token only when depth verification passes. Target ≤24 words; allow up to +10% (≤27 words) only to include a fully legible quoted text string or one necessary verified part‑relation or background anchor. Use active, compressed noun‑verb phrases.\n\nNumeric verification rules (deterministic)\n- Count: include a digit only if each instance is ≥50% unobstructed and individually separable. Separability = (centroid spacing ≥10% image width) AND (IOU between subject bboxes <0.10). If either fails, omit digits and emit a generic singular/plural group without numbers.\n- Contact (micro‑action): assert contact only if overlap area / smaller bbox area ≥12% AND segmentation/pixel adjacency supports true touch (distinguish hand-to-person vs hand-to-glass by contiguous skin pixels or visible arm through window). If contact verified, include exactly one verbized micro‑action and one part relation using the template: \"[left|right] [hand/foot/part] [verb] [object]\" (e.g., \"right hand holding pole\"). Always specify which part (left/right) when emitting micro‑actions. If contact not verified, omit both micro‑action and part relation.\n- Fine object class: emit a fine class only if classifier confidence >0.60 OR a matching explicit cue‑pair (see cue‑pair table). If metadata unavailable, require the cue‑pair. Do not invent fine classes otherwise.\n- Text transcription: quote exact text only if fully legible at ≳8pt equivalent and high contrast; otherwise emit a positional label (\"painted text on shutter at left\", \"phone number on board at center\") and include dominant sign color/shape when legible transcription fails.\n- Background anchor: include a background noun phrase only when that anchor occupies ≥5% image area OR is a distinct structure (storefront, stairway, metal shutter). Use compact phrases (e.g., \"storefront behind\", \"metal shutter at left\").\n\nCue‑pair templates (explicit, implementable)\n- Mug/thermos: (handle + open top) OR (cylindrical body + metal rim/lid).  \n- Ladder: (visible rungs + side rails) OR (rungs + ladder leaning against vertical structure).  \n- Jackfruit/produce: (spiky rind + large yellow flesh) OR (leaf bed + multiple cut pieces).  \n- Vendor: (baskets/piles of produce + countertop/table) OR (scale/pans + transaction posture).  \n- Dog touching person: (paw bbox overlapping human limb bbox ≥12%) OR (continuous pixels showing paw contacting arm/hand).  \n- Car/window interaction: (open window + person arm visible through opening) OR (hand overlapping person inside bbox ≥12%).  \n- Bicycle: (pedals + chain) OR (spokes + visible pedals).  \n- Motorbike: (engine casing + exhaust) OR (frame + visible exhaust).  \nOnly emit the category token when a listed cue‑pair passes.\n\nDescriptor selection & priority (up to 1–3)\nPriority order (highest→lowest): (1) discriminative prop (unique object, container, tool, sign text), (2) quoted text (if verified), (3) precise fine class (cue‑pair or confidence), (4) clothing & gaze/pose (e.g., \"woman in yellow hoodie\", \"man glancing toward camera\"), (5) material/texture, (6) color, (7) reflection/surface. If any discriminative prop or verified part‑relation passes verification, it is mandatory and must be preserved in the final sentence (protected from pruning).\n\nMicro‑action & part‑relation rules (strict)\n- Include exactly one micro‑action only if Contact verification passes. Use the exact template: \"[left|right] [part] [verb] [object]\" (e.g., \"right hand holding mug\"). Do not use \"with\" except inside this template. Use a strong verb; avoid passive or vague forms.\n\nPose/orientation & object state\n- Include one orientation token when unambiguous by measurable cues (e.g., symmetrical face orientation, torso angle): \"facing camera\", \"turned away\", \"leaning over\". Include one object‑state descriptor when clearly visible (e.g., \"open instrument case\", \"wet reflective surface\").\n\nTrimming & deterministic pruning order\n- If over length, deterministically drop tokens in this order until within limit: color → viewpoint/orientation → lighting → reflections → material/texture → background (unless ≥5% area or contains legible text) → low‑priority descriptors. Never drop a verified discriminative prop or a verified part relation. When tokens tie in priority, remove the one with lower brevity value (longer word cost). Preserve nouns/props early in the sentence.\n\nDeterministic tie‑breakers\n- If two subjects have similar prominence, choose the one with larger bbox area. If bbox areas tie, choose the leftmost centroid. If subject width >50% image width → emit \"center\". Append \"partially cropped at [top|bottom|left|right]\" if >5% of subject area lies outside the image.\n\nBackground, signage & reflections\n- If text verified per Text rule, quote exact string. If not, emit a positional label and include dominant sign color/shape (e.g., \"painted white phone number on blue board at center\"). Label reflections explicitly only when doubled/reversed on glass; otherwise prefer neutral positional phrasing.\n\nCount & saliency rules\n- Allow digits only when Count verification passes. Include a secondary subject group only if it covers ≥20% of main subject area OR ranks top‑2 by area/saliency. When saliency metadata unavailable, use area thresholds.\n\nSafety & anti‑hallucination fallbacks\n- If classifier confidence or cue‑pairs fail, ban unverifiable fine‑class tokens and instead use neutral but concrete descriptors (e.g., \"metal container\", \"folded paper\"). Do not invent specifics. Do not output vague quantifiers like \"several\".\n\nFinal composition order (recommended)\n- Subject groups (1–3) → micro‑action (if verified) → mandatory discriminative prop/part relation → up to 1–3 descriptors (priority order above) → background/text token → optional orientation/state token.\n\nMicro‑templates & short \"bad→good\" examples to emulate\n- Bad: \"man holding something\" → Good: \"1 man center foreground, right hand holding woven basket of oranges, storefront behind.\"  \n- Bad: \"sign\" (illegible) → Good: \"1 woman center foreground, walking past painted text on metal shutter at left, red background.\"  \n- Bad: \"person on ladder\" (uncertain) → Good: \"1 worker right foreground, holding orange ladder with visible rungs leaning against brick chimney.\"  \n- Bad: \"vendor\" (uncertain) → Good: \"1 vendor left foreground, cutting jackfruit on leaf bed, piles of fruit on table behind.\"  \n- Bad: \"dog near car\" → Good: \"1 small white dog center foreground, mid‑jump paw contacting passenger hand through open window of silver car.\"  \n- Bad: \"bike\" (uncertain) → Good: \"1 man right foreground, standing by bicycle with visible pedals and chain, storefront behind.\"\n\nFinal rules (must obey)\n- Always perform the two‑pass proposal → verification → pruning process, then emit exactly one grammatical, comma‑separated sentence that front‑loads high‑value nouns/props, preserves verified discriminative props and part relations, respects numeric thresholds (contact ≥12%, centroid spacing ≥10%, background ≥5% area, subject crop >5%→append crop token), and stays within the word limit.  \n- Do not output multiple candidates, internal logs, or any extra text. Use digits only when verified. Do not infer age, emotion, intention, or unseen attributes.",
+  "prompt_id": "textgrad_10d46f3355",
+  "split_csv": "data/splits/flickr30k_main_seed1_train.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal/step_10/train/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal/step_10/train/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal/step_10/train/scores.csv",
+  "data_root": "data",
+  "summary": {
+    "n": 24,
+    "mean_clip": 0.30351147676507634,
+    "mean_siglip": 0.19883397904535127,
+    "mean_caption_len": 24.458333333333332,
+    "generic_rate": 0.0,
+    "mean_delta_clip": -0.022810002788901326,
+    "mean_delta_siglip": 0.004000510089099391,
+    "clip_win_rate": 0.25,
+    "siglip_win_rate": 0.4583333333333333
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_018651",
+      "image_relpath": "images/flickr30k/flickr30k_test_018651.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_018651.jpg",
+      "caption": "1 man center foreground, right hand holding scale, bicycle with visible pedals parked beside, baskets of oranges at left, storefront behind.",
+      "clip_score": 0.2948285341262817,
+      "siglip_score": 0.1707566082477569,
+      "delta_clip": -0.10739514231681829,
+      "delta_siglip": -0.02578707039356229
+    },
+    {
+      "image_id": "flickr30k_test_021782",
+      "image_relpath": "images/flickr30k/flickr30k_test_021782.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_021782.jpg",
+      "caption": "1 man center foreground, right hand holding chain attached to metal shutter, painted yellow sign with phone number (212)625-9212 at left, storefront behind.",
+      "clip_score": 0.2501571178436279,
+      "siglip_score": 0.2237831950187683,
+      "delta_clip": -0.08929097652435303,
+      "delta_siglip": 0.0227579474449158
+    },
+    {
+      "image_id": "flickr30k_test_029272",
+      "image_relpath": "images/flickr30k/flickr30k_test_029272.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_029272.jpg",
+      "caption": "1 man center foreground, mid-air jump, right foot near green sneaker, gray sweatpants, black t-shirt, crowd behind, trees at background.",
+      "clip_score": 0.2563663125038147,
+      "siglip_score": 0.1695463061332702,
+      "delta_clip": -0.08255594968795771,
+      "delta_siglip": -0.0149450302124024
+    },
+    {
+      "image_id": "flickr30k_test_019300",
+      "image_relpath": "images/flickr30k/flickr30k_test_019300.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_019300.jpg",
+      "caption": "1 man center foreground, climbing wooden roof frame, wearing white shirt and blue shorts, clear blue sky above, grassy field background.",
+      "clip_score": 0.2723465859889984,
+      "siglip_score": 0.1902811080217361,
+      "delta_clip": -0.05921533703804016,
+      "delta_siglip": 0.07935103029012679
+    },
+    {
+      "image_id": "flickr30k_test_030685",
+      "image_relpath": "images/flickr30k/flickr30k_test_030685.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_030685.jpg",
+      "caption": "1 man left foreground, gesturing with open palms, 1 man center foreground, right hand holding red cup, white wall with painted text including \"Squidoo\" and \"Flock\", wooden floor extending right, hallway receding into background.",
+      "clip_score": 0.2984018921852112,
+      "siglip_score": 0.193697303533554,
+      "delta_clip": -0.041005551815032903,
+      "delta_siglip": -0.03983119130134591
+    },
+    {
+      "image_id": "flickr30k_test_016046",
+      "image_relpath": "images/flickr30k/flickr30k_test_016046.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_016046.jpg",
+      "caption": "Two women center foreground, one holding spray bottle, one gesturing toward yellow basin on table, group seated right, trees and brick wall background.",
+      "clip_score": 0.297906756401062,
+      "siglip_score": 0.2092639803886413,
+      "delta_clip": -0.039584219455718994,
+      "delta_siglip": 0.0502704381942749
+    },
+    {
+      "image_id": "flickr30k_test_030218",
+      "image_relpath": "images/flickr30k/flickr30k_test_030218.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_030218.jpg",
+      "caption": "1 man center foreground, left hand holding wooden flute, standing beside black instrument case on sidewalk, storefront behind.",
+      "clip_score": 0.3156840801239013,
+      "siglip_score": 0.2082187086343765,
+      "delta_clip": -0.03841131925582891,
+      "delta_siglip": -0.014387413859367398
+    },
+    {
+      "image_id": "flickr30k_test_014728",
+      "image_relpath": "images/flickr30k/flickr30k_test_014728.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_014728.jpg",
+      "caption": "1 man center foreground, right hand holding camera, crowd observing large patterned sphere, metal shutter at left, bright light from vertical slats.",
+      "clip_score": 0.2817253470420837,
+      "siglip_score": 0.1846561729907989,
+      "delta_clip": -0.03490898013114929,
+      "delta_siglip": -0.033468022942543
+    },
+    {
+      "image_id": "flickr30k_test_014348",
+      "image_relpath": "images/flickr30k/flickr30k_test_014348.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_014348.jpg",
+      "caption": "1 softball player center foreground, right hand swinging bat, red jersey with number 10, white pants, black helmet, dirt field, painted text \"OM\" and eagle logo on fence behind.",
+      "clip_score": 0.2577491104602813,
+      "siglip_score": 0.1759816408157348,
+      "delta_clip": -0.03440693020820618,
+      "delta_siglip": 0.020478069782257108
+    },
+    {
+      "image_id": "flickr30k_test_025508",
+      "image_relpath": "images/flickr30k/flickr30k_test_025508.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_025508.jpg",
+      "caption": "1 person center foreground, mid-air flip above sand dune, right hand near head, orange shorts, clear blue sky background.",
+      "clip_score": 0.3360986709594726,
+      "siglip_score": 0.2216374725103378,
+      "delta_clip": -0.029580235481262207,
+      "delta_siglip": 0.027154490351676913
+    },
+    {
+      "image_id": "flickr30k_test_013831",
+      "image_relpath": "images/flickr30k/flickr30k_test_013831.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_013831.jpg",
+      "caption": "1 border collie center foreground, mid-air leaping over red obstacle, black-and-white coat, grass field background, spectators at right.",
+      "clip_score": 0.3293854296207428,
+      "siglip_score": 0.1850427985191345,
+      "delta_clip": -0.027160942554473877,
+      "delta_siglip": 0.05149522423744199
+    },
+    {
+      "image_id": "flickr30k_test_024978",
+      "image_relpath": "images/flickr30k/flickr30k_test_024978.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_024978.jpg",
+      "caption": "1 man center foreground, sitting on wooden chair, blue car parked behind, painted text \"VICO DEL FICO AL PVRGATORIO\" on wall at right.",
+      "clip_score": 0.3116726875305176,
+      "siglip_score": 0.2537750899791717,
+      "delta_clip": -0.022452622652053833,
+      "delta_siglip": 0.008724212646484403
+    }
+  ]
+}

@@ -1,0 +1,117 @@
+{
+  "prompt": "Write exactly one short, factual caption (a single sentence of 8–14 words) that describes only visible content in the image. Be literal and concrete: state visible objects, clear actions, counts when they are clearly seen, simple spatial relations, and observable colors. Do not infer or guess unseen attributes (age, emotions, relationships, intentions) and do not use figurative, evaluative, or subjective language (no metaphors or opinion words like \"beautiful\" or \"daring\"). Prefer common everyday nouns and verbs (man, woman, child, dog, bike, car, street, tree, sitting, riding). Include adjectives only if directly visible; if a count is uncertain, omit it. Output exactly one sentence caption only — no labels, keywords, examples, or extra text. Examples of the desired style: \"Three children jump on a sandy beach near the shoreline.\" \"A man pushes a bicycle across a sunlit city street.\" \"Black dog runs on grass toward a red frisbee in sunlight.\"",
+  "prompt_id": "textgrad_7e864dc8d5",
+  "split_csv": "data/splits/flickr30k_main_seed1_train.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_01/train/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_01/train/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_01/train/scores.csv",
+  "summary": {
+    "n": 24,
+    "mean_clip": 0.3225782091418902,
+    "mean_siglip": 0.18441733469565705,
+    "mean_caption_len": 11.625,
+    "generic_rate": 0.0,
+    "mean_delta_clip": -0.008046669264634472,
+    "mean_delta_siglip": -0.005270142108201974,
+    "clip_win_rate": 0.4583333333333333,
+    "siglip_win_rate": 0.4166666666666667
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_012278",
+      "caption": "Two men sit on a rooftop with a black-and-white dog nearby.",
+      "clip_score": 0.2344158887863159,
+      "siglip_score": 0.1337906420230865,
+      "delta_clip": -0.0635206997394562,
+      "delta_siglip": -0.0731571018695831
+    },
+    {
+      "image_id": "flickr30k_test_003349",
+      "caption": "Child in red coat stands before a store window display.",
+      "clip_score": 0.3155354559421539,
+      "siglip_score": 0.1684617549180984,
+      "delta_clip": -0.048463195562362726,
+      "delta_siglip": -0.10709582269191742
+    },
+    {
+      "image_id": "flickr30k_test_008727",
+      "caption": "A child in blue pajamas stands beside a girl sitting on the floor.",
+      "clip_score": 0.3037616908550262,
+      "siglip_score": 0.1796384006738662,
+      "delta_clip": -0.04409345984458929,
+      "delta_siglip": -0.05365316569805151
+    },
+    {
+      "image_id": "flickr30k_test_009311",
+      "caption": "Child sits at edge of fountain with water spraying around.",
+      "clip_score": 0.3034719824790954,
+      "siglip_score": 0.1596707701683044,
+      "delta_clip": -0.027089625597000178,
+      "delta_siglip": -0.0080075412988663
+    },
+    {
+      "image_id": "flickr30k_test_023641",
+      "caption": "A woman in a striped shirt walks on a wet cobblestone street under trees.",
+      "clip_score": 0.3119629025459289,
+      "siglip_score": 0.1656633913516998,
+      "delta_clip": -0.02628010511398321,
+      "delta_siglip": -0.013974741101264898
+    },
+    {
+      "image_id": "flickr30k_test_016246",
+      "caption": "Child carries bundle of colorful balloons down paved street.",
+      "clip_score": 0.3105685114860534,
+      "siglip_score": 0.2037621289491653,
+      "delta_clip": -0.02407550811767578,
+      "delta_siglip": -0.003670111298561124
+    },
+    {
+      "image_id": "flickr30k_test_030359",
+      "caption": "A soccer player in white kicks a ball near a goalkeeper in red.",
+      "clip_score": 0.2684342265129089,
+      "siglip_score": 0.1033751964569091,
+      "delta_clip": -0.0237992405891419,
+      "delta_siglip": -0.05043813586235049
+    },
+    {
+      "image_id": "flickr30k_test_003075",
+      "caption": "Two children walk through water on a wet street near parked cars.",
+      "clip_score": 0.3486072123050689,
+      "siglip_score": 0.1897928565740585,
+      "delta_clip": -0.021947592496872004,
+      "delta_siglip": -0.029757112264633206
+    },
+    {
+      "image_id": "flickr30k_test_006091",
+      "caption": "A child sits on a kitchen counter under a running faucet.",
+      "clip_score": 0.3637682795524597,
+      "siglip_score": 0.2087521255016327,
+      "delta_clip": -0.021204113960266058,
+      "delta_siglip": -0.0344290286302566
+    },
+    {
+      "image_id": "flickr30k_test_026274",
+      "caption": "A man rides a brown horse rearing up on its hind legs.",
+      "clip_score": 0.2889556884765625,
+      "siglip_score": 0.1653243154287338,
+      "delta_clip": -0.02078878879547119,
+      "delta_siglip": 0.0682339742779732
+    },
+    {
+      "image_id": "flickr30k_test_028178",
+      "caption": "Man plays trumpet under lit tree with red shirt and glasses.",
+      "clip_score": 0.3685038685798645,
+      "siglip_score": 0.2200477123260498,
+      "delta_clip": -0.019221186637878418,
+      "delta_siglip": -0.004628628492355291
+    },
+    {
+      "image_id": "flickr30k_test_029824",
+      "caption": "A woman stands behind a black desk with \"London 2012\" and Olympic rings.",
+      "clip_score": 0.3740252256393432,
+      "siglip_score": 0.2241909801959991,
+      "delta_clip": -0.01763007044792181,
+      "delta_siglip": -0.021815478801727323
+    }
+  ]
+}

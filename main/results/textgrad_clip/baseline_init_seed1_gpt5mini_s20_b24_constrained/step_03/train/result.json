@@ -1,0 +1,117 @@
+{
+  "prompt": "Write exactly one literal, factual sentence (8–14 words) describing only visible content in the image. Preferred concise template: Primary subject + one or two high‑signal attribute(s) + action/pose + location/nearby object. High‑signal attributes = specific object type (e.g., fountain, electric guitar), visible color/pattern, clear count (two, three), clothing/accessory, or legible text/logo. Require at least one high‑signal token and permit a second when clearly visible. Place at least one high‑signal token within the first three words (e.g., subject immediately followed by attribute: “woman red bicycle …”). Keep attribute and noun adjacent (prefer “red bicycle” not “bicycle that is red”) and favor compact, noun‑rich phrasing; avoid filler words and adverbs. If text/logo is legible, include the exact text verbatim as a high‑signal token and place it early when natural. Use exact numerals when each item is fully visible; if >3 or indistinct use “several”; if uncertain, omit counts. Do not infer unseen attributes (age, emotion, relationships, intent) and do not use figurative, evaluative, or subjective language. Use “person” if gender or age is unclear; use “man,” “woman,” or “child” only when clearly visible. Output exactly one short sentence only — no labels, examples, lists, or extra text.",
+  "prompt_id": "textgrad_16745112b6",
+  "split_csv": "data/splits/flickr30k_main_seed1_train.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_03/train/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_03/train/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_03/train/scores.csv",
+  "summary": {
+    "n": 24,
+    "mean_clip": 0.3066060623774926,
+    "mean_siglip": 0.17273138339320818,
+    "mean_caption_len": 10.583333333333334,
+    "generic_rate": 0.0,
+    "mean_delta_clip": -0.020260496685902296,
+    "mean_delta_siglip": -0.016840270099540536,
+    "clip_win_rate": 0.08333333333333333,
+    "siglip_win_rate": 0.25
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_000833",
+      "caption": "Child with blue paddle stands near water holding paddle.",
+      "clip_score": 0.2375539094209671,
+      "siglip_score": 0.1081464737653732,
+      "delta_clip": -0.06612317264080048,
+      "delta_siglip": -0.07737915217876429
+    },
+    {
+      "image_id": "flickr30k_test_001002",
+      "caption": "Person in red hat and maroon jacket sits weaving on colorful blanket.",
+      "clip_score": 0.3045568168163299,
+      "siglip_score": 0.1779741644859314,
+      "delta_clip": -0.05435410141944891,
+      "delta_siglip": -0.05420663952827451
+    },
+    {
+      "image_id": "flickr30k_test_026274",
+      "caption": "Man in cowboy hat riding brown horse with “PAY” banner nearby.",
+      "clip_score": 0.2558339238166809,
+      "siglip_score": 0.1012938022613525,
+      "delta_clip": -0.05391055345535278,
+      "delta_siglip": 0.004203461110591902
+    },
+    {
+      "image_id": "flickr30k_test_022494",
+      "caption": "Man in orange shirt holding orange ladder near brick wall.",
+      "clip_score": 0.3075218796730041,
+      "siglip_score": 0.1813204288482666,
+      "delta_clip": -0.053596228361129816,
+      "delta_siglip": -0.034384444355964605
+    },
+    {
+      "image_id": "flickr30k_test_026288",
+      "caption": "Man in brown shirt crouches beside jackfruit on green leaves.",
+      "clip_score": 0.3478048741817474,
+      "siglip_score": 0.1768573522567749,
+      "delta_clip": -0.030168354511261042,
+      "delta_siglip": -0.04328162968158719
+    },
+    {
+      "image_id": "flickr30k_test_007264",
+      "caption": "Woman in white top crouches near small dog on leash.",
+      "clip_score": 0.3033632040023803,
+      "siglip_score": 0.1843561232089996,
+      "delta_clip": -0.02834075689315796,
+      "delta_siglip": -0.06039431691169739
+    },
+    {
+      "image_id": "flickr30k_test_025508",
+      "caption": "Person in orange shorts mid-flip above sand dune under blue sky.",
+      "clip_score": 0.337652176618576,
+      "siglip_score": 0.1944550722837448,
+      "delta_clip": -0.028026729822158813,
+      "delta_siglip": -2.790987491607666e-05
+    },
+    {
+      "image_id": "flickr30k_test_030218",
+      "caption": "Bearded man in brown jacket plays flute on sidewalk near building.",
+      "clip_score": 0.3282187879085541,
+      "siglip_score": 0.2199207544326782,
+      "delta_clip": -0.025876611471176147,
+      "delta_siglip": -0.0026853680610657016
+    },
+    {
+      "image_id": "flickr30k_test_027960",
+      "caption": "Three boys in white jerseys run with a green ball on a dirt field.",
+      "clip_score": 0.2906124591827392,
+      "siglip_score": 0.1328390091657638,
+      "delta_clip": -0.025251209735870417,
+      "delta_siglip": -0.022952914237976102
+    },
+    {
+      "image_id": "flickr30k_test_009495",
+      "caption": "Woman with yellow bag stands near man in dark jacket.",
+      "clip_score": 0.2681790888309479,
+      "siglip_score": 0.138996809720993,
+      "delta_clip": -0.021804243326187134,
+      "delta_siglip": -0.06216040253639221
+    },
+    {
+      "image_id": "flickr30k_test_012029",
+      "caption": "Several people board a floating temple near a stone embankment.",
+      "clip_score": 0.3294187188148498,
+      "siglip_score": 0.1768411993980407,
+      "delta_clip": -0.021766066551208496,
+      "delta_siglip": 0.035226345062255776
+    },
+    {
+      "image_id": "flickr30k_test_025138",
+      "caption": "Woman in black beanie and leather jacket stands near railing.",
+      "clip_score": 0.2601858377456665,
+      "siglip_score": 0.1355329304933548,
+      "delta_clip": -0.02113452553749079,
+      "delta_siglip": -0.013075292110443115
+    }
+  ]
+}

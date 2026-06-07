@@ -1,0 +1,142 @@
+{
+  "prompt": "Produce exactly one concise, information-dense caption (one grammatical sentence) describing only visibly present facts. Follow this ordered checklist and include each item only if clearly visible; omit any field you cannot verify:\n\n- 1) Exact count(s) using numerals (e.g., \"3 people\") and arrangement with left/center/right or foreground/midground/background.\n- 2) Main subject(s) and precise action naming specific body/vehicle parts involved (e.g., \"pushing bicycle by the handlebars,\" \"rear wheel lifted,\" \"holding puppet by right hand\").\n- 3) Salient object descriptors: colors, materials, and distinctive accessories (e.g., \"red bag on right handlebar,\" \"chrome frame,\" \"striped shirt\").\n- 4) One short camera viewpoint token (e.g., \"wide shot,\" \"high-angle,\" \"close-up\").\n- 5) One short lighting/shadow token (e.g., \"backlit,\" \"long shadow to left,\" \"spotlight\").\n- 6) One background landmark or surface texture (e.g., \"cracked salt flat,\" \"red-tiled roof,\" \"draped blue tent\").\n\nUse concrete positional language (left/center/right, foreground/midground/background). Do not use vague quantifiers (\"several,\" \"some,\" \"a group\"), do not infer relationships, motivations, emotions, or use metaphors; state only what is directly visible. Keep the sentence concise and information-dense, following the approximate order: count + subject + action/part + descriptors + viewpoint + lighting + background.",
+  "prompt_id": "textgrad_2e7920a9d2",
+  "split_csv": "data/splits/flickr30k_main_seed1_val.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal/step_00/val/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal/step_00/val/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal/step_00/val/scores.csv",
+  "data_root": "data",
+  "summary": {
+    "n": 150,
+    "mean_clip": 0.3279942049582799,
+    "mean_siglip": 0.1905046058570345,
+    "mean_caption_len": 42.56,
+    "generic_rate": 0.02,
+    "mean_delta_clip": 0.0034287566443284337,
+    "mean_delta_siglip": -0.008335939832031724,
+    "clip_win_rate": 0.5666666666666667,
+    "siglip_win_rate": 0.4
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_030505",
+      "image_relpath": "images/flickr30k/flickr30k_test_030505.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_030505.jpg",
+      "caption": "No exact count, no specific action or part, no salient object descriptors, no camera viewpoint, no lighting token, no background landmark or surface texture clearly visible to satisfy all checklist items.",
+      "clip_score": 0.2070552110671997,
+      "siglip_score": -0.023572402074933,
+      "delta_clip": -0.1286355853080749,
+      "delta_siglip": -0.1943055111914872
+    },
+    {
+      "image_id": "flickr30k_test_030505",
+      "image_relpath": "images/flickr30k/flickr30k_test_030505.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_030505.jpg",
+      "caption": "No exact count, no specific action or part, no salient object descriptors, no camera viewpoint, no lighting token, no background landmark or surface texture clearly visible to satisfy all checklist items.",
+      "clip_score": 0.2070552110671997,
+      "siglip_score": -0.023572402074933,
+      "delta_clip": -0.12654927372932429,
+      "delta_siglip": -0.2411304283887147
+    },
+    {
+      "image_id": "flickr30k_test_026513",
+      "image_relpath": "images/flickr30k/flickr30k_test_026513.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_026513.jpg",
+      "caption": "Three people in foreground/midground: left man in blue jacket and beige pants walks; center woman in blue hooded jacket holds umbrella; right man in yellow jacket operates camera on tripod; all under open umbrella, with potted plants and building wall in background.",
+      "clip_score": 0.3190506100654602,
+      "siglip_score": 0.2235790193080902,
+      "delta_clip": -0.08362340927124018,
+      "delta_siglip": -0.03643965721130371
+    },
+    {
+      "image_id": "flickr30k_test_014144",
+      "image_relpath": "images/flickr30k/flickr30k_test_014144.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_014144.jpg",
+      "caption": "One man in a dark blue uniform and safety glasses, holding a grinder in his right hand and wearing a white glove on his left hand, grinds metal against a row of gray lockers in a tiled hallway, viewed from a side angle with bright sparks illuminating the scene.",
+      "clip_score": 0.2809880971908569,
+      "siglip_score": 0.2295795828104019,
+      "delta_clip": -0.0806153416633606,
+      "delta_siglip": -0.0012495666742325107
+    },
+    {
+      "image_id": "flickr30k_test_006548",
+      "image_relpath": "images/flickr30k/flickr30k_test_006548.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_006548.jpg",
+      "caption": "Three people in orange high-visibility vests stand left of center near scaffolding; one holds a sign, another leans against it, and the third stands beside them, all under artificial lighting with a green-painted metal structure and a \"Brent Oak\" station sign in the midground.",
+      "clip_score": 0.2762603163719177,
+      "siglip_score": 0.1708770990371704,
+      "delta_clip": -0.07415500283241266,
+      "delta_siglip": -0.010797813534736578
+    },
+    {
+      "image_id": "flickr30k_test_010223",
+      "image_relpath": "images/flickr30k/flickr30k_test_010223.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_010223.jpg",
+      "caption": "One man seated in a brown leather chair, holding a clear plastic cup in his left hand and a bottle of whiskey in his right hand, wearing a gray long-sleeved shirt and blue jeans, with a silver watch on his right wrist, viewed from a medium shot with warm lighting against a wall with a window featuring",
+      "clip_score": 0.2780714631080627,
+      "siglip_score": 0.1965071260929107,
+      "delta_clip": -0.07371395826339722,
+      "delta_siglip": -0.0008406490087508878
+    },
+    {
+      "image_id": "flickr30k_test_006548",
+      "image_relpath": "images/flickr30k/flickr30k_test_006548.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_006548.jpg",
+      "caption": "Three people in orange high-visibility vests stand left of center near scaffolding; one holds a sign, another leans against it, and the third stands beside them, all under artificial lighting with a green-painted metal structure and a \"Brent Oak\" station sign in the midground.",
+      "clip_score": 0.2762603163719177,
+      "siglip_score": 0.1708770990371704,
+      "delta_clip": -0.07158684730529785,
+      "delta_siglip": -0.04650135338306419
+    },
+    {
+      "image_id": "flickr30k_test_011250",
+      "image_relpath": "images/flickr30k/flickr30k_test_011250.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_011250.jpg",
+      "caption": "Two children, one in a brown \"LAKE PLACID\" shirt and patterned shorts and the other in a red-striped shirt and blue jeans, stand in the foreground holding hands, with a yellow caution tape stretching horizontally across the midground grass and an airplane visible in the distant background under a clear blue sky.",
+      "clip_score": 0.351985901594162,
+      "siglip_score": 0.2562437653541565,
+      "delta_clip": -0.06060788035392761,
+      "delta_siglip": 0.03572814166545871
+    },
+    {
+      "image_id": "flickr30k_test_014144",
+      "image_relpath": "images/flickr30k/flickr30k_test_014144.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_014144.jpg",
+      "caption": "One man in a dark blue uniform and safety glasses, holding a grinder in his right hand and wearing a white glove on his left hand, grinds metal against a row of gray lockers in a tiled hallway, viewed from a side angle with bright sparks illuminating the scene.",
+      "clip_score": 0.2809880971908569,
+      "siglip_score": 0.2295795828104019,
+      "delta_clip": -0.05480241775512701,
+      "delta_siglip": 0.00664407014846799
+    },
+    {
+      "image_id": "flickr30k_test_016590",
+      "image_relpath": "images/flickr30k/flickr30k_test_016590.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_016590.jpg",
+      "caption": "Three people—two women and one boy—stand on a stone-paved midground step; one woman holds a blue-and-white striped umbrella, another wears a colorful woven skirt and carries a green bag, while the boy in a white shirt stands beside them near a water bottle, all under bright daylight with a stone wall",
+      "clip_score": 0.3106449842453003,
+      "siglip_score": 0.1687899082899093,
+      "delta_clip": -0.05394035577774042,
+      "delta_siglip": -0.05740886926650998
+    },
+    {
+      "image_id": "flickr30k_test_005250",
+      "image_relpath": "images/flickr30k/flickr30k_test_005250.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_005250.jpg",
+      "caption": "One woman in a black dress holds a bouquet of red flowers in the center foreground, while another woman in a black coat holds a purple bouquet to her left, and a bride in a white veil is partially visible to the right midground; the scene is captured from a medium shot with ambient indoor lighting against a backdrop of",
+      "clip_score": 0.31087726354599,
+      "siglip_score": 0.2314658612012863,
+      "delta_clip": -0.0505070686340332,
+      "delta_siglip": 0.022225663065910395
+    },
+    {
+      "image_id": "flickr30k_test_005806",
+      "image_relpath": "images/flickr30k/flickr30k_test_005806.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_005806.jpg",
+      "caption": "One person, wearing a beige long-sleeved shirt and blue jeans, is bending over and reaching into an open black suitcase in the foreground, with various items including a red bag and plastic containers visible inside and around the suitcase, viewed from a high-angle perspective under even lighting, against a background of a cluttered room",
+      "clip_score": 0.324064552783966,
+      "siglip_score": 0.1638586819171905,
+      "delta_clip": -0.050129473209381104,
+      "delta_siglip": -0.0470653772354126
+    }
+  ]
+}

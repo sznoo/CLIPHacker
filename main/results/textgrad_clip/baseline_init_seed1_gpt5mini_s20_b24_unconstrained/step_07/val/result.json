@@ -1,0 +1,117 @@
+{
+  "prompt": "Output exactly two lines only.\n\nLine 1 — tags (format rules)\n- 2–5 comma-separated lower-case tokens (prefer 3). No punctuation except commas.\n- Tokens must be visible nouns or a single visible adjective (color/size). Multiword fused objects allowed (e.g., \"traffic light\", \"wine bottle\") as one token.\n- At least two tokens must be nouns. At most one token may be an attribute (color/size).\n- Deduplicate tokens; order by visual salience (most discriminative first). Prefer concrete, specific nouns (e.g., \"trumpet\" over \"person\" when a detector is confident).\n- Only include an attribute if a detector/segmenter reports ≥75% confidence for that attribute; if detectors are unavailable, omit attributes.\n- Forbidden tokens: never output meta/instruction words or tooling vocabulary (for example: prompt, detectors, thresholds, length, caption, tags, line, template, score, clip, siglip, example). Never output proper nouns, brand names, dates, events, or emotions.\n\nLine 2 — caption (format rules)\n- Either A) one factual short sentence in present simple/progressive of 7–14 words, OR B) a 2–3 word fallback (main noun + visible location) when a compliant 7–14 word caption would require guessing. If tags cannot be produced reliably, output exactly: image unclear\n- The main noun from Line 1 must appear verbatim in positions 1–4 of Line 2.\n- Non-fallback captions must have at least two exact token overlaps with Line 1 (one must be the main noun). All nouns used in the caption (except determiners/prepositions) must appear verbatim in Line 1.\n- Allowed extra words: determiners, prepositions (on, in, near, by, in front of, behind), one optional period at sentence end. No other punctuation.\n- Do not introduce attributes, objects, or locations that are not in Line 1 unless supported by a high-confidence detector; do not invent identities or inferred facts.\n\nConservatism and anti-hallucination\n- Prefer omission over guessing. If fewer than two high-confidence nouns are available, use the compact fallback or output \"image unclear\".\n- If an attribute token appears in Line 1, it must appear verbatim in Line 2. If attribute confidence <75%, do not include the attribute.\n\nOperational note (for system integrators)\n- Keep candidate generation, scoring, CLIP reranking, and grammar/number checks outside this prompt. The VLM should only follow the concise visual rules above.\n\nFew-shot visual examples (each block = two output lines)\nPositive (correct)\ntrumpet,man,street\ntrumpet man is playing on the street.\n\ndog,rooftop,people\ndog sits near people on the rooftop.\n\nman,accordion,car\nman plays accordion next to the car.\n\nNegative (incorrect → corrected)\nman,hat,flag\nman waves flag at parade.      <!-- BAD: introduces noun \"parade\" not in tags -->\nman,hat,flag\nman waves flag near the hat.\n\nchild,bicycle,park\nchild rides red bicycle in park.   <!-- BAD: introduces attribute \"red\" not in tags -->\nchild,bicycle,park\nchild rides bicycle in the park.\n\nperson,bench,tree\nperson sits in Central Park.   <!-- BAD: uses proper noun \"Central Park\" -->\nperson,bench,tree\nperson sits on the bench by the tree.\n\nStrictly follow the Line 1 / Line 2 rules above. If no valid caption candidate passes these checks, return Line 2 = \"image unclear\".",
+  "prompt_id": "textgrad_aea4fdafa0",
+  "split_csv": "data/splits/flickr30k_main_seed1_val.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24/step_07/val/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24/step_07/val/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24/step_07/val/scores.csv",
+  "summary": {
+    "n": 150,
+    "mean_clip": 0.27958246678113935,
+    "mean_siglip": 0.152975374062856,
+    "mean_caption_len": 8.18,
+    "generic_rate": 0.0,
+    "mean_delta_clip": -0.04498298153281212,
+    "mean_delta_siglip": -0.04586517162621021,
+    "clip_win_rate": 0.08,
+    "siglip_win_rate": 0.10666666666666667
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_007385",
+      "caption": "dancer,street,people\ndancer performs with people on the street.",
+      "clip_score": 0.2254984378814697,
+      "siglip_score": 0.074176549911499,
+      "delta_clip": -0.1433584094047546,
+      "delta_siglip": -0.10075187683105472
+    },
+    {
+      "image_id": "flickr30k_test_011286",
+      "caption": "person,water,rock\nperson walks on rock near water.",
+      "clip_score": 0.216142401099205,
+      "siglip_score": 0.0943578109145164,
+      "delta_clip": -0.14161320030689242,
+      "delta_siglip": -0.1307281032204628
+    },
+    {
+      "image_id": "flickr30k_test_030505",
+      "caption": "person,flower,street\nperson holds flower in the street.",
+      "clip_score": 0.1952391564846038,
+      "siglip_score": 0.0333613157272338,
+      "delta_clip": -0.1404516398906708,
+      "delta_siglip": -0.1373717933893204
+    },
+    {
+      "image_id": "flickr30k_test_023317",
+      "caption": "guest services,woman\nwoman stands near guest services counter.",
+      "clip_score": 0.252612441778183,
+      "siglip_score": 0.1515216678380966,
+      "delta_clip": -0.13853546977043152,
+      "delta_siglip": -0.06686688959598541
+    },
+    {
+      "image_id": "flickr30k_test_030505",
+      "caption": "person,flower,street\nperson holds flower in the street.",
+      "clip_score": 0.1952391564846038,
+      "siglip_score": 0.0333613157272338,
+      "delta_clip": -0.1383653283119202,
+      "delta_siglip": -0.1841967105865479
+    },
+    {
+      "image_id": "flickr30k_test_021601",
+      "caption": "man,street,shopping cart\nman walks with shopping cart on the street.",
+      "clip_score": 0.2118540406227111,
+      "siglip_score": 0.1287435889244079,
+      "delta_clip": -0.13158044219017032,
+      "delta_siglip": -0.0992037355899811
+    },
+    {
+      "image_id": "flickr30k_test_017956",
+      "caption": "people,building,sky\npeople take photos in front of the building.",
+      "clip_score": 0.2060433626174926,
+      "siglip_score": 0.1085780635476112,
+      "delta_clip": -0.1276620030403138,
+      "delta_siglip": -0.0780166909098625
+    },
+    {
+      "image_id": "flickr30k_test_023900",
+      "caption": "utiah,man,food stall\nman serves utiah at the food stall.",
+      "clip_score": 0.235722154378891,
+      "siglip_score": 0.2127619683742523,
+      "delta_clip": -0.1260844767093658,
+      "delta_siglip": -0.07805365324020389
+    },
+    {
+      "image_id": "flickr30k_test_003587",
+      "caption": "man,jacket,hat\nman wearing jacket and hat looks down.",
+      "clip_score": 0.2419135719537735,
+      "siglip_score": 0.1295307427644729,
+      "delta_clip": -0.1233733743429184,
+      "delta_siglip": -0.13477332890033727
+    },
+    {
+      "image_id": "flickr30k_test_009512",
+      "caption": "red,skirt,woman\nwoman wears red skirt and black top.",
+      "clip_score": 0.2591221332550049,
+      "siglip_score": 0.0601436719298362,
+      "delta_clip": -0.12006962299346924,
+      "delta_siglip": -0.12824700027704242
+    },
+    {
+      "image_id": "flickr30k_test_022222",
+      "caption": "cart,man,street\nman stands near cart on the street.",
+      "clip_score": 0.2649053633213043,
+      "siglip_score": 0.1835547983646392,
+      "delta_clip": -0.11885753273963928,
+      "delta_siglip": -0.05660107731819161
+    },
+    {
+      "image_id": "flickr30k_test_011286",
+      "caption": "person,water,rock\nperson walks on rock near water.",
+      "clip_score": 0.216142401099205,
+      "siglip_score": 0.0943578109145164,
+      "delta_clip": -0.11419244110584262,
+      "delta_siglip": -0.09593609720468521
+    }
+  ]
+}

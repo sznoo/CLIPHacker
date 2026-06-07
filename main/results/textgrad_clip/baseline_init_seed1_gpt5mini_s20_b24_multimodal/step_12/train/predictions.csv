@@ -1,0 +1,1177 @@
+split_id,method_id,run_id,order,dataset_index,image_id,image_relpath,reference_captions,prompt_id,prompt_name,prompt_text,caption,candidate_id,selected,model,temperature,top_p,max_new_tokens,generation_config
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_bb96c46b5c,1,18651,flickr30k_test_018651,images/flickr30k/flickr30k_test_018651.jpg,"[""A man in light brown hat, gray coat and a blue vest with a scooter built with baskets full of oranges"", ""A farmer is taking his oranges to the market to sell."", ""A man is standing with vegetables in barrels."", ""An old foreign man selling oranges."", ""Mexican man peddling fresh fruit.""]",textgrad_bb96c46b5c,TextGrad Step 12,"Output exactly one concise, information‑dense caption: a single grammatical sentence composed of comma‑separated short phrases. Produce only that single sentence and no other text.
+
+Two‑pass internal checklist (do not print logs)
+1) Proposal: internally enumerate candidate tokens for each slot: up to 3 subject groups (prominence order), optional single micro‑action, one part‑relation (if contact VERIFIED), up to 3 descriptors, optional viewpoint/orientation, lighting, and background/text.
+2) Verification: apply the deterministic checks below to every candidate; mark tokens that pass as VERIFIED and protect VERIFIED discriminative props, VERIFIED fine classes, and VERIFIED part‑relations from any pruning. Do not output the checklist or intermediate candidates.
+
+Subject groups & placement (hard constraints)
+- Emit 1–3 subject groups in prominence order. Each group must be: [digit if Count VERIFIED] + noun(s) + spatial anchor (left/center/right) and include ""foreground""/""background"" only when depth/separability VERIFIED.
+- Front‑load subject nouns and any VERIFIED discriminative props so they appear within the first 6–8 words.
+- Use digits only when Count verification passes (rule below); otherwise use singular/plural nouns (""person/people"", ""dog/dogs"", ""vehicle/vehicles"").
+
+Deterministic verification rules (must be followed)
+- Count: include a digit only if every instance is ≥50% unobstructed AND centroid spacing ≥10% image width AND IOU between subject bboxes <0.10. If any check fails, do not emit digits — use singular/plural.
+- Contact (micro‑action): assert contact only if overlap area / smaller bbox area ≥12% AND visible attachment or contiguous boundary pixels or clear occlusion consistent with grasp. If VERIFIED, include exactly one micro‑action using the template: ""[left|right] [hand|foot|part] [strong‑verb] [object]"" (e.g., ""right hand holding woven basket""). Always specify left/right. If Contact not VERIFIED, do not invent a micro‑action.
+- Fine class (cue‑pair): emit a fine class only when the required cue‑pair passes OR classifier confidence >0.60. Example cue‑pairs (apply only as checks): vendor = (table/counter + stacks of produce) OR (baskets/piles + scale); bicycle = (spokes + pedals) OR (pedals + chain); motorbike/scooter = (frame + exhaust) OR (engine casing + exhaust); ladder = (rungs + side rails); performer = (stage/canopy + audience) OR (headset/microphone + facing audience). If cue‑pair fails, use a concrete fallback noun (see fallbacks).
+- OCR/text: quote exact text only when OCR confidence high AND text bbox ≥0.5% image area AND legibility ≳8pt equivalent with high contrast. Otherwise emit a compact positional descriptor (e.g., ""phone number on yellow board at center"") including dominant sign color/shape when legible.
+
+Descriptor priority (must preserve VERIFIED tokens)
+Priority order for including descriptors: (1) VERIFIED discriminative props or quoted text, (2) VERIFIED part‑relations/micro‑actions, (3) VERIFIED fine class, (4) clothing & clear pose/gaze, (5) object state/material, (6) viewpoint/orientation, (7) color, (8) lighting/reflection. Never prune VERIFIED items.
+
+Allowed verbs and motion
+- Use dynamic contact/motion verbs (jumping, swinging, reaching, holding) only when Contact or clear motion evidence is VERIFIED. Do not infer intentions, emotions, or unseen attributes.
+
+Pruning, length, and determinism
+- Target caption length: 10–14 words. Hard cap: 18 words (allow up to 24 only if a VERIFIED quoted text string is included).
+- If over length, prune deterministically in this order until within cap: color → material/texture → reflections → lighting → background (unless background ≥5% image area or contains VERIFIED text) → low‑priority descriptors. Never drop VERIFIED discriminative props, VERIFIED fine classes, or VERIFIED part relations. When tokens tie, prefer shorter tokens and prefer nouns/props over adjectives.
+
+Background & spatial rules
+- Include a background anchor only when that anchor occupies ≥5% image area or is a distinct structure (storefront, metal shutter, stage). Use compact phrases (""storefront behind"", ""metal shutter at left""). For text follow OCR rule above.
+- When multiple humans/animals are present, require short relational clauses connecting them (e.g., ""man left foreground, woman leaning over cart right foreground"").
+
+Anti‑hallucination fallbacks (use when cue/OCR fails)
+- Use concrete fallbacks: ""woven basket"", ""pile of fruit"", ""two‑wheeled vehicle"", ""toy ride"", ""minivan"", ""painted metal shutter"", ""signboard"", ""storefront"", ""cart"", ""pillow"". Do not invent fine classes beyond verification.
+
+Tie‑breakers & cropping
+- If subject prominence ties, choose larger bbox area; if tied, choose leftmost centroid. If subject width >50% image width, emit ""center"". Append ""partially cropped at [top|bottom|left|right]"" only when >5% of subject area lies outside image.
+
+Mandatory style constraints
+- Single sentence, comma‑separated short phrases; front‑load nouns/VERIFIED props; use digits only when Count VERIFIED; do not infer age, emotion, intention, or any unseen attributes; output nothing but the caption.
+
+Micro‑templates (follow these exact patterns)
+1) ""1 woman center foreground, right hand holding woven basket of oranges, storefront behind.""  
+2) ""two dogs left foreground, small white dog jumping at car passenger window, woman leaning out.""  
+3) ""1 person right foreground, standing by two‑wheeled vehicle with visible pedals and chain, metal shutter behind.""  
+4) ""1 boy center foreground, seated on red toy ride, blue Mets jersey visible, playground court behind.""  
+5) ""many dancers center foreground, line of red/gold sequined costumes, 'RADIO CITY' marquee behind.""  
+6) ""1 man center foreground, chain attached to yellow cart with stickers, phone number on blue board at center.""  
+
+Follow all rules above exactly; perform the internal verification and pruning, then emit the single final caption that satisfies these constraints.","Man center foreground, straw hat, gray jacket, blue shirt, holding woven basket of oranges, red bicycle with black bag beside, orange wall behind.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_bb96c46b5c,6,8358,flickr30k_test_008358,images/flickr30k/flickr30k_test_008358.jpg,"[""This guy is in midair while wearing a red soccer uniform."", ""A soccer player in a red shirt in diving into the air."", ""A man wearing a red jersey jumps in the air."", ""A soccer player is diving for the ball."", ""A soccer player diving on the field.""]",textgrad_bb96c46b5c,TextGrad Step 12,"Output exactly one concise, information‑dense caption: a single grammatical sentence composed of comma‑separated short phrases. Produce only that single sentence and no other text.
+
+Two‑pass internal checklist (do not print logs)
+1) Proposal: internally enumerate candidate tokens for each slot: up to 3 subject groups (prominence order), optional single micro‑action, one part‑relation (if contact VERIFIED), up to 3 descriptors, optional viewpoint/orientation, lighting, and background/text.
+2) Verification: apply the deterministic checks below to every candidate; mark tokens that pass as VERIFIED and protect VERIFIED discriminative props, VERIFIED fine classes, and VERIFIED part‑relations from any pruning. Do not output the checklist or intermediate candidates.
+
+Subject groups & placement (hard constraints)
+- Emit 1–3 subject groups in prominence order. Each group must be: [digit if Count VERIFIED] + noun(s) + spatial anchor (left/center/right) and include ""foreground""/""background"" only when depth/separability VERIFIED.
+- Front‑load subject nouns and any VERIFIED discriminative props so they appear within the first 6–8 words.
+- Use digits only when Count verification passes (rule below); otherwise use singular/plural nouns (""person/people"", ""dog/dogs"", ""vehicle/vehicles"").
+
+Deterministic verification rules (must be followed)
+- Count: include a digit only if every instance is ≥50% unobstructed AND centroid spacing ≥10% image width AND IOU between subject bboxes <0.10. If any check fails, do not emit digits — use singular/plural.
+- Contact (micro‑action): assert contact only if overlap area / smaller bbox area ≥12% AND visible attachment or contiguous boundary pixels or clear occlusion consistent with grasp. If VERIFIED, include exactly one micro‑action using the template: ""[left|right] [hand|foot|part] [strong‑verb] [object]"" (e.g., ""right hand holding woven basket""). Always specify left/right. If Contact not VERIFIED, do not invent a micro‑action.
+- Fine class (cue‑pair): emit a fine class only when the required cue‑pair passes OR classifier confidence >0.60. Example cue‑pairs (apply only as checks): vendor = (table/counter + stacks of produce) OR (baskets/piles + scale); bicycle = (spokes + pedals) OR (pedals + chain); motorbike/scooter = (frame + exhaust) OR (engine casing + exhaust); ladder = (rungs + side rails); performer = (stage/canopy + audience) OR (headset/microphone + facing audience). If cue‑pair fails, use a concrete fallback noun (see fallbacks).
+- OCR/text: quote exact text only when OCR confidence high AND text bbox ≥0.5% image area AND legibility ≳8pt equivalent with high contrast. Otherwise emit a compact positional descriptor (e.g., ""phone number on yellow board at center"") including dominant sign color/shape when legible.
+
+Descriptor priority (must preserve VERIFIED tokens)
+Priority order for including descriptors: (1) VERIFIED discriminative props or quoted text, (2) VERIFIED part‑relations/micro‑actions, (3) VERIFIED fine class, (4) clothing & clear pose/gaze, (5) object state/material, (6) viewpoint/orientation, (7) color, (8) lighting/reflection. Never prune VERIFIED items.
+
+Allowed verbs and motion
+- Use dynamic contact/motion verbs (jumping, swinging, reaching, holding) only when Contact or clear motion evidence is VERIFIED. Do not infer intentions, emotions, or unseen attributes.
+
+Pruning, length, and determinism
+- Target caption length: 10–14 words. Hard cap: 18 words (allow up to 24 only if a VERIFIED quoted text string is included).
+- If over length, prune deterministically in this order until within cap: color → material/texture → reflections → lighting → background (unless background ≥5% image area or contains VERIFIED text) → low‑priority descriptors. Never drop VERIFIED discriminative props, VERIFIED fine classes, or VERIFIED part relations. When tokens tie, prefer shorter tokens and prefer nouns/props over adjectives.
+
+Background & spatial rules
+- Include a background anchor only when that anchor occupies ≥5% image area or is a distinct structure (storefront, metal shutter, stage). Use compact phrases (""storefront behind"", ""metal shutter at left""). For text follow OCR rule above.
+- When multiple humans/animals are present, require short relational clauses connecting them (e.g., ""man left foreground, woman leaning over cart right foreground"").
+
+Anti‑hallucination fallbacks (use when cue/OCR fails)
+- Use concrete fallbacks: ""woven basket"", ""pile of fruit"", ""two‑wheeled vehicle"", ""toy ride"", ""minivan"", ""painted metal shutter"", ""signboard"", ""storefront"", ""cart"", ""pillow"". Do not invent fine classes beyond verification.
+
+Tie‑breakers & cropping
+- If subject prominence ties, choose larger bbox area; if tied, choose leftmost centroid. If subject width >50% image width, emit ""center"". Append ""partially cropped at [top|bottom|left|right]"" only when >5% of subject area lies outside image.
+
+Mandatory style constraints
+- Single sentence, comma‑separated short phrases; front‑load nouns/VERIFIED props; use digits only when Count VERIFIED; do not infer age, emotion, intention, or any unseen attributes; output nothing but the caption.
+
+Micro‑templates (follow these exact patterns)
+1) ""1 woman center foreground, right hand holding woven basket of oranges, storefront behind.""  
+2) ""two dogs left foreground, small white dog jumping at car passenger window, woman leaning out.""  
+3) ""1 person right foreground, standing by two‑wheeled vehicle with visible pedals and chain, metal shutter behind.""  
+4) ""1 boy center foreground, seated on red toy ride, blue Mets jersey visible, playground court behind.""  
+5) ""many dancers center foreground, line of red/gold sequined costumes, 'RADIO CITY' marquee behind.""  
+6) ""1 man center foreground, chain attached to yellow cart with stickers, phone number on blue board at center.""  
+
+Follow all rules above exactly; perform the internal verification and pruning, then emit the single final caption that satisfies these constraints.","Goalkeeper in red jersey number one dives full stretch to save shot, grass field under bright sunlight, trees lining background.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_bb96c46b5c,16,3075,flickr30k_test_003075,images/flickr30k/flickr30k_test_003075.jpg,"[""A little boy wearing goggles on top of his head, walks through a deep water puddle with long pants on."", ""A small child in blue raincoat and a small child in a white shirt is waling in the rain water."", ""Small children are wading through shallow waters that are flooding the street."", ""People walking in a big puddle."", ""Children walking in the rain.""]",textgrad_bb96c46b5c,TextGrad Step 12,"Output exactly one concise, information‑dense caption: a single grammatical sentence composed of comma‑separated short phrases. Produce only that single sentence and no other text.
+
+Two‑pass internal checklist (do not print logs)
+1) Proposal: internally enumerate candidate tokens for each slot: up to 3 subject groups (prominence order), optional single micro‑action, one part‑relation (if contact VERIFIED), up to 3 descriptors, optional viewpoint/orientation, lighting, and background/text.
+2) Verification: apply the deterministic checks below to every candidate; mark tokens that pass as VERIFIED and protect VERIFIED discriminative props, VERIFIED fine classes, and VERIFIED part‑relations from any pruning. Do not output the checklist or intermediate candidates.
+
+Subject groups & placement (hard constraints)
+- Emit 1–3 subject groups in prominence order. Each group must be: [digit if Count VERIFIED] + noun(s) + spatial anchor (left/center/right) and include ""foreground""/""background"" only when depth/separability VERIFIED.
+- Front‑load subject nouns and any VERIFIED discriminative props so they appear within the first 6–8 words.
+- Use digits only when Count verification passes (rule below); otherwise use singular/plural nouns (""person/people"", ""dog/dogs"", ""vehicle/vehicles"").
+
+Deterministic verification rules (must be followed)
+- Count: include a digit only if every instance is ≥50% unobstructed AND centroid spacing ≥10% image width AND IOU between subject bboxes <0.10. If any check fails, do not emit digits — use singular/plural.
+- Contact (micro‑action): assert contact only if overlap area / smaller bbox area ≥12% AND visible attachment or contiguous boundary pixels or clear occlusion consistent with grasp. If VERIFIED, include exactly one micro‑action using the template: ""[left|right] [hand|foot|part] [strong‑verb] [object]"" (e.g., ""right hand holding woven basket""). Always specify left/right. If Contact not VERIFIED, do not invent a micro‑action.
+- Fine class (cue‑pair): emit a fine class only when the required cue‑pair passes OR classifier confidence >0.60. Example cue‑pairs (apply only as checks): vendor = (table/counter + stacks of produce) OR (baskets/piles + scale); bicycle = (spokes + pedals) OR (pedals + chain); motorbike/scooter = (frame + exhaust) OR (engine casing + exhaust); ladder = (rungs + side rails); performer = (stage/canopy + audience) OR (headset/microphone + facing audience). If cue‑pair fails, use a concrete fallback noun (see fallbacks).
+- OCR/text: quote exact text only when OCR confidence high AND text bbox ≥0.5% image area AND legibility ≳8pt equivalent with high contrast. Otherwise emit a compact positional descriptor (e.g., ""phone number on yellow board at center"") including dominant sign color/shape when legible.
+
+Descriptor priority (must preserve VERIFIED tokens)
+Priority order for including descriptors: (1) VERIFIED discriminative props or quoted text, (2) VERIFIED part‑relations/micro‑actions, (3) VERIFIED fine class, (4) clothing & clear pose/gaze, (5) object state/material, (6) viewpoint/orientation, (7) color, (8) lighting/reflection. Never prune VERIFIED items.
+
+Allowed verbs and motion
+- Use dynamic contact/motion verbs (jumping, swinging, reaching, holding) only when Contact or clear motion evidence is VERIFIED. Do not infer intentions, emotions, or unseen attributes.
+
+Pruning, length, and determinism
+- Target caption length: 10–14 words. Hard cap: 18 words (allow up to 24 only if a VERIFIED quoted text string is included).
+- If over length, prune deterministically in this order until within cap: color → material/texture → reflections → lighting → background (unless background ≥5% image area or contains VERIFIED text) → low‑priority descriptors. Never drop VERIFIED discriminative props, VERIFIED fine classes, or VERIFIED part relations. When tokens tie, prefer shorter tokens and prefer nouns/props over adjectives.
+
+Background & spatial rules
+- Include a background anchor only when that anchor occupies ≥5% image area or is a distinct structure (storefront, metal shutter, stage). Use compact phrases (""storefront behind"", ""metal shutter at left""). For text follow OCR rule above.
+- When multiple humans/animals are present, require short relational clauses connecting them (e.g., ""man left foreground, woman leaning over cart right foreground"").
+
+Anti‑hallucination fallbacks (use when cue/OCR fails)
+- Use concrete fallbacks: ""woven basket"", ""pile of fruit"", ""two‑wheeled vehicle"", ""toy ride"", ""minivan"", ""painted metal shutter"", ""signboard"", ""storefront"", ""cart"", ""pillow"". Do not invent fine classes beyond verification.
+
+Tie‑breakers & cropping
+- If subject prominence ties, choose larger bbox area; if tied, choose leftmost centroid. If subject width >50% image width, emit ""center"". Append ""partially cropped at [top|bottom|left|right]"" only when >5% of subject area lies outside image.
+
+Mandatory style constraints
+- Single sentence, comma‑separated short phrases; front‑load nouns/VERIFIED props; use digits only when Count VERIFIED; do not infer age, emotion, intention, or any unseen attributes; output nothing but the caption.
+
+Micro‑templates (follow these exact patterns)
+1) ""1 woman center foreground, right hand holding woven basket of oranges, storefront behind.""  
+2) ""two dogs left foreground, small white dog jumping at car passenger window, woman leaning out.""  
+3) ""1 person right foreground, standing by two‑wheeled vehicle with visible pedals and chain, metal shutter behind.""  
+4) ""1 boy center foreground, seated on red toy ride, blue Mets jersey visible, playground court behind.""  
+5) ""many dancers center foreground, line of red/gold sequined costumes, 'RADIO CITY' marquee behind.""  
+6) ""1 man center foreground, chain attached to yellow cart with stickers, phone number on blue board at center.""  
+
+Follow all rules above exactly; perform the internal verification and pruning, then emit the single final caption that satisfies these constraints.","boy center foreground wearing white shirt and khaki pants, girl left foreground in blue raincoat with red belt, wet pavement reflecting light, minivan parked behind, child right foreground partially cropped.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_bb96c46b5c,21,12773,flickr30k_test_012773,images/flickr30k/flickr30k_test_012773.jpg,"[""A man in blue jeans is sitting on the shoulders of another person as he interacts with a woman performer on stage at a concert."", ""A woman with a microphone on a stage points the microphone at a man who is standing in the audience in front of her"", ""A fan sitting on someone's shoulders is waving to a woman on a stage that says Amnesty International."", ""Woman on stage at Amnesty International event exchanges gestures with man offstage."", ""A woman on stage points to a man holding up his hand""]",textgrad_bb96c46b5c,TextGrad Step 12,"Output exactly one concise, information‑dense caption: a single grammatical sentence composed of comma‑separated short phrases. Produce only that single sentence and no other text.
+
+Two‑pass internal checklist (do not print logs)
+1) Proposal: internally enumerate candidate tokens for each slot: up to 3 subject groups (prominence order), optional single micro‑action, one part‑relation (if contact VERIFIED), up to 3 descriptors, optional viewpoint/orientation, lighting, and background/text.
+2) Verification: apply the deterministic checks below to every candidate; mark tokens that pass as VERIFIED and protect VERIFIED discriminative props, VERIFIED fine classes, and VERIFIED part‑relations from any pruning. Do not output the checklist or intermediate candidates.
+
+Subject groups & placement (hard constraints)
+- Emit 1–3 subject groups in prominence order. Each group must be: [digit if Count VERIFIED] + noun(s) + spatial anchor (left/center/right) and include ""foreground""/""background"" only when depth/separability VERIFIED.
+- Front‑load subject nouns and any VERIFIED discriminative props so they appear within the first 6–8 words.
+- Use digits only when Count verification passes (rule below); otherwise use singular/plural nouns (""person/people"", ""dog/dogs"", ""vehicle/vehicles"").
+
+Deterministic verification rules (must be followed)
+- Count: include a digit only if every instance is ≥50% unobstructed AND centroid spacing ≥10% image width AND IOU between subject bboxes <0.10. If any check fails, do not emit digits — use singular/plural.
+- Contact (micro‑action): assert contact only if overlap area / smaller bbox area ≥12% AND visible attachment or contiguous boundary pixels or clear occlusion consistent with grasp. If VERIFIED, include exactly one micro‑action using the template: ""[left|right] [hand|foot|part] [strong‑verb] [object]"" (e.g., ""right hand holding woven basket""). Always specify left/right. If Contact not VERIFIED, do not invent a micro‑action.
+- Fine class (cue‑pair): emit a fine class only when the required cue‑pair passes OR classifier confidence >0.60. Example cue‑pairs (apply only as checks): vendor = (table/counter + stacks of produce) OR (baskets/piles + scale); bicycle = (spokes + pedals) OR (pedals + chain); motorbike/scooter = (frame + exhaust) OR (engine casing + exhaust); ladder = (rungs + side rails); performer = (stage/canopy + audience) OR (headset/microphone + facing audience). If cue‑pair fails, use a concrete fallback noun (see fallbacks).
+- OCR/text: quote exact text only when OCR confidence high AND text bbox ≥0.5% image area AND legibility ≳8pt equivalent with high contrast. Otherwise emit a compact positional descriptor (e.g., ""phone number on yellow board at center"") including dominant sign color/shape when legible.
+
+Descriptor priority (must preserve VERIFIED tokens)
+Priority order for including descriptors: (1) VERIFIED discriminative props or quoted text, (2) VERIFIED part‑relations/micro‑actions, (3) VERIFIED fine class, (4) clothing & clear pose/gaze, (5) object state/material, (6) viewpoint/orientation, (7) color, (8) lighting/reflection. Never prune VERIFIED items.
+
+Allowed verbs and motion
+- Use dynamic contact/motion verbs (jumping, swinging, reaching, holding) only when Contact or clear motion evidence is VERIFIED. Do not infer intentions, emotions, or unseen attributes.
+
+Pruning, length, and determinism
+- Target caption length: 10–14 words. Hard cap: 18 words (allow up to 24 only if a VERIFIED quoted text string is included).
+- If over length, prune deterministically in this order until within cap: color → material/texture → reflections → lighting → background (unless background ≥5% image area or contains VERIFIED text) → low‑priority descriptors. Never drop VERIFIED discriminative props, VERIFIED fine classes, or VERIFIED part relations. When tokens tie, prefer shorter tokens and prefer nouns/props over adjectives.
+
+Background & spatial rules
+- Include a background anchor only when that anchor occupies ≥5% image area or is a distinct structure (storefront, metal shutter, stage). Use compact phrases (""storefront behind"", ""metal shutter at left""). For text follow OCR rule above.
+- When multiple humans/animals are present, require short relational clauses connecting them (e.g., ""man left foreground, woman leaning over cart right foreground"").
+
+Anti‑hallucination fallbacks (use when cue/OCR fails)
+- Use concrete fallbacks: ""woven basket"", ""pile of fruit"", ""two‑wheeled vehicle"", ""toy ride"", ""minivan"", ""painted metal shutter"", ""signboard"", ""storefront"", ""cart"", ""pillow"". Do not invent fine classes beyond verification.
+
+Tie‑breakers & cropping
+- If subject prominence ties, choose larger bbox area; if tied, choose leftmost centroid. If subject width >50% image width, emit ""center"". Append ""partially cropped at [top|bottom|left|right]"" only when >5% of subject area lies outside image.
+
+Mandatory style constraints
+- Single sentence, comma‑separated short phrases; front‑load nouns/VERIFIED props; use digits only when Count VERIFIED; do not infer age, emotion, intention, or any unseen attributes; output nothing but the caption.
+
+Micro‑templates (follow these exact patterns)
+1) ""1 woman center foreground, right hand holding woven basket of oranges, storefront behind.""  
+2) ""two dogs left foreground, small white dog jumping at car passenger window, woman leaning out.""  
+3) ""1 person right foreground, standing by two‑wheeled vehicle with visible pedals and chain, metal shutter behind.""  
+4) ""1 boy center foreground, seated on red toy ride, blue Mets jersey visible, playground court behind.""  
+5) ""many dancers center foreground, line of red/gold sequined costumes, 'RADIO CITY' marquee behind.""  
+6) ""1 man center foreground, chain attached to yellow cart with stickers, phone number on blue board at center.""  
+
+Follow all rules above exactly; perform the internal verification and pruning, then emit the single final caption that satisfies these constraints.","One man center foreground raising hand, woman right foreground singing on stage, band playing behind, Amnesty International banner, stage lights glowing.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_bb96c46b5c,23,19904,flickr30k_test_019904,images/flickr30k/flickr30k_test_019904.jpg,"[""The man in the tan jacket is taking large steps as he walks past the off white building."", ""A well-dressed, shaven-head young man strides through railings past a restaurant."", ""A man wearing a tan jacket walks into Le Mignon in the afternoon."", ""A man walking across a bridge near a steak restaurant."", ""A bald man walking on a bridge.""]",textgrad_bb96c46b5c,TextGrad Step 12,"Output exactly one concise, information‑dense caption: a single grammatical sentence composed of comma‑separated short phrases. Produce only that single sentence and no other text.
+
+Two‑pass internal checklist (do not print logs)
+1) Proposal: internally enumerate candidate tokens for each slot: up to 3 subject groups (prominence order), optional single micro‑action, one part‑relation (if contact VERIFIED), up to 3 descriptors, optional viewpoint/orientation, lighting, and background/text.
+2) Verification: apply the deterministic checks below to every candidate; mark tokens that pass as VERIFIED and protect VERIFIED discriminative props, VERIFIED fine classes, and VERIFIED part‑relations from any pruning. Do not output the checklist or intermediate candidates.
+
+Subject groups & placement (hard constraints)
+- Emit 1–3 subject groups in prominence order. Each group must be: [digit if Count VERIFIED] + noun(s) + spatial anchor (left/center/right) and include ""foreground""/""background"" only when depth/separability VERIFIED.
+- Front‑load subject nouns and any VERIFIED discriminative props so they appear within the first 6–8 words.
+- Use digits only when Count verification passes (rule below); otherwise use singular/plural nouns (""person/people"", ""dog/dogs"", ""vehicle/vehicles"").
+
+Deterministic verification rules (must be followed)
+- Count: include a digit only if every instance is ≥50% unobstructed AND centroid spacing ≥10% image width AND IOU between subject bboxes <0.10. If any check fails, do not emit digits — use singular/plural.
+- Contact (micro‑action): assert contact only if overlap area / smaller bbox area ≥12% AND visible attachment or contiguous boundary pixels or clear occlusion consistent with grasp. If VERIFIED, include exactly one micro‑action using the template: ""[left|right] [hand|foot|part] [strong‑verb] [object]"" (e.g., ""right hand holding woven basket""). Always specify left/right. If Contact not VERIFIED, do not invent a micro‑action.
+- Fine class (cue‑pair): emit a fine class only when the required cue‑pair passes OR classifier confidence >0.60. Example cue‑pairs (apply only as checks): vendor = (table/counter + stacks of produce) OR (baskets/piles + scale); bicycle = (spokes + pedals) OR (pedals + chain); motorbike/scooter = (frame + exhaust) OR (engine casing + exhaust); ladder = (rungs + side rails); performer = (stage/canopy + audience) OR (headset/microphone + facing audience). If cue‑pair fails, use a concrete fallback noun (see fallbacks).
+- OCR/text: quote exact text only when OCR confidence high AND text bbox ≥0.5% image area AND legibility ≳8pt equivalent with high contrast. Otherwise emit a compact positional descriptor (e.g., ""phone number on yellow board at center"") including dominant sign color/shape when legible.
+
+Descriptor priority (must preserve VERIFIED tokens)
+Priority order for including descriptors: (1) VERIFIED discriminative props or quoted text, (2) VERIFIED part‑relations/micro‑actions, (3) VERIFIED fine class, (4) clothing & clear pose/gaze, (5) object state/material, (6) viewpoint/orientation, (7) color, (8) lighting/reflection. Never prune VERIFIED items.
+
+Allowed verbs and motion
+- Use dynamic contact/motion verbs (jumping, swinging, reaching, holding) only when Contact or clear motion evidence is VERIFIED. Do not infer intentions, emotions, or unseen attributes.
+
+Pruning, length, and determinism
+- Target caption length: 10–14 words. Hard cap: 18 words (allow up to 24 only if a VERIFIED quoted text string is included).
+- If over length, prune deterministically in this order until within cap: color → material/texture → reflections → lighting → background (unless background ≥5% image area or contains VERIFIED text) → low‑priority descriptors. Never drop VERIFIED discriminative props, VERIFIED fine classes, or VERIFIED part relations. When tokens tie, prefer shorter tokens and prefer nouns/props over adjectives.
+
+Background & spatial rules
+- Include a background anchor only when that anchor occupies ≥5% image area or is a distinct structure (storefront, metal shutter, stage). Use compact phrases (""storefront behind"", ""metal shutter at left""). For text follow OCR rule above.
+- When multiple humans/animals are present, require short relational clauses connecting them (e.g., ""man left foreground, woman leaning over cart right foreground"").
+
+Anti‑hallucination fallbacks (use when cue/OCR fails)
+- Use concrete fallbacks: ""woven basket"", ""pile of fruit"", ""two‑wheeled vehicle"", ""toy ride"", ""minivan"", ""painted metal shutter"", ""signboard"", ""storefront"", ""cart"", ""pillow"". Do not invent fine classes beyond verification.
+
+Tie‑breakers & cropping
+- If subject prominence ties, choose larger bbox area; if tied, choose leftmost centroid. If subject width >50% image width, emit ""center"". Append ""partially cropped at [top|bottom|left|right]"" only when >5% of subject area lies outside image.
+
+Mandatory style constraints
+- Single sentence, comma‑separated short phrases; front‑load nouns/VERIFIED props; use digits only when Count VERIFIED; do not infer age, emotion, intention, or any unseen attributes; output nothing but the caption.
+
+Micro‑templates (follow these exact patterns)
+1) ""1 woman center foreground, right hand holding woven basket of oranges, storefront behind.""  
+2) ""two dogs left foreground, small white dog jumping at car passenger window, woman leaning out.""  
+3) ""1 person right foreground, standing by two‑wheeled vehicle with visible pedals and chain, metal shutter behind.""  
+4) ""1 boy center foreground, seated on red toy ride, blue Mets jersey visible, playground court behind.""  
+5) ""many dancers center foreground, line of red/gold sequined costumes, 'RADIO CITY' marquee behind.""  
+6) ""1 man center foreground, chain attached to yellow cart with stickers, phone number on blue board at center.""  
+
+Follow all rules above exactly; perform the internal verification and pruning, then emit the single final caption that satisfies these constraints.","man walking on bridge, beige jacket, dark pants, yellow brick building with red signs reading ""Le Mignon"", black lanterns, glass door visible",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_bb96c46b5c,31,26274,flickr30k_test_026274,images/flickr30k/flickr30k_test_026274.jpg,"[""A man in a black hat is rearing up on his brown horse while a crowd of people look on from a distance."", ""A man in a black cowboy hat holds on as his horse rears up."", ""A man on a horse galloping onto its back two feet."", ""Cowboy holding on to the horse"", ""Man riding a bucking bronco!""]",textgrad_bb96c46b5c,TextGrad Step 12,"Output exactly one concise, information‑dense caption: a single grammatical sentence composed of comma‑separated short phrases. Produce only that single sentence and no other text.
+
+Two‑pass internal checklist (do not print logs)
+1) Proposal: internally enumerate candidate tokens for each slot: up to 3 subject groups (prominence order), optional single micro‑action, one part‑relation (if contact VERIFIED), up to 3 descriptors, optional viewpoint/orientation, lighting, and background/text.
+2) Verification: apply the deterministic checks below to every candidate; mark tokens that pass as VERIFIED and protect VERIFIED discriminative props, VERIFIED fine classes, and VERIFIED part‑relations from any pruning. Do not output the checklist or intermediate candidates.
+
+Subject groups & placement (hard constraints)
+- Emit 1–3 subject groups in prominence order. Each group must be: [digit if Count VERIFIED] + noun(s) + spatial anchor (left/center/right) and include ""foreground""/""background"" only when depth/separability VERIFIED.
+- Front‑load subject nouns and any VERIFIED discriminative props so they appear within the first 6–8 words.
+- Use digits only when Count verification passes (rule below); otherwise use singular/plural nouns (""person/people"", ""dog/dogs"", ""vehicle/vehicles"").
+
+Deterministic verification rules (must be followed)
+- Count: include a digit only if every instance is ≥50% unobstructed AND centroid spacing ≥10% image width AND IOU between subject bboxes <0.10. If any check fails, do not emit digits — use singular/plural.
+- Contact (micro‑action): assert contact only if overlap area / smaller bbox area ≥12% AND visible attachment or contiguous boundary pixels or clear occlusion consistent with grasp. If VERIFIED, include exactly one micro‑action using the template: ""[left|right] [hand|foot|part] [strong‑verb] [object]"" (e.g., ""right hand holding woven basket""). Always specify left/right. If Contact not VERIFIED, do not invent a micro‑action.
+- Fine class (cue‑pair): emit a fine class only when the required cue‑pair passes OR classifier confidence >0.60. Example cue‑pairs (apply only as checks): vendor = (table/counter + stacks of produce) OR (baskets/piles + scale); bicycle = (spokes + pedals) OR (pedals + chain); motorbike/scooter = (frame + exhaust) OR (engine casing + exhaust); ladder = (rungs + side rails); performer = (stage/canopy + audience) OR (headset/microphone + facing audience). If cue‑pair fails, use a concrete fallback noun (see fallbacks).
+- OCR/text: quote exact text only when OCR confidence high AND text bbox ≥0.5% image area AND legibility ≳8pt equivalent with high contrast. Otherwise emit a compact positional descriptor (e.g., ""phone number on yellow board at center"") including dominant sign color/shape when legible.
+
+Descriptor priority (must preserve VERIFIED tokens)
+Priority order for including descriptors: (1) VERIFIED discriminative props or quoted text, (2) VERIFIED part‑relations/micro‑actions, (3) VERIFIED fine class, (4) clothing & clear pose/gaze, (5) object state/material, (6) viewpoint/orientation, (7) color, (8) lighting/reflection. Never prune VERIFIED items.
+
+Allowed verbs and motion
+- Use dynamic contact/motion verbs (jumping, swinging, reaching, holding) only when Contact or clear motion evidence is VERIFIED. Do not infer intentions, emotions, or unseen attributes.
+
+Pruning, length, and determinism
+- Target caption length: 10–14 words. Hard cap: 18 words (allow up to 24 only if a VERIFIED quoted text string is included).
+- If over length, prune deterministically in this order until within cap: color → material/texture → reflections → lighting → background (unless background ≥5% image area or contains VERIFIED text) → low‑priority descriptors. Never drop VERIFIED discriminative props, VERIFIED fine classes, or VERIFIED part relations. When tokens tie, prefer shorter tokens and prefer nouns/props over adjectives.
+
+Background & spatial rules
+- Include a background anchor only when that anchor occupies ≥5% image area or is a distinct structure (storefront, metal shutter, stage). Use compact phrases (""storefront behind"", ""metal shutter at left""). For text follow OCR rule above.
+- When multiple humans/animals are present, require short relational clauses connecting them (e.g., ""man left foreground, woman leaning over cart right foreground"").
+
+Anti‑hallucination fallbacks (use when cue/OCR fails)
+- Use concrete fallbacks: ""woven basket"", ""pile of fruit"", ""two‑wheeled vehicle"", ""toy ride"", ""minivan"", ""painted metal shutter"", ""signboard"", ""storefront"", ""cart"", ""pillow"". Do not invent fine classes beyond verification.
+
+Tie‑breakers & cropping
+- If subject prominence ties, choose larger bbox area; if tied, choose leftmost centroid. If subject width >50% image width, emit ""center"". Append ""partially cropped at [top|bottom|left|right]"" only when >5% of subject area lies outside image.
+
+Mandatory style constraints
+- Single sentence, comma‑separated short phrases; front‑load nouns/VERIFIED props; use digits only when Count VERIFIED; do not infer age, emotion, intention, or any unseen attributes; output nothing but the caption.
+
+Micro‑templates (follow these exact patterns)
+1) ""1 woman center foreground, right hand holding woven basket of oranges, storefront behind.""  
+2) ""two dogs left foreground, small white dog jumping at car passenger window, woman leaning out.""  
+3) ""1 person right foreground, standing by two‑wheeled vehicle with visible pedals and chain, metal shutter behind.""  
+4) ""1 boy center foreground, seated on red toy ride, blue Mets jersey visible, playground court behind.""  
+5) ""many dancers center foreground, line of red/gold sequined costumes, 'RADIO CITY' marquee behind.""  
+6) ""1 man center foreground, chain attached to yellow cart with stickers, phone number on blue board at center.""  
+
+Follow all rules above exactly; perform the internal verification and pruning, then emit the single final caption that satisfies these constraints.","One rider atop a rearing brown horse, holding a silver baton, performs under red umbrellas at a fairground with spectators watching from behind white fences.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_bb96c46b5c,38,1002,flickr30k_test_001002,images/flickr30k/flickr30k_test_001002.jpg,"[""Someone wearing a large hat is sitting on colorful blankets working a loom with a pair of men's dress shoes in front of him."", ""An adult in brightly colored clothing and hat, is weaving or beading while sitting on brightly colored rugs."", ""A Hispanic person sitting among colorful fabric making a belt."", ""A gentleman in traditional garb weaving a blanket in a field."", ""A man works on weaving a cloth good for sale at the market.""]",textgrad_bb96c46b5c,TextGrad Step 12,"Output exactly one concise, information‑dense caption: a single grammatical sentence composed of comma‑separated short phrases. Produce only that single sentence and no other text.
+
+Two‑pass internal checklist (do not print logs)
+1) Proposal: internally enumerate candidate tokens for each slot: up to 3 subject groups (prominence order), optional single micro‑action, one part‑relation (if contact VERIFIED), up to 3 descriptors, optional viewpoint/orientation, lighting, and background/text.
+2) Verification: apply the deterministic checks below to every candidate; mark tokens that pass as VERIFIED and protect VERIFIED discriminative props, VERIFIED fine classes, and VERIFIED part‑relations from any pruning. Do not output the checklist or intermediate candidates.
+
+Subject groups & placement (hard constraints)
+- Emit 1–3 subject groups in prominence order. Each group must be: [digit if Count VERIFIED] + noun(s) + spatial anchor (left/center/right) and include ""foreground""/""background"" only when depth/separability VERIFIED.
+- Front‑load subject nouns and any VERIFIED discriminative props so they appear within the first 6–8 words.
+- Use digits only when Count verification passes (rule below); otherwise use singular/plural nouns (""person/people"", ""dog/dogs"", ""vehicle/vehicles"").
+
+Deterministic verification rules (must be followed)
+- Count: include a digit only if every instance is ≥50% unobstructed AND centroid spacing ≥10% image width AND IOU between subject bboxes <0.10. If any check fails, do not emit digits — use singular/plural.
+- Contact (micro‑action): assert contact only if overlap area / smaller bbox area ≥12% AND visible attachment or contiguous boundary pixels or clear occlusion consistent with grasp. If VERIFIED, include exactly one micro‑action using the template: ""[left|right] [hand|foot|part] [strong‑verb] [object]"" (e.g., ""right hand holding woven basket""). Always specify left/right. If Contact not VERIFIED, do not invent a micro‑action.
+- Fine class (cue‑pair): emit a fine class only when the required cue‑pair passes OR classifier confidence >0.60. Example cue‑pairs (apply only as checks): vendor = (table/counter + stacks of produce) OR (baskets/piles + scale); bicycle = (spokes + pedals) OR (pedals + chain); motorbike/scooter = (frame + exhaust) OR (engine casing + exhaust); ladder = (rungs + side rails); performer = (stage/canopy + audience) OR (headset/microphone + facing audience). If cue‑pair fails, use a concrete fallback noun (see fallbacks).
+- OCR/text: quote exact text only when OCR confidence high AND text bbox ≥0.5% image area AND legibility ≳8pt equivalent with high contrast. Otherwise emit a compact positional descriptor (e.g., ""phone number on yellow board at center"") including dominant sign color/shape when legible.
+
+Descriptor priority (must preserve VERIFIED tokens)
+Priority order for including descriptors: (1) VERIFIED discriminative props or quoted text, (2) VERIFIED part‑relations/micro‑actions, (3) VERIFIED fine class, (4) clothing & clear pose/gaze, (5) object state/material, (6) viewpoint/orientation, (7) color, (8) lighting/reflection. Never prune VERIFIED items.
+
+Allowed verbs and motion
+- Use dynamic contact/motion verbs (jumping, swinging, reaching, holding) only when Contact or clear motion evidence is VERIFIED. Do not infer intentions, emotions, or unseen attributes.
+
+Pruning, length, and determinism
+- Target caption length: 10–14 words. Hard cap: 18 words (allow up to 24 only if a VERIFIED quoted text string is included).
+- If over length, prune deterministically in this order until within cap: color → material/texture → reflections → lighting → background (unless background ≥5% image area or contains VERIFIED text) → low‑priority descriptors. Never drop VERIFIED discriminative props, VERIFIED fine classes, or VERIFIED part relations. When tokens tie, prefer shorter tokens and prefer nouns/props over adjectives.
+
+Background & spatial rules
+- Include a background anchor only when that anchor occupies ≥5% image area or is a distinct structure (storefront, metal shutter, stage). Use compact phrases (""storefront behind"", ""metal shutter at left""). For text follow OCR rule above.
+- When multiple humans/animals are present, require short relational clauses connecting them (e.g., ""man left foreground, woman leaning over cart right foreground"").
+
+Anti‑hallucination fallbacks (use when cue/OCR fails)
+- Use concrete fallbacks: ""woven basket"", ""pile of fruit"", ""two‑wheeled vehicle"", ""toy ride"", ""minivan"", ""painted metal shutter"", ""signboard"", ""storefront"", ""cart"", ""pillow"". Do not invent fine classes beyond verification.
+
+Tie‑breakers & cropping
+- If subject prominence ties, choose larger bbox area; if tied, choose leftmost centroid. If subject width >50% image width, emit ""center"". Append ""partially cropped at [top|bottom|left|right]"" only when >5% of subject area lies outside image.
+
+Mandatory style constraints
+- Single sentence, comma‑separated short phrases; front‑load nouns/VERIFIED props; use digits only when Count VERIFIED; do not infer age, emotion, intention, or any unseen attributes; output nothing but the caption.
+
+Micro‑templates (follow these exact patterns)
+1) ""1 woman center foreground, right hand holding woven basket of oranges, storefront behind.""  
+2) ""two dogs left foreground, small white dog jumping at car passenger window, woman leaning out.""  
+3) ""1 person right foreground, standing by two‑wheeled vehicle with visible pedals and chain, metal shutter behind.""  
+4) ""1 boy center foreground, seated on red toy ride, blue Mets jersey visible, playground court behind.""  
+5) ""many dancers center foreground, line of red/gold sequined costumes, 'RADIO CITY' marquee behind.""  
+6) ""1 man center foreground, chain attached to yellow cart with stickers, phone number on blue board at center.""  
+
+Follow all rules above exactly; perform the internal verification and pruning, then emit the single final caption that satisfies these constraints.","One person center foreground, seated on colorful blanket, wearing traditional hat and patterned scarf, holding long sword with wooden hilt, black shoes nearby, vibrant textiles and woven bags arranged around.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_bb96c46b5c,39,731,flickr30k_test_000731,images/flickr30k/flickr30k_test_000731.jpg,"[""Three little blond girls, two in blue, one in pink, play on a sunny beach."", ""Three children are playing in sand near to the beach."", ""Three young girls dance on the beach in the sand."", ""Three children playing in sand at beach"", ""Three girls play in the sand.""]",textgrad_bb96c46b5c,TextGrad Step 12,"Output exactly one concise, information‑dense caption: a single grammatical sentence composed of comma‑separated short phrases. Produce only that single sentence and no other text.
+
+Two‑pass internal checklist (do not print logs)
+1) Proposal: internally enumerate candidate tokens for each slot: up to 3 subject groups (prominence order), optional single micro‑action, one part‑relation (if contact VERIFIED), up to 3 descriptors, optional viewpoint/orientation, lighting, and background/text.
+2) Verification: apply the deterministic checks below to every candidate; mark tokens that pass as VERIFIED and protect VERIFIED discriminative props, VERIFIED fine classes, and VERIFIED part‑relations from any pruning. Do not output the checklist or intermediate candidates.
+
+Subject groups & placement (hard constraints)
+- Emit 1–3 subject groups in prominence order. Each group must be: [digit if Count VERIFIED] + noun(s) + spatial anchor (left/center/right) and include ""foreground""/""background"" only when depth/separability VERIFIED.
+- Front‑load subject nouns and any VERIFIED discriminative props so they appear within the first 6–8 words.
+- Use digits only when Count verification passes (rule below); otherwise use singular/plural nouns (""person/people"", ""dog/dogs"", ""vehicle/vehicles"").
+
+Deterministic verification rules (must be followed)
+- Count: include a digit only if every instance is ≥50% unobstructed AND centroid spacing ≥10% image width AND IOU between subject bboxes <0.10. If any check fails, do not emit digits — use singular/plural.
+- Contact (micro‑action): assert contact only if overlap area / smaller bbox area ≥12% AND visible attachment or contiguous boundary pixels or clear occlusion consistent with grasp. If VERIFIED, include exactly one micro‑action using the template: ""[left|right] [hand|foot|part] [strong‑verb] [object]"" (e.g., ""right hand holding woven basket""). Always specify left/right. If Contact not VERIFIED, do not invent a micro‑action.
+- Fine class (cue‑pair): emit a fine class only when the required cue‑pair passes OR classifier confidence >0.60. Example cue‑pairs (apply only as checks): vendor = (table/counter + stacks of produce) OR (baskets/piles + scale); bicycle = (spokes + pedals) OR (pedals + chain); motorbike/scooter = (frame + exhaust) OR (engine casing + exhaust); ladder = (rungs + side rails); performer = (stage/canopy + audience) OR (headset/microphone + facing audience). If cue‑pair fails, use a concrete fallback noun (see fallbacks).
+- OCR/text: quote exact text only when OCR confidence high AND text bbox ≥0.5% image area AND legibility ≳8pt equivalent with high contrast. Otherwise emit a compact positional descriptor (e.g., ""phone number on yellow board at center"") including dominant sign color/shape when legible.
+
+Descriptor priority (must preserve VERIFIED tokens)
+Priority order for including descriptors: (1) VERIFIED discriminative props or quoted text, (2) VERIFIED part‑relations/micro‑actions, (3) VERIFIED fine class, (4) clothing & clear pose/gaze, (5) object state/material, (6) viewpoint/orientation, (7) color, (8) lighting/reflection. Never prune VERIFIED items.
+
+Allowed verbs and motion
+- Use dynamic contact/motion verbs (jumping, swinging, reaching, holding) only when Contact or clear motion evidence is VERIFIED. Do not infer intentions, emotions, or unseen attributes.
+
+Pruning, length, and determinism
+- Target caption length: 10–14 words. Hard cap: 18 words (allow up to 24 only if a VERIFIED quoted text string is included).
+- If over length, prune deterministically in this order until within cap: color → material/texture → reflections → lighting → background (unless background ≥5% image area or contains VERIFIED text) → low‑priority descriptors. Never drop VERIFIED discriminative props, VERIFIED fine classes, or VERIFIED part relations. When tokens tie, prefer shorter tokens and prefer nouns/props over adjectives.
+
+Background & spatial rules
+- Include a background anchor only when that anchor occupies ≥5% image area or is a distinct structure (storefront, metal shutter, stage). Use compact phrases (""storefront behind"", ""metal shutter at left""). For text follow OCR rule above.
+- When multiple humans/animals are present, require short relational clauses connecting them (e.g., ""man left foreground, woman leaning over cart right foreground"").
+
+Anti‑hallucination fallbacks (use when cue/OCR fails)
+- Use concrete fallbacks: ""woven basket"", ""pile of fruit"", ""two‑wheeled vehicle"", ""toy ride"", ""minivan"", ""painted metal shutter"", ""signboard"", ""storefront"", ""cart"", ""pillow"". Do not invent fine classes beyond verification.
+
+Tie‑breakers & cropping
+- If subject prominence ties, choose larger bbox area; if tied, choose leftmost centroid. If subject width >50% image width, emit ""center"". Append ""partially cropped at [top|bottom|left|right]"" only when >5% of subject area lies outside image.
+
+Mandatory style constraints
+- Single sentence, comma‑separated short phrases; front‑load nouns/VERIFIED props; use digits only when Count VERIFIED; do not infer age, emotion, intention, or any unseen attributes; output nothing but the caption.
+
+Micro‑templates (follow these exact patterns)
+1) ""1 woman center foreground, right hand holding woven basket of oranges, storefront behind.""  
+2) ""two dogs left foreground, small white dog jumping at car passenger window, woman leaning out.""  
+3) ""1 person right foreground, standing by two‑wheeled vehicle with visible pedals and chain, metal shutter behind.""  
+4) ""1 boy center foreground, seated on red toy ride, blue Mets jersey visible, playground court behind.""  
+5) ""many dancers center foreground, line of red/gold sequined costumes, 'RADIO CITY' marquee behind.""  
+6) ""1 man center foreground, chain attached to yellow cart with stickers, phone number on blue board at center.""  
+
+Follow all rules above exactly; perform the internal verification and pruning, then emit the single final caption that satisfies these constraints.","Three children on sandy beach, one in pink hoodie crouching, another in blue skirt standing, third in light blue hoodie kneeling, all smiling, ocean visible behind.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_bb96c46b5c,40,833,flickr30k_test_000833,images/flickr30k/flickr30k_test_000833.jpg,"[""A beach scene with three boys in swim shorts each holding paddle ball racquets but no ball in sight."", ""Kids play a game of ball with paddles at the water's edge at the beach."", ""Three children are playing paddle ball on the beach."", ""Three boys play with paddles on the beach."", ""Several children playing on a beach.""]",textgrad_bb96c46b5c,TextGrad Step 12,"Output exactly one concise, information‑dense caption: a single grammatical sentence composed of comma‑separated short phrases. Produce only that single sentence and no other text.
+
+Two‑pass internal checklist (do not print logs)
+1) Proposal: internally enumerate candidate tokens for each slot: up to 3 subject groups (prominence order), optional single micro‑action, one part‑relation (if contact VERIFIED), up to 3 descriptors, optional viewpoint/orientation, lighting, and background/text.
+2) Verification: apply the deterministic checks below to every candidate; mark tokens that pass as VERIFIED and protect VERIFIED discriminative props, VERIFIED fine classes, and VERIFIED part‑relations from any pruning. Do not output the checklist or intermediate candidates.
+
+Subject groups & placement (hard constraints)
+- Emit 1–3 subject groups in prominence order. Each group must be: [digit if Count VERIFIED] + noun(s) + spatial anchor (left/center/right) and include ""foreground""/""background"" only when depth/separability VERIFIED.
+- Front‑load subject nouns and any VERIFIED discriminative props so they appear within the first 6–8 words.
+- Use digits only when Count verification passes (rule below); otherwise use singular/plural nouns (""person/people"", ""dog/dogs"", ""vehicle/vehicles"").
+
+Deterministic verification rules (must be followed)
+- Count: include a digit only if every instance is ≥50% unobstructed AND centroid spacing ≥10% image width AND IOU between subject bboxes <0.10. If any check fails, do not emit digits — use singular/plural.
+- Contact (micro‑action): assert contact only if overlap area / smaller bbox area ≥12% AND visible attachment or contiguous boundary pixels or clear occlusion consistent with grasp. If VERIFIED, include exactly one micro‑action using the template: ""[left|right] [hand|foot|part] [strong‑verb] [object]"" (e.g., ""right hand holding woven basket""). Always specify left/right. If Contact not VERIFIED, do not invent a micro‑action.
+- Fine class (cue‑pair): emit a fine class only when the required cue‑pair passes OR classifier confidence >0.60. Example cue‑pairs (apply only as checks): vendor = (table/counter + stacks of produce) OR (baskets/piles + scale); bicycle = (spokes + pedals) OR (pedals + chain); motorbike/scooter = (frame + exhaust) OR (engine casing + exhaust); ladder = (rungs + side rails); performer = (stage/canopy + audience) OR (headset/microphone + facing audience). If cue‑pair fails, use a concrete fallback noun (see fallbacks).
+- OCR/text: quote exact text only when OCR confidence high AND text bbox ≥0.5% image area AND legibility ≳8pt equivalent with high contrast. Otherwise emit a compact positional descriptor (e.g., ""phone number on yellow board at center"") including dominant sign color/shape when legible.
+
+Descriptor priority (must preserve VERIFIED tokens)
+Priority order for including descriptors: (1) VERIFIED discriminative props or quoted text, (2) VERIFIED part‑relations/micro‑actions, (3) VERIFIED fine class, (4) clothing & clear pose/gaze, (5) object state/material, (6) viewpoint/orientation, (7) color, (8) lighting/reflection. Never prune VERIFIED items.
+
+Allowed verbs and motion
+- Use dynamic contact/motion verbs (jumping, swinging, reaching, holding) only when Contact or clear motion evidence is VERIFIED. Do not infer intentions, emotions, or unseen attributes.
+
+Pruning, length, and determinism
+- Target caption length: 10–14 words. Hard cap: 18 words (allow up to 24 only if a VERIFIED quoted text string is included).
+- If over length, prune deterministically in this order until within cap: color → material/texture → reflections → lighting → background (unless background ≥5% image area or contains VERIFIED text) → low‑priority descriptors. Never drop VERIFIED discriminative props, VERIFIED fine classes, or VERIFIED part relations. When tokens tie, prefer shorter tokens and prefer nouns/props over adjectives.
+
+Background & spatial rules
+- Include a background anchor only when that anchor occupies ≥5% image area or is a distinct structure (storefront, metal shutter, stage). Use compact phrases (""storefront behind"", ""metal shutter at left""). For text follow OCR rule above.
+- When multiple humans/animals are present, require short relational clauses connecting them (e.g., ""man left foreground, woman leaning over cart right foreground"").
+
+Anti‑hallucination fallbacks (use when cue/OCR fails)
+- Use concrete fallbacks: ""woven basket"", ""pile of fruit"", ""two‑wheeled vehicle"", ""toy ride"", ""minivan"", ""painted metal shutter"", ""signboard"", ""storefront"", ""cart"", ""pillow"". Do not invent fine classes beyond verification.
+
+Tie‑breakers & cropping
+- If subject prominence ties, choose larger bbox area; if tied, choose leftmost centroid. If subject width >50% image width, emit ""center"". Append ""partially cropped at [top|bottom|left|right]"" only when >5% of subject area lies outside image.
+
+Mandatory style constraints
+- Single sentence, comma‑separated short phrases; front‑load nouns/VERIFIED props; use digits only when Count VERIFIED; do not infer age, emotion, intention, or any unseen attributes; output nothing but the caption.
+
+Micro‑templates (follow these exact patterns)
+1) ""1 woman center foreground, right hand holding woven basket of oranges, storefront behind.""  
+2) ""two dogs left foreground, small white dog jumping at car passenger window, woman leaning out.""  
+3) ""1 person right foreground, standing by two‑wheeled vehicle with visible pedals and chain, metal shutter behind.""  
+4) ""1 boy center foreground, seated on red toy ride, blue Mets jersey visible, playground court behind.""  
+5) ""many dancers center foreground, line of red/gold sequined costumes, 'RADIO CITY' marquee behind.""  
+6) ""1 man center foreground, chain attached to yellow cart with stickers, phone number on blue board at center.""  
+
+Follow all rules above exactly; perform the internal verification and pruning, then emit the single final caption that satisfies these constraints.","Three boys play paddleball on wet sand, one holding blue paddle, another red, waves rolling behind them.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_bb96c46b5c,50,23784,flickr30k_test_023784,images/flickr30k/flickr30k_test_023784.jpg,"[""A very aged woman wearing blue is standing in front of a pile of things, many in black trash bags."", ""Smiling woman in a blue apron standing in front of a pile of bags and boxes."", ""An elderly hispanic woman wears a blue vest in front of a pile of boxes."", ""A woman wearing a blue vest seems to be in a very messy area."", ""A woman in a blue smock in a blue smock is smiling.""]",textgrad_bb96c46b5c,TextGrad Step 12,"Output exactly one concise, information‑dense caption: a single grammatical sentence composed of comma‑separated short phrases. Produce only that single sentence and no other text.
+
+Two‑pass internal checklist (do not print logs)
+1) Proposal: internally enumerate candidate tokens for each slot: up to 3 subject groups (prominence order), optional single micro‑action, one part‑relation (if contact VERIFIED), up to 3 descriptors, optional viewpoint/orientation, lighting, and background/text.
+2) Verification: apply the deterministic checks below to every candidate; mark tokens that pass as VERIFIED and protect VERIFIED discriminative props, VERIFIED fine classes, and VERIFIED part‑relations from any pruning. Do not output the checklist or intermediate candidates.
+
+Subject groups & placement (hard constraints)
+- Emit 1–3 subject groups in prominence order. Each group must be: [digit if Count VERIFIED] + noun(s) + spatial anchor (left/center/right) and include ""foreground""/""background"" only when depth/separability VERIFIED.
+- Front‑load subject nouns and any VERIFIED discriminative props so they appear within the first 6–8 words.
+- Use digits only when Count verification passes (rule below); otherwise use singular/plural nouns (""person/people"", ""dog/dogs"", ""vehicle/vehicles"").
+
+Deterministic verification rules (must be followed)
+- Count: include a digit only if every instance is ≥50% unobstructed AND centroid spacing ≥10% image width AND IOU between subject bboxes <0.10. If any check fails, do not emit digits — use singular/plural.
+- Contact (micro‑action): assert contact only if overlap area / smaller bbox area ≥12% AND visible attachment or contiguous boundary pixels or clear occlusion consistent with grasp. If VERIFIED, include exactly one micro‑action using the template: ""[left|right] [hand|foot|part] [strong‑verb] [object]"" (e.g., ""right hand holding woven basket""). Always specify left/right. If Contact not VERIFIED, do not invent a micro‑action.
+- Fine class (cue‑pair): emit a fine class only when the required cue‑pair passes OR classifier confidence >0.60. Example cue‑pairs (apply only as checks): vendor = (table/counter + stacks of produce) OR (baskets/piles + scale); bicycle = (spokes + pedals) OR (pedals + chain); motorbike/scooter = (frame + exhaust) OR (engine casing + exhaust); ladder = (rungs + side rails); performer = (stage/canopy + audience) OR (headset/microphone + facing audience). If cue‑pair fails, use a concrete fallback noun (see fallbacks).
+- OCR/text: quote exact text only when OCR confidence high AND text bbox ≥0.5% image area AND legibility ≳8pt equivalent with high contrast. Otherwise emit a compact positional descriptor (e.g., ""phone number on yellow board at center"") including dominant sign color/shape when legible.
+
+Descriptor priority (must preserve VERIFIED tokens)
+Priority order for including descriptors: (1) VERIFIED discriminative props or quoted text, (2) VERIFIED part‑relations/micro‑actions, (3) VERIFIED fine class, (4) clothing & clear pose/gaze, (5) object state/material, (6) viewpoint/orientation, (7) color, (8) lighting/reflection. Never prune VERIFIED items.
+
+Allowed verbs and motion
+- Use dynamic contact/motion verbs (jumping, swinging, reaching, holding) only when Contact or clear motion evidence is VERIFIED. Do not infer intentions, emotions, or unseen attributes.
+
+Pruning, length, and determinism
+- Target caption length: 10–14 words. Hard cap: 18 words (allow up to 24 only if a VERIFIED quoted text string is included).
+- If over length, prune deterministically in this order until within cap: color → material/texture → reflections → lighting → background (unless background ≥5% image area or contains VERIFIED text) → low‑priority descriptors. Never drop VERIFIED discriminative props, VERIFIED fine classes, or VERIFIED part relations. When tokens tie, prefer shorter tokens and prefer nouns/props over adjectives.
+
+Background & spatial rules
+- Include a background anchor only when that anchor occupies ≥5% image area or is a distinct structure (storefront, metal shutter, stage). Use compact phrases (""storefront behind"", ""metal shutter at left""). For text follow OCR rule above.
+- When multiple humans/animals are present, require short relational clauses connecting them (e.g., ""man left foreground, woman leaning over cart right foreground"").
+
+Anti‑hallucination fallbacks (use when cue/OCR fails)
+- Use concrete fallbacks: ""woven basket"", ""pile of fruit"", ""two‑wheeled vehicle"", ""toy ride"", ""minivan"", ""painted metal shutter"", ""signboard"", ""storefront"", ""cart"", ""pillow"". Do not invent fine classes beyond verification.
+
+Tie‑breakers & cropping
+- If subject prominence ties, choose larger bbox area; if tied, choose leftmost centroid. If subject width >50% image width, emit ""center"". Append ""partially cropped at [top|bottom|left|right]"" only when >5% of subject area lies outside image.
+
+Mandatory style constraints
+- Single sentence, comma‑separated short phrases; front‑load nouns/VERIFIED props; use digits only when Count VERIFIED; do not infer age, emotion, intention, or any unseen attributes; output nothing but the caption.
+
+Micro‑templates (follow these exact patterns)
+1) ""1 woman center foreground, right hand holding woven basket of oranges, storefront behind.""  
+2) ""two dogs left foreground, small white dog jumping at car passenger window, woman leaning out.""  
+3) ""1 person right foreground, standing by two‑wheeled vehicle with visible pedals and chain, metal shutter behind.""  
+4) ""1 boy center foreground, seated on red toy ride, blue Mets jersey visible, playground court behind.""  
+5) ""many dancers center foreground, line of red/gold sequined costumes, 'RADIO CITY' marquee behind.""  
+6) ""1 man center foreground, chain attached to yellow cart with stickers, phone number on blue board at center.""  
+
+Follow all rules above exactly; perform the internal verification and pruning, then emit the single final caption that satisfies these constraints.","One woman center foreground, smiling, wearing blue vest over dark shirt, surrounded by bags and boxes.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_bb96c46b5c,61,22178,flickr30k_test_022178,images/flickr30k/flickr30k_test_022178.jpg,"[""A man with gray hair is sitting on a stool reading a newspaper in a market type setting."", ""An elderly outdoor market vegetable vendor sits with his wares and reads a newspaper."", ""A man in a white shirt reads while waiting to sell fruit."", ""A man in reads the newspaper and sells his produce."", ""A man reads his newspaper while selling fruit.""]",textgrad_bb96c46b5c,TextGrad Step 12,"Output exactly one concise, information‑dense caption: a single grammatical sentence composed of comma‑separated short phrases. Produce only that single sentence and no other text.
+
+Two‑pass internal checklist (do not print logs)
+1) Proposal: internally enumerate candidate tokens for each slot: up to 3 subject groups (prominence order), optional single micro‑action, one part‑relation (if contact VERIFIED), up to 3 descriptors, optional viewpoint/orientation, lighting, and background/text.
+2) Verification: apply the deterministic checks below to every candidate; mark tokens that pass as VERIFIED and protect VERIFIED discriminative props, VERIFIED fine classes, and VERIFIED part‑relations from any pruning. Do not output the checklist or intermediate candidates.
+
+Subject groups & placement (hard constraints)
+- Emit 1–3 subject groups in prominence order. Each group must be: [digit if Count VERIFIED] + noun(s) + spatial anchor (left/center/right) and include ""foreground""/""background"" only when depth/separability VERIFIED.
+- Front‑load subject nouns and any VERIFIED discriminative props so they appear within the first 6–8 words.
+- Use digits only when Count verification passes (rule below); otherwise use singular/plural nouns (""person/people"", ""dog/dogs"", ""vehicle/vehicles"").
+
+Deterministic verification rules (must be followed)
+- Count: include a digit only if every instance is ≥50% unobstructed AND centroid spacing ≥10% image width AND IOU between subject bboxes <0.10. If any check fails, do not emit digits — use singular/plural.
+- Contact (micro‑action): assert contact only if overlap area / smaller bbox area ≥12% AND visible attachment or contiguous boundary pixels or clear occlusion consistent with grasp. If VERIFIED, include exactly one micro‑action using the template: ""[left|right] [hand|foot|part] [strong‑verb] [object]"" (e.g., ""right hand holding woven basket""). Always specify left/right. If Contact not VERIFIED, do not invent a micro‑action.
+- Fine class (cue‑pair): emit a fine class only when the required cue‑pair passes OR classifier confidence >0.60. Example cue‑pairs (apply only as checks): vendor = (table/counter + stacks of produce) OR (baskets/piles + scale); bicycle = (spokes + pedals) OR (pedals + chain); motorbike/scooter = (frame + exhaust) OR (engine casing + exhaust); ladder = (rungs + side rails); performer = (stage/canopy + audience) OR (headset/microphone + facing audience). If cue‑pair fails, use a concrete fallback noun (see fallbacks).
+- OCR/text: quote exact text only when OCR confidence high AND text bbox ≥0.5% image area AND legibility ≳8pt equivalent with high contrast. Otherwise emit a compact positional descriptor (e.g., ""phone number on yellow board at center"") including dominant sign color/shape when legible.
+
+Descriptor priority (must preserve VERIFIED tokens)
+Priority order for including descriptors: (1) VERIFIED discriminative props or quoted text, (2) VERIFIED part‑relations/micro‑actions, (3) VERIFIED fine class, (4) clothing & clear pose/gaze, (5) object state/material, (6) viewpoint/orientation, (7) color, (8) lighting/reflection. Never prune VERIFIED items.
+
+Allowed verbs and motion
+- Use dynamic contact/motion verbs (jumping, swinging, reaching, holding) only when Contact or clear motion evidence is VERIFIED. Do not infer intentions, emotions, or unseen attributes.
+
+Pruning, length, and determinism
+- Target caption length: 10–14 words. Hard cap: 18 words (allow up to 24 only if a VERIFIED quoted text string is included).
+- If over length, prune deterministically in this order until within cap: color → material/texture → reflections → lighting → background (unless background ≥5% image area or contains VERIFIED text) → low‑priority descriptors. Never drop VERIFIED discriminative props, VERIFIED fine classes, or VERIFIED part relations. When tokens tie, prefer shorter tokens and prefer nouns/props over adjectives.
+
+Background & spatial rules
+- Include a background anchor only when that anchor occupies ≥5% image area or is a distinct structure (storefront, metal shutter, stage). Use compact phrases (""storefront behind"", ""metal shutter at left""). For text follow OCR rule above.
+- When multiple humans/animals are present, require short relational clauses connecting them (e.g., ""man left foreground, woman leaning over cart right foreground"").
+
+Anti‑hallucination fallbacks (use when cue/OCR fails)
+- Use concrete fallbacks: ""woven basket"", ""pile of fruit"", ""two‑wheeled vehicle"", ""toy ride"", ""minivan"", ""painted metal shutter"", ""signboard"", ""storefront"", ""cart"", ""pillow"". Do not invent fine classes beyond verification.
+
+Tie‑breakers & cropping
+- If subject prominence ties, choose larger bbox area; if tied, choose leftmost centroid. If subject width >50% image width, emit ""center"". Append ""partially cropped at [top|bottom|left|right]"" only when >5% of subject area lies outside image.
+
+Mandatory style constraints
+- Single sentence, comma‑separated short phrases; front‑load nouns/VERIFIED props; use digits only when Count VERIFIED; do not infer age, emotion, intention, or any unseen attributes; output nothing but the caption.
+
+Micro‑templates (follow these exact patterns)
+1) ""1 woman center foreground, right hand holding woven basket of oranges, storefront behind.""  
+2) ""two dogs left foreground, small white dog jumping at car passenger window, woman leaning out.""  
+3) ""1 person right foreground, standing by two‑wheeled vehicle with visible pedals and chain, metal shutter behind.""  
+4) ""1 boy center foreground, seated on red toy ride, blue Mets jersey visible, playground court behind.""  
+5) ""many dancers center foreground, line of red/gold sequined costumes, 'RADIO CITY' marquee behind.""  
+6) ""1 man center foreground, chain attached to yellow cart with stickers, phone number on blue board at center.""  
+
+Follow all rules above exactly; perform the internal verification and pruning, then emit the single final caption that satisfies these constraints.","man right foreground reading newspaper, fruit vendor center foreground selling apples and grapes, Café Mysore storefront behind, pedestrians walking past",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_bb96c46b5c,66,30359,flickr30k_test_030359,images/flickr30k/flickr30k_test_030359.jpg,"[""A soccer game with 5 guys in the picture but three of them are about to commence in a three way kick."", ""A group of soccer teammates are fighting over the soccer ball while in a stadium full of supporters."", ""Five young men, three in yellow, one in red and one in white are playing soccer."", ""A soccer player is attempting to score a goal."", ""Guys are play soccer on the field.""]",textgrad_bb96c46b5c,TextGrad Step 12,"Output exactly one concise, information‑dense caption: a single grammatical sentence composed of comma‑separated short phrases. Produce only that single sentence and no other text.
+
+Two‑pass internal checklist (do not print logs)
+1) Proposal: internally enumerate candidate tokens for each slot: up to 3 subject groups (prominence order), optional single micro‑action, one part‑relation (if contact VERIFIED), up to 3 descriptors, optional viewpoint/orientation, lighting, and background/text.
+2) Verification: apply the deterministic checks below to every candidate; mark tokens that pass as VERIFIED and protect VERIFIED discriminative props, VERIFIED fine classes, and VERIFIED part‑relations from any pruning. Do not output the checklist or intermediate candidates.
+
+Subject groups & placement (hard constraints)
+- Emit 1–3 subject groups in prominence order. Each group must be: [digit if Count VERIFIED] + noun(s) + spatial anchor (left/center/right) and include ""foreground""/""background"" only when depth/separability VERIFIED.
+- Front‑load subject nouns and any VERIFIED discriminative props so they appear within the first 6–8 words.
+- Use digits only when Count verification passes (rule below); otherwise use singular/plural nouns (""person/people"", ""dog/dogs"", ""vehicle/vehicles"").
+
+Deterministic verification rules (must be followed)
+- Count: include a digit only if every instance is ≥50% unobstructed AND centroid spacing ≥10% image width AND IOU between subject bboxes <0.10. If any check fails, do not emit digits — use singular/plural.
+- Contact (micro‑action): assert contact only if overlap area / smaller bbox area ≥12% AND visible attachment or contiguous boundary pixels or clear occlusion consistent with grasp. If VERIFIED, include exactly one micro‑action using the template: ""[left|right] [hand|foot|part] [strong‑verb] [object]"" (e.g., ""right hand holding woven basket""). Always specify left/right. If Contact not VERIFIED, do not invent a micro‑action.
+- Fine class (cue‑pair): emit a fine class only when the required cue‑pair passes OR classifier confidence >0.60. Example cue‑pairs (apply only as checks): vendor = (table/counter + stacks of produce) OR (baskets/piles + scale); bicycle = (spokes + pedals) OR (pedals + chain); motorbike/scooter = (frame + exhaust) OR (engine casing + exhaust); ladder = (rungs + side rails); performer = (stage/canopy + audience) OR (headset/microphone + facing audience). If cue‑pair fails, use a concrete fallback noun (see fallbacks).
+- OCR/text: quote exact text only when OCR confidence high AND text bbox ≥0.5% image area AND legibility ≳8pt equivalent with high contrast. Otherwise emit a compact positional descriptor (e.g., ""phone number on yellow board at center"") including dominant sign color/shape when legible.
+
+Descriptor priority (must preserve VERIFIED tokens)
+Priority order for including descriptors: (1) VERIFIED discriminative props or quoted text, (2) VERIFIED part‑relations/micro‑actions, (3) VERIFIED fine class, (4) clothing & clear pose/gaze, (5) object state/material, (6) viewpoint/orientation, (7) color, (8) lighting/reflection. Never prune VERIFIED items.
+
+Allowed verbs and motion
+- Use dynamic contact/motion verbs (jumping, swinging, reaching, holding) only when Contact or clear motion evidence is VERIFIED. Do not infer intentions, emotions, or unseen attributes.
+
+Pruning, length, and determinism
+- Target caption length: 10–14 words. Hard cap: 18 words (allow up to 24 only if a VERIFIED quoted text string is included).
+- If over length, prune deterministically in this order until within cap: color → material/texture → reflections → lighting → background (unless background ≥5% image area or contains VERIFIED text) → low‑priority descriptors. Never drop VERIFIED discriminative props, VERIFIED fine classes, or VERIFIED part relations. When tokens tie, prefer shorter tokens and prefer nouns/props over adjectives.
+
+Background & spatial rules
+- Include a background anchor only when that anchor occupies ≥5% image area or is a distinct structure (storefront, metal shutter, stage). Use compact phrases (""storefront behind"", ""metal shutter at left""). For text follow OCR rule above.
+- When multiple humans/animals are present, require short relational clauses connecting them (e.g., ""man left foreground, woman leaning over cart right foreground"").
+
+Anti‑hallucination fallbacks (use when cue/OCR fails)
+- Use concrete fallbacks: ""woven basket"", ""pile of fruit"", ""two‑wheeled vehicle"", ""toy ride"", ""minivan"", ""painted metal shutter"", ""signboard"", ""storefront"", ""cart"", ""pillow"". Do not invent fine classes beyond verification.
+
+Tie‑breakers & cropping
+- If subject prominence ties, choose larger bbox area; if tied, choose leftmost centroid. If subject width >50% image width, emit ""center"". Append ""partially cropped at [top|bottom|left|right]"" only when >5% of subject area lies outside image.
+
+Mandatory style constraints
+- Single sentence, comma‑separated short phrases; front‑load nouns/VERIFIED props; use digits only when Count VERIFIED; do not infer age, emotion, intention, or any unseen attributes; output nothing but the caption.
+
+Micro‑templates (follow these exact patterns)
+1) ""1 woman center foreground, right hand holding woven basket of oranges, storefront behind.""  
+2) ""two dogs left foreground, small white dog jumping at car passenger window, woman leaning out.""  
+3) ""1 person right foreground, standing by two‑wheeled vehicle with visible pedals and chain, metal shutter behind.""  
+4) ""1 boy center foreground, seated on red toy ride, blue Mets jersey visible, playground court behind.""  
+5) ""many dancers center foreground, line of red/gold sequined costumes, 'RADIO CITY' marquee behind.""  
+6) ""1 man center foreground, chain attached to yellow cart with stickers, phone number on blue board at center.""  
+
+Follow all rules above exactly; perform the internal verification and pruning, then emit the single final caption that satisfies these constraints.","Goalkeeper diving left, two players mid-air contesting header, one in yellow jersey number 9, another in white jersey number 2, crowd behind advertising hoarding.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_bb96c46b5c,71,18233,flickr30k_test_018233,images/flickr30k/flickr30k_test_018233.jpg,"[""Here is a picture of Asian dancers performing a new dance in front of their class and teacher."", ""Young girl balances on a reclined man's legs as part of a performance in front of an audience"", ""A man in black lies on his back while a little girl stands on his feet."", ""Circus actors play with a child while other children watch."", ""Children watch while an acrobatic team performs stunts.""]",textgrad_bb96c46b5c,TextGrad Step 12,"Output exactly one concise, information‑dense caption: a single grammatical sentence composed of comma‑separated short phrases. Produce only that single sentence and no other text.
+
+Two‑pass internal checklist (do not print logs)
+1) Proposal: internally enumerate candidate tokens for each slot: up to 3 subject groups (prominence order), optional single micro‑action, one part‑relation (if contact VERIFIED), up to 3 descriptors, optional viewpoint/orientation, lighting, and background/text.
+2) Verification: apply the deterministic checks below to every candidate; mark tokens that pass as VERIFIED and protect VERIFIED discriminative props, VERIFIED fine classes, and VERIFIED part‑relations from any pruning. Do not output the checklist or intermediate candidates.
+
+Subject groups & placement (hard constraints)
+- Emit 1–3 subject groups in prominence order. Each group must be: [digit if Count VERIFIED] + noun(s) + spatial anchor (left/center/right) and include ""foreground""/""background"" only when depth/separability VERIFIED.
+- Front‑load subject nouns and any VERIFIED discriminative props so they appear within the first 6–8 words.
+- Use digits only when Count verification passes (rule below); otherwise use singular/plural nouns (""person/people"", ""dog/dogs"", ""vehicle/vehicles"").
+
+Deterministic verification rules (must be followed)
+- Count: include a digit only if every instance is ≥50% unobstructed AND centroid spacing ≥10% image width AND IOU between subject bboxes <0.10. If any check fails, do not emit digits — use singular/plural.
+- Contact (micro‑action): assert contact only if overlap area / smaller bbox area ≥12% AND visible attachment or contiguous boundary pixels or clear occlusion consistent with grasp. If VERIFIED, include exactly one micro‑action using the template: ""[left|right] [hand|foot|part] [strong‑verb] [object]"" (e.g., ""right hand holding woven basket""). Always specify left/right. If Contact not VERIFIED, do not invent a micro‑action.
+- Fine class (cue‑pair): emit a fine class only when the required cue‑pair passes OR classifier confidence >0.60. Example cue‑pairs (apply only as checks): vendor = (table/counter + stacks of produce) OR (baskets/piles + scale); bicycle = (spokes + pedals) OR (pedals + chain); motorbike/scooter = (frame + exhaust) OR (engine casing + exhaust); ladder = (rungs + side rails); performer = (stage/canopy + audience) OR (headset/microphone + facing audience). If cue‑pair fails, use a concrete fallback noun (see fallbacks).
+- OCR/text: quote exact text only when OCR confidence high AND text bbox ≥0.5% image area AND legibility ≳8pt equivalent with high contrast. Otherwise emit a compact positional descriptor (e.g., ""phone number on yellow board at center"") including dominant sign color/shape when legible.
+
+Descriptor priority (must preserve VERIFIED tokens)
+Priority order for including descriptors: (1) VERIFIED discriminative props or quoted text, (2) VERIFIED part‑relations/micro‑actions, (3) VERIFIED fine class, (4) clothing & clear pose/gaze, (5) object state/material, (6) viewpoint/orientation, (7) color, (8) lighting/reflection. Never prune VERIFIED items.
+
+Allowed verbs and motion
+- Use dynamic contact/motion verbs (jumping, swinging, reaching, holding) only when Contact or clear motion evidence is VERIFIED. Do not infer intentions, emotions, or unseen attributes.
+
+Pruning, length, and determinism
+- Target caption length: 10–14 words. Hard cap: 18 words (allow up to 24 only if a VERIFIED quoted text string is included).
+- If over length, prune deterministically in this order until within cap: color → material/texture → reflections → lighting → background (unless background ≥5% image area or contains VERIFIED text) → low‑priority descriptors. Never drop VERIFIED discriminative props, VERIFIED fine classes, or VERIFIED part relations. When tokens tie, prefer shorter tokens and prefer nouns/props over adjectives.
+
+Background & spatial rules
+- Include a background anchor only when that anchor occupies ≥5% image area or is a distinct structure (storefront, metal shutter, stage). Use compact phrases (""storefront behind"", ""metal shutter at left""). For text follow OCR rule above.
+- When multiple humans/animals are present, require short relational clauses connecting them (e.g., ""man left foreground, woman leaning over cart right foreground"").
+
+Anti‑hallucination fallbacks (use when cue/OCR fails)
+- Use concrete fallbacks: ""woven basket"", ""pile of fruit"", ""two‑wheeled vehicle"", ""toy ride"", ""minivan"", ""painted metal shutter"", ""signboard"", ""storefront"", ""cart"", ""pillow"". Do not invent fine classes beyond verification.
+
+Tie‑breakers & cropping
+- If subject prominence ties, choose larger bbox area; if tied, choose leftmost centroid. If subject width >50% image width, emit ""center"". Append ""partially cropped at [top|bottom|left|right]"" only when >5% of subject area lies outside image.
+
+Mandatory style constraints
+- Single sentence, comma‑separated short phrases; front‑load nouns/VERIFIED props; use digits only when Count VERIFIED; do not infer age, emotion, intention, or any unseen attributes; output nothing but the caption.
+
+Micro‑templates (follow these exact patterns)
+1) ""1 woman center foreground, right hand holding woven basket of oranges, storefront behind.""  
+2) ""two dogs left foreground, small white dog jumping at car passenger window, woman leaning out.""  
+3) ""1 person right foreground, standing by two‑wheeled vehicle with visible pedals and chain, metal shutter behind.""  
+4) ""1 boy center foreground, seated on red toy ride, blue Mets jersey visible, playground court behind.""  
+5) ""many dancers center foreground, line of red/gold sequined costumes, 'RADIO CITY' marquee behind.""  
+6) ""1 man center foreground, chain attached to yellow cart with stickers, phone number on blue board at center.""  
+
+Follow all rules above exactly; perform the internal verification and pruning, then emit the single final caption that satisfies these constraints.","One woman center foreground, right hand holding woven basket, red lantern above, man lying upside down on red mat, child balancing on his feet, audience watching from below.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_bb96c46b5c,72,30218,flickr30k_test_030218,images/flickr30k/flickr30k_test_030218.jpg,"[""An older, bearded man play a small metal whistle while holding an oboe in his arm on a city street in font of a store window."", ""A bearded man, dressed in jeans and a jacket, is preparing to play a flute instrument on the sidewalk."", ""A man in a gray sweater and blue jeans, playing a flute along a street."", ""An old bearded man plays a hand flute on the side of a sidewalk."", ""An old man playing a musical instrument at a city sidewalk.""]",textgrad_bb96c46b5c,TextGrad Step 12,"Output exactly one concise, information‑dense caption: a single grammatical sentence composed of comma‑separated short phrases. Produce only that single sentence and no other text.
+
+Two‑pass internal checklist (do not print logs)
+1) Proposal: internally enumerate candidate tokens for each slot: up to 3 subject groups (prominence order), optional single micro‑action, one part‑relation (if contact VERIFIED), up to 3 descriptors, optional viewpoint/orientation, lighting, and background/text.
+2) Verification: apply the deterministic checks below to every candidate; mark tokens that pass as VERIFIED and protect VERIFIED discriminative props, VERIFIED fine classes, and VERIFIED part‑relations from any pruning. Do not output the checklist or intermediate candidates.
+
+Subject groups & placement (hard constraints)
+- Emit 1–3 subject groups in prominence order. Each group must be: [digit if Count VERIFIED] + noun(s) + spatial anchor (left/center/right) and include ""foreground""/""background"" only when depth/separability VERIFIED.
+- Front‑load subject nouns and any VERIFIED discriminative props so they appear within the first 6–8 words.
+- Use digits only when Count verification passes (rule below); otherwise use singular/plural nouns (""person/people"", ""dog/dogs"", ""vehicle/vehicles"").
+
+Deterministic verification rules (must be followed)
+- Count: include a digit only if every instance is ≥50% unobstructed AND centroid spacing ≥10% image width AND IOU between subject bboxes <0.10. If any check fails, do not emit digits — use singular/plural.
+- Contact (micro‑action): assert contact only if overlap area / smaller bbox area ≥12% AND visible attachment or contiguous boundary pixels or clear occlusion consistent with grasp. If VERIFIED, include exactly one micro‑action using the template: ""[left|right] [hand|foot|part] [strong‑verb] [object]"" (e.g., ""right hand holding woven basket""). Always specify left/right. If Contact not VERIFIED, do not invent a micro‑action.
+- Fine class (cue‑pair): emit a fine class only when the required cue‑pair passes OR classifier confidence >0.60. Example cue‑pairs (apply only as checks): vendor = (table/counter + stacks of produce) OR (baskets/piles + scale); bicycle = (spokes + pedals) OR (pedals + chain); motorbike/scooter = (frame + exhaust) OR (engine casing + exhaust); ladder = (rungs + side rails); performer = (stage/canopy + audience) OR (headset/microphone + facing audience). If cue‑pair fails, use a concrete fallback noun (see fallbacks).
+- OCR/text: quote exact text only when OCR confidence high AND text bbox ≥0.5% image area AND legibility ≳8pt equivalent with high contrast. Otherwise emit a compact positional descriptor (e.g., ""phone number on yellow board at center"") including dominant sign color/shape when legible.
+
+Descriptor priority (must preserve VERIFIED tokens)
+Priority order for including descriptors: (1) VERIFIED discriminative props or quoted text, (2) VERIFIED part‑relations/micro‑actions, (3) VERIFIED fine class, (4) clothing & clear pose/gaze, (5) object state/material, (6) viewpoint/orientation, (7) color, (8) lighting/reflection. Never prune VERIFIED items.
+
+Allowed verbs and motion
+- Use dynamic contact/motion verbs (jumping, swinging, reaching, holding) only when Contact or clear motion evidence is VERIFIED. Do not infer intentions, emotions, or unseen attributes.
+
+Pruning, length, and determinism
+- Target caption length: 10–14 words. Hard cap: 18 words (allow up to 24 only if a VERIFIED quoted text string is included).
+- If over length, prune deterministically in this order until within cap: color → material/texture → reflections → lighting → background (unless background ≥5% image area or contains VERIFIED text) → low‑priority descriptors. Never drop VERIFIED discriminative props, VERIFIED fine classes, or VERIFIED part relations. When tokens tie, prefer shorter tokens and prefer nouns/props over adjectives.
+
+Background & spatial rules
+- Include a background anchor only when that anchor occupies ≥5% image area or is a distinct structure (storefront, metal shutter, stage). Use compact phrases (""storefront behind"", ""metal shutter at left""). For text follow OCR rule above.
+- When multiple humans/animals are present, require short relational clauses connecting them (e.g., ""man left foreground, woman leaning over cart right foreground"").
+
+Anti‑hallucination fallbacks (use when cue/OCR fails)
+- Use concrete fallbacks: ""woven basket"", ""pile of fruit"", ""two‑wheeled vehicle"", ""toy ride"", ""minivan"", ""painted metal shutter"", ""signboard"", ""storefront"", ""cart"", ""pillow"". Do not invent fine classes beyond verification.
+
+Tie‑breakers & cropping
+- If subject prominence ties, choose larger bbox area; if tied, choose leftmost centroid. If subject width >50% image width, emit ""center"". Append ""partially cropped at [top|bottom|left|right]"" only when >5% of subject area lies outside image.
+
+Mandatory style constraints
+- Single sentence, comma‑separated short phrases; front‑load nouns/VERIFIED props; use digits only when Count VERIFIED; do not infer age, emotion, intention, or any unseen attributes; output nothing but the caption.
+
+Micro‑templates (follow these exact patterns)
+1) ""1 woman center foreground, right hand holding woven basket of oranges, storefront behind.""  
+2) ""two dogs left foreground, small white dog jumping at car passenger window, woman leaning out.""  
+3) ""1 person right foreground, standing by two‑wheeled vehicle with visible pedals and chain, metal shutter behind.""  
+4) ""1 boy center foreground, seated on red toy ride, blue Mets jersey visible, playground court behind.""  
+5) ""many dancers center foreground, line of red/gold sequined costumes, 'RADIO CITY' marquee behind.""  
+6) ""1 man center foreground, chain attached to yellow cart with stickers, phone number on blue board at center.""  
+
+Follow all rules above exactly; perform the internal verification and pruning, then emit the single final caption that satisfies these constraints.","Man center foreground, playing wooden flute, blue jeans, brown shoes, black bag beside, storefront behind.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_bb96c46b5c,78,28178,flickr30k_test_028178,images/flickr30k/flickr30k_test_028178.jpg,"[""A man in a black sweater with a red undershirt playing a trumpet in front of a lighted Christmas tree."", ""The man playing a trumpet in front of a christmas tree looks intense."", ""A man in a black sweater and red shirt plays the trumpet by a tree."", ""A guy with a beard wearing his glasses is blowing on a trumpet."", ""A musician playing some smooth music.""]",textgrad_bb96c46b5c,TextGrad Step 12,"Output exactly one concise, information‑dense caption: a single grammatical sentence composed of comma‑separated short phrases. Produce only that single sentence and no other text.
+
+Two‑pass internal checklist (do not print logs)
+1) Proposal: internally enumerate candidate tokens for each slot: up to 3 subject groups (prominence order), optional single micro‑action, one part‑relation (if contact VERIFIED), up to 3 descriptors, optional viewpoint/orientation, lighting, and background/text.
+2) Verification: apply the deterministic checks below to every candidate; mark tokens that pass as VERIFIED and protect VERIFIED discriminative props, VERIFIED fine classes, and VERIFIED part‑relations from any pruning. Do not output the checklist or intermediate candidates.
+
+Subject groups & placement (hard constraints)
+- Emit 1–3 subject groups in prominence order. Each group must be: [digit if Count VERIFIED] + noun(s) + spatial anchor (left/center/right) and include ""foreground""/""background"" only when depth/separability VERIFIED.
+- Front‑load subject nouns and any VERIFIED discriminative props so they appear within the first 6–8 words.
+- Use digits only when Count verification passes (rule below); otherwise use singular/plural nouns (""person/people"", ""dog/dogs"", ""vehicle/vehicles"").
+
+Deterministic verification rules (must be followed)
+- Count: include a digit only if every instance is ≥50% unobstructed AND centroid spacing ≥10% image width AND IOU between subject bboxes <0.10. If any check fails, do not emit digits — use singular/plural.
+- Contact (micro‑action): assert contact only if overlap area / smaller bbox area ≥12% AND visible attachment or contiguous boundary pixels or clear occlusion consistent with grasp. If VERIFIED, include exactly one micro‑action using the template: ""[left|right] [hand|foot|part] [strong‑verb] [object]"" (e.g., ""right hand holding woven basket""). Always specify left/right. If Contact not VERIFIED, do not invent a micro‑action.
+- Fine class (cue‑pair): emit a fine class only when the required cue‑pair passes OR classifier confidence >0.60. Example cue‑pairs (apply only as checks): vendor = (table/counter + stacks of produce) OR (baskets/piles + scale); bicycle = (spokes + pedals) OR (pedals + chain); motorbike/scooter = (frame + exhaust) OR (engine casing + exhaust); ladder = (rungs + side rails); performer = (stage/canopy + audience) OR (headset/microphone + facing audience). If cue‑pair fails, use a concrete fallback noun (see fallbacks).
+- OCR/text: quote exact text only when OCR confidence high AND text bbox ≥0.5% image area AND legibility ≳8pt equivalent with high contrast. Otherwise emit a compact positional descriptor (e.g., ""phone number on yellow board at center"") including dominant sign color/shape when legible.
+
+Descriptor priority (must preserve VERIFIED tokens)
+Priority order for including descriptors: (1) VERIFIED discriminative props or quoted text, (2) VERIFIED part‑relations/micro‑actions, (3) VERIFIED fine class, (4) clothing & clear pose/gaze, (5) object state/material, (6) viewpoint/orientation, (7) color, (8) lighting/reflection. Never prune VERIFIED items.
+
+Allowed verbs and motion
+- Use dynamic contact/motion verbs (jumping, swinging, reaching, holding) only when Contact or clear motion evidence is VERIFIED. Do not infer intentions, emotions, or unseen attributes.
+
+Pruning, length, and determinism
+- Target caption length: 10–14 words. Hard cap: 18 words (allow up to 24 only if a VERIFIED quoted text string is included).
+- If over length, prune deterministically in this order until within cap: color → material/texture → reflections → lighting → background (unless background ≥5% image area or contains VERIFIED text) → low‑priority descriptors. Never drop VERIFIED discriminative props, VERIFIED fine classes, or VERIFIED part relations. When tokens tie, prefer shorter tokens and prefer nouns/props over adjectives.
+
+Background & spatial rules
+- Include a background anchor only when that anchor occupies ≥5% image area or is a distinct structure (storefront, metal shutter, stage). Use compact phrases (""storefront behind"", ""metal shutter at left""). For text follow OCR rule above.
+- When multiple humans/animals are present, require short relational clauses connecting them (e.g., ""man left foreground, woman leaning over cart right foreground"").
+
+Anti‑hallucination fallbacks (use when cue/OCR fails)
+- Use concrete fallbacks: ""woven basket"", ""pile of fruit"", ""two‑wheeled vehicle"", ""toy ride"", ""minivan"", ""painted metal shutter"", ""signboard"", ""storefront"", ""cart"", ""pillow"". Do not invent fine classes beyond verification.
+
+Tie‑breakers & cropping
+- If subject prominence ties, choose larger bbox area; if tied, choose leftmost centroid. If subject width >50% image width, emit ""center"". Append ""partially cropped at [top|bottom|left|right]"" only when >5% of subject area lies outside image.
+
+Mandatory style constraints
+- Single sentence, comma‑separated short phrases; front‑load nouns/VERIFIED props; use digits only when Count VERIFIED; do not infer age, emotion, intention, or any unseen attributes; output nothing but the caption.
+
+Micro‑templates (follow these exact patterns)
+1) ""1 woman center foreground, right hand holding woven basket of oranges, storefront behind.""  
+2) ""two dogs left foreground, small white dog jumping at car passenger window, woman leaning out.""  
+3) ""1 person right foreground, standing by two‑wheeled vehicle with visible pedals and chain, metal shutter behind.""  
+4) ""1 boy center foreground, seated on red toy ride, blue Mets jersey visible, playground court behind.""  
+5) ""many dancers center foreground, line of red/gold sequined costumes, 'RADIO CITY' marquee behind.""  
+6) ""1 man center foreground, chain attached to yellow cart with stickers, phone number on blue board at center.""  
+
+Follow all rules above exactly; perform the internal verification and pruning, then emit the single final caption that satisfies these constraints.","Man in red shirt and glasses plays trumpet under string lights, holding gold ornament, evergreen branches behind.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_bb96c46b5c,99,30831,flickr30k_test_030831,images/flickr30k/flickr30k_test_030831.jpg,"[""A woman holds her mouth wide open as she is placing a stack of crackers in."", ""A black-haired woman wearing glasses attempts to eat a pile of cookies."", ""A young person about to put several cookies in his or her mouth."", ""A woman with glasses about to take a bite out of a huge cookie."", ""Asian man eating a cracker sandwich in the kitchen.""]",textgrad_bb96c46b5c,TextGrad Step 12,"Output exactly one concise, information‑dense caption: a single grammatical sentence composed of comma‑separated short phrases. Produce only that single sentence and no other text.
+
+Two‑pass internal checklist (do not print logs)
+1) Proposal: internally enumerate candidate tokens for each slot: up to 3 subject groups (prominence order), optional single micro‑action, one part‑relation (if contact VERIFIED), up to 3 descriptors, optional viewpoint/orientation, lighting, and background/text.
+2) Verification: apply the deterministic checks below to every candidate; mark tokens that pass as VERIFIED and protect VERIFIED discriminative props, VERIFIED fine classes, and VERIFIED part‑relations from any pruning. Do not output the checklist or intermediate candidates.
+
+Subject groups & placement (hard constraints)
+- Emit 1–3 subject groups in prominence order. Each group must be: [digit if Count VERIFIED] + noun(s) + spatial anchor (left/center/right) and include ""foreground""/""background"" only when depth/separability VERIFIED.
+- Front‑load subject nouns and any VERIFIED discriminative props so they appear within the first 6–8 words.
+- Use digits only when Count verification passes (rule below); otherwise use singular/plural nouns (""person/people"", ""dog/dogs"", ""vehicle/vehicles"").
+
+Deterministic verification rules (must be followed)
+- Count: include a digit only if every instance is ≥50% unobstructed AND centroid spacing ≥10% image width AND IOU between subject bboxes <0.10. If any check fails, do not emit digits — use singular/plural.
+- Contact (micro‑action): assert contact only if overlap area / smaller bbox area ≥12% AND visible attachment or contiguous boundary pixels or clear occlusion consistent with grasp. If VERIFIED, include exactly one micro‑action using the template: ""[left|right] [hand|foot|part] [strong‑verb] [object]"" (e.g., ""right hand holding woven basket""). Always specify left/right. If Contact not VERIFIED, do not invent a micro‑action.
+- Fine class (cue‑pair): emit a fine class only when the required cue‑pair passes OR classifier confidence >0.60. Example cue‑pairs (apply only as checks): vendor = (table/counter + stacks of produce) OR (baskets/piles + scale); bicycle = (spokes + pedals) OR (pedals + chain); motorbike/scooter = (frame + exhaust) OR (engine casing + exhaust); ladder = (rungs + side rails); performer = (stage/canopy + audience) OR (headset/microphone + facing audience). If cue‑pair fails, use a concrete fallback noun (see fallbacks).
+- OCR/text: quote exact text only when OCR confidence high AND text bbox ≥0.5% image area AND legibility ≳8pt equivalent with high contrast. Otherwise emit a compact positional descriptor (e.g., ""phone number on yellow board at center"") including dominant sign color/shape when legible.
+
+Descriptor priority (must preserve VERIFIED tokens)
+Priority order for including descriptors: (1) VERIFIED discriminative props or quoted text, (2) VERIFIED part‑relations/micro‑actions, (3) VERIFIED fine class, (4) clothing & clear pose/gaze, (5) object state/material, (6) viewpoint/orientation, (7) color, (8) lighting/reflection. Never prune VERIFIED items.
+
+Allowed verbs and motion
+- Use dynamic contact/motion verbs (jumping, swinging, reaching, holding) only when Contact or clear motion evidence is VERIFIED. Do not infer intentions, emotions, or unseen attributes.
+
+Pruning, length, and determinism
+- Target caption length: 10–14 words. Hard cap: 18 words (allow up to 24 only if a VERIFIED quoted text string is included).
+- If over length, prune deterministically in this order until within cap: color → material/texture → reflections → lighting → background (unless background ≥5% image area or contains VERIFIED text) → low‑priority descriptors. Never drop VERIFIED discriminative props, VERIFIED fine classes, or VERIFIED part relations. When tokens tie, prefer shorter tokens and prefer nouns/props over adjectives.
+
+Background & spatial rules
+- Include a background anchor only when that anchor occupies ≥5% image area or is a distinct structure (storefront, metal shutter, stage). Use compact phrases (""storefront behind"", ""metal shutter at left""). For text follow OCR rule above.
+- When multiple humans/animals are present, require short relational clauses connecting them (e.g., ""man left foreground, woman leaning over cart right foreground"").
+
+Anti‑hallucination fallbacks (use when cue/OCR fails)
+- Use concrete fallbacks: ""woven basket"", ""pile of fruit"", ""two‑wheeled vehicle"", ""toy ride"", ""minivan"", ""painted metal shutter"", ""signboard"", ""storefront"", ""cart"", ""pillow"". Do not invent fine classes beyond verification.
+
+Tie‑breakers & cropping
+- If subject prominence ties, choose larger bbox area; if tied, choose leftmost centroid. If subject width >50% image width, emit ""center"". Append ""partially cropped at [top|bottom|left|right]"" only when >5% of subject area lies outside image.
+
+Mandatory style constraints
+- Single sentence, comma‑separated short phrases; front‑load nouns/VERIFIED props; use digits only when Count VERIFIED; do not infer age, emotion, intention, or any unseen attributes; output nothing but the caption.
+
+Micro‑templates (follow these exact patterns)
+1) ""1 woman center foreground, right hand holding woven basket of oranges, storefront behind.""  
+2) ""two dogs left foreground, small white dog jumping at car passenger window, woman leaning out.""  
+3) ""1 person right foreground, standing by two‑wheeled vehicle with visible pedals and chain, metal shutter behind.""  
+4) ""1 boy center foreground, seated on red toy ride, blue Mets jersey visible, playground court behind.""  
+5) ""many dancers center foreground, line of red/gold sequined costumes, 'RADIO CITY' marquee behind.""  
+6) ""1 man center foreground, chain attached to yellow cart with stickers, phone number on blue board at center.""  
+
+Follow all rules above exactly; perform the internal verification and pruning, then emit the single final caption that satisfies these constraints.","Person center foreground, hand holding stack of pancakes, kitchen cabinets behind, microwave on counter, blue wall to right.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_bb96c46b5c,108,26129,flickr30k_test_026129,images/flickr30k/flickr30k_test_026129.jpg,"[""Two men skiing up a hill but stopped and pointing at something as they on our their trek."", ""Two men wearing snowshoes stopping to observe something on the ground."", ""Two guys with snowshoes making their way through the woods."", ""Two men in snowshoes tracking the prints of an animal."", ""Two people wearing snowshoes are tracking something.""]",textgrad_bb96c46b5c,TextGrad Step 12,"Output exactly one concise, information‑dense caption: a single grammatical sentence composed of comma‑separated short phrases. Produce only that single sentence and no other text.
+
+Two‑pass internal checklist (do not print logs)
+1) Proposal: internally enumerate candidate tokens for each slot: up to 3 subject groups (prominence order), optional single micro‑action, one part‑relation (if contact VERIFIED), up to 3 descriptors, optional viewpoint/orientation, lighting, and background/text.
+2) Verification: apply the deterministic checks below to every candidate; mark tokens that pass as VERIFIED and protect VERIFIED discriminative props, VERIFIED fine classes, and VERIFIED part‑relations from any pruning. Do not output the checklist or intermediate candidates.
+
+Subject groups & placement (hard constraints)
+- Emit 1–3 subject groups in prominence order. Each group must be: [digit if Count VERIFIED] + noun(s) + spatial anchor (left/center/right) and include ""foreground""/""background"" only when depth/separability VERIFIED.
+- Front‑load subject nouns and any VERIFIED discriminative props so they appear within the first 6–8 words.
+- Use digits only when Count verification passes (rule below); otherwise use singular/plural nouns (""person/people"", ""dog/dogs"", ""vehicle/vehicles"").
+
+Deterministic verification rules (must be followed)
+- Count: include a digit only if every instance is ≥50% unobstructed AND centroid spacing ≥10% image width AND IOU between subject bboxes <0.10. If any check fails, do not emit digits — use singular/plural.
+- Contact (micro‑action): assert contact only if overlap area / smaller bbox area ≥12% AND visible attachment or contiguous boundary pixels or clear occlusion consistent with grasp. If VERIFIED, include exactly one micro‑action using the template: ""[left|right] [hand|foot|part] [strong‑verb] [object]"" (e.g., ""right hand holding woven basket""). Always specify left/right. If Contact not VERIFIED, do not invent a micro‑action.
+- Fine class (cue‑pair): emit a fine class only when the required cue‑pair passes OR classifier confidence >0.60. Example cue‑pairs (apply only as checks): vendor = (table/counter + stacks of produce) OR (baskets/piles + scale); bicycle = (spokes + pedals) OR (pedals + chain); motorbike/scooter = (frame + exhaust) OR (engine casing + exhaust); ladder = (rungs + side rails); performer = (stage/canopy + audience) OR (headset/microphone + facing audience). If cue‑pair fails, use a concrete fallback noun (see fallbacks).
+- OCR/text: quote exact text only when OCR confidence high AND text bbox ≥0.5% image area AND legibility ≳8pt equivalent with high contrast. Otherwise emit a compact positional descriptor (e.g., ""phone number on yellow board at center"") including dominant sign color/shape when legible.
+
+Descriptor priority (must preserve VERIFIED tokens)
+Priority order for including descriptors: (1) VERIFIED discriminative props or quoted text, (2) VERIFIED part‑relations/micro‑actions, (3) VERIFIED fine class, (4) clothing & clear pose/gaze, (5) object state/material, (6) viewpoint/orientation, (7) color, (8) lighting/reflection. Never prune VERIFIED items.
+
+Allowed verbs and motion
+- Use dynamic contact/motion verbs (jumping, swinging, reaching, holding) only when Contact or clear motion evidence is VERIFIED. Do not infer intentions, emotions, or unseen attributes.
+
+Pruning, length, and determinism
+- Target caption length: 10–14 words. Hard cap: 18 words (allow up to 24 only if a VERIFIED quoted text string is included).
+- If over length, prune deterministically in this order until within cap: color → material/texture → reflections → lighting → background (unless background ≥5% image area or contains VERIFIED text) → low‑priority descriptors. Never drop VERIFIED discriminative props, VERIFIED fine classes, or VERIFIED part relations. When tokens tie, prefer shorter tokens and prefer nouns/props over adjectives.
+
+Background & spatial rules
+- Include a background anchor only when that anchor occupies ≥5% image area or is a distinct structure (storefront, metal shutter, stage). Use compact phrases (""storefront behind"", ""metal shutter at left""). For text follow OCR rule above.
+- When multiple humans/animals are present, require short relational clauses connecting them (e.g., ""man left foreground, woman leaning over cart right foreground"").
+
+Anti‑hallucination fallbacks (use when cue/OCR fails)
+- Use concrete fallbacks: ""woven basket"", ""pile of fruit"", ""two‑wheeled vehicle"", ""toy ride"", ""minivan"", ""painted metal shutter"", ""signboard"", ""storefront"", ""cart"", ""pillow"". Do not invent fine classes beyond verification.
+
+Tie‑breakers & cropping
+- If subject prominence ties, choose larger bbox area; if tied, choose leftmost centroid. If subject width >50% image width, emit ""center"". Append ""partially cropped at [top|bottom|left|right]"" only when >5% of subject area lies outside image.
+
+Mandatory style constraints
+- Single sentence, comma‑separated short phrases; front‑load nouns/VERIFIED props; use digits only when Count VERIFIED; do not infer age, emotion, intention, or any unseen attributes; output nothing but the caption.
+
+Micro‑templates (follow these exact patterns)
+1) ""1 woman center foreground, right hand holding woven basket of oranges, storefront behind.""  
+2) ""two dogs left foreground, small white dog jumping at car passenger window, woman leaning out.""  
+3) ""1 person right foreground, standing by two‑wheeled vehicle with visible pedals and chain, metal shutter behind.""  
+4) ""1 boy center foreground, seated on red toy ride, blue Mets jersey visible, playground court behind.""  
+5) ""many dancers center foreground, line of red/gold sequined costumes, 'RADIO CITY' marquee behind.""  
+6) ""1 man center foreground, chain attached to yellow cart with stickers, phone number on blue board at center.""  
+
+Follow all rules above exactly; perform the internal verification and pruning, then emit the single final caption that satisfies these constraints.","Two people in snowshoes adjust gear in snowy forest, one bent over bindings, other standing nearby with backpack, trees casting shadows on white ground.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_bb96c46b5c,116,23037,flickr30k_test_023037,images/flickr30k/flickr30k_test_023037.jpg,"[""A man with a black t-shirt is holding a yellow electric guitar on stage at a music event."", ""A man in black clothing plays electric guitar on stage."", ""A man in a black shirt playing guitar in a band."", ""A guy playing a guitar on a stage smiling."", ""A musician is entertaining the crowd.""]",textgrad_bb96c46b5c,TextGrad Step 12,"Output exactly one concise, information‑dense caption: a single grammatical sentence composed of comma‑separated short phrases. Produce only that single sentence and no other text.
+
+Two‑pass internal checklist (do not print logs)
+1) Proposal: internally enumerate candidate tokens for each slot: up to 3 subject groups (prominence order), optional single micro‑action, one part‑relation (if contact VERIFIED), up to 3 descriptors, optional viewpoint/orientation, lighting, and background/text.
+2) Verification: apply the deterministic checks below to every candidate; mark tokens that pass as VERIFIED and protect VERIFIED discriminative props, VERIFIED fine classes, and VERIFIED part‑relations from any pruning. Do not output the checklist or intermediate candidates.
+
+Subject groups & placement (hard constraints)
+- Emit 1–3 subject groups in prominence order. Each group must be: [digit if Count VERIFIED] + noun(s) + spatial anchor (left/center/right) and include ""foreground""/""background"" only when depth/separability VERIFIED.
+- Front‑load subject nouns and any VERIFIED discriminative props so they appear within the first 6–8 words.
+- Use digits only when Count verification passes (rule below); otherwise use singular/plural nouns (""person/people"", ""dog/dogs"", ""vehicle/vehicles"").
+
+Deterministic verification rules (must be followed)
+- Count: include a digit only if every instance is ≥50% unobstructed AND centroid spacing ≥10% image width AND IOU between subject bboxes <0.10. If any check fails, do not emit digits — use singular/plural.
+- Contact (micro‑action): assert contact only if overlap area / smaller bbox area ≥12% AND visible attachment or contiguous boundary pixels or clear occlusion consistent with grasp. If VERIFIED, include exactly one micro‑action using the template: ""[left|right] [hand|foot|part] [strong‑verb] [object]"" (e.g., ""right hand holding woven basket""). Always specify left/right. If Contact not VERIFIED, do not invent a micro‑action.
+- Fine class (cue‑pair): emit a fine class only when the required cue‑pair passes OR classifier confidence >0.60. Example cue‑pairs (apply only as checks): vendor = (table/counter + stacks of produce) OR (baskets/piles + scale); bicycle = (spokes + pedals) OR (pedals + chain); motorbike/scooter = (frame + exhaust) OR (engine casing + exhaust); ladder = (rungs + side rails); performer = (stage/canopy + audience) OR (headset/microphone + facing audience). If cue‑pair fails, use a concrete fallback noun (see fallbacks).
+- OCR/text: quote exact text only when OCR confidence high AND text bbox ≥0.5% image area AND legibility ≳8pt equivalent with high contrast. Otherwise emit a compact positional descriptor (e.g., ""phone number on yellow board at center"") including dominant sign color/shape when legible.
+
+Descriptor priority (must preserve VERIFIED tokens)
+Priority order for including descriptors: (1) VERIFIED discriminative props or quoted text, (2) VERIFIED part‑relations/micro‑actions, (3) VERIFIED fine class, (4) clothing & clear pose/gaze, (5) object state/material, (6) viewpoint/orientation, (7) color, (8) lighting/reflection. Never prune VERIFIED items.
+
+Allowed verbs and motion
+- Use dynamic contact/motion verbs (jumping, swinging, reaching, holding) only when Contact or clear motion evidence is VERIFIED. Do not infer intentions, emotions, or unseen attributes.
+
+Pruning, length, and determinism
+- Target caption length: 10–14 words. Hard cap: 18 words (allow up to 24 only if a VERIFIED quoted text string is included).
+- If over length, prune deterministically in this order until within cap: color → material/texture → reflections → lighting → background (unless background ≥5% image area or contains VERIFIED text) → low‑priority descriptors. Never drop VERIFIED discriminative props, VERIFIED fine classes, or VERIFIED part relations. When tokens tie, prefer shorter tokens and prefer nouns/props over adjectives.
+
+Background & spatial rules
+- Include a background anchor only when that anchor occupies ≥5% image area or is a distinct structure (storefront, metal shutter, stage). Use compact phrases (""storefront behind"", ""metal shutter at left""). For text follow OCR rule above.
+- When multiple humans/animals are present, require short relational clauses connecting them (e.g., ""man left foreground, woman leaning over cart right foreground"").
+
+Anti‑hallucination fallbacks (use when cue/OCR fails)
+- Use concrete fallbacks: ""woven basket"", ""pile of fruit"", ""two‑wheeled vehicle"", ""toy ride"", ""minivan"", ""painted metal shutter"", ""signboard"", ""storefront"", ""cart"", ""pillow"". Do not invent fine classes beyond verification.
+
+Tie‑breakers & cropping
+- If subject prominence ties, choose larger bbox area; if tied, choose leftmost centroid. If subject width >50% image width, emit ""center"". Append ""partially cropped at [top|bottom|left|right]"" only when >5% of subject area lies outside image.
+
+Mandatory style constraints
+- Single sentence, comma‑separated short phrases; front‑load nouns/VERIFIED props; use digits only when Count VERIFIED; do not infer age, emotion, intention, or any unseen attributes; output nothing but the caption.
+
+Micro‑templates (follow these exact patterns)
+1) ""1 woman center foreground, right hand holding woven basket of oranges, storefront behind.""  
+2) ""two dogs left foreground, small white dog jumping at car passenger window, woman leaning out.""  
+3) ""1 person right foreground, standing by two‑wheeled vehicle with visible pedals and chain, metal shutter behind.""  
+4) ""1 boy center foreground, seated on red toy ride, blue Mets jersey visible, playground court behind.""  
+5) ""many dancers center foreground, line of red/gold sequined costumes, 'RADIO CITY' marquee behind.""  
+6) ""1 man center foreground, chain attached to yellow cart with stickers, phone number on blue board at center.""  
+
+Follow all rules above exactly; perform the internal verification and pruning, then emit the single final caption that satisfies these constraints.","Man center foreground, holding light-colored electric guitar, smiling, stage lights above, drum kit right, audience in front.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_bb96c46b5c,125,3536,flickr30k_test_003536,images/flickr30k/flickr30k_test_003536.jpg,"[""A young boy pretending to play with an ice sculpture gun"", ""A warmly dressed boy pretending an icicle is a gun."", ""Boy holding an icicle pretending it is a gun."", ""A boy holds a large icicle."", ""A boy holds an icicle""]",textgrad_bb96c46b5c,TextGrad Step 12,"Output exactly one concise, information‑dense caption: a single grammatical sentence composed of comma‑separated short phrases. Produce only that single sentence and no other text.
+
+Two‑pass internal checklist (do not print logs)
+1) Proposal: internally enumerate candidate tokens for each slot: up to 3 subject groups (prominence order), optional single micro‑action, one part‑relation (if contact VERIFIED), up to 3 descriptors, optional viewpoint/orientation, lighting, and background/text.
+2) Verification: apply the deterministic checks below to every candidate; mark tokens that pass as VERIFIED and protect VERIFIED discriminative props, VERIFIED fine classes, and VERIFIED part‑relations from any pruning. Do not output the checklist or intermediate candidates.
+
+Subject groups & placement (hard constraints)
+- Emit 1–3 subject groups in prominence order. Each group must be: [digit if Count VERIFIED] + noun(s) + spatial anchor (left/center/right) and include ""foreground""/""background"" only when depth/separability VERIFIED.
+- Front‑load subject nouns and any VERIFIED discriminative props so they appear within the first 6–8 words.
+- Use digits only when Count verification passes (rule below); otherwise use singular/plural nouns (""person/people"", ""dog/dogs"", ""vehicle/vehicles"").
+
+Deterministic verification rules (must be followed)
+- Count: include a digit only if every instance is ≥50% unobstructed AND centroid spacing ≥10% image width AND IOU between subject bboxes <0.10. If any check fails, do not emit digits — use singular/plural.
+- Contact (micro‑action): assert contact only if overlap area / smaller bbox area ≥12% AND visible attachment or contiguous boundary pixels or clear occlusion consistent with grasp. If VERIFIED, include exactly one micro‑action using the template: ""[left|right] [hand|foot|part] [strong‑verb] [object]"" (e.g., ""right hand holding woven basket""). Always specify left/right. If Contact not VERIFIED, do not invent a micro‑action.
+- Fine class (cue‑pair): emit a fine class only when the required cue‑pair passes OR classifier confidence >0.60. Example cue‑pairs (apply only as checks): vendor = (table/counter + stacks of produce) OR (baskets/piles + scale); bicycle = (spokes + pedals) OR (pedals + chain); motorbike/scooter = (frame + exhaust) OR (engine casing + exhaust); ladder = (rungs + side rails); performer = (stage/canopy + audience) OR (headset/microphone + facing audience). If cue‑pair fails, use a concrete fallback noun (see fallbacks).
+- OCR/text: quote exact text only when OCR confidence high AND text bbox ≥0.5% image area AND legibility ≳8pt equivalent with high contrast. Otherwise emit a compact positional descriptor (e.g., ""phone number on yellow board at center"") including dominant sign color/shape when legible.
+
+Descriptor priority (must preserve VERIFIED tokens)
+Priority order for including descriptors: (1) VERIFIED discriminative props or quoted text, (2) VERIFIED part‑relations/micro‑actions, (3) VERIFIED fine class, (4) clothing & clear pose/gaze, (5) object state/material, (6) viewpoint/orientation, (7) color, (8) lighting/reflection. Never prune VERIFIED items.
+
+Allowed verbs and motion
+- Use dynamic contact/motion verbs (jumping, swinging, reaching, holding) only when Contact or clear motion evidence is VERIFIED. Do not infer intentions, emotions, or unseen attributes.
+
+Pruning, length, and determinism
+- Target caption length: 10–14 words. Hard cap: 18 words (allow up to 24 only if a VERIFIED quoted text string is included).
+- If over length, prune deterministically in this order until within cap: color → material/texture → reflections → lighting → background (unless background ≥5% image area or contains VERIFIED text) → low‑priority descriptors. Never drop VERIFIED discriminative props, VERIFIED fine classes, or VERIFIED part relations. When tokens tie, prefer shorter tokens and prefer nouns/props over adjectives.
+
+Background & spatial rules
+- Include a background anchor only when that anchor occupies ≥5% image area or is a distinct structure (storefront, metal shutter, stage). Use compact phrases (""storefront behind"", ""metal shutter at left""). For text follow OCR rule above.
+- When multiple humans/animals are present, require short relational clauses connecting them (e.g., ""man left foreground, woman leaning over cart right foreground"").
+
+Anti‑hallucination fallbacks (use when cue/OCR fails)
+- Use concrete fallbacks: ""woven basket"", ""pile of fruit"", ""two‑wheeled vehicle"", ""toy ride"", ""minivan"", ""painted metal shutter"", ""signboard"", ""storefront"", ""cart"", ""pillow"". Do not invent fine classes beyond verification.
+
+Tie‑breakers & cropping
+- If subject prominence ties, choose larger bbox area; if tied, choose leftmost centroid. If subject width >50% image width, emit ""center"". Append ""partially cropped at [top|bottom|left|right]"" only when >5% of subject area lies outside image.
+
+Mandatory style constraints
+- Single sentence, comma‑separated short phrases; front‑load nouns/VERIFIED props; use digits only when Count VERIFIED; do not infer age, emotion, intention, or any unseen attributes; output nothing but the caption.
+
+Micro‑templates (follow these exact patterns)
+1) ""1 woman center foreground, right hand holding woven basket of oranges, storefront behind.""  
+2) ""two dogs left foreground, small white dog jumping at car passenger window, woman leaning out.""  
+3) ""1 person right foreground, standing by two‑wheeled vehicle with visible pedals and chain, metal shutter behind.""  
+4) ""1 boy center foreground, seated on red toy ride, blue Mets jersey visible, playground court behind.""  
+5) ""many dancers center foreground, line of red/gold sequined costumes, 'RADIO CITY' marquee behind.""  
+6) ""1 man center foreground, chain attached to yellow cart with stickers, phone number on blue board at center.""  
+
+Follow all rules above exactly; perform the internal verification and pruning, then emit the single final caption that satisfies these constraints.","Boy center foreground, wearing blue jacket and beige pants, holding white paper, tree trunk right side, fallen leaves on ground.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_bb96c46b5c,126,25508,flickr30k_test_025508,images/flickr30k/flickr30k_test_025508.jpg,"[""A man in an orange shirt does a flip off a sand dune in the desert."", ""A young boy is doing a cannon ball outside near the desert sand."", ""Man in t-shirt and shorts doing a backflip on a sand hill."", ""A man is doing a flip in the air off of a sand dune."", ""A boy doing a back flip off of a sand dune.""]",textgrad_bb96c46b5c,TextGrad Step 12,"Output exactly one concise, information‑dense caption: a single grammatical sentence composed of comma‑separated short phrases. Produce only that single sentence and no other text.
+
+Two‑pass internal checklist (do not print logs)
+1) Proposal: internally enumerate candidate tokens for each slot: up to 3 subject groups (prominence order), optional single micro‑action, one part‑relation (if contact VERIFIED), up to 3 descriptors, optional viewpoint/orientation, lighting, and background/text.
+2) Verification: apply the deterministic checks below to every candidate; mark tokens that pass as VERIFIED and protect VERIFIED discriminative props, VERIFIED fine classes, and VERIFIED part‑relations from any pruning. Do not output the checklist or intermediate candidates.
+
+Subject groups & placement (hard constraints)
+- Emit 1–3 subject groups in prominence order. Each group must be: [digit if Count VERIFIED] + noun(s) + spatial anchor (left/center/right) and include ""foreground""/""background"" only when depth/separability VERIFIED.
+- Front‑load subject nouns and any VERIFIED discriminative props so they appear within the first 6–8 words.
+- Use digits only when Count verification passes (rule below); otherwise use singular/plural nouns (""person/people"", ""dog/dogs"", ""vehicle/vehicles"").
+
+Deterministic verification rules (must be followed)
+- Count: include a digit only if every instance is ≥50% unobstructed AND centroid spacing ≥10% image width AND IOU between subject bboxes <0.10. If any check fails, do not emit digits — use singular/plural.
+- Contact (micro‑action): assert contact only if overlap area / smaller bbox area ≥12% AND visible attachment or contiguous boundary pixels or clear occlusion consistent with grasp. If VERIFIED, include exactly one micro‑action using the template: ""[left|right] [hand|foot|part] [strong‑verb] [object]"" (e.g., ""right hand holding woven basket""). Always specify left/right. If Contact not VERIFIED, do not invent a micro‑action.
+- Fine class (cue‑pair): emit a fine class only when the required cue‑pair passes OR classifier confidence >0.60. Example cue‑pairs (apply only as checks): vendor = (table/counter + stacks of produce) OR (baskets/piles + scale); bicycle = (spokes + pedals) OR (pedals + chain); motorbike/scooter = (frame + exhaust) OR (engine casing + exhaust); ladder = (rungs + side rails); performer = (stage/canopy + audience) OR (headset/microphone + facing audience). If cue‑pair fails, use a concrete fallback noun (see fallbacks).
+- OCR/text: quote exact text only when OCR confidence high AND text bbox ≥0.5% image area AND legibility ≳8pt equivalent with high contrast. Otherwise emit a compact positional descriptor (e.g., ""phone number on yellow board at center"") including dominant sign color/shape when legible.
+
+Descriptor priority (must preserve VERIFIED tokens)
+Priority order for including descriptors: (1) VERIFIED discriminative props or quoted text, (2) VERIFIED part‑relations/micro‑actions, (3) VERIFIED fine class, (4) clothing & clear pose/gaze, (5) object state/material, (6) viewpoint/orientation, (7) color, (8) lighting/reflection. Never prune VERIFIED items.
+
+Allowed verbs and motion
+- Use dynamic contact/motion verbs (jumping, swinging, reaching, holding) only when Contact or clear motion evidence is VERIFIED. Do not infer intentions, emotions, or unseen attributes.
+
+Pruning, length, and determinism
+- Target caption length: 10–14 words. Hard cap: 18 words (allow up to 24 only if a VERIFIED quoted text string is included).
+- If over length, prune deterministically in this order until within cap: color → material/texture → reflections → lighting → background (unless background ≥5% image area or contains VERIFIED text) → low‑priority descriptors. Never drop VERIFIED discriminative props, VERIFIED fine classes, or VERIFIED part relations. When tokens tie, prefer shorter tokens and prefer nouns/props over adjectives.
+
+Background & spatial rules
+- Include a background anchor only when that anchor occupies ≥5% image area or is a distinct structure (storefront, metal shutter, stage). Use compact phrases (""storefront behind"", ""metal shutter at left""). For text follow OCR rule above.
+- When multiple humans/animals are present, require short relational clauses connecting them (e.g., ""man left foreground, woman leaning over cart right foreground"").
+
+Anti‑hallucination fallbacks (use when cue/OCR fails)
+- Use concrete fallbacks: ""woven basket"", ""pile of fruit"", ""two‑wheeled vehicle"", ""toy ride"", ""minivan"", ""painted metal shutter"", ""signboard"", ""storefront"", ""cart"", ""pillow"". Do not invent fine classes beyond verification.
+
+Tie‑breakers & cropping
+- If subject prominence ties, choose larger bbox area; if tied, choose leftmost centroid. If subject width >50% image width, emit ""center"". Append ""partially cropped at [top|bottom|left|right]"" only when >5% of subject area lies outside image.
+
+Mandatory style constraints
+- Single sentence, comma‑separated short phrases; front‑load nouns/VERIFIED props; use digits only when Count VERIFIED; do not infer age, emotion, intention, or any unseen attributes; output nothing but the caption.
+
+Micro‑templates (follow these exact patterns)
+1) ""1 woman center foreground, right hand holding woven basket of oranges, storefront behind.""  
+2) ""two dogs left foreground, small white dog jumping at car passenger window, woman leaning out.""  
+3) ""1 person right foreground, standing by two‑wheeled vehicle with visible pedals and chain, metal shutter behind.""  
+4) ""1 boy center foreground, seated on red toy ride, blue Mets jersey visible, playground court behind.""  
+5) ""many dancers center foreground, line of red/gold sequined costumes, 'RADIO CITY' marquee behind.""  
+6) ""1 man center foreground, chain attached to yellow cart with stickers, phone number on blue board at center.""  
+
+Follow all rules above exactly; perform the internal verification and pruning, then emit the single final caption that satisfies these constraints.","One person mid-air flipping over sand dune, another person crouched at crest, clear blue sky above.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_bb96c46b5c,135,15378,flickr30k_test_015378,images/flickr30k/flickr30k_test_015378.jpg,"[""The man in the red shirt and the woman with the white bag are conversing."", ""A man in a red shirt is interacting with a woman holding a shopping bag."", ""A woman is purchasing items from the man in the red shirt's yard sale."", ""An older man in a black hat and red shirt is talking with a woman."", ""A woman in a black shirt is holding a plastic bag.""]",textgrad_bb96c46b5c,TextGrad Step 12,"Output exactly one concise, information‑dense caption: a single grammatical sentence composed of comma‑separated short phrases. Produce only that single sentence and no other text.
+
+Two‑pass internal checklist (do not print logs)
+1) Proposal: internally enumerate candidate tokens for each slot: up to 3 subject groups (prominence order), optional single micro‑action, one part‑relation (if contact VERIFIED), up to 3 descriptors, optional viewpoint/orientation, lighting, and background/text.
+2) Verification: apply the deterministic checks below to every candidate; mark tokens that pass as VERIFIED and protect VERIFIED discriminative props, VERIFIED fine classes, and VERIFIED part‑relations from any pruning. Do not output the checklist or intermediate candidates.
+
+Subject groups & placement (hard constraints)
+- Emit 1–3 subject groups in prominence order. Each group must be: [digit if Count VERIFIED] + noun(s) + spatial anchor (left/center/right) and include ""foreground""/""background"" only when depth/separability VERIFIED.
+- Front‑load subject nouns and any VERIFIED discriminative props so they appear within the first 6–8 words.
+- Use digits only when Count verification passes (rule below); otherwise use singular/plural nouns (""person/people"", ""dog/dogs"", ""vehicle/vehicles"").
+
+Deterministic verification rules (must be followed)
+- Count: include a digit only if every instance is ≥50% unobstructed AND centroid spacing ≥10% image width AND IOU between subject bboxes <0.10. If any check fails, do not emit digits — use singular/plural.
+- Contact (micro‑action): assert contact only if overlap area / smaller bbox area ≥12% AND visible attachment or contiguous boundary pixels or clear occlusion consistent with grasp. If VERIFIED, include exactly one micro‑action using the template: ""[left|right] [hand|foot|part] [strong‑verb] [object]"" (e.g., ""right hand holding woven basket""). Always specify left/right. If Contact not VERIFIED, do not invent a micro‑action.
+- Fine class (cue‑pair): emit a fine class only when the required cue‑pair passes OR classifier confidence >0.60. Example cue‑pairs (apply only as checks): vendor = (table/counter + stacks of produce) OR (baskets/piles + scale); bicycle = (spokes + pedals) OR (pedals + chain); motorbike/scooter = (frame + exhaust) OR (engine casing + exhaust); ladder = (rungs + side rails); performer = (stage/canopy + audience) OR (headset/microphone + facing audience). If cue‑pair fails, use a concrete fallback noun (see fallbacks).
+- OCR/text: quote exact text only when OCR confidence high AND text bbox ≥0.5% image area AND legibility ≳8pt equivalent with high contrast. Otherwise emit a compact positional descriptor (e.g., ""phone number on yellow board at center"") including dominant sign color/shape when legible.
+
+Descriptor priority (must preserve VERIFIED tokens)
+Priority order for including descriptors: (1) VERIFIED discriminative props or quoted text, (2) VERIFIED part‑relations/micro‑actions, (3) VERIFIED fine class, (4) clothing & clear pose/gaze, (5) object state/material, (6) viewpoint/orientation, (7) color, (8) lighting/reflection. Never prune VERIFIED items.
+
+Allowed verbs and motion
+- Use dynamic contact/motion verbs (jumping, swinging, reaching, holding) only when Contact or clear motion evidence is VERIFIED. Do not infer intentions, emotions, or unseen attributes.
+
+Pruning, length, and determinism
+- Target caption length: 10–14 words. Hard cap: 18 words (allow up to 24 only if a VERIFIED quoted text string is included).
+- If over length, prune deterministically in this order until within cap: color → material/texture → reflections → lighting → background (unless background ≥5% image area or contains VERIFIED text) → low‑priority descriptors. Never drop VERIFIED discriminative props, VERIFIED fine classes, or VERIFIED part relations. When tokens tie, prefer shorter tokens and prefer nouns/props over adjectives.
+
+Background & spatial rules
+- Include a background anchor only when that anchor occupies ≥5% image area or is a distinct structure (storefront, metal shutter, stage). Use compact phrases (""storefront behind"", ""metal shutter at left""). For text follow OCR rule above.
+- When multiple humans/animals are present, require short relational clauses connecting them (e.g., ""man left foreground, woman leaning over cart right foreground"").
+
+Anti‑hallucination fallbacks (use when cue/OCR fails)
+- Use concrete fallbacks: ""woven basket"", ""pile of fruit"", ""two‑wheeled vehicle"", ""toy ride"", ""minivan"", ""painted metal shutter"", ""signboard"", ""storefront"", ""cart"", ""pillow"". Do not invent fine classes beyond verification.
+
+Tie‑breakers & cropping
+- If subject prominence ties, choose larger bbox area; if tied, choose leftmost centroid. If subject width >50% image width, emit ""center"". Append ""partially cropped at [top|bottom|left|right]"" only when >5% of subject area lies outside image.
+
+Mandatory style constraints
+- Single sentence, comma‑separated short phrases; front‑load nouns/VERIFIED props; use digits only when Count VERIFIED; do not infer age, emotion, intention, or any unseen attributes; output nothing but the caption.
+
+Micro‑templates (follow these exact patterns)
+1) ""1 woman center foreground, right hand holding woven basket of oranges, storefront behind.""  
+2) ""two dogs left foreground, small white dog jumping at car passenger window, woman leaning out.""  
+3) ""1 person right foreground, standing by two‑wheeled vehicle with visible pedals and chain, metal shutter behind.""  
+4) ""1 boy center foreground, seated on red toy ride, blue Mets jersey visible, playground court behind.""  
+5) ""many dancers center foreground, line of red/gold sequined costumes, 'RADIO CITY' marquee behind.""  
+6) ""1 man center foreground, chain attached to yellow cart with stickers, phone number on blue board at center.""  
+
+Follow all rules above exactly; perform the internal verification and pruning, then emit the single final caption that satisfies these constraints.","man in red shirt and black hat examining items, woman holding plastic bag with groceries, small dog beside her, cardboard boxes and suitcase nearby, concrete wall background.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_bb96c46b5c,143,12897,flickr30k_test_012897,images/flickr30k/flickr30k_test_012897.jpg,"[""A white person surrounded by green grass and trees paints on a canvas while outside."", ""A Woman in a blue shirt and big hat paints outside with trees in the background."", ""An female artist, wearing a sunhat and glasses, paints on a canvas outdoors."", ""Determined to capture the essence of this landscape before sunset."", ""A woman in a blue shirt and straw hat is painting outside.""]",textgrad_bb96c46b5c,TextGrad Step 12,"Output exactly one concise, information‑dense caption: a single grammatical sentence composed of comma‑separated short phrases. Produce only that single sentence and no other text.
+
+Two‑pass internal checklist (do not print logs)
+1) Proposal: internally enumerate candidate tokens for each slot: up to 3 subject groups (prominence order), optional single micro‑action, one part‑relation (if contact VERIFIED), up to 3 descriptors, optional viewpoint/orientation, lighting, and background/text.
+2) Verification: apply the deterministic checks below to every candidate; mark tokens that pass as VERIFIED and protect VERIFIED discriminative props, VERIFIED fine classes, and VERIFIED part‑relations from any pruning. Do not output the checklist or intermediate candidates.
+
+Subject groups & placement (hard constraints)
+- Emit 1–3 subject groups in prominence order. Each group must be: [digit if Count VERIFIED] + noun(s) + spatial anchor (left/center/right) and include ""foreground""/""background"" only when depth/separability VERIFIED.
+- Front‑load subject nouns and any VERIFIED discriminative props so they appear within the first 6–8 words.
+- Use digits only when Count verification passes (rule below); otherwise use singular/plural nouns (""person/people"", ""dog/dogs"", ""vehicle/vehicles"").
+
+Deterministic verification rules (must be followed)
+- Count: include a digit only if every instance is ≥50% unobstructed AND centroid spacing ≥10% image width AND IOU between subject bboxes <0.10. If any check fails, do not emit digits — use singular/plural.
+- Contact (micro‑action): assert contact only if overlap area / smaller bbox area ≥12% AND visible attachment or contiguous boundary pixels or clear occlusion consistent with grasp. If VERIFIED, include exactly one micro‑action using the template: ""[left|right] [hand|foot|part] [strong‑verb] [object]"" (e.g., ""right hand holding woven basket""). Always specify left/right. If Contact not VERIFIED, do not invent a micro‑action.
+- Fine class (cue‑pair): emit a fine class only when the required cue‑pair passes OR classifier confidence >0.60. Example cue‑pairs (apply only as checks): vendor = (table/counter + stacks of produce) OR (baskets/piles + scale); bicycle = (spokes + pedals) OR (pedals + chain); motorbike/scooter = (frame + exhaust) OR (engine casing + exhaust); ladder = (rungs + side rails); performer = (stage/canopy + audience) OR (headset/microphone + facing audience). If cue‑pair fails, use a concrete fallback noun (see fallbacks).
+- OCR/text: quote exact text only when OCR confidence high AND text bbox ≥0.5% image area AND legibility ≳8pt equivalent with high contrast. Otherwise emit a compact positional descriptor (e.g., ""phone number on yellow board at center"") including dominant sign color/shape when legible.
+
+Descriptor priority (must preserve VERIFIED tokens)
+Priority order for including descriptors: (1) VERIFIED discriminative props or quoted text, (2) VERIFIED part‑relations/micro‑actions, (3) VERIFIED fine class, (4) clothing & clear pose/gaze, (5) object state/material, (6) viewpoint/orientation, (7) color, (8) lighting/reflection. Never prune VERIFIED items.
+
+Allowed verbs and motion
+- Use dynamic contact/motion verbs (jumping, swinging, reaching, holding) only when Contact or clear motion evidence is VERIFIED. Do not infer intentions, emotions, or unseen attributes.
+
+Pruning, length, and determinism
+- Target caption length: 10–14 words. Hard cap: 18 words (allow up to 24 only if a VERIFIED quoted text string is included).
+- If over length, prune deterministically in this order until within cap: color → material/texture → reflections → lighting → background (unless background ≥5% image area or contains VERIFIED text) → low‑priority descriptors. Never drop VERIFIED discriminative props, VERIFIED fine classes, or VERIFIED part relations. When tokens tie, prefer shorter tokens and prefer nouns/props over adjectives.
+
+Background & spatial rules
+- Include a background anchor only when that anchor occupies ≥5% image area or is a distinct structure (storefront, metal shutter, stage). Use compact phrases (""storefront behind"", ""metal shutter at left""). For text follow OCR rule above.
+- When multiple humans/animals are present, require short relational clauses connecting them (e.g., ""man left foreground, woman leaning over cart right foreground"").
+
+Anti‑hallucination fallbacks (use when cue/OCR fails)
+- Use concrete fallbacks: ""woven basket"", ""pile of fruit"", ""two‑wheeled vehicle"", ""toy ride"", ""minivan"", ""painted metal shutter"", ""signboard"", ""storefront"", ""cart"", ""pillow"". Do not invent fine classes beyond verification.
+
+Tie‑breakers & cropping
+- If subject prominence ties, choose larger bbox area; if tied, choose leftmost centroid. If subject width >50% image width, emit ""center"". Append ""partially cropped at [top|bottom|left|right]"" only when >5% of subject area lies outside image.
+
+Mandatory style constraints
+- Single sentence, comma‑separated short phrases; front‑load nouns/VERIFIED props; use digits only when Count VERIFIED; do not infer age, emotion, intention, or any unseen attributes; output nothing but the caption.
+
+Micro‑templates (follow these exact patterns)
+1) ""1 woman center foreground, right hand holding woven basket of oranges, storefront behind.""  
+2) ""two dogs left foreground, small white dog jumping at car passenger window, woman leaning out.""  
+3) ""1 person right foreground, standing by two‑wheeled vehicle with visible pedals and chain, metal shutter behind.""  
+4) ""1 boy center foreground, seated on red toy ride, blue Mets jersey visible, playground court behind.""  
+5) ""many dancers center foreground, line of red/gold sequined costumes, 'RADIO CITY' marquee behind.""  
+6) ""1 man center foreground, chain attached to yellow cart with stickers, phone number on blue board at center.""  
+
+Follow all rules above exactly; perform the internal verification and pruning, then emit the single final caption that satisfies these constraints.","woman center foreground, right hand holding paintbrush, canvas on easel, green foliage background, bright sunlight",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_bb96c46b5c,146,5524,flickr30k_test_005524,images/flickr30k/flickr30k_test_005524.jpg,"[""A young, black girl in a white shirt is wearing a party hat and covering her mouth with her right hand."", ""A child is holding their hand over their mouth wearing a birthday hat."", ""A little African-American girl gets a big surprise on her birthday."", ""A young girl wearing a party hat is laughing."", ""A girl wearing a dog paw-spotted party hat.""]",textgrad_bb96c46b5c,TextGrad Step 12,"Output exactly one concise, information‑dense caption: a single grammatical sentence composed of comma‑separated short phrases. Produce only that single sentence and no other text.
+
+Two‑pass internal checklist (do not print logs)
+1) Proposal: internally enumerate candidate tokens for each slot: up to 3 subject groups (prominence order), optional single micro‑action, one part‑relation (if contact VERIFIED), up to 3 descriptors, optional viewpoint/orientation, lighting, and background/text.
+2) Verification: apply the deterministic checks below to every candidate; mark tokens that pass as VERIFIED and protect VERIFIED discriminative props, VERIFIED fine classes, and VERIFIED part‑relations from any pruning. Do not output the checklist or intermediate candidates.
+
+Subject groups & placement (hard constraints)
+- Emit 1–3 subject groups in prominence order. Each group must be: [digit if Count VERIFIED] + noun(s) + spatial anchor (left/center/right) and include ""foreground""/""background"" only when depth/separability VERIFIED.
+- Front‑load subject nouns and any VERIFIED discriminative props so they appear within the first 6–8 words.
+- Use digits only when Count verification passes (rule below); otherwise use singular/plural nouns (""person/people"", ""dog/dogs"", ""vehicle/vehicles"").
+
+Deterministic verification rules (must be followed)
+- Count: include a digit only if every instance is ≥50% unobstructed AND centroid spacing ≥10% image width AND IOU between subject bboxes <0.10. If any check fails, do not emit digits — use singular/plural.
+- Contact (micro‑action): assert contact only if overlap area / smaller bbox area ≥12% AND visible attachment or contiguous boundary pixels or clear occlusion consistent with grasp. If VERIFIED, include exactly one micro‑action using the template: ""[left|right] [hand|foot|part] [strong‑verb] [object]"" (e.g., ""right hand holding woven basket""). Always specify left/right. If Contact not VERIFIED, do not invent a micro‑action.
+- Fine class (cue‑pair): emit a fine class only when the required cue‑pair passes OR classifier confidence >0.60. Example cue‑pairs (apply only as checks): vendor = (table/counter + stacks of produce) OR (baskets/piles + scale); bicycle = (spokes + pedals) OR (pedals + chain); motorbike/scooter = (frame + exhaust) OR (engine casing + exhaust); ladder = (rungs + side rails); performer = (stage/canopy + audience) OR (headset/microphone + facing audience). If cue‑pair fails, use a concrete fallback noun (see fallbacks).
+- OCR/text: quote exact text only when OCR confidence high AND text bbox ≥0.5% image area AND legibility ≳8pt equivalent with high contrast. Otherwise emit a compact positional descriptor (e.g., ""phone number on yellow board at center"") including dominant sign color/shape when legible.
+
+Descriptor priority (must preserve VERIFIED tokens)
+Priority order for including descriptors: (1) VERIFIED discriminative props or quoted text, (2) VERIFIED part‑relations/micro‑actions, (3) VERIFIED fine class, (4) clothing & clear pose/gaze, (5) object state/material, (6) viewpoint/orientation, (7) color, (8) lighting/reflection. Never prune VERIFIED items.
+
+Allowed verbs and motion
+- Use dynamic contact/motion verbs (jumping, swinging, reaching, holding) only when Contact or clear motion evidence is VERIFIED. Do not infer intentions, emotions, or unseen attributes.
+
+Pruning, length, and determinism
+- Target caption length: 10–14 words. Hard cap: 18 words (allow up to 24 only if a VERIFIED quoted text string is included).
+- If over length, prune deterministically in this order until within cap: color → material/texture → reflections → lighting → background (unless background ≥5% image area or contains VERIFIED text) → low‑priority descriptors. Never drop VERIFIED discriminative props, VERIFIED fine classes, or VERIFIED part relations. When tokens tie, prefer shorter tokens and prefer nouns/props over adjectives.
+
+Background & spatial rules
+- Include a background anchor only when that anchor occupies ≥5% image area or is a distinct structure (storefront, metal shutter, stage). Use compact phrases (""storefront behind"", ""metal shutter at left""). For text follow OCR rule above.
+- When multiple humans/animals are present, require short relational clauses connecting them (e.g., ""man left foreground, woman leaning over cart right foreground"").
+
+Anti‑hallucination fallbacks (use when cue/OCR fails)
+- Use concrete fallbacks: ""woven basket"", ""pile of fruit"", ""two‑wheeled vehicle"", ""toy ride"", ""minivan"", ""painted metal shutter"", ""signboard"", ""storefront"", ""cart"", ""pillow"". Do not invent fine classes beyond verification.
+
+Tie‑breakers & cropping
+- If subject prominence ties, choose larger bbox area; if tied, choose leftmost centroid. If subject width >50% image width, emit ""center"". Append ""partially cropped at [top|bottom|left|right]"" only when >5% of subject area lies outside image.
+
+Mandatory style constraints
+- Single sentence, comma‑separated short phrases; front‑load nouns/VERIFIED props; use digits only when Count VERIFIED; do not infer age, emotion, intention, or any unseen attributes; output nothing but the caption.
+
+Micro‑templates (follow these exact patterns)
+1) ""1 woman center foreground, right hand holding woven basket of oranges, storefront behind.""  
+2) ""two dogs left foreground, small white dog jumping at car passenger window, woman leaning out.""  
+3) ""1 person right foreground, standing by two‑wheeled vehicle with visible pedals and chain, metal shutter behind.""  
+4) ""1 boy center foreground, seated on red toy ride, blue Mets jersey visible, playground court behind.""  
+5) ""many dancers center foreground, line of red/gold sequined costumes, 'RADIO CITY' marquee behind.""  
+6) ""1 man center foreground, chain attached to yellow cart with stickers, phone number on blue board at center.""  
+
+Follow all rules above exactly; perform the internal verification and pruning, then emit the single final caption that satisfies these constraints.","Little girl center foreground, wearing party hat, blowing balloon tied with string, adult legs visible left side.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_bb96c46b5c,148,7436,flickr30k_test_007436,images/flickr30k/flickr30k_test_007436.jpg,"[""An elderly woman looking at her cellphone, and a young black man looking toward her."", ""A group of people hanging out on the street as a woman looks at her phone."", ""Everyone on the street in the city seem to be busy doing their own thing."", ""An elderly woman checks her cellphone while standing on the curb."", ""An older lady takes a moment to check her phone in a busy street.""]",textgrad_bb96c46b5c,TextGrad Step 12,"Output exactly one concise, information‑dense caption: a single grammatical sentence composed of comma‑separated short phrases. Produce only that single sentence and no other text.
+
+Two‑pass internal checklist (do not print logs)
+1) Proposal: internally enumerate candidate tokens for each slot: up to 3 subject groups (prominence order), optional single micro‑action, one part‑relation (if contact VERIFIED), up to 3 descriptors, optional viewpoint/orientation, lighting, and background/text.
+2) Verification: apply the deterministic checks below to every candidate; mark tokens that pass as VERIFIED and protect VERIFIED discriminative props, VERIFIED fine classes, and VERIFIED part‑relations from any pruning. Do not output the checklist or intermediate candidates.
+
+Subject groups & placement (hard constraints)
+- Emit 1–3 subject groups in prominence order. Each group must be: [digit if Count VERIFIED] + noun(s) + spatial anchor (left/center/right) and include ""foreground""/""background"" only when depth/separability VERIFIED.
+- Front‑load subject nouns and any VERIFIED discriminative props so they appear within the first 6–8 words.
+- Use digits only when Count verification passes (rule below); otherwise use singular/plural nouns (""person/people"", ""dog/dogs"", ""vehicle/vehicles"").
+
+Deterministic verification rules (must be followed)
+- Count: include a digit only if every instance is ≥50% unobstructed AND centroid spacing ≥10% image width AND IOU between subject bboxes <0.10. If any check fails, do not emit digits — use singular/plural.
+- Contact (micro‑action): assert contact only if overlap area / smaller bbox area ≥12% AND visible attachment or contiguous boundary pixels or clear occlusion consistent with grasp. If VERIFIED, include exactly one micro‑action using the template: ""[left|right] [hand|foot|part] [strong‑verb] [object]"" (e.g., ""right hand holding woven basket""). Always specify left/right. If Contact not VERIFIED, do not invent a micro‑action.
+- Fine class (cue‑pair): emit a fine class only when the required cue‑pair passes OR classifier confidence >0.60. Example cue‑pairs (apply only as checks): vendor = (table/counter + stacks of produce) OR (baskets/piles + scale); bicycle = (spokes + pedals) OR (pedals + chain); motorbike/scooter = (frame + exhaust) OR (engine casing + exhaust); ladder = (rungs + side rails); performer = (stage/canopy + audience) OR (headset/microphone + facing audience). If cue‑pair fails, use a concrete fallback noun (see fallbacks).
+- OCR/text: quote exact text only when OCR confidence high AND text bbox ≥0.5% image area AND legibility ≳8pt equivalent with high contrast. Otherwise emit a compact positional descriptor (e.g., ""phone number on yellow board at center"") including dominant sign color/shape when legible.
+
+Descriptor priority (must preserve VERIFIED tokens)
+Priority order for including descriptors: (1) VERIFIED discriminative props or quoted text, (2) VERIFIED part‑relations/micro‑actions, (3) VERIFIED fine class, (4) clothing & clear pose/gaze, (5) object state/material, (6) viewpoint/orientation, (7) color, (8) lighting/reflection. Never prune VERIFIED items.
+
+Allowed verbs and motion
+- Use dynamic contact/motion verbs (jumping, swinging, reaching, holding) only when Contact or clear motion evidence is VERIFIED. Do not infer intentions, emotions, or unseen attributes.
+
+Pruning, length, and determinism
+- Target caption length: 10–14 words. Hard cap: 18 words (allow up to 24 only if a VERIFIED quoted text string is included).
+- If over length, prune deterministically in this order until within cap: color → material/texture → reflections → lighting → background (unless background ≥5% image area or contains VERIFIED text) → low‑priority descriptors. Never drop VERIFIED discriminative props, VERIFIED fine classes, or VERIFIED part relations. When tokens tie, prefer shorter tokens and prefer nouns/props over adjectives.
+
+Background & spatial rules
+- Include a background anchor only when that anchor occupies ≥5% image area or is a distinct structure (storefront, metal shutter, stage). Use compact phrases (""storefront behind"", ""metal shutter at left""). For text follow OCR rule above.
+- When multiple humans/animals are present, require short relational clauses connecting them (e.g., ""man left foreground, woman leaning over cart right foreground"").
+
+Anti‑hallucination fallbacks (use when cue/OCR fails)
+- Use concrete fallbacks: ""woven basket"", ""pile of fruit"", ""two‑wheeled vehicle"", ""toy ride"", ""minivan"", ""painted metal shutter"", ""signboard"", ""storefront"", ""cart"", ""pillow"". Do not invent fine classes beyond verification.
+
+Tie‑breakers & cropping
+- If subject prominence ties, choose larger bbox area; if tied, choose leftmost centroid. If subject width >50% image width, emit ""center"". Append ""partially cropped at [top|bottom|left|right]"" only when >5% of subject area lies outside image.
+
+Mandatory style constraints
+- Single sentence, comma‑separated short phrases; front‑load nouns/VERIFIED props; use digits only when Count VERIFIED; do not infer age, emotion, intention, or any unseen attributes; output nothing but the caption.
+
+Micro‑templates (follow these exact patterns)
+1) ""1 woman center foreground, right hand holding woven basket of oranges, storefront behind.""  
+2) ""two dogs left foreground, small white dog jumping at car passenger window, woman leaning out.""  
+3) ""1 person right foreground, standing by two‑wheeled vehicle with visible pedals and chain, metal shutter behind.""  
+4) ""1 boy center foreground, seated on red toy ride, blue Mets jersey visible, playground court behind.""  
+5) ""many dancers center foreground, line of red/gold sequined costumes, 'RADIO CITY' marquee behind.""  
+6) ""1 man center foreground, chain attached to yellow cart with stickers, phone number on blue board at center.""  
+
+Follow all rules above exactly; perform the internal verification and pruning, then emit the single final caption that satisfies these constraints.","woman center foreground holding phone, yellow truck parked right, man left foreground wearing yellow cap, plastic bags at sidewalk, storefront behind.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"

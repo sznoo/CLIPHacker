@@ -1,0 +1,117 @@
+{
+  "prompt": "Generate exactly one short, literal, factual caption (one grammatically correct sentence) describing only visible content in the image. Output exactly one sentence only — no extra text. Total words: 8–14. Follow these prioritized rules (apply them in order):\n\n1) Subject selection (simple heuristic): pick the largest clearly visible detection by area. If a person is present with detector_confidence within ±0.05 of that largest detection, choose the person. If two candidates are similar, prefer the one that yields more distinct high‑signal tokens (color, multiword class, numeral, or readable logo).\n\n2) Visibility (deterministic): an object is \"clearly visible\" if area ≥1.5% OR (area ≥0.8% AND detector_confidence ≥0.45). Small‑object exception: treat as visible if area ≥0.6% AND detector_confidence ≥0.75. Do not invent unseen attributes.\n\n3) High‑signal tokens and placement: a high‑signal token = visible color/pattern, a concrete multiword class (e.g., \"stop sign\", \"double‑decker bus\"), a clear Arabic numeral, a clothing/accessory term, or legible text/logo (see OCR rules). Require at least one high‑signal token within the first 2–3 content words (a single leading article does not count as a content word). If two distinct high‑signal tokens are clearly visible, place both within the first 3 content words unless grammar forces one to position 4.\n\n4) OCR/text inclusion: allow copying short readable text/logos of 1–3 tokens when OCR_confidence ≥0.60 and OCR_bbox_area ≥0.8%, or when OCR_confidence ≥0.55 and OCR_bbox_area ≥1.0%. Do not copy phone numbers or runs of ≥5 consecutive digits; prefer direct insertion (e.g., shirt NIKE) or the shortest wrapper needed (e.g., shirt \"NIKE\").\n\n5) Wording, modifiers, and length: start with a concise noun phrase favoring [Color/Number/Multiword_class] + [class]. Allow up to two pre‑nominal high‑signal modifiers, OR one pre‑nominal modifier plus one short post‑nominal prepositional or participial phrase (one compact relation only, e.g., \"by market stall\", \"on sidewalk\"). Use present‑tense, concise S V (+ O) sentences and common collocations (holds, holds onto, sits on, stands beside, walks past, passes). Avoid subordinate clauses, stacked prepositional phrases, and long descriptive chains. Favor dense concrete tokens over function words.\n\n6) Formatting and numbers: use Arabic numerals for visible counts that meet OCR/visibility rules. Prefer multiword concrete classes over generic words (e.g., \"red double‑decker bus\" rather than \"vehicle\"). Do not hallucinate unreadable text.\n\n7) Micro‑patterns (use as guides, not literals): \n- [Color] [multiword_class] [verb] [object] → \"Red double‑decker bus passes street.\" \n- [Numeral] [multiword_class] [verb] [modifier] → \"3 yellow school buses stop at corner.\" \n- [multiword_class] [OCR_TEXT] [verb] [object] → \"Shirt NIKE worn by man.\"\n\nFinal constraints: one sentence only, 8–14 words, literal description of visible content, follow visibility and OCR thresholds above, do not output fallback phrases like \"image unclear\", and do not add any extra commentary.",
+  "prompt_id": "textgrad_bc20e26d7c",
+  "split_csv": "data/splits/flickr30k_main_seed1_val.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_13/val/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_13/val/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_13/val/scores.csv",
+  "summary": {
+    "n": 150,
+    "mean_clip": 0.31523565590381625,
+    "mean_siglip": 0.18748859946926436,
+    "mean_caption_len": 10.88,
+    "generic_rate": 0.02666666666666667,
+    "mean_delta_clip": -0.00932979241013527,
+    "mean_delta_siglip": -0.0113519462198019,
+    "clip_win_rate": 0.39,
+    "siglip_win_rate": 0.37333333333333335
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_011250",
+      "caption": "Two boys stand in grass near yellow caution tape.",
+      "clip_score": 0.3028560280799866,
+      "siglip_score": 0.2088349163532257,
+      "delta_clip": -0.10973775386810303,
+      "delta_siglip": -0.01168070733547208
+    },
+    {
+      "image_id": "flickr30k_test_026513",
+      "caption": "Yellow-jacketed cameraman operates camera on tripod outdoors.",
+      "clip_score": 0.310159832239151,
+      "siglip_score": 0.1994527131319046,
+      "delta_clip": -0.09251418709754938,
+      "delta_siglip": -0.06056596338748932
+    },
+    {
+      "image_id": "flickr30k_test_005806",
+      "caption": "Woman in beige sweater packs clothes into open black suitcase.",
+      "clip_score": 0.2900846004486084,
+      "siglip_score": 0.1332746744155883,
+      "delta_clip": -0.08410942554473871,
+      "delta_siglip": -0.0776493847370148
+    },
+    {
+      "image_id": "flickr30k_test_026753",
+      "caption": "Man in black shirt with \"LOVE\" text grinds rail on inline skates.",
+      "clip_score": 0.248860627412796,
+      "siglip_score": 0.1859456598758697,
+      "delta_clip": -0.08273062109947202,
+      "delta_siglip": 0.028404653072357205
+    },
+    {
+      "image_id": "flickr30k_test_030149",
+      "caption": "Man in dark shirt bowls down lane at brightly lit alley.",
+      "clip_score": 0.2438026070594787,
+      "siglip_score": 0.1638293266296386,
+      "delta_clip": -0.08074423670768738,
+      "delta_siglip": -0.014901116490364102
+    },
+    {
+      "image_id": "flickr30k_test_011286",
+      "caption": "Three people in orange shorts walk along rocky riverbank.",
+      "clip_score": 0.2790911793708801,
+      "siglip_score": 0.1892420947551727,
+      "delta_clip": -0.07866442203521729,
+      "delta_siglip": -0.03584381937980649
+    },
+    {
+      "image_id": "flickr30k_test_026753",
+      "caption": "Man in black shirt with \"LOVE\" text grinds rail on inline skates.",
+      "clip_score": 0.248860627412796,
+      "siglip_score": 0.1859456598758697,
+      "delta_clip": -0.0749353468418121,
+      "delta_siglip": -0.034994378685951205
+    },
+    {
+      "image_id": "flickr30k_test_016590",
+      "caption": "A woman in colorful traditional clothing stands beside a market stall under a blue-and-white umbrella.",
+      "clip_score": 0.2908334136009216,
+      "siglip_score": 0.1579890847206115,
+      "delta_clip": -0.07375192642211914,
+      "delta_siglip": -0.0682096928358078
+    },
+    {
+      "image_id": "flickr30k_test_023317",
+      "caption": "Woman in pink jacket and white hat stands at guest services booth.",
+      "clip_score": 0.3211140930652618,
+      "siglip_score": 0.2362621426582336,
+      "delta_clip": -0.07003381848335272,
+      "delta_siglip": 0.017873585224151584
+    },
+    {
+      "image_id": "flickr30k_test_011250",
+      "caption": "Two boys stand in grass near yellow caution tape.",
+      "clip_score": 0.3028560280799866,
+      "siglip_score": 0.2088349163532257,
+      "delta_clip": -0.06976675987243652,
+      "delta_siglip": -0.03950586915016169
+    },
+    {
+      "image_id": "flickr30k_test_006161",
+      "caption": "Woman in green vest sweeps sidewalk near crowded street.",
+      "clip_score": 0.2702284455299377,
+      "siglip_score": 0.1963196992874145,
+      "delta_clip": -0.06775346398353582,
+      "delta_siglip": -0.04802006483078
+    },
+    {
+      "image_id": "flickr30k_test_022056",
+      "caption": "A young boy in a green shirt stands with hands on head.",
+      "clip_score": 0.2852752804756164,
+      "siglip_score": 0.1505628228187561,
+      "delta_clip": -0.06666478514671331,
+      "delta_siglip": -0.08525855839252469
+    }
+  ]
+}

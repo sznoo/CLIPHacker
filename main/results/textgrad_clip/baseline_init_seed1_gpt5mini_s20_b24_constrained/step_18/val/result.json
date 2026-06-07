@@ -1,0 +1,117 @@
+{
+  "prompt": "Generate exactly one short, literal, factual caption: one grammatically correct sentence describing only visibly present content. Output exactly one sentence and nothing else. Sentence length: 8–12 words (prefer 9–11). Follow these rules in order:\n\n1) Subject selection and salience: compute salience = area_fraction × detector_confidence × (1 + center_bonus) + token_bonus. center_bonus = 0.10 if the detection centroid lies inside the central 25% of the image area, otherwise 0. token_bonus = 0.0015 applied only when a candidate contains a robust high‑signal token (see rules 3–5). Select the detection with highest salience. If two candidates’ saliences are within 10%, prefer (in order) a person, then the larger bbox area, then the more centered bbox, then the token_bonus winner.\n\n2) Detection usability: treat a detection as usable only if salience ≥ 0.002. Allow smaller detections only when there is strong readable text or a clearly visible numeral: i.e., OCR_confidence ≥ 0.75 and OCR_bbox_area ≥ 0.002, or a numeral detection_confidence ≥ 0.80 and bbox_area ≥ 0.002.\n\n3) High‑signal tokens and placement: high‑signal tokens include visible colors or patterns, concrete multiword classes (e.g., \"stop sign\", \"double‑decker bus\"), clear Arabic numerals, clothing/accessory names (e.g., \"baseball cap\"), and short readable logos/text (1–3 tokens). Require at least one high‑signal token to appear within the first three content words of the sentence (leading articles \"a/an/the\" do not count as content words). If two distinct high‑signal tokens are visible, place the second no later than the fourth content word.\n\n4) OCR/text copying: copy short readable text/logos (1–3 tokens) only if (OCR_confidence ≥ 0.60 and OCR_bbox_area ≥ 0.005) OR (OCR_confidence ≥ 0.75 and OCR_bbox_area ≥ 0.002). Never copy runs of ≥5 consecutive digits or low‑confidence/unreadable text. If OCR is borderline, describe generically (e.g., \"sign with letters\") instead of copying uncertain text.\n\n5) Token gating for subject selection: apply token_bonus only when the token’s bbox_area ≥ 0.005 and token/OCR confidence meets thresholds in rule 4. The token_bonus may break ties but must not allow tiny, low‑confidence tokens to win.\n\n6) Second‑object allowance: you may append one compact post‑nominal relation up to 4 tokens (for example, \"on the sidewalk\", \"with number 7\") only if that relation introduces a distinct high‑signal token. Do not chain relations or add longer descriptive chains.\n\n7) Wording, grammar, and tense: prefer starting with a high‑signal modifier plus class (e.g., \"red bicycle\", \"two dogs\", \"striped shirt\"). Use present‑tense active verbs when an action/posture is clearly visible (walking, holding, jumping); otherwise use \"is/are.\" Use Arabic numerals for visible counts that meet visibility rules. Allow leading determiners; count content words excluding them.\n\n8) Safety and literalness: do not invent unseen attributes, emotions, intentions, dialogue, or unreadable text. Avoid generic placeholders like \"object\" or a vague \"person\" when a more specific visible class, color, number, or logo is present.\n\n9) Simple failure checks: if the chosen subject bbox_area < 0.002 but another detection’s bbox_area > 1.5× larger, switch to the larger detection. Never assert a readable string unless OCR thresholds in rule 4 are met.\n\n10) Short guidance and examples (keep style concise):\n- Prefer concrete, visually discriminative tokens: colors, multiword classes, clothing/accessories, visible numerals, readable logos.\n- Good examples: \"red bicycle is parked on the sidewalk.\" \"two dogs stand in shallow water.\"\n- Bad examples to avoid: \"object on left.\" \"man happy.\"\n\nFinal constraints: one sentence only, 8–12 words (prefer 9–11), literal description of visible content, include a required high‑signal token early (within first three content words), follow the OCR and usability thresholds above, and do not add extra commentary or multiple outputs.",
+  "prompt_id": "textgrad_3a61d8f645",
+  "split_csv": "data/splits/flickr30k_main_seed1_val.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_18/val/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_18/val/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_18/val/scores.csv",
+  "summary": {
+    "n": 150,
+    "mean_clip": 0.30964716881513593,
+    "mean_siglip": 0.18204742888609565,
+    "mean_caption_len": 9.8,
+    "generic_rate": 0.006666666666666667,
+    "mean_delta_clip": -0.014918279498815537,
+    "mean_delta_siglip": -0.016793116802970572,
+    "clip_win_rate": 0.3433333333333333,
+    "siglip_win_rate": 0.34
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_011250",
+      "caption": "Two boys stand in grass near yellow caution tape.",
+      "clip_score": 0.3028560280799866,
+      "siglip_score": 0.2088349163532257,
+      "delta_clip": -0.10973775386810303,
+      "delta_siglip": -0.01168070733547208
+    },
+    {
+      "image_id": "flickr30k_test_005806",
+      "caption": "Woman in beige sweater reaches into open black suitcase.",
+      "clip_score": 0.2794611155986786,
+      "siglip_score": 0.1421789824962616,
+      "delta_clip": -0.09473291039466852,
+      "delta_siglip": -0.0687450766563415
+    },
+    {
+      "image_id": "flickr30k_test_023023",
+      "caption": "Red umbrella with Coca-Cola logo shades gathering crowd.",
+      "clip_score": 0.2298739701509475,
+      "siglip_score": 0.1343332976102829,
+      "delta_clip": -0.0936787575483323,
+      "delta_siglip": -0.085262730717659
+    },
+    {
+      "image_id": "flickr30k_test_026513",
+      "caption": "Yellow-jacketed cameraman operates camera on tripod outdoors.",
+      "clip_score": 0.310159832239151,
+      "siglip_score": 0.1994527131319046,
+      "delta_clip": -0.09251418709754938,
+      "delta_siglip": -0.06056596338748932
+    },
+    {
+      "image_id": "flickr30k_test_006161",
+      "caption": "Woman in green vest sweeps sidewalk with broom.",
+      "clip_score": 0.2519989013671875,
+      "siglip_score": 0.1418433487415313,
+      "delta_clip": -0.08598300814628601,
+      "delta_siglip": -0.10249641537666321
+    },
+    {
+      "image_id": "flickr30k_test_017698",
+      "caption": "Woman holding clipboard stands before group of soldiers and civilians.",
+      "clip_score": 0.2663245797157287,
+      "siglip_score": 0.2013818770647049,
+      "delta_clip": -0.08516168594360357,
+      "delta_siglip": -0.05865798890590668
+    },
+    {
+      "image_id": "flickr30k_test_011286",
+      "caption": "Three people in orange shorts walk along rocky riverbank.",
+      "clip_score": 0.2790911793708801,
+      "siglip_score": 0.1892420947551727,
+      "delta_clip": -0.07866442203521729,
+      "delta_siglip": -0.03584381937980649
+    },
+    {
+      "image_id": "flickr30k_test_022222",
+      "caption": "Man in white shirt stands beside covered cart with broom.",
+      "clip_score": 0.3057042360305786,
+      "siglip_score": 0.1967763602733612,
+      "delta_clip": -0.07805866003036499,
+      "delta_siglip": -0.043379515409469604
+    },
+    {
+      "image_id": "flickr30k_test_016590",
+      "caption": "Colorful vendor sells goods under striped umbrella near fountain.",
+      "clip_score": 0.2879965007305145,
+      "siglip_score": 0.2268693745136261,
+      "delta_clip": -0.07658883929252619,
+      "delta_siglip": 0.0006705969572068093
+    },
+    {
+      "image_id": "flickr30k_test_016269",
+      "caption": "Red jacket wearer stands near checkered floor with others.",
+      "clip_score": 0.2532844245433807,
+      "siglip_score": 0.127667486667633,
+      "delta_clip": -0.07466927170753485,
+      "delta_siglip": -0.0256959795951843
+    },
+    {
+      "image_id": "flickr30k_test_003587",
+      "caption": "Man wearing black cap with number 3 and racing jacket with sponsor logos.",
+      "clip_score": 0.2927261590957641,
+      "siglip_score": 0.2486903369426727,
+      "delta_clip": -0.07256078720092779,
+      "delta_siglip": -0.015613734722137479
+    },
+    {
+      "image_id": "flickr30k_test_018677",
+      "caption": "Man in plaid shirt holds plate while woman with tattoo stands nearby.",
+      "clip_score": 0.2676535546779632,
+      "siglip_score": 0.1281655430793762,
+      "delta_clip": -0.07067984342575079,
+      "delta_siglip": -0.0845644474029541
+    }
+  ]
+}

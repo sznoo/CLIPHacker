@@ -1,0 +1,117 @@
+{
+  "prompt": "Generate exactly one short, literal, factual caption (one sentence) describing only visible content in the image. Output one sentence only, 8–20 words total. Do not output lists, labels, explanations, annotations, or any extra text.\n\nDefinitions\n- High‑signal tokens = a visible color or pattern, a concrete specific object class (use the most specific multiword class available), a clear Arabic numeral (digits) count, a clothing/accessory, or legible text/logo copied exactly.\n\nPrimary rules (must follow)\n1. Early high‑signal tokens: the first three content words must contain at least one high‑signal token. If two high‑signal tokens are clearly visible, both must appear within the first three content words. Ignore a single leading article (a/an/the) when counting content words.\n2. Legible text/logo: if any readable text or logo is visible, copy it exactly (including case) and place it within the first five content words.\n3. Specific class: use the most specific visible concrete class. Do not use \"person\" when a more specific visible role/class or multiword class is confidently visible.\n4. Counts: use Arabic numerals for any visible count and place the numeral within the first three content words.\n5. Color/pattern adjacency: color or pattern adjectives must directly precede their noun (e.g., \"red bicycle\"). Use \"noun with [attribute]\" only if placing the adjective immediately would violate rule 1.\n6. Syntax: prefer a short present‑tense sentence (subject + verb). A bare noun phrase is allowed only if any verb would force required high‑signal tokens past their allowed positions.\n7. Prohibited openings: do not begin with generic templates such as \"There is,\" \"A group of,\" or \"Some people\" unless no specific subject can be confidently identified.\n8. Word choice and length: use common color and class words (e.g., \"red\", \"blue\", \"car\", \"bicycle\") rather than rare synonyms. Aim for 9–14 content words while keeping total words 8–20.\n\nDeterministic subject selection\n- Choose the primary subject by this tie‑breaker order: centermost → largest → highest contrast → visible attribute (color/number/logo).\n\nQuick examples (bad → good)\n- Bad: \"There is a group of people near a red bus.\" → Good: \"Red bus sits near 5 people.\"  \n- Bad: \"Two dogs play in the yard.\" → Good: \"2 dogs play on the grass.\"  \n- Bad: \"A man stands beside a sign that says STOP.\" → Good: \"STOP sign stands beside a man.\"\n\nOutput exactly one sentence only—no extra text.",
+  "prompt_id": "textgrad_da4c0e8807",
+  "split_csv": "data/splits/flickr30k_main_seed1_train.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_08/train/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_08/train/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_08/train/scores.csv",
+  "summary": {
+    "n": 24,
+    "mean_clip": 0.3029228877276182,
+    "mean_siglip": 0.18464640527963638,
+    "mean_caption_len": 11.416666666666666,
+    "generic_rate": 0.0,
+    "mean_delta_clip": -0.020980373645822222,
+    "mean_delta_siglip": -0.012196387474735566,
+    "clip_win_rate": 0.25,
+    "siglip_win_rate": 0.4166666666666667
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_019437",
+      "caption": "NO PARKING ANY TIME painted on a metal roll-up door.",
+      "clip_score": 0.2701518535614013,
+      "siglip_score": 0.1749078631401062,
+      "delta_clip": -0.06025537848472601,
+      "delta_siglip": 0.025480180978775108
+    },
+    {
+      "image_id": "flickr30k_test_022801",
+      "caption": "Blue canopy shades market stall near stone building with \"OPEN\" sign.",
+      "clip_score": 0.2447962760925293,
+      "siglip_score": 0.1092187017202377,
+      "delta_clip": -0.0602128803730011,
+      "delta_siglip": -0.0890992730855942
+    },
+    {
+      "image_id": "flickr30k_test_005524",
+      "caption": "Girl in white shirt blows balloon tied with pink string.",
+      "clip_score": 0.2470181137323379,
+      "siglip_score": 0.1884626150131225,
+      "delta_clip": -0.05469302833080292,
+      "delta_siglip": 0.008914709091186496
+    },
+    {
+      "image_id": "flickr30k_test_018651",
+      "caption": "Man in straw hat sells oranges from woven baskets beside red bicycle.",
+      "clip_score": 0.3475950062274933,
+      "siglip_score": 0.201973408460617,
+      "delta_clip": -0.05462867021560669,
+      "delta_siglip": 0.005429729819297818
+    },
+    {
+      "image_id": "flickr30k_test_030024",
+      "caption": "Man with gray hair sits at table with wine glasses and bottles.",
+      "clip_score": 0.2503859102725982,
+      "siglip_score": 0.1819370090961456,
+      "delta_clip": -0.052085548639297485,
+      "delta_siglip": -0.002278283238410894
+    },
+    {
+      "image_id": "flickr30k_test_016046",
+      "caption": "Two women stand near a yellow bucket on a wooden table.",
+      "clip_score": 0.2911633253097534,
+      "siglip_score": 0.1616592705249786,
+      "delta_clip": -0.04632765054702759,
+      "delta_siglip": 0.0026657283306122104
+    },
+    {
+      "image_id": "flickr30k_test_027198",
+      "caption": "Three boys run across grass, one spraying water from a water gun.",
+      "clip_score": 0.2949039936065674,
+      "siglip_score": 0.1926176249980926,
+      "delta_clip": -0.043596506118774414,
+      "delta_siglip": 0.051744058728218106
+    },
+    {
+      "image_id": "flickr30k_test_000704",
+      "caption": "Man sings into microphone while another man sits beside drum set.",
+      "clip_score": 0.2433300912380218,
+      "siglip_score": 0.1356660574674606,
+      "delta_clip": -0.03354647755622869,
+      "delta_siglip": -0.0243472158908844
+    },
+    {
+      "image_id": "flickr30k_test_023784",
+      "caption": "Smiling woman wears blue vest over dark shirt, surrounded by bags and boxes.",
+      "clip_score": 0.2960726618766784,
+      "siglip_score": 0.1830153465270996,
+      "delta_clip": -0.028673768043518066,
+      "delta_siglip": -0.03498208522796628
+    },
+    {
+      "image_id": "flickr30k_test_005582",
+      "caption": "Black-and-white dog leaps toward car window as brown dog walks nearby.",
+      "clip_score": 0.3269896209239959,
+      "siglip_score": 0.2043839395046234,
+      "delta_clip": -0.027298629283905085,
+      "delta_siglip": 0.028049752116203308
+    },
+    {
+      "image_id": "flickr30k_test_005364",
+      "caption": "Silver incense burner with lotus design holds kneeling monk before Buddha statue.",
+      "clip_score": 0.3162285685539245,
+      "siglip_score": 0.1964044868946075,
+      "delta_clip": -0.026590287685394287,
+      "delta_siglip": -0.005241200327873202
+    },
+    {
+      "image_id": "flickr30k_test_009495",
+      "caption": "Woman with yellow bag stands near man in dark jacket holding phone.",
+      "clip_score": 0.2637068629264831,
+      "siglip_score": 0.1159995719790458,
+      "delta_clip": -0.02627646923065191,
+      "delta_siglip": -0.0851576402783394
+    }
+  ]
+}

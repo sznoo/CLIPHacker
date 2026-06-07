@@ -1,0 +1,1273 @@
+split_id,method_id,run_id,order,dataset_index,image_id,image_relpath,reference_captions,prompt_id,prompt_name,prompt_text,caption,candidate_id,selected,model,temperature,top_p,max_new_tokens,generation_config,clip_score,siglip_score,caption_len,generic_flag
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_aea4fdafa0,1,18651,flickr30k_test_018651,images/flickr30k/flickr30k_test_018651.jpg,"[""A man in light brown hat, gray coat and a blue vest with a scooter built with baskets full of oranges"", ""A farmer is taking his oranges to the market to sell."", ""A man is standing with vegetables in barrels."", ""An old foreign man selling oranges."", ""Mexican man peddling fresh fruit.""]",textgrad_aea4fdafa0,TextGrad Step 8,"Output exactly two lines only.
+
+Line 1 — tags (format rules)
+- 2–5 comma-separated lower-case tokens (prefer 3). No punctuation except commas.
+- Tokens must be visible nouns or a single visible adjective (color/size). Multiword fused objects allowed (e.g., ""traffic light"", ""wine bottle"") as one token.
+- At least two tokens must be nouns. At most one token may be an attribute (color/size).
+- Deduplicate tokens; order by visual salience (most discriminative first). Prefer concrete, specific nouns (e.g., ""trumpet"" over ""person"" when a detector is confident).
+- Only include an attribute if a detector/segmenter reports ≥75% confidence for that attribute; if detectors are unavailable, omit attributes.
+- Forbidden tokens: never output meta/instruction words or tooling vocabulary (for example: prompt, detectors, thresholds, length, caption, tags, line, template, score, clip, siglip, example). Never output proper nouns, brand names, dates, events, or emotions.
+
+Line 2 — caption (format rules)
+- Either A) one factual short sentence in present simple/progressive of 7–14 words, OR B) a 2–3 word fallback (main noun + visible location) when a compliant 7–14 word caption would require guessing. If tags cannot be produced reliably, output exactly: image unclear
+- The main noun from Line 1 must appear verbatim in positions 1–4 of Line 2.
+- Non-fallback captions must have at least two exact token overlaps with Line 1 (one must be the main noun). All nouns used in the caption (except determiners/prepositions) must appear verbatim in Line 1.
+- Allowed extra words: determiners, prepositions (on, in, near, by, in front of, behind), one optional period at sentence end. No other punctuation.
+- Do not introduce attributes, objects, or locations that are not in Line 1 unless supported by a high-confidence detector; do not invent identities or inferred facts.
+
+Conservatism and anti-hallucination
+- Prefer omission over guessing. If fewer than two high-confidence nouns are available, use the compact fallback or output ""image unclear"".
+- If an attribute token appears in Line 1, it must appear verbatim in Line 2. If attribute confidence <75%, do not include the attribute.
+
+Operational note (for system integrators)
+- Keep candidate generation, scoring, CLIP reranking, and grammar/number checks outside this prompt. The VLM should only follow the concise visual rules above.
+
+Few-shot visual examples (each block = two output lines)
+Positive (correct)
+trumpet,man,street
+trumpet man is playing on the street.
+
+dog,rooftop,people
+dog sits near people on the rooftop.
+
+man,accordion,car
+man plays accordion next to the car.
+
+Negative (incorrect → corrected)
+man,hat,flag
+man waves flag at parade.      <!-- BAD: introduces noun ""parade"" not in tags -->
+man,hat,flag
+man waves flag near the hat.
+
+child,bicycle,park
+child rides red bicycle in park.   <!-- BAD: introduces attribute ""red"" not in tags -->
+child,bicycle,park
+child rides bicycle in the park.
+
+person,bench,tree
+person sits in Central Park.   <!-- BAD: uses proper noun ""Central Park"" -->
+person,bench,tree
+person sits on the bench by the tree.
+
+Strictly follow the Line 1 / Line 2 rules above. If no valid caption candidate passes these checks, return Line 2 = ""image unclear"".","man,orange,bicycle
+man sells oranges near the bicycle.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.3350124955177307,0.19657769799232483,7,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_aea4fdafa0,4,25027,flickr30k_test_025027,images/flickr30k/flickr30k_test_025027.jpg,"[""A woman in turquoise dress and veil, a woman in orange print dress and blue veil, and a woman in yellow dress and violet veil, seated next to one another and viewed from behind."", ""Three women with headscarves and bright clothing take a ride in a rickshaw."", ""Women in Afghanistan who must cover themselves."", ""Three women are riding in a carriage together."", ""Three women are riding in a cart.""]",textgrad_aea4fdafa0,TextGrad Step 8,"Output exactly two lines only.
+
+Line 1 — tags (format rules)
+- 2–5 comma-separated lower-case tokens (prefer 3). No punctuation except commas.
+- Tokens must be visible nouns or a single visible adjective (color/size). Multiword fused objects allowed (e.g., ""traffic light"", ""wine bottle"") as one token.
+- At least two tokens must be nouns. At most one token may be an attribute (color/size).
+- Deduplicate tokens; order by visual salience (most discriminative first). Prefer concrete, specific nouns (e.g., ""trumpet"" over ""person"" when a detector is confident).
+- Only include an attribute if a detector/segmenter reports ≥75% confidence for that attribute; if detectors are unavailable, omit attributes.
+- Forbidden tokens: never output meta/instruction words or tooling vocabulary (for example: prompt, detectors, thresholds, length, caption, tags, line, template, score, clip, siglip, example). Never output proper nouns, brand names, dates, events, or emotions.
+
+Line 2 — caption (format rules)
+- Either A) one factual short sentence in present simple/progressive of 7–14 words, OR B) a 2–3 word fallback (main noun + visible location) when a compliant 7–14 word caption would require guessing. If tags cannot be produced reliably, output exactly: image unclear
+- The main noun from Line 1 must appear verbatim in positions 1–4 of Line 2.
+- Non-fallback captions must have at least two exact token overlaps with Line 1 (one must be the main noun). All nouns used in the caption (except determiners/prepositions) must appear verbatim in Line 1.
+- Allowed extra words: determiners, prepositions (on, in, near, by, in front of, behind), one optional period at sentence end. No other punctuation.
+- Do not introduce attributes, objects, or locations that are not in Line 1 unless supported by a high-confidence detector; do not invent identities or inferred facts.
+
+Conservatism and anti-hallucination
+- Prefer omission over guessing. If fewer than two high-confidence nouns are available, use the compact fallback or output ""image unclear"".
+- If an attribute token appears in Line 1, it must appear verbatim in Line 2. If attribute confidence <75%, do not include the attribute.
+
+Operational note (for system integrators)
+- Keep candidate generation, scoring, CLIP reranking, and grammar/number checks outside this prompt. The VLM should only follow the concise visual rules above.
+
+Few-shot visual examples (each block = two output lines)
+Positive (correct)
+trumpet,man,street
+trumpet man is playing on the street.
+
+dog,rooftop,people
+dog sits near people on the rooftop.
+
+man,accordion,car
+man plays accordion next to the car.
+
+Negative (incorrect → corrected)
+man,hat,flag
+man waves flag at parade.      <!-- BAD: introduces noun ""parade"" not in tags -->
+man,hat,flag
+man waves flag near the hat.
+
+child,bicycle,park
+child rides red bicycle in park.   <!-- BAD: introduces attribute ""red"" not in tags -->
+child,bicycle,park
+child rides bicycle in the park.
+
+person,bench,tree
+person sits in Central Park.   <!-- BAD: uses proper noun ""Central Park"" -->
+person,bench,tree
+person sits on the bench by the tree.
+
+Strictly follow the Line 1 / Line 2 rules above. If no valid caption candidate passes these checks, return Line 2 = ""image unclear"".","woman,bench,headscarf
+woman sits on the bench wearing a headscarf.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.24313530325889587,0.14536893367767334,9,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_aea4fdafa0,23,19904,flickr30k_test_019904,images/flickr30k/flickr30k_test_019904.jpg,"[""The man in the tan jacket is taking large steps as he walks past the off white building."", ""A well-dressed, shaven-head young man strides through railings past a restaurant."", ""A man wearing a tan jacket walks into Le Mignon in the afternoon."", ""A man walking across a bridge near a steak restaurant."", ""A bald man walking on a bridge.""]",textgrad_aea4fdafa0,TextGrad Step 8,"Output exactly two lines only.
+
+Line 1 — tags (format rules)
+- 2–5 comma-separated lower-case tokens (prefer 3). No punctuation except commas.
+- Tokens must be visible nouns or a single visible adjective (color/size). Multiword fused objects allowed (e.g., ""traffic light"", ""wine bottle"") as one token.
+- At least two tokens must be nouns. At most one token may be an attribute (color/size).
+- Deduplicate tokens; order by visual salience (most discriminative first). Prefer concrete, specific nouns (e.g., ""trumpet"" over ""person"" when a detector is confident).
+- Only include an attribute if a detector/segmenter reports ≥75% confidence for that attribute; if detectors are unavailable, omit attributes.
+- Forbidden tokens: never output meta/instruction words or tooling vocabulary (for example: prompt, detectors, thresholds, length, caption, tags, line, template, score, clip, siglip, example). Never output proper nouns, brand names, dates, events, or emotions.
+
+Line 2 — caption (format rules)
+- Either A) one factual short sentence in present simple/progressive of 7–14 words, OR B) a 2–3 word fallback (main noun + visible location) when a compliant 7–14 word caption would require guessing. If tags cannot be produced reliably, output exactly: image unclear
+- The main noun from Line 1 must appear verbatim in positions 1–4 of Line 2.
+- Non-fallback captions must have at least two exact token overlaps with Line 1 (one must be the main noun). All nouns used in the caption (except determiners/prepositions) must appear verbatim in Line 1.
+- Allowed extra words: determiners, prepositions (on, in, near, by, in front of, behind), one optional period at sentence end. No other punctuation.
+- Do not introduce attributes, objects, or locations that are not in Line 1 unless supported by a high-confidence detector; do not invent identities or inferred facts.
+
+Conservatism and anti-hallucination
+- Prefer omission over guessing. If fewer than two high-confidence nouns are available, use the compact fallback or output ""image unclear"".
+- If an attribute token appears in Line 1, it must appear verbatim in Line 2. If attribute confidence <75%, do not include the attribute.
+
+Operational note (for system integrators)
+- Keep candidate generation, scoring, CLIP reranking, and grammar/number checks outside this prompt. The VLM should only follow the concise visual rules above.
+
+Few-shot visual examples (each block = two output lines)
+Positive (correct)
+trumpet,man,street
+trumpet man is playing on the street.
+
+dog,rooftop,people
+dog sits near people on the rooftop.
+
+man,accordion,car
+man plays accordion next to the car.
+
+Negative (incorrect → corrected)
+man,hat,flag
+man waves flag at parade.      <!-- BAD: introduces noun ""parade"" not in tags -->
+man,hat,flag
+man waves flag near the hat.
+
+child,bicycle,park
+child rides red bicycle in park.   <!-- BAD: introduces attribute ""red"" not in tags -->
+child,bicycle,park
+child rides bicycle in the park.
+
+person,bench,tree
+person sits in Central Park.   <!-- BAD: uses proper noun ""Central Park"" -->
+person,bench,tree
+person sits on the bench by the tree.
+
+Strictly follow the Line 1 / Line 2 rules above. If no valid caption candidate passes these checks, return Line 2 = ""image unclear"".","man,bridge,restaurant
+man walks on the bridge near the restaurant.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.2752763032913208,0.2209225445985794,9,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_aea4fdafa0,27,22801,flickr30k_test_022801,images/flickr30k/flickr30k_test_022801.jpg,"[""People are walking down the street with vendors on the side on a beautiful, sunny day."", ""People are gathered at some kind of shop on the side of the street."", ""A boy with a yellow shirt and yellow do-rag walking through a town."", ""Multiple people are walking down a street at a street fair"", ""People walk down a street with shops along the way.""]",textgrad_aea4fdafa0,TextGrad Step 8,"Output exactly two lines only.
+
+Line 1 — tags (format rules)
+- 2–5 comma-separated lower-case tokens (prefer 3). No punctuation except commas.
+- Tokens must be visible nouns or a single visible adjective (color/size). Multiword fused objects allowed (e.g., ""traffic light"", ""wine bottle"") as one token.
+- At least two tokens must be nouns. At most one token may be an attribute (color/size).
+- Deduplicate tokens; order by visual salience (most discriminative first). Prefer concrete, specific nouns (e.g., ""trumpet"" over ""person"" when a detector is confident).
+- Only include an attribute if a detector/segmenter reports ≥75% confidence for that attribute; if detectors are unavailable, omit attributes.
+- Forbidden tokens: never output meta/instruction words or tooling vocabulary (for example: prompt, detectors, thresholds, length, caption, tags, line, template, score, clip, siglip, example). Never output proper nouns, brand names, dates, events, or emotions.
+
+Line 2 — caption (format rules)
+- Either A) one factual short sentence in present simple/progressive of 7–14 words, OR B) a 2–3 word fallback (main noun + visible location) when a compliant 7–14 word caption would require guessing. If tags cannot be produced reliably, output exactly: image unclear
+- The main noun from Line 1 must appear verbatim in positions 1–4 of Line 2.
+- Non-fallback captions must have at least two exact token overlaps with Line 1 (one must be the main noun). All nouns used in the caption (except determiners/prepositions) must appear verbatim in Line 1.
+- Allowed extra words: determiners, prepositions (on, in, near, by, in front of, behind), one optional period at sentence end. No other punctuation.
+- Do not introduce attributes, objects, or locations that are not in Line 1 unless supported by a high-confidence detector; do not invent identities or inferred facts.
+
+Conservatism and anti-hallucination
+- Prefer omission over guessing. If fewer than two high-confidence nouns are available, use the compact fallback or output ""image unclear"".
+- If an attribute token appears in Line 1, it must appear verbatim in Line 2. If attribute confidence <75%, do not include the attribute.
+
+Operational note (for system integrators)
+- Keep candidate generation, scoring, CLIP reranking, and grammar/number checks outside this prompt. The VLM should only follow the concise visual rules above.
+
+Few-shot visual examples (each block = two output lines)
+Positive (correct)
+trumpet,man,street
+trumpet man is playing on the street.
+
+dog,rooftop,people
+dog sits near people on the rooftop.
+
+man,accordion,car
+man plays accordion next to the car.
+
+Negative (incorrect → corrected)
+man,hat,flag
+man waves flag at parade.      <!-- BAD: introduces noun ""parade"" not in tags -->
+man,hat,flag
+man waves flag near the hat.
+
+child,bicycle,park
+child rides red bicycle in park.   <!-- BAD: introduces attribute ""red"" not in tags -->
+child,bicycle,park
+child rides bicycle in the park.
+
+person,bench,tree
+person sits in Central Park.   <!-- BAD: uses proper noun ""Central Park"" -->
+person,bench,tree
+person sits on the bench by the tree.
+
+Strictly follow the Line 1 / Line 2 rules above. If no valid caption candidate passes these checks, return Line 2 = ""image unclear"".","umbrella,people,street
+umbrella shades people on the street.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.20879119634628296,0.10939870774745941,7,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_aea4fdafa0,29,8727,flickr30k_test_008727,images/flickr30k/flickr30k_test_008727.jpg,"[""One little toddler wearing blue pajamas and a little girl wearing red pajamas opening presents on christmas day."", ""A baby boy in blue pajamas watches while his blond sister with glasses opens a Christmas present."", ""A little girl wearing her pajamas opening a present while a little boy looks on."", ""A girl is opening a present while a young boy in blue pajamas watches."", ""A young girl and a toddler are tearing wrapping paper off a present.""]",textgrad_aea4fdafa0,TextGrad Step 8,"Output exactly two lines only.
+
+Line 1 — tags (format rules)
+- 2–5 comma-separated lower-case tokens (prefer 3). No punctuation except commas.
+- Tokens must be visible nouns or a single visible adjective (color/size). Multiword fused objects allowed (e.g., ""traffic light"", ""wine bottle"") as one token.
+- At least two tokens must be nouns. At most one token may be an attribute (color/size).
+- Deduplicate tokens; order by visual salience (most discriminative first). Prefer concrete, specific nouns (e.g., ""trumpet"" over ""person"" when a detector is confident).
+- Only include an attribute if a detector/segmenter reports ≥75% confidence for that attribute; if detectors are unavailable, omit attributes.
+- Forbidden tokens: never output meta/instruction words or tooling vocabulary (for example: prompt, detectors, thresholds, length, caption, tags, line, template, score, clip, siglip, example). Never output proper nouns, brand names, dates, events, or emotions.
+
+Line 2 — caption (format rules)
+- Either A) one factual short sentence in present simple/progressive of 7–14 words, OR B) a 2–3 word fallback (main noun + visible location) when a compliant 7–14 word caption would require guessing. If tags cannot be produced reliably, output exactly: image unclear
+- The main noun from Line 1 must appear verbatim in positions 1–4 of Line 2.
+- Non-fallback captions must have at least two exact token overlaps with Line 1 (one must be the main noun). All nouns used in the caption (except determiners/prepositions) must appear verbatim in Line 1.
+- Allowed extra words: determiners, prepositions (on, in, near, by, in front of, behind), one optional period at sentence end. No other punctuation.
+- Do not introduce attributes, objects, or locations that are not in Line 1 unless supported by a high-confidence detector; do not invent identities or inferred facts.
+
+Conservatism and anti-hallucination
+- Prefer omission over guessing. If fewer than two high-confidence nouns are available, use the compact fallback or output ""image unclear"".
+- If an attribute token appears in Line 1, it must appear verbatim in Line 2. If attribute confidence <75%, do not include the attribute.
+
+Operational note (for system integrators)
+- Keep candidate generation, scoring, CLIP reranking, and grammar/number checks outside this prompt. The VLM should only follow the concise visual rules above.
+
+Few-shot visual examples (each block = two output lines)
+Positive (correct)
+trumpet,man,street
+trumpet man is playing on the street.
+
+dog,rooftop,people
+dog sits near people on the rooftop.
+
+man,accordion,car
+man plays accordion next to the car.
+
+Negative (incorrect → corrected)
+man,hat,flag
+man waves flag at parade.      <!-- BAD: introduces noun ""parade"" not in tags -->
+man,hat,flag
+man waves flag near the hat.
+
+child,bicycle,park
+child rides red bicycle in park.   <!-- BAD: introduces attribute ""red"" not in tags -->
+child,bicycle,park
+child rides bicycle in the park.
+
+person,bench,tree
+person sits in Central Park.   <!-- BAD: uses proper noun ""Central Park"" -->
+person,bench,tree
+person sits on the bench by the tree.
+
+Strictly follow the Line 1 / Line 2 rules above. If no valid caption candidate passes these checks, return Line 2 = ""image unclear"".","child,book,room
+child looks at book on the floor.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.2471097707748413,0.07032164931297302,8,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_aea4fdafa0,30,23643,flickr30k_test_023643,images/flickr30k/flickr30k_test_023643.jpg,"[""A little girl in a red and white shirt stands next to some caricatures of celebrities at an art fair."", ""A little girl in a red print sundress walked through an outdoor artist display."", ""A little girl wearing red is standing in front of caricature"", ""A girls stands by a caricature artist's drawings."", ""Little girl posing for a caricature.""]",textgrad_aea4fdafa0,TextGrad Step 8,"Output exactly two lines only.
+
+Line 1 — tags (format rules)
+- 2–5 comma-separated lower-case tokens (prefer 3). No punctuation except commas.
+- Tokens must be visible nouns or a single visible adjective (color/size). Multiword fused objects allowed (e.g., ""traffic light"", ""wine bottle"") as one token.
+- At least two tokens must be nouns. At most one token may be an attribute (color/size).
+- Deduplicate tokens; order by visual salience (most discriminative first). Prefer concrete, specific nouns (e.g., ""trumpet"" over ""person"" when a detector is confident).
+- Only include an attribute if a detector/segmenter reports ≥75% confidence for that attribute; if detectors are unavailable, omit attributes.
+- Forbidden tokens: never output meta/instruction words or tooling vocabulary (for example: prompt, detectors, thresholds, length, caption, tags, line, template, score, clip, siglip, example). Never output proper nouns, brand names, dates, events, or emotions.
+
+Line 2 — caption (format rules)
+- Either A) one factual short sentence in present simple/progressive of 7–14 words, OR B) a 2–3 word fallback (main noun + visible location) when a compliant 7–14 word caption would require guessing. If tags cannot be produced reliably, output exactly: image unclear
+- The main noun from Line 1 must appear verbatim in positions 1–4 of Line 2.
+- Non-fallback captions must have at least two exact token overlaps with Line 1 (one must be the main noun). All nouns used in the caption (except determiners/prepositions) must appear verbatim in Line 1.
+- Allowed extra words: determiners, prepositions (on, in, near, by, in front of, behind), one optional period at sentence end. No other punctuation.
+- Do not introduce attributes, objects, or locations that are not in Line 1 unless supported by a high-confidence detector; do not invent identities or inferred facts.
+
+Conservatism and anti-hallucination
+- Prefer omission over guessing. If fewer than two high-confidence nouns are available, use the compact fallback or output ""image unclear"".
+- If an attribute token appears in Line 1, it must appear verbatim in Line 2. If attribute confidence <75%, do not include the attribute.
+
+Operational note (for system integrators)
+- Keep candidate generation, scoring, CLIP reranking, and grammar/number checks outside this prompt. The VLM should only follow the concise visual rules above.
+
+Few-shot visual examples (each block = two output lines)
+Positive (correct)
+trumpet,man,street
+trumpet man is playing on the street.
+
+dog,rooftop,people
+dog sits near people on the rooftop.
+
+man,accordion,car
+man plays accordion next to the car.
+
+Negative (incorrect → corrected)
+man,hat,flag
+man waves flag at parade.      <!-- BAD: introduces noun ""parade"" not in tags -->
+man,hat,flag
+man waves flag near the hat.
+
+child,bicycle,park
+child rides red bicycle in park.   <!-- BAD: introduces attribute ""red"" not in tags -->
+child,bicycle,park
+child rides bicycle in the park.
+
+person,bench,tree
+person sits in Central Park.   <!-- BAD: uses proper noun ""Central Park"" -->
+person,bench,tree
+person sits on the bench by the tree.
+
+Strictly follow the Line 1 / Line 2 rules above. If no valid caption candidate passes these checks, return Line 2 = ""image unclear"".","caricature,child,market
+child smiles near caricature at the market.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.2899377942085266,0.2502038776874542,8,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_aea4fdafa0,34,30974,flickr30k_test_030974,images/flickr30k/flickr30k_test_030974.jpg,"[""Four construction workers, wearing neon vests, stand at a construction site along with some equipment."", ""Construction workers are standing around the back of a dump truck."", ""Men standing around a cement truck on a construction site."", ""Four construction workers standing by a concrete machine."", ""A group of men are gathered around a concrete truck.""]",textgrad_aea4fdafa0,TextGrad Step 8,"Output exactly two lines only.
+
+Line 1 — tags (format rules)
+- 2–5 comma-separated lower-case tokens (prefer 3). No punctuation except commas.
+- Tokens must be visible nouns or a single visible adjective (color/size). Multiword fused objects allowed (e.g., ""traffic light"", ""wine bottle"") as one token.
+- At least two tokens must be nouns. At most one token may be an attribute (color/size).
+- Deduplicate tokens; order by visual salience (most discriminative first). Prefer concrete, specific nouns (e.g., ""trumpet"" over ""person"" when a detector is confident).
+- Only include an attribute if a detector/segmenter reports ≥75% confidence for that attribute; if detectors are unavailable, omit attributes.
+- Forbidden tokens: never output meta/instruction words or tooling vocabulary (for example: prompt, detectors, thresholds, length, caption, tags, line, template, score, clip, siglip, example). Never output proper nouns, brand names, dates, events, or emotions.
+
+Line 2 — caption (format rules)
+- Either A) one factual short sentence in present simple/progressive of 7–14 words, OR B) a 2–3 word fallback (main noun + visible location) when a compliant 7–14 word caption would require guessing. If tags cannot be produced reliably, output exactly: image unclear
+- The main noun from Line 1 must appear verbatim in positions 1–4 of Line 2.
+- Non-fallback captions must have at least two exact token overlaps with Line 1 (one must be the main noun). All nouns used in the caption (except determiners/prepositions) must appear verbatim in Line 1.
+- Allowed extra words: determiners, prepositions (on, in, near, by, in front of, behind), one optional period at sentence end. No other punctuation.
+- Do not introduce attributes, objects, or locations that are not in Line 1 unless supported by a high-confidence detector; do not invent identities or inferred facts.
+
+Conservatism and anti-hallucination
+- Prefer omission over guessing. If fewer than two high-confidence nouns are available, use the compact fallback or output ""image unclear"".
+- If an attribute token appears in Line 1, it must appear verbatim in Line 2. If attribute confidence <75%, do not include the attribute.
+
+Operational note (for system integrators)
+- Keep candidate generation, scoring, CLIP reranking, and grammar/number checks outside this prompt. The VLM should only follow the concise visual rules above.
+
+Few-shot visual examples (each block = two output lines)
+Positive (correct)
+trumpet,man,street
+trumpet man is playing on the street.
+
+dog,rooftop,people
+dog sits near people on the rooftop.
+
+man,accordion,car
+man plays accordion next to the car.
+
+Negative (incorrect → corrected)
+man,hat,flag
+man waves flag at parade.      <!-- BAD: introduces noun ""parade"" not in tags -->
+man,hat,flag
+man waves flag near the hat.
+
+child,bicycle,park
+child rides red bicycle in park.   <!-- BAD: introduces attribute ""red"" not in tags -->
+child,bicycle,park
+child rides bicycle in the park.
+
+person,bench,tree
+person sits in Central Park.   <!-- BAD: uses proper noun ""Central Park"" -->
+person,bench,tree
+person sits on the bench by the tree.
+
+Strictly follow the Line 1 / Line 2 rules above. If no valid caption candidate passes these checks, return Line 2 = ""image unclear"".","worker,concrete mixer,construction site
+workers stand near concrete mixer on construction site.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.2659568786621094,0.16527505218982697,11,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_aea4fdafa0,50,23784,flickr30k_test_023784,images/flickr30k/flickr30k_test_023784.jpg,"[""A very aged woman wearing blue is standing in front of a pile of things, many in black trash bags."", ""Smiling woman in a blue apron standing in front of a pile of bags and boxes."", ""An elderly hispanic woman wears a blue vest in front of a pile of boxes."", ""A woman wearing a blue vest seems to be in a very messy area."", ""A woman in a blue smock in a blue smock is smiling.""]",textgrad_aea4fdafa0,TextGrad Step 8,"Output exactly two lines only.
+
+Line 1 — tags (format rules)
+- 2–5 comma-separated lower-case tokens (prefer 3). No punctuation except commas.
+- Tokens must be visible nouns or a single visible adjective (color/size). Multiword fused objects allowed (e.g., ""traffic light"", ""wine bottle"") as one token.
+- At least two tokens must be nouns. At most one token may be an attribute (color/size).
+- Deduplicate tokens; order by visual salience (most discriminative first). Prefer concrete, specific nouns (e.g., ""trumpet"" over ""person"" when a detector is confident).
+- Only include an attribute if a detector/segmenter reports ≥75% confidence for that attribute; if detectors are unavailable, omit attributes.
+- Forbidden tokens: never output meta/instruction words or tooling vocabulary (for example: prompt, detectors, thresholds, length, caption, tags, line, template, score, clip, siglip, example). Never output proper nouns, brand names, dates, events, or emotions.
+
+Line 2 — caption (format rules)
+- Either A) one factual short sentence in present simple/progressive of 7–14 words, OR B) a 2–3 word fallback (main noun + visible location) when a compliant 7–14 word caption would require guessing. If tags cannot be produced reliably, output exactly: image unclear
+- The main noun from Line 1 must appear verbatim in positions 1–4 of Line 2.
+- Non-fallback captions must have at least two exact token overlaps with Line 1 (one must be the main noun). All nouns used in the caption (except determiners/prepositions) must appear verbatim in Line 1.
+- Allowed extra words: determiners, prepositions (on, in, near, by, in front of, behind), one optional period at sentence end. No other punctuation.
+- Do not introduce attributes, objects, or locations that are not in Line 1 unless supported by a high-confidence detector; do not invent identities or inferred facts.
+
+Conservatism and anti-hallucination
+- Prefer omission over guessing. If fewer than two high-confidence nouns are available, use the compact fallback or output ""image unclear"".
+- If an attribute token appears in Line 1, it must appear verbatim in Line 2. If attribute confidence <75%, do not include the attribute.
+
+Operational note (for system integrators)
+- Keep candidate generation, scoring, CLIP reranking, and grammar/number checks outside this prompt. The VLM should only follow the concise visual rules above.
+
+Few-shot visual examples (each block = two output lines)
+Positive (correct)
+trumpet,man,street
+trumpet man is playing on the street.
+
+dog,rooftop,people
+dog sits near people on the rooftop.
+
+man,accordion,car
+man plays accordion next to the car.
+
+Negative (incorrect → corrected)
+man,hat,flag
+man waves flag at parade.      <!-- BAD: introduces noun ""parade"" not in tags -->
+man,hat,flag
+man waves flag near the hat.
+
+child,bicycle,park
+child rides red bicycle in park.   <!-- BAD: introduces attribute ""red"" not in tags -->
+child,bicycle,park
+child rides bicycle in the park.
+
+person,bench,tree
+person sits in Central Park.   <!-- BAD: uses proper noun ""Central Park"" -->
+person,bench,tree
+person sits on the bench by the tree.
+
+Strictly follow the Line 1 / Line 2 rules above. If no valid caption candidate passes these checks, return Line 2 = ""image unclear"".","woman,vest,garbage
+woman in blue vest stands near garbage.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.24934449791908264,0.18389394879341125,8,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_aea4fdafa0,52,17289,flickr30k_test_017289,images/flickr30k/flickr30k_test_017289.jpg,"[""A man wearing a blue sweatshirt and dark baseball cap is sweeping the floor with others watching."", ""One man is using a mop, while two other men watch from the background."", ""A tall looking man wearing a hat is mopping the floor."", ""Guys cleaning the floor with sweeper."", ""A guy in a sweater cleans the floor.""]",textgrad_aea4fdafa0,TextGrad Step 8,"Output exactly two lines only.
+
+Line 1 — tags (format rules)
+- 2–5 comma-separated lower-case tokens (prefer 3). No punctuation except commas.
+- Tokens must be visible nouns or a single visible adjective (color/size). Multiword fused objects allowed (e.g., ""traffic light"", ""wine bottle"") as one token.
+- At least two tokens must be nouns. At most one token may be an attribute (color/size).
+- Deduplicate tokens; order by visual salience (most discriminative first). Prefer concrete, specific nouns (e.g., ""trumpet"" over ""person"" when a detector is confident).
+- Only include an attribute if a detector/segmenter reports ≥75% confidence for that attribute; if detectors are unavailable, omit attributes.
+- Forbidden tokens: never output meta/instruction words or tooling vocabulary (for example: prompt, detectors, thresholds, length, caption, tags, line, template, score, clip, siglip, example). Never output proper nouns, brand names, dates, events, or emotions.
+
+Line 2 — caption (format rules)
+- Either A) one factual short sentence in present simple/progressive of 7–14 words, OR B) a 2–3 word fallback (main noun + visible location) when a compliant 7–14 word caption would require guessing. If tags cannot be produced reliably, output exactly: image unclear
+- The main noun from Line 1 must appear verbatim in positions 1–4 of Line 2.
+- Non-fallback captions must have at least two exact token overlaps with Line 1 (one must be the main noun). All nouns used in the caption (except determiners/prepositions) must appear verbatim in Line 1.
+- Allowed extra words: determiners, prepositions (on, in, near, by, in front of, behind), one optional period at sentence end. No other punctuation.
+- Do not introduce attributes, objects, or locations that are not in Line 1 unless supported by a high-confidence detector; do not invent identities or inferred facts.
+
+Conservatism and anti-hallucination
+- Prefer omission over guessing. If fewer than two high-confidence nouns are available, use the compact fallback or output ""image unclear"".
+- If an attribute token appears in Line 1, it must appear verbatim in Line 2. If attribute confidence <75%, do not include the attribute.
+
+Operational note (for system integrators)
+- Keep candidate generation, scoring, CLIP reranking, and grammar/number checks outside this prompt. The VLM should only follow the concise visual rules above.
+
+Few-shot visual examples (each block = two output lines)
+Positive (correct)
+trumpet,man,street
+trumpet man is playing on the street.
+
+dog,rooftop,people
+dog sits near people on the rooftop.
+
+man,accordion,car
+man plays accordion next to the car.
+
+Negative (incorrect → corrected)
+man,hat,flag
+man waves flag at parade.      <!-- BAD: introduces noun ""parade"" not in tags -->
+man,hat,flag
+man waves flag near the hat.
+
+child,bicycle,park
+child rides red bicycle in park.   <!-- BAD: introduces attribute ""red"" not in tags -->
+child,bicycle,park
+child rides bicycle in the park.
+
+person,bench,tree
+person sits in Central Park.   <!-- BAD: uses proper noun ""Central Park"" -->
+person,bench,tree
+person sits on the bench by the tree.
+
+Strictly follow the Line 1 / Line 2 rules above. If no valid caption candidate passes these checks, return Line 2 = ""image unclear"".","man,mop,wooden floor
+man mops the wooden floor.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.2830749750137329,0.15371999144554138,7,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_aea4fdafa0,56,16246,flickr30k_test_016246,images/flickr30k/flickr30k_test_016246.jpg,"[""A child is holding a bunch of balloons in front of their face."", ""A child holding balloons that cover their face."", ""A little boy holds many inflated balloons."", ""Child carrying a bouquet of balloons."", ""A young child carrying many balloons.""]",textgrad_aea4fdafa0,TextGrad Step 8,"Output exactly two lines only.
+
+Line 1 — tags (format rules)
+- 2–5 comma-separated lower-case tokens (prefer 3). No punctuation except commas.
+- Tokens must be visible nouns or a single visible adjective (color/size). Multiword fused objects allowed (e.g., ""traffic light"", ""wine bottle"") as one token.
+- At least two tokens must be nouns. At most one token may be an attribute (color/size).
+- Deduplicate tokens; order by visual salience (most discriminative first). Prefer concrete, specific nouns (e.g., ""trumpet"" over ""person"" when a detector is confident).
+- Only include an attribute if a detector/segmenter reports ≥75% confidence for that attribute; if detectors are unavailable, omit attributes.
+- Forbidden tokens: never output meta/instruction words or tooling vocabulary (for example: prompt, detectors, thresholds, length, caption, tags, line, template, score, clip, siglip, example). Never output proper nouns, brand names, dates, events, or emotions.
+
+Line 2 — caption (format rules)
+- Either A) one factual short sentence in present simple/progressive of 7–14 words, OR B) a 2–3 word fallback (main noun + visible location) when a compliant 7–14 word caption would require guessing. If tags cannot be produced reliably, output exactly: image unclear
+- The main noun from Line 1 must appear verbatim in positions 1–4 of Line 2.
+- Non-fallback captions must have at least two exact token overlaps with Line 1 (one must be the main noun). All nouns used in the caption (except determiners/prepositions) must appear verbatim in Line 1.
+- Allowed extra words: determiners, prepositions (on, in, near, by, in front of, behind), one optional period at sentence end. No other punctuation.
+- Do not introduce attributes, objects, or locations that are not in Line 1 unless supported by a high-confidence detector; do not invent identities or inferred facts.
+
+Conservatism and anti-hallucination
+- Prefer omission over guessing. If fewer than two high-confidence nouns are available, use the compact fallback or output ""image unclear"".
+- If an attribute token appears in Line 1, it must appear verbatim in Line 2. If attribute confidence <75%, do not include the attribute.
+
+Operational note (for system integrators)
+- Keep candidate generation, scoring, CLIP reranking, and grammar/number checks outside this prompt. The VLM should only follow the concise visual rules above.
+
+Few-shot visual examples (each block = two output lines)
+Positive (correct)
+trumpet,man,street
+trumpet man is playing on the street.
+
+dog,rooftop,people
+dog sits near people on the rooftop.
+
+man,accordion,car
+man plays accordion next to the car.
+
+Negative (incorrect → corrected)
+man,hat,flag
+man waves flag at parade.      <!-- BAD: introduces noun ""parade"" not in tags -->
+man,hat,flag
+man waves flag near the hat.
+
+child,bicycle,park
+child rides red bicycle in park.   <!-- BAD: introduces attribute ""red"" not in tags -->
+child,bicycle,park
+child rides bicycle in the park.
+
+person,bench,tree
+person sits in Central Park.   <!-- BAD: uses proper noun ""Central Park"" -->
+person,bench,tree
+person sits on the bench by the tree.
+
+Strictly follow the Line 1 / Line 2 rules above. If no valid caption candidate passes these checks, return Line 2 = ""image unclear"".","balloons,child,street
+child carries balloons on the street.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.3456382751464844,0.20260491967201233,7,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_aea4fdafa0,65,9495,flickr30k_test_009495,images/flickr30k/flickr30k_test_009495.jpg,"[""A woman with a yellow \""Miller\"" bag has her hand on a seated man, while another woman with the same type yellow \""Miller\"" bag is standing close to them."", ""A man and two women talk while looking at his reflection in the mirror."", ""A woman with a yellow shoulder bag gives a man a massage."", ""Two girls with yellow bags hanging out at a bar."", ""A bar with 2 girls and a man sitting on a table""]",textgrad_aea4fdafa0,TextGrad Step 8,"Output exactly two lines only.
+
+Line 1 — tags (format rules)
+- 2–5 comma-separated lower-case tokens (prefer 3). No punctuation except commas.
+- Tokens must be visible nouns or a single visible adjective (color/size). Multiword fused objects allowed (e.g., ""traffic light"", ""wine bottle"") as one token.
+- At least two tokens must be nouns. At most one token may be an attribute (color/size).
+- Deduplicate tokens; order by visual salience (most discriminative first). Prefer concrete, specific nouns (e.g., ""trumpet"" over ""person"" when a detector is confident).
+- Only include an attribute if a detector/segmenter reports ≥75% confidence for that attribute; if detectors are unavailable, omit attributes.
+- Forbidden tokens: never output meta/instruction words or tooling vocabulary (for example: prompt, detectors, thresholds, length, caption, tags, line, template, score, clip, siglip, example). Never output proper nouns, brand names, dates, events, or emotions.
+
+Line 2 — caption (format rules)
+- Either A) one factual short sentence in present simple/progressive of 7–14 words, OR B) a 2–3 word fallback (main noun + visible location) when a compliant 7–14 word caption would require guessing. If tags cannot be produced reliably, output exactly: image unclear
+- The main noun from Line 1 must appear verbatim in positions 1–4 of Line 2.
+- Non-fallback captions must have at least two exact token overlaps with Line 1 (one must be the main noun). All nouns used in the caption (except determiners/prepositions) must appear verbatim in Line 1.
+- Allowed extra words: determiners, prepositions (on, in, near, by, in front of, behind), one optional period at sentence end. No other punctuation.
+- Do not introduce attributes, objects, or locations that are not in Line 1 unless supported by a high-confidence detector; do not invent identities or inferred facts.
+
+Conservatism and anti-hallucination
+- Prefer omission over guessing. If fewer than two high-confidence nouns are available, use the compact fallback or output ""image unclear"".
+- If an attribute token appears in Line 1, it must appear verbatim in Line 2. If attribute confidence <75%, do not include the attribute.
+
+Operational note (for system integrators)
+- Keep candidate generation, scoring, CLIP reranking, and grammar/number checks outside this prompt. The VLM should only follow the concise visual rules above.
+
+Few-shot visual examples (each block = two output lines)
+Positive (correct)
+trumpet,man,street
+trumpet man is playing on the street.
+
+dog,rooftop,people
+dog sits near people on the rooftop.
+
+man,accordion,car
+man plays accordion next to the car.
+
+Negative (incorrect → corrected)
+man,hat,flag
+man waves flag at parade.      <!-- BAD: introduces noun ""parade"" not in tags -->
+man,hat,flag
+man waves flag near the hat.
+
+child,bicycle,park
+child rides red bicycle in park.   <!-- BAD: introduces attribute ""red"" not in tags -->
+child,bicycle,park
+child rides bicycle in the park.
+
+person,bench,tree
+person sits in Central Park.   <!-- BAD: uses proper noun ""Central Park"" -->
+person,bench,tree
+person sits on the bench by the tree.
+
+Strictly follow the Line 1 / Line 2 rules above. If no valid caption candidate passes these checks, return Line 2 = ""image unclear"".","woman,handbag,bar
+woman carries yellow handbag near the bar.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.30290424823760986,0.17185817658901215,8,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_aea4fdafa0,67,704,flickr30k_test_000704,images/flickr30k/flickr30k_test_000704.jpg,"[""Two men, one looking at a screen with a drum next to him, while the other is a man dressed in a white shirt is talking into a microphone."", ""A man in a white shirt sings into a microphone as he reads the words on a screen, while a balding man plays the drums."", ""Two guys looking at the screen of a tv while one sings, (presumably ) and the other plays a set of big wooden drums."", ""One man is playing the drums while another is singing Karaoke."", ""Two men in a club playing bongos and singing karaoke.""]",textgrad_aea4fdafa0,TextGrad Step 8,"Output exactly two lines only.
+
+Line 1 — tags (format rules)
+- 2–5 comma-separated lower-case tokens (prefer 3). No punctuation except commas.
+- Tokens must be visible nouns or a single visible adjective (color/size). Multiword fused objects allowed (e.g., ""traffic light"", ""wine bottle"") as one token.
+- At least two tokens must be nouns. At most one token may be an attribute (color/size).
+- Deduplicate tokens; order by visual salience (most discriminative first). Prefer concrete, specific nouns (e.g., ""trumpet"" over ""person"" when a detector is confident).
+- Only include an attribute if a detector/segmenter reports ≥75% confidence for that attribute; if detectors are unavailable, omit attributes.
+- Forbidden tokens: never output meta/instruction words or tooling vocabulary (for example: prompt, detectors, thresholds, length, caption, tags, line, template, score, clip, siglip, example). Never output proper nouns, brand names, dates, events, or emotions.
+
+Line 2 — caption (format rules)
+- Either A) one factual short sentence in present simple/progressive of 7–14 words, OR B) a 2–3 word fallback (main noun + visible location) when a compliant 7–14 word caption would require guessing. If tags cannot be produced reliably, output exactly: image unclear
+- The main noun from Line 1 must appear verbatim in positions 1–4 of Line 2.
+- Non-fallback captions must have at least two exact token overlaps with Line 1 (one must be the main noun). All nouns used in the caption (except determiners/prepositions) must appear verbatim in Line 1.
+- Allowed extra words: determiners, prepositions (on, in, near, by, in front of, behind), one optional period at sentence end. No other punctuation.
+- Do not introduce attributes, objects, or locations that are not in Line 1 unless supported by a high-confidence detector; do not invent identities or inferred facts.
+
+Conservatism and anti-hallucination
+- Prefer omission over guessing. If fewer than two high-confidence nouns are available, use the compact fallback or output ""image unclear"".
+- If an attribute token appears in Line 1, it must appear verbatim in Line 2. If attribute confidence <75%, do not include the attribute.
+
+Operational note (for system integrators)
+- Keep candidate generation, scoring, CLIP reranking, and grammar/number checks outside this prompt. The VLM should only follow the concise visual rules above.
+
+Few-shot visual examples (each block = two output lines)
+Positive (correct)
+trumpet,man,street
+trumpet man is playing on the street.
+
+dog,rooftop,people
+dog sits near people on the rooftop.
+
+man,accordion,car
+man plays accordion next to the car.
+
+Negative (incorrect → corrected)
+man,hat,flag
+man waves flag at parade.      <!-- BAD: introduces noun ""parade"" not in tags -->
+man,hat,flag
+man waves flag near the hat.
+
+child,bicycle,park
+child rides red bicycle in park.   <!-- BAD: introduces attribute ""red"" not in tags -->
+child,bicycle,park
+child rides bicycle in the park.
+
+person,bench,tree
+person sits in Central Park.   <!-- BAD: uses proper noun ""Central Park"" -->
+person,bench,tree
+person sits on the bench by the tree.
+
+Strictly follow the Line 1 / Line 2 rules above. If no valid caption candidate passes these checks, return Line 2 = ""image unclear"".","man,microphone,room
+man sings into microphone in the room.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.2634201645851135,0.07014181464910507,8,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_aea4fdafa0,70,30024,flickr30k_test_030024,images/flickr30k/flickr30k_test_030024.jpg,"[""Several men are sitting around a dinner table having separate conversations."", ""A group of men are sitting at a table talking."", ""A man with gray hair is sitting at a table."", ""Four men are at a dining table."", ""Four men sitting at a table.""]",textgrad_aea4fdafa0,TextGrad Step 8,"Output exactly two lines only.
+
+Line 1 — tags (format rules)
+- 2–5 comma-separated lower-case tokens (prefer 3). No punctuation except commas.
+- Tokens must be visible nouns or a single visible adjective (color/size). Multiword fused objects allowed (e.g., ""traffic light"", ""wine bottle"") as one token.
+- At least two tokens must be nouns. At most one token may be an attribute (color/size).
+- Deduplicate tokens; order by visual salience (most discriminative first). Prefer concrete, specific nouns (e.g., ""trumpet"" over ""person"" when a detector is confident).
+- Only include an attribute if a detector/segmenter reports ≥75% confidence for that attribute; if detectors are unavailable, omit attributes.
+- Forbidden tokens: never output meta/instruction words or tooling vocabulary (for example: prompt, detectors, thresholds, length, caption, tags, line, template, score, clip, siglip, example). Never output proper nouns, brand names, dates, events, or emotions.
+
+Line 2 — caption (format rules)
+- Either A) one factual short sentence in present simple/progressive of 7–14 words, OR B) a 2–3 word fallback (main noun + visible location) when a compliant 7–14 word caption would require guessing. If tags cannot be produced reliably, output exactly: image unclear
+- The main noun from Line 1 must appear verbatim in positions 1–4 of Line 2.
+- Non-fallback captions must have at least two exact token overlaps with Line 1 (one must be the main noun). All nouns used in the caption (except determiners/prepositions) must appear verbatim in Line 1.
+- Allowed extra words: determiners, prepositions (on, in, near, by, in front of, behind), one optional period at sentence end. No other punctuation.
+- Do not introduce attributes, objects, or locations that are not in Line 1 unless supported by a high-confidence detector; do not invent identities or inferred facts.
+
+Conservatism and anti-hallucination
+- Prefer omission over guessing. If fewer than two high-confidence nouns are available, use the compact fallback or output ""image unclear"".
+- If an attribute token appears in Line 1, it must appear verbatim in Line 2. If attribute confidence <75%, do not include the attribute.
+
+Operational note (for system integrators)
+- Keep candidate generation, scoring, CLIP reranking, and grammar/number checks outside this prompt. The VLM should only follow the concise visual rules above.
+
+Few-shot visual examples (each block = two output lines)
+Positive (correct)
+trumpet,man,street
+trumpet man is playing on the street.
+
+dog,rooftop,people
+dog sits near people on the rooftop.
+
+man,accordion,car
+man plays accordion next to the car.
+
+Negative (incorrect → corrected)
+man,hat,flag
+man waves flag at parade.      <!-- BAD: introduces noun ""parade"" not in tags -->
+man,hat,flag
+man waves flag near the hat.
+
+child,bicycle,park
+child rides red bicycle in park.   <!-- BAD: introduces attribute ""red"" not in tags -->
+child,bicycle,park
+child rides bicycle in the park.
+
+person,bench,tree
+person sits in Central Park.   <!-- BAD: uses proper noun ""Central Park"" -->
+person,bench,tree
+person sits on the bench by the tree.
+
+Strictly follow the Line 1 / Line 2 rules above. If no valid caption candidate passes these checks, return Line 2 = ""image unclear"".","man,table,people
+man sits at table with people.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.25727683305740356,0.1525004804134369,7,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_aea4fdafa0,74,3276,flickr30k_test_003276,images/flickr30k/flickr30k_test_003276.jpg,"[""A group of nicely dressed people sitting at a long table with several bottles of wine on it."", ""People are sitting at long dining tables in a tent at some formal event."", ""A long dinner table with rows of people talking waiting for their food."", ""Many people sit at a long dinner table at a formal event."", ""Banquet attendees are waiting for the meal to be served.""]",textgrad_aea4fdafa0,TextGrad Step 8,"Output exactly two lines only.
+
+Line 1 — tags (format rules)
+- 2–5 comma-separated lower-case tokens (prefer 3). No punctuation except commas.
+- Tokens must be visible nouns or a single visible adjective (color/size). Multiword fused objects allowed (e.g., ""traffic light"", ""wine bottle"") as one token.
+- At least two tokens must be nouns. At most one token may be an attribute (color/size).
+- Deduplicate tokens; order by visual salience (most discriminative first). Prefer concrete, specific nouns (e.g., ""trumpet"" over ""person"" when a detector is confident).
+- Only include an attribute if a detector/segmenter reports ≥75% confidence for that attribute; if detectors are unavailable, omit attributes.
+- Forbidden tokens: never output meta/instruction words or tooling vocabulary (for example: prompt, detectors, thresholds, length, caption, tags, line, template, score, clip, siglip, example). Never output proper nouns, brand names, dates, events, or emotions.
+
+Line 2 — caption (format rules)
+- Either A) one factual short sentence in present simple/progressive of 7–14 words, OR B) a 2–3 word fallback (main noun + visible location) when a compliant 7–14 word caption would require guessing. If tags cannot be produced reliably, output exactly: image unclear
+- The main noun from Line 1 must appear verbatim in positions 1–4 of Line 2.
+- Non-fallback captions must have at least two exact token overlaps with Line 1 (one must be the main noun). All nouns used in the caption (except determiners/prepositions) must appear verbatim in Line 1.
+- Allowed extra words: determiners, prepositions (on, in, near, by, in front of, behind), one optional period at sentence end. No other punctuation.
+- Do not introduce attributes, objects, or locations that are not in Line 1 unless supported by a high-confidence detector; do not invent identities or inferred facts.
+
+Conservatism and anti-hallucination
+- Prefer omission over guessing. If fewer than two high-confidence nouns are available, use the compact fallback or output ""image unclear"".
+- If an attribute token appears in Line 1, it must appear verbatim in Line 2. If attribute confidence <75%, do not include the attribute.
+
+Operational note (for system integrators)
+- Keep candidate generation, scoring, CLIP reranking, and grammar/number checks outside this prompt. The VLM should only follow the concise visual rules above.
+
+Few-shot visual examples (each block = two output lines)
+Positive (correct)
+trumpet,man,street
+trumpet man is playing on the street.
+
+dog,rooftop,people
+dog sits near people on the rooftop.
+
+man,accordion,car
+man plays accordion next to the car.
+
+Negative (incorrect → corrected)
+man,hat,flag
+man waves flag at parade.      <!-- BAD: introduces noun ""parade"" not in tags -->
+man,hat,flag
+man waves flag near the hat.
+
+child,bicycle,park
+child rides red bicycle in park.   <!-- BAD: introduces attribute ""red"" not in tags -->
+child,bicycle,park
+child rides bicycle in the park.
+
+person,bench,tree
+person sits in Central Park.   <!-- BAD: uses proper noun ""Central Park"" -->
+person,bench,tree
+person sits on the bench by the tree.
+
+Strictly follow the Line 1 / Line 2 rules above. If no valid caption candidate passes these checks, return Line 2 = ""image unclear"".","wine bottle,table,people
+wine bottle sits on the table near people.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.2171521782875061,0.08079329133033752,10,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_aea4fdafa0,89,27198,flickr30k_test_027198,images/flickr30k/flickr30k_test_027198.jpg,"[""Three teenagers, two without shoes having a water gun fight with various types of guns trying to spray each other."", ""Three teenage boys blast each other with water guns in an open field."", ""Two boys getting shot by a water gun by another boy in a yard."", ""Three male teenagers are playing in a field with water guns."", ""Three boys in the middle of a squirt gun battle.""]",textgrad_aea4fdafa0,TextGrad Step 8,"Output exactly two lines only.
+
+Line 1 — tags (format rules)
+- 2–5 comma-separated lower-case tokens (prefer 3). No punctuation except commas.
+- Tokens must be visible nouns or a single visible adjective (color/size). Multiword fused objects allowed (e.g., ""traffic light"", ""wine bottle"") as one token.
+- At least two tokens must be nouns. At most one token may be an attribute (color/size).
+- Deduplicate tokens; order by visual salience (most discriminative first). Prefer concrete, specific nouns (e.g., ""trumpet"" over ""person"" when a detector is confident).
+- Only include an attribute if a detector/segmenter reports ≥75% confidence for that attribute; if detectors are unavailable, omit attributes.
+- Forbidden tokens: never output meta/instruction words or tooling vocabulary (for example: prompt, detectors, thresholds, length, caption, tags, line, template, score, clip, siglip, example). Never output proper nouns, brand names, dates, events, or emotions.
+
+Line 2 — caption (format rules)
+- Either A) one factual short sentence in present simple/progressive of 7–14 words, OR B) a 2–3 word fallback (main noun + visible location) when a compliant 7–14 word caption would require guessing. If tags cannot be produced reliably, output exactly: image unclear
+- The main noun from Line 1 must appear verbatim in positions 1–4 of Line 2.
+- Non-fallback captions must have at least two exact token overlaps with Line 1 (one must be the main noun). All nouns used in the caption (except determiners/prepositions) must appear verbatim in Line 1.
+- Allowed extra words: determiners, prepositions (on, in, near, by, in front of, behind), one optional period at sentence end. No other punctuation.
+- Do not introduce attributes, objects, or locations that are not in Line 1 unless supported by a high-confidence detector; do not invent identities or inferred facts.
+
+Conservatism and anti-hallucination
+- Prefer omission over guessing. If fewer than two high-confidence nouns are available, use the compact fallback or output ""image unclear"".
+- If an attribute token appears in Line 1, it must appear verbatim in Line 2. If attribute confidence <75%, do not include the attribute.
+
+Operational note (for system integrators)
+- Keep candidate generation, scoring, CLIP reranking, and grammar/number checks outside this prompt. The VLM should only follow the concise visual rules above.
+
+Few-shot visual examples (each block = two output lines)
+Positive (correct)
+trumpet,man,street
+trumpet man is playing on the street.
+
+dog,rooftop,people
+dog sits near people on the rooftop.
+
+man,accordion,car
+man plays accordion next to the car.
+
+Negative (incorrect → corrected)
+man,hat,flag
+man waves flag at parade.      <!-- BAD: introduces noun ""parade"" not in tags -->
+man,hat,flag
+man waves flag near the hat.
+
+child,bicycle,park
+child rides red bicycle in park.   <!-- BAD: introduces attribute ""red"" not in tags -->
+child,bicycle,park
+child rides bicycle in the park.
+
+person,bench,tree
+person sits in Central Park.   <!-- BAD: uses proper noun ""Central Park"" -->
+person,bench,tree
+person sits on the bench by the tree.
+
+Strictly follow the Line 1 / Line 2 rules above. If no valid caption candidate passes these checks, return Line 2 = ""image unclear"".","water gun,people,grass
+people run across the grass while playing with water gun.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.3160620927810669,0.18615564703941345,12,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_aea4fdafa0,106,7954,flickr30k_test_007954,images/flickr30k/flickr30k_test_007954.jpg,"[""A girl wearing a pink bathing suit top and sunglasses is playing in the sand next to a boy wearing red swim trunks."", ""A woman and her son play in the sand on a sunny day in the beach."", ""A young boy and girl in swimsuits play in the sand at the beach."", ""Two teenagers at the beach playing in the sand"", ""A boy and girl play with the sand.""]",textgrad_aea4fdafa0,TextGrad Step 8,"Output exactly two lines only.
+
+Line 1 — tags (format rules)
+- 2–5 comma-separated lower-case tokens (prefer 3). No punctuation except commas.
+- Tokens must be visible nouns or a single visible adjective (color/size). Multiword fused objects allowed (e.g., ""traffic light"", ""wine bottle"") as one token.
+- At least two tokens must be nouns. At most one token may be an attribute (color/size).
+- Deduplicate tokens; order by visual salience (most discriminative first). Prefer concrete, specific nouns (e.g., ""trumpet"" over ""person"" when a detector is confident).
+- Only include an attribute if a detector/segmenter reports ≥75% confidence for that attribute; if detectors are unavailable, omit attributes.
+- Forbidden tokens: never output meta/instruction words or tooling vocabulary (for example: prompt, detectors, thresholds, length, caption, tags, line, template, score, clip, siglip, example). Never output proper nouns, brand names, dates, events, or emotions.
+
+Line 2 — caption (format rules)
+- Either A) one factual short sentence in present simple/progressive of 7–14 words, OR B) a 2–3 word fallback (main noun + visible location) when a compliant 7–14 word caption would require guessing. If tags cannot be produced reliably, output exactly: image unclear
+- The main noun from Line 1 must appear verbatim in positions 1–4 of Line 2.
+- Non-fallback captions must have at least two exact token overlaps with Line 1 (one must be the main noun). All nouns used in the caption (except determiners/prepositions) must appear verbatim in Line 1.
+- Allowed extra words: determiners, prepositions (on, in, near, by, in front of, behind), one optional period at sentence end. No other punctuation.
+- Do not introduce attributes, objects, or locations that are not in Line 1 unless supported by a high-confidence detector; do not invent identities or inferred facts.
+
+Conservatism and anti-hallucination
+- Prefer omission over guessing. If fewer than two high-confidence nouns are available, use the compact fallback or output ""image unclear"".
+- If an attribute token appears in Line 1, it must appear verbatim in Line 2. If attribute confidence <75%, do not include the attribute.
+
+Operational note (for system integrators)
+- Keep candidate generation, scoring, CLIP reranking, and grammar/number checks outside this prompt. The VLM should only follow the concise visual rules above.
+
+Few-shot visual examples (each block = two output lines)
+Positive (correct)
+trumpet,man,street
+trumpet man is playing on the street.
+
+dog,rooftop,people
+dog sits near people on the rooftop.
+
+man,accordion,car
+man plays accordion next to the car.
+
+Negative (incorrect → corrected)
+man,hat,flag
+man waves flag at parade.      <!-- BAD: introduces noun ""parade"" not in tags -->
+man,hat,flag
+man waves flag near the hat.
+
+child,bicycle,park
+child rides red bicycle in park.   <!-- BAD: introduces attribute ""red"" not in tags -->
+child,bicycle,park
+child rides bicycle in the park.
+
+person,bench,tree
+person sits in Central Park.   <!-- BAD: uses proper noun ""Central Park"" -->
+person,bench,tree
+person sits on the bench by the tree.
+
+Strictly follow the Line 1 / Line 2 rules above. If no valid caption candidate passes these checks, return Line 2 = ""image unclear"".","girl,boy,sand
+girl and boy build sand structure near water.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.27044421434402466,0.21186327934265137,9,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_aea4fdafa0,119,24189,flickr30k_test_024189,images/flickr30k/flickr30k_test_024189.jpg,"[""A man and a woman are standing outside of subway with their travel luggage and sleeping bags."", ""Two people are picking up their belongings in front of a Subway."", ""A man and a woman outside subways picking up their belongings."", ""Two kids in odd clothes in front of a subway shop."", ""Man and woman are in front of Subway restaurant.""]",textgrad_aea4fdafa0,TextGrad Step 8,"Output exactly two lines only.
+
+Line 1 — tags (format rules)
+- 2–5 comma-separated lower-case tokens (prefer 3). No punctuation except commas.
+- Tokens must be visible nouns or a single visible adjective (color/size). Multiword fused objects allowed (e.g., ""traffic light"", ""wine bottle"") as one token.
+- At least two tokens must be nouns. At most one token may be an attribute (color/size).
+- Deduplicate tokens; order by visual salience (most discriminative first). Prefer concrete, specific nouns (e.g., ""trumpet"" over ""person"" when a detector is confident).
+- Only include an attribute if a detector/segmenter reports ≥75% confidence for that attribute; if detectors are unavailable, omit attributes.
+- Forbidden tokens: never output meta/instruction words or tooling vocabulary (for example: prompt, detectors, thresholds, length, caption, tags, line, template, score, clip, siglip, example). Never output proper nouns, brand names, dates, events, or emotions.
+
+Line 2 — caption (format rules)
+- Either A) one factual short sentence in present simple/progressive of 7–14 words, OR B) a 2–3 word fallback (main noun + visible location) when a compliant 7–14 word caption would require guessing. If tags cannot be produced reliably, output exactly: image unclear
+- The main noun from Line 1 must appear verbatim in positions 1–4 of Line 2.
+- Non-fallback captions must have at least two exact token overlaps with Line 1 (one must be the main noun). All nouns used in the caption (except determiners/prepositions) must appear verbatim in Line 1.
+- Allowed extra words: determiners, prepositions (on, in, near, by, in front of, behind), one optional period at sentence end. No other punctuation.
+- Do not introduce attributes, objects, or locations that are not in Line 1 unless supported by a high-confidence detector; do not invent identities or inferred facts.
+
+Conservatism and anti-hallucination
+- Prefer omission over guessing. If fewer than two high-confidence nouns are available, use the compact fallback or output ""image unclear"".
+- If an attribute token appears in Line 1, it must appear verbatim in Line 2. If attribute confidence <75%, do not include the attribute.
+
+Operational note (for system integrators)
+- Keep candidate generation, scoring, CLIP reranking, and grammar/number checks outside this prompt. The VLM should only follow the concise visual rules above.
+
+Few-shot visual examples (each block = two output lines)
+Positive (correct)
+trumpet,man,street
+trumpet man is playing on the street.
+
+dog,rooftop,people
+dog sits near people on the rooftop.
+
+man,accordion,car
+man plays accordion next to the car.
+
+Negative (incorrect → corrected)
+man,hat,flag
+man waves flag at parade.      <!-- BAD: introduces noun ""parade"" not in tags -->
+man,hat,flag
+man waves flag near the hat.
+
+child,bicycle,park
+child rides red bicycle in park.   <!-- BAD: introduces attribute ""red"" not in tags -->
+child,bicycle,park
+child rides bicycle in the park.
+
+person,bench,tree
+person sits in Central Park.   <!-- BAD: uses proper noun ""Central Park"" -->
+person,bench,tree
+person sits on the bench by the tree.
+
+Strictly follow the Line 1 / Line 2 rules above. If no valid caption candidate passes these checks, return Line 2 = ""image unclear"".","person,tree,street
+person bends over bags on the street near tree.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.25495898723602295,0.1777534782886505,10,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_aea4fdafa0,127,5364,flickr30k_test_005364,images/flickr30k/flickr30k_test_005364.jpg,"[""A man is sitting in front of a Buddist monument."", ""A man stands in front of a statue."", ""Monk praying before buddha statue."", ""A person prays at a shrine."", ""A buddist worships buddha.""]",textgrad_aea4fdafa0,TextGrad Step 8,"Output exactly two lines only.
+
+Line 1 — tags (format rules)
+- 2–5 comma-separated lower-case tokens (prefer 3). No punctuation except commas.
+- Tokens must be visible nouns or a single visible adjective (color/size). Multiword fused objects allowed (e.g., ""traffic light"", ""wine bottle"") as one token.
+- At least two tokens must be nouns. At most one token may be an attribute (color/size).
+- Deduplicate tokens; order by visual salience (most discriminative first). Prefer concrete, specific nouns (e.g., ""trumpet"" over ""person"" when a detector is confident).
+- Only include an attribute if a detector/segmenter reports ≥75% confidence for that attribute; if detectors are unavailable, omit attributes.
+- Forbidden tokens: never output meta/instruction words or tooling vocabulary (for example: prompt, detectors, thresholds, length, caption, tags, line, template, score, clip, siglip, example). Never output proper nouns, brand names, dates, events, or emotions.
+
+Line 2 — caption (format rules)
+- Either A) one factual short sentence in present simple/progressive of 7–14 words, OR B) a 2–3 word fallback (main noun + visible location) when a compliant 7–14 word caption would require guessing. If tags cannot be produced reliably, output exactly: image unclear
+- The main noun from Line 1 must appear verbatim in positions 1–4 of Line 2.
+- Non-fallback captions must have at least two exact token overlaps with Line 1 (one must be the main noun). All nouns used in the caption (except determiners/prepositions) must appear verbatim in Line 1.
+- Allowed extra words: determiners, prepositions (on, in, near, by, in front of, behind), one optional period at sentence end. No other punctuation.
+- Do not introduce attributes, objects, or locations that are not in Line 1 unless supported by a high-confidence detector; do not invent identities or inferred facts.
+
+Conservatism and anti-hallucination
+- Prefer omission over guessing. If fewer than two high-confidence nouns are available, use the compact fallback or output ""image unclear"".
+- If an attribute token appears in Line 1, it must appear verbatim in Line 2. If attribute confidence <75%, do not include the attribute.
+
+Operational note (for system integrators)
+- Keep candidate generation, scoring, CLIP reranking, and grammar/number checks outside this prompt. The VLM should only follow the concise visual rules above.
+
+Few-shot visual examples (each block = two output lines)
+Positive (correct)
+trumpet,man,street
+trumpet man is playing on the street.
+
+dog,rooftop,people
+dog sits near people on the rooftop.
+
+man,accordion,car
+man plays accordion next to the car.
+
+Negative (incorrect → corrected)
+man,hat,flag
+man waves flag at parade.      <!-- BAD: introduces noun ""parade"" not in tags -->
+man,hat,flag
+man waves flag near the hat.
+
+child,bicycle,park
+child rides red bicycle in park.   <!-- BAD: introduces attribute ""red"" not in tags -->
+child,bicycle,park
+child rides bicycle in the park.
+
+person,bench,tree
+person sits in Central Park.   <!-- BAD: uses proper noun ""Central Park"" -->
+person,bench,tree
+person sits on the bench by the tree.
+
+Strictly follow the Line 1 / Line 2 rules above. If no valid caption candidate passes these checks, return Line 2 = ""image unclear"".","buddha,statue,incense
+buddha statue is behind the incense burner.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.3042445778846741,0.18435847759246826,8,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_aea4fdafa0,129,27523,flickr30k_test_027523,images/flickr30k/flickr30k_test_027523.jpg,"[""A man is sitting on a bench in the street carving wooden sculptures."", ""A man in a blue hat and an apron carving wooden figurines."", ""A man in a blue cap whittles figures out of wood."", ""A man creating woodwork outside on a city bench."", ""Whittling wood-carver in a blue hat.""]",textgrad_aea4fdafa0,TextGrad Step 8,"Output exactly two lines only.
+
+Line 1 — tags (format rules)
+- 2–5 comma-separated lower-case tokens (prefer 3). No punctuation except commas.
+- Tokens must be visible nouns or a single visible adjective (color/size). Multiword fused objects allowed (e.g., ""traffic light"", ""wine bottle"") as one token.
+- At least two tokens must be nouns. At most one token may be an attribute (color/size).
+- Deduplicate tokens; order by visual salience (most discriminative first). Prefer concrete, specific nouns (e.g., ""trumpet"" over ""person"" when a detector is confident).
+- Only include an attribute if a detector/segmenter reports ≥75% confidence for that attribute; if detectors are unavailable, omit attributes.
+- Forbidden tokens: never output meta/instruction words or tooling vocabulary (for example: prompt, detectors, thresholds, length, caption, tags, line, template, score, clip, siglip, example). Never output proper nouns, brand names, dates, events, or emotions.
+
+Line 2 — caption (format rules)
+- Either A) one factual short sentence in present simple/progressive of 7–14 words, OR B) a 2–3 word fallback (main noun + visible location) when a compliant 7–14 word caption would require guessing. If tags cannot be produced reliably, output exactly: image unclear
+- The main noun from Line 1 must appear verbatim in positions 1–4 of Line 2.
+- Non-fallback captions must have at least two exact token overlaps with Line 1 (one must be the main noun). All nouns used in the caption (except determiners/prepositions) must appear verbatim in Line 1.
+- Allowed extra words: determiners, prepositions (on, in, near, by, in front of, behind), one optional period at sentence end. No other punctuation.
+- Do not introduce attributes, objects, or locations that are not in Line 1 unless supported by a high-confidence detector; do not invent identities or inferred facts.
+
+Conservatism and anti-hallucination
+- Prefer omission over guessing. If fewer than two high-confidence nouns are available, use the compact fallback or output ""image unclear"".
+- If an attribute token appears in Line 1, it must appear verbatim in Line 2. If attribute confidence <75%, do not include the attribute.
+
+Operational note (for system integrators)
+- Keep candidate generation, scoring, CLIP reranking, and grammar/number checks outside this prompt. The VLM should only follow the concise visual rules above.
+
+Few-shot visual examples (each block = two output lines)
+Positive (correct)
+trumpet,man,street
+trumpet man is playing on the street.
+
+dog,rooftop,people
+dog sits near people on the rooftop.
+
+man,accordion,car
+man plays accordion next to the car.
+
+Negative (incorrect → corrected)
+man,hat,flag
+man waves flag at parade.      <!-- BAD: introduces noun ""parade"" not in tags -->
+man,hat,flag
+man waves flag near the hat.
+
+child,bicycle,park
+child rides red bicycle in park.   <!-- BAD: introduces attribute ""red"" not in tags -->
+child,bicycle,park
+child rides bicycle in the park.
+
+person,bench,tree
+person sits in Central Park.   <!-- BAD: uses proper noun ""Central Park"" -->
+person,bench,tree
+person sits on the bench by the tree.
+
+Strictly follow the Line 1 / Line 2 rules above. If no valid caption candidate passes these checks, return Line 2 = ""image unclear"".","woodcarver,bench,street
+woodcarver shapes wood on the bench.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.2867274880409241,0.1967676877975464,7,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_aea4fdafa0,132,16046,flickr30k_test_016046,images/flickr30k/flickr30k_test_016046.jpg,"[""A group a youths sitting outdoors watching two people with a microphone that are doing something by a table with a basin and some soap."", ""Two young women speak into a microphone n front of a crowd of other young women."", ""Two young women are speaking with a microphone to a group of young girls."", ""Two girls doing a demonstration in front of an audience outside."", ""A woman in a blue shirt is speaking to a group of children.""]",textgrad_aea4fdafa0,TextGrad Step 8,"Output exactly two lines only.
+
+Line 1 — tags (format rules)
+- 2–5 comma-separated lower-case tokens (prefer 3). No punctuation except commas.
+- Tokens must be visible nouns or a single visible adjective (color/size). Multiword fused objects allowed (e.g., ""traffic light"", ""wine bottle"") as one token.
+- At least two tokens must be nouns. At most one token may be an attribute (color/size).
+- Deduplicate tokens; order by visual salience (most discriminative first). Prefer concrete, specific nouns (e.g., ""trumpet"" over ""person"" when a detector is confident).
+- Only include an attribute if a detector/segmenter reports ≥75% confidence for that attribute; if detectors are unavailable, omit attributes.
+- Forbidden tokens: never output meta/instruction words or tooling vocabulary (for example: prompt, detectors, thresholds, length, caption, tags, line, template, score, clip, siglip, example). Never output proper nouns, brand names, dates, events, or emotions.
+
+Line 2 — caption (format rules)
+- Either A) one factual short sentence in present simple/progressive of 7–14 words, OR B) a 2–3 word fallback (main noun + visible location) when a compliant 7–14 word caption would require guessing. If tags cannot be produced reliably, output exactly: image unclear
+- The main noun from Line 1 must appear verbatim in positions 1–4 of Line 2.
+- Non-fallback captions must have at least two exact token overlaps with Line 1 (one must be the main noun). All nouns used in the caption (except determiners/prepositions) must appear verbatim in Line 1.
+- Allowed extra words: determiners, prepositions (on, in, near, by, in front of, behind), one optional period at sentence end. No other punctuation.
+- Do not introduce attributes, objects, or locations that are not in Line 1 unless supported by a high-confidence detector; do not invent identities or inferred facts.
+
+Conservatism and anti-hallucination
+- Prefer omission over guessing. If fewer than two high-confidence nouns are available, use the compact fallback or output ""image unclear"".
+- If an attribute token appears in Line 1, it must appear verbatim in Line 2. If attribute confidence <75%, do not include the attribute.
+
+Operational note (for system integrators)
+- Keep candidate generation, scoring, CLIP reranking, and grammar/number checks outside this prompt. The VLM should only follow the concise visual rules above.
+
+Few-shot visual examples (each block = two output lines)
+Positive (correct)
+trumpet,man,street
+trumpet man is playing on the street.
+
+dog,rooftop,people
+dog sits near people on the rooftop.
+
+man,accordion,car
+man plays accordion next to the car.
+
+Negative (incorrect → corrected)
+man,hat,flag
+man waves flag at parade.      <!-- BAD: introduces noun ""parade"" not in tags -->
+man,hat,flag
+man waves flag near the hat.
+
+child,bicycle,park
+child rides red bicycle in park.   <!-- BAD: introduces attribute ""red"" not in tags -->
+child,bicycle,park
+child rides bicycle in the park.
+
+person,bench,tree
+person sits in Central Park.   <!-- BAD: uses proper noun ""Central Park"" -->
+person,bench,tree
+person sits on the bench by the tree.
+
+Strictly follow the Line 1 / Line 2 rules above. If no valid caption candidate passes these checks, return Line 2 = ""image unclear"".","people,table,bowl
+people sit around the table with a yellow bowl.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.2321949005126953,0.10492711514234543,10,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_aea4fdafa0,137,10109,flickr30k_test_010109,images/flickr30k/flickr30k_test_010109.jpg,"[""A group of Asians with baskets of produce are squatting in a vegetable market."", ""Several people are picking through crops at an urban market."", ""Two people cleaning greens in the sunset."", ""Women are on business selling vegetables."", ""Two Asians with green leafy vegetables.""]",textgrad_aea4fdafa0,TextGrad Step 8,"Output exactly two lines only.
+
+Line 1 — tags (format rules)
+- 2–5 comma-separated lower-case tokens (prefer 3). No punctuation except commas.
+- Tokens must be visible nouns or a single visible adjective (color/size). Multiword fused objects allowed (e.g., ""traffic light"", ""wine bottle"") as one token.
+- At least two tokens must be nouns. At most one token may be an attribute (color/size).
+- Deduplicate tokens; order by visual salience (most discriminative first). Prefer concrete, specific nouns (e.g., ""trumpet"" over ""person"" when a detector is confident).
+- Only include an attribute if a detector/segmenter reports ≥75% confidence for that attribute; if detectors are unavailable, omit attributes.
+- Forbidden tokens: never output meta/instruction words or tooling vocabulary (for example: prompt, detectors, thresholds, length, caption, tags, line, template, score, clip, siglip, example). Never output proper nouns, brand names, dates, events, or emotions.
+
+Line 2 — caption (format rules)
+- Either A) one factual short sentence in present simple/progressive of 7–14 words, OR B) a 2–3 word fallback (main noun + visible location) when a compliant 7–14 word caption would require guessing. If tags cannot be produced reliably, output exactly: image unclear
+- The main noun from Line 1 must appear verbatim in positions 1–4 of Line 2.
+- Non-fallback captions must have at least two exact token overlaps with Line 1 (one must be the main noun). All nouns used in the caption (except determiners/prepositions) must appear verbatim in Line 1.
+- Allowed extra words: determiners, prepositions (on, in, near, by, in front of, behind), one optional period at sentence end. No other punctuation.
+- Do not introduce attributes, objects, or locations that are not in Line 1 unless supported by a high-confidence detector; do not invent identities or inferred facts.
+
+Conservatism and anti-hallucination
+- Prefer omission over guessing. If fewer than two high-confidence nouns are available, use the compact fallback or output ""image unclear"".
+- If an attribute token appears in Line 1, it must appear verbatim in Line 2. If attribute confidence <75%, do not include the attribute.
+
+Operational note (for system integrators)
+- Keep candidate generation, scoring, CLIP reranking, and grammar/number checks outside this prompt. The VLM should only follow the concise visual rules above.
+
+Few-shot visual examples (each block = two output lines)
+Positive (correct)
+trumpet,man,street
+trumpet man is playing on the street.
+
+dog,rooftop,people
+dog sits near people on the rooftop.
+
+man,accordion,car
+man plays accordion next to the car.
+
+Negative (incorrect → corrected)
+man,hat,flag
+man waves flag at parade.      <!-- BAD: introduces noun ""parade"" not in tags -->
+man,hat,flag
+man waves flag near the hat.
+
+child,bicycle,park
+child rides red bicycle in park.   <!-- BAD: introduces attribute ""red"" not in tags -->
+child,bicycle,park
+child rides bicycle in the park.
+
+person,bench,tree
+person sits in Central Park.   <!-- BAD: uses proper noun ""Central Park"" -->
+person,bench,tree
+person sits on the bench by the tree.
+
+Strictly follow the Line 1 / Line 2 rules above. If no valid caption candidate passes these checks, return Line 2 = ""image unclear"".","woman,vegetable,basket
+woman sorts vegetable in the basket.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.2749299108982086,0.10486418008804321,7,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_aea4fdafa0,141,19437,flickr30k_test_019437,images/flickr30k/flickr30k_test_019437.jpg,"[""A woman walks past a garage door that says \""no parking any time.\"""", ""A young woman in a denim skit waking in front of a garage."", ""Woman in a black dress walking passed a no parking zone."", ""A woman in a short dress standing by a No Parking sign."", ""A young woman walking by a rolling door.""]",textgrad_aea4fdafa0,TextGrad Step 8,"Output exactly two lines only.
+
+Line 1 — tags (format rules)
+- 2–5 comma-separated lower-case tokens (prefer 3). No punctuation except commas.
+- Tokens must be visible nouns or a single visible adjective (color/size). Multiword fused objects allowed (e.g., ""traffic light"", ""wine bottle"") as one token.
+- At least two tokens must be nouns. At most one token may be an attribute (color/size).
+- Deduplicate tokens; order by visual salience (most discriminative first). Prefer concrete, specific nouns (e.g., ""trumpet"" over ""person"" when a detector is confident).
+- Only include an attribute if a detector/segmenter reports ≥75% confidence for that attribute; if detectors are unavailable, omit attributes.
+- Forbidden tokens: never output meta/instruction words or tooling vocabulary (for example: prompt, detectors, thresholds, length, caption, tags, line, template, score, clip, siglip, example). Never output proper nouns, brand names, dates, events, or emotions.
+
+Line 2 — caption (format rules)
+- Either A) one factual short sentence in present simple/progressive of 7–14 words, OR B) a 2–3 word fallback (main noun + visible location) when a compliant 7–14 word caption would require guessing. If tags cannot be produced reliably, output exactly: image unclear
+- The main noun from Line 1 must appear verbatim in positions 1–4 of Line 2.
+- Non-fallback captions must have at least two exact token overlaps with Line 1 (one must be the main noun). All nouns used in the caption (except determiners/prepositions) must appear verbatim in Line 1.
+- Allowed extra words: determiners, prepositions (on, in, near, by, in front of, behind), one optional period at sentence end. No other punctuation.
+- Do not introduce attributes, objects, or locations that are not in Line 1 unless supported by a high-confidence detector; do not invent identities or inferred facts.
+
+Conservatism and anti-hallucination
+- Prefer omission over guessing. If fewer than two high-confidence nouns are available, use the compact fallback or output ""image unclear"".
+- If an attribute token appears in Line 1, it must appear verbatim in Line 2. If attribute confidence <75%, do not include the attribute.
+
+Operational note (for system integrators)
+- Keep candidate generation, scoring, CLIP reranking, and grammar/number checks outside this prompt. The VLM should only follow the concise visual rules above.
+
+Few-shot visual examples (each block = two output lines)
+Positive (correct)
+trumpet,man,street
+trumpet man is playing on the street.
+
+dog,rooftop,people
+dog sits near people on the rooftop.
+
+man,accordion,car
+man plays accordion next to the car.
+
+Negative (incorrect → corrected)
+man,hat,flag
+man waves flag at parade.      <!-- BAD: introduces noun ""parade"" not in tags -->
+man,hat,flag
+man waves flag near the hat.
+
+child,bicycle,park
+child rides red bicycle in park.   <!-- BAD: introduces attribute ""red"" not in tags -->
+child,bicycle,park
+child rides bicycle in the park.
+
+person,bench,tree
+person sits in Central Park.   <!-- BAD: uses proper noun ""Central Park"" -->
+person,bench,tree
+person sits on the bench by the tree.
+
+Strictly follow the Line 1 / Line 2 rules above. If no valid caption candidate passes these checks, return Line 2 = ""image unclear"".","woman,sign,street
+woman walks past no parking sign on the street.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.2843754291534424,0.2229132503271103,10,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_aea4fdafa0,145,5582,flickr30k_test_005582,images/flickr30k/flickr30k_test_005582.jpg,"[""A small black and white dog jumps at a woman in a white jeep while a golden dog follows beside them."", ""A dog jumps up towards a woman in a car, while another dog is outside the car."", ""An orange dog and a little white dog with black spots are next to a white car."", ""A small dog jumps by a car to reach a lady's face while another dog watches."", ""White and black dog jumps at someone through car window.""]",textgrad_aea4fdafa0,TextGrad Step 8,"Output exactly two lines only.
+
+Line 1 — tags (format rules)
+- 2–5 comma-separated lower-case tokens (prefer 3). No punctuation except commas.
+- Tokens must be visible nouns or a single visible adjective (color/size). Multiword fused objects allowed (e.g., ""traffic light"", ""wine bottle"") as one token.
+- At least two tokens must be nouns. At most one token may be an attribute (color/size).
+- Deduplicate tokens; order by visual salience (most discriminative first). Prefer concrete, specific nouns (e.g., ""trumpet"" over ""person"" when a detector is confident).
+- Only include an attribute if a detector/segmenter reports ≥75% confidence for that attribute; if detectors are unavailable, omit attributes.
+- Forbidden tokens: never output meta/instruction words or tooling vocabulary (for example: prompt, detectors, thresholds, length, caption, tags, line, template, score, clip, siglip, example). Never output proper nouns, brand names, dates, events, or emotions.
+
+Line 2 — caption (format rules)
+- Either A) one factual short sentence in present simple/progressive of 7–14 words, OR B) a 2–3 word fallback (main noun + visible location) when a compliant 7–14 word caption would require guessing. If tags cannot be produced reliably, output exactly: image unclear
+- The main noun from Line 1 must appear verbatim in positions 1–4 of Line 2.
+- Non-fallback captions must have at least two exact token overlaps with Line 1 (one must be the main noun). All nouns used in the caption (except determiners/prepositions) must appear verbatim in Line 1.
+- Allowed extra words: determiners, prepositions (on, in, near, by, in front of, behind), one optional period at sentence end. No other punctuation.
+- Do not introduce attributes, objects, or locations that are not in Line 1 unless supported by a high-confidence detector; do not invent identities or inferred facts.
+
+Conservatism and anti-hallucination
+- Prefer omission over guessing. If fewer than two high-confidence nouns are available, use the compact fallback or output ""image unclear"".
+- If an attribute token appears in Line 1, it must appear verbatim in Line 2. If attribute confidence <75%, do not include the attribute.
+
+Operational note (for system integrators)
+- Keep candidate generation, scoring, CLIP reranking, and grammar/number checks outside this prompt. The VLM should only follow the concise visual rules above.
+
+Few-shot visual examples (each block = two output lines)
+Positive (correct)
+trumpet,man,street
+trumpet man is playing on the street.
+
+dog,rooftop,people
+dog sits near people on the rooftop.
+
+man,accordion,car
+man plays accordion next to the car.
+
+Negative (incorrect → corrected)
+man,hat,flag
+man waves flag at parade.      <!-- BAD: introduces noun ""parade"" not in tags -->
+man,hat,flag
+man waves flag near the hat.
+
+child,bicycle,park
+child rides red bicycle in park.   <!-- BAD: introduces attribute ""red"" not in tags -->
+child,bicycle,park
+child rides bicycle in the park.
+
+person,bench,tree
+person sits in Central Park.   <!-- BAD: uses proper noun ""Central Park"" -->
+person,bench,tree
+person sits on the bench by the tree.
+
+Strictly follow the Line 1 / Line 2 rules above. If no valid caption candidate passes these checks, return Line 2 = ""image unclear"".","dog,car,woman
+dog jumps toward woman in the car.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.3160594403743744,0.19876304268836975,8,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_aea4fdafa0,146,5524,flickr30k_test_005524,images/flickr30k/flickr30k_test_005524.jpg,"[""A young, black girl in a white shirt is wearing a party hat and covering her mouth with her right hand."", ""A child is holding their hand over their mouth wearing a birthday hat."", ""A little African-American girl gets a big surprise on her birthday."", ""A young girl wearing a party hat is laughing."", ""A girl wearing a dog paw-spotted party hat.""]",textgrad_aea4fdafa0,TextGrad Step 8,"Output exactly two lines only.
+
+Line 1 — tags (format rules)
+- 2–5 comma-separated lower-case tokens (prefer 3). No punctuation except commas.
+- Tokens must be visible nouns or a single visible adjective (color/size). Multiword fused objects allowed (e.g., ""traffic light"", ""wine bottle"") as one token.
+- At least two tokens must be nouns. At most one token may be an attribute (color/size).
+- Deduplicate tokens; order by visual salience (most discriminative first). Prefer concrete, specific nouns (e.g., ""trumpet"" over ""person"" when a detector is confident).
+- Only include an attribute if a detector/segmenter reports ≥75% confidence for that attribute; if detectors are unavailable, omit attributes.
+- Forbidden tokens: never output meta/instruction words or tooling vocabulary (for example: prompt, detectors, thresholds, length, caption, tags, line, template, score, clip, siglip, example). Never output proper nouns, brand names, dates, events, or emotions.
+
+Line 2 — caption (format rules)
+- Either A) one factual short sentence in present simple/progressive of 7–14 words, OR B) a 2–3 word fallback (main noun + visible location) when a compliant 7–14 word caption would require guessing. If tags cannot be produced reliably, output exactly: image unclear
+- The main noun from Line 1 must appear verbatim in positions 1–4 of Line 2.
+- Non-fallback captions must have at least two exact token overlaps with Line 1 (one must be the main noun). All nouns used in the caption (except determiners/prepositions) must appear verbatim in Line 1.
+- Allowed extra words: determiners, prepositions (on, in, near, by, in front of, behind), one optional period at sentence end. No other punctuation.
+- Do not introduce attributes, objects, or locations that are not in Line 1 unless supported by a high-confidence detector; do not invent identities or inferred facts.
+
+Conservatism and anti-hallucination
+- Prefer omission over guessing. If fewer than two high-confidence nouns are available, use the compact fallback or output ""image unclear"".
+- If an attribute token appears in Line 1, it must appear verbatim in Line 2. If attribute confidence <75%, do not include the attribute.
+
+Operational note (for system integrators)
+- Keep candidate generation, scoring, CLIP reranking, and grammar/number checks outside this prompt. The VLM should only follow the concise visual rules above.
+
+Few-shot visual examples (each block = two output lines)
+Positive (correct)
+trumpet,man,street
+trumpet man is playing on the street.
+
+dog,rooftop,people
+dog sits near people on the rooftop.
+
+man,accordion,car
+man plays accordion next to the car.
+
+Negative (incorrect → corrected)
+man,hat,flag
+man waves flag at parade.      <!-- BAD: introduces noun ""parade"" not in tags -->
+man,hat,flag
+man waves flag near the hat.
+
+child,bicycle,park
+child rides red bicycle in park.   <!-- BAD: introduces attribute ""red"" not in tags -->
+child,bicycle,park
+child rides bicycle in the park.
+
+person,bench,tree
+person sits in Central Park.   <!-- BAD: uses proper noun ""Central Park"" -->
+person,bench,tree
+person sits on the bench by the tree.
+
+Strictly follow the Line 1 / Line 2 rules above. If no valid caption candidate passes these checks, return Line 2 = ""image unclear"".","child,hat,ball
+child blows balloon near the hat.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.25410521030426025,0.17609500885009766,7,False

@@ -1,0 +1,117 @@
+{
+  "prompt": "Output exactly two lines only.\n\nLine 1 (tags) — required format and rules:\n- Provide exactly 2–5 comma-separated tokens (no punctuation except commas). First token = main object (lower-case common noun). You may append a visually certain count immediately after the main noun (digit or word), e.g., \"child\", \"child 2\", \"person one\".\n- At least 2 tokens must be nouns (including the main noun). At most 1 token may be a visible attribute (color or size). Do NOT include verbs, proper nouns, brand names, inferred facts, emotions, events, or dates.\n- Use only lower-case common nouns and simple adjectives (dog, child, car, red, small). No articles. Deduplicate and prefer the most specific single noun (e.g., choose \"child\" not \"person, child\"). No repeated words or near-synonyms.\n- Order tags by salience (most discriminative first). Prefer compact, high-information nouns (2–4 tokens ideal).\n\nLine 2 (caption) — required format and hard rules:\n- Either (A) one factual short sentence in present simple or present progressive of 7–14 words, OR (B) a 2–3 word fallback caption (main noun + short visible location, e.g., \"child sidewalk\") if a compliant 7–14 word caption would require guessing. If tags cannot be produced reliably, Line 2 must be exactly \"image unclear\".\n- The main noun from Line 1 must appear verbatim in token positions 1–3 of Line 2. This is a hard requirement; candidates failing this are invalid.\n- If Line 1 includes a numeric count, reflect it in the caption with correct morphology: singular -> third-person singular verb (adds -s), plural -> base verb and plural noun form (e.g., \"1 child stands\", \"2 children stand\").\n- Include at most one clearly visible color or size and at most one simple spatial relation/preposition (on, in, near, by, in front of, behind). Use only concrete, directly visible facts. Do NOT add proper nouns, intentions, emotions, or invented facts.\n- No punctuation except an optional single period at the end of the sentence.\n\nLexical reinforcement and anti-hallucination (HARD CONSTRAINTS):\n- Require at least 2 exact token overlaps between Line 1 and Line 2 (noun or attribute). If it is impossible to produce two reliable overlaps, do NOT invent attributes — instead output the 2–3 word fallback (main noun + location) or, if even tags cannot be trusted, output \"image unclear\".\n- If only one overlap is truly available, treat the candidate as invalid and use the fallback instead.\n- Only include a color/size when visually certain. If an attribute token appears in tags, it must appear verbatim in caption.\n\nCandidate generation, systematic variation, and reranking (required):\n- Internally generate N = 6 diverse candidate compliant outputs (each = Line1 + Line2) before returning anything. Systematically create controlled variations:\n  1) main noun + 1 salient object (high overlap)\n  2) main noun + visible attribute (if obvious)\n  3) main noun + spatial relation + salient object (if visible)\n  4) count-aware variant if numeric count is visible (sing/plural)\n  5) compact 2–3 word fallback (main noun + location)\n  6) alternate high-overlap object choice (if present)\n- Use deterministic templates to fill candidates (examples):\n  - \"[main noun] [verb] [preposition] [object]\"\n  - \"[count] [main noun plural] [verb] [preposition] [object]\"\n  - \"[main noun] [verb] [attribute] [object]\"\n  - \"[main noun] [location]\" (fallback)\n- Ensure each candidate obeys the hard constraints above.\n\nRerank procedure:\n- If a CLIP scorer is available, compute final_score = 0.7 * CLIP + 0.3 * normalized_proxy_score and select the top candidate that passes self-checks.\n- If CLIP unavailable, compute proxy_score for each candidate using the formula below, normalize proxy_score across candidates, and pick the top candidate that passes self-checks.\n\nProxy scoring (explicit):\nproxy_score = 8*(main-noun overlap: 1 if main noun verbatim appears in caption else 0)\n             + 6*(each additional exact overlap)\n             + 4*(visible-attribute overlap present)\n             + 2*(positional bonus: +2 if main noun at position 1, +1 if at position 2–3)\n             - 5*(generic-noun penalty if any tag ∈ {person, people, man, woman} used when a more specific noun is reliably visible)\n             - 3*(duplicates-collapsed penalty)\n             - 2*(each tag beyond 3)\n             - 1*(caption length beyond 12 words)\nBreak ties by: more overlaps, then fewer tags, then main noun at position 1.\n\nDeterministic self-checks (must pass before returning output):\n1. Tags: 2–5 comma-separated tokens, all lower-case nouns/adjectives only, ≤1 attribute, deduplicated.\n2. Caption: 7–14 words OR valid 2–3 word fallback OR exactly \"image unclear\".\n3. Overlap: ≥2 exact token overlaps between Line 1 and Line 2 (noun or attribute). If not met, candidate invalid.\n4. Main noun position: main noun verbatim appears at token position 1–3 in the caption. If not, candidate invalid.\n5. Count/morphology: if Line 1 has a numeric count, caption morphology must match (pluralization and verb form).\n6. Attribute mirroring: if an attribute appears in tags, the same token must appear verbatim in the caption.\n7. Forbidden content: no proper nouns, inferred facts, emotions; no punctuation except allowed commas in Line 1 and optional final period in Line 2.\nIf the top-ranked candidate fails any self-check, select the next best candidate that passes. If none pass, output the most reliable tags you can produce (2–5 tokens) and Line 2 = \"image unclear\". If tags themselves cannot be produced reliably, output Line1 = (tags you can trust) and Line2 = \"image unclear\".\n\nAdditional heuristics and safeguards:\n- Penalize generic nouns; prefer specific discriminative nouns (e.g., \"trumpet\" over \"person\") when visually clear.\n- Be conservative with attributes and counts: omit when uncertain.\n- Prefer 2–4 tags; penalize long exhaustive tag lists.\n- Normalize plurals and numeric notation deterministically (e.g., \"2\" for two).\n- Ensure at least two verbatim overlaps are kept where possible; this is prioritized over producing a longer or more fluent sentence.\n\nOutput requirement reminder:\n- The VLM must follow the two-line output format exactly: Line 1 = tags (2–5 comma-separated tokens), Line 2 = caption (7–14 words) OR 2–3 word fallback OR \"image unclear\". No extra lines or commentary.",
+  "prompt_id": "textgrad_c4da494389",
+  "split_csv": "data/splits/flickr30k_main_seed1_val.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24/step_04/val/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24/step_04/val/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24/step_04/val/scores.csv",
+  "summary": {
+    "n": 150,
+    "mean_clip": 0.28421089132626853,
+    "mean_siglip": 0.1506456623971462,
+    "mean_caption_len": 11.666666666666666,
+    "generic_rate": 0.0,
+    "mean_delta_clip": -0.04035455698768298,
+    "mean_delta_siglip": -0.048194883291920024,
+    "clip_win_rate": 0.12666666666666668,
+    "siglip_win_rate": 0.10666666666666667
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_016590",
+      "caption": "child, person, umbrella, blue, sidewalk\nchild stands near person under blue umbrella on sidewalk",
+      "clip_score": 0.2253586947917938,
+      "siglip_score": 0.1083160117268562,
+      "delta_clip": -0.13922664523124692,
+      "delta_siglip": -0.11788276582956309
+    },
+    {
+      "image_id": "flickr30k_test_016590",
+      "caption": "child, person, umbrella, blue, sidewalk\nchild stands near person under blue umbrella on sidewalk",
+      "clip_score": 0.2253586947917938,
+      "siglip_score": 0.1083160117268562,
+      "delta_clip": -0.12729680538177493,
+      "delta_siglip": -0.12059695273637769
+    },
+    {
+      "image_id": "flickr30k_test_025473",
+      "caption": "person, tree, ground, sidewalk\nperson stands on sidewalk near tree",
+      "clip_score": 0.2008020579814911,
+      "siglip_score": 0.0701364129781723,
+      "delta_clip": -0.12142392992973322,
+      "delta_siglip": -0.1594025939702987
+    },
+    {
+      "image_id": "flickr30k_test_023317",
+      "caption": "woman, hat, bag, counter\nwoman stands near counter with bag",
+      "clip_score": 0.27167809009552,
+      "siglip_score": 0.1243603751063346,
+      "delta_clip": -0.11946982145309448,
+      "delta_siglip": -0.0940281823277474
+    },
+    {
+      "image_id": "flickr30k_test_010850",
+      "caption": "person, person, black, coat\ntwo people stand near each other in front of a wall",
+      "clip_score": 0.1973952353000641,
+      "siglip_score": 0.1230952441692352,
+      "delta_clip": -0.11438307166099543,
+      "delta_siglip": -0.09788879752159119
+    },
+    {
+      "image_id": "flickr30k_test_011286",
+      "caption": "person, rock, water, orange\nthree person walk on rock near water",
+      "clip_score": 0.2434719204902649,
+      "siglip_score": 0.1604190468788147,
+      "delta_clip": -0.11428368091583252,
+      "delta_siglip": -0.0646668672561645
+    },
+    {
+      "image_id": "flickr30k_test_003587",
+      "caption": "person, jacket, cap, black\nperson wears black jacket and cap",
+      "clip_score": 0.2547356784343719,
+      "siglip_score": 0.1312560737133026,
+      "delta_clip": -0.11055126786232,
+      "delta_siglip": -0.13304799795150757
+    },
+    {
+      "image_id": "flickr30k_test_011250",
+      "caption": "child, child, grass, runway\ntwo children stand near yellow tape on grass",
+      "clip_score": 0.305374264717102,
+      "siglip_score": 0.2235604226589203,
+      "delta_clip": -0.1072195172309876,
+      "delta_siglip": 0.003044798970222501
+    },
+    {
+      "image_id": "flickr30k_test_022222",
+      "caption": "cart, person, green, broom\nperson stands near green cart with broom",
+      "clip_score": 0.2770583033561706,
+      "siglip_score": 0.1813679635524749,
+      "delta_clip": -0.106704592704773,
+      "delta_siglip": -0.05878791213035592
+    },
+    {
+      "image_id": "flickr30k_test_020669",
+      "caption": "person, tree, grass, lake\nperson sits on grass near tree by lake",
+      "clip_score": 0.2499885708093643,
+      "siglip_score": 0.1749716103076934,
+      "delta_clip": -0.10638509690761569,
+      "delta_siglip": -0.0266673415899277
+    },
+    {
+      "image_id": "flickr30k_test_000051",
+      "caption": "person, person, red, blue\nperson one kneels on red mat near wooden board",
+      "clip_score": 0.2669840157032013,
+      "siglip_score": 0.107695385813713,
+      "delta_clip": -0.10162767767906189,
+      "delta_siglip": -0.0784781575202942
+    },
+    {
+      "image_id": "flickr30k_test_023023",
+      "caption": "person, child, umbrella, stool\nchild sits on stool under red umbrella",
+      "clip_score": 0.2226986438035965,
+      "siglip_score": 0.1033579185605049,
+      "delta_clip": -0.10085408389568329,
+      "delta_siglip": -0.116238109767437
+    }
+  ]
+}

@@ -1,0 +1,142 @@
+{
+  "prompt": "Output exactly one concise, information‑dense caption: a single grammatical sentence of comma‑separated short phrases. Use digits for counts only when each instance is clearly visible; do not infer, hedge, paraphrase, or add anything not visually present. Output only that one sentence.\n\nRequired phrase ordering (include an item only if visually verifiable; omit unverifiable items). Aim for ≤30 words; allow up to +10% length only to include a fully legible quoted text string or one necessary part‑level relation/background anchor.\n\n1) Start with: [digit] + subject noun(s) + spatial anchor.\n   - Spatial anchor rules: compute subject centroid x; if x < 0.33 → \"left\"; if 0.33 ≤ x ≤ 0.66 → \"center\"; if x > 0.66 → \"right\".\n   - If subject width >60% image width, emit \"center\" regardless of centroid.\n   - If >5% of subject area lies outside image, append \"partially cropped at [top|bottom|left|right]\".\n   - Add depth token [foreground|midground|background] only if overlap/relative scale unambiguously indicates depth.\n\n2) Include exactly one micro‑action phrase only if clear functional contact or use is visually evident (visible limb‑object contact, instrument at mouth, object midair, visible deformation/pressure, motion blur on a limb, or clear gaze at a visible object). Use one of these templates:\n   - \"[hand] [verb] [object]\" (e.g., \"right hand holding pole\")\n   - \"holding [object] with [hand]\" (e.g., \"holding violin with chin and right hand\")\n   - \"[body_part] [verb] [structure/object]\" (e.g., \"left foot on pedal\")\n   - If no such clear contact/use is verifiable, omit the micro‑action token (do not print filler phrases).\n\n3) Immediately after micro‑action, include exactly one part‑level relation or contact phrase whenever any limb/object contact, tool touching workpiece, or displacement is visually evident; use the template \"[part] [verb] [object/structure]\" (e.g., \"right hand holding pole\", \"rear wheel off ground\"). If no contact is present, omit this clause.\n\n4) Then include up to 1–3 high‑signal descriptor(s) chosen by strict priority (pick the highest‑ranked verifiable candidates; break ties lexicographically). Priority order:\n   A) Fully legible text — transcribe exact string only if every character is clearly readable; include it in quotes and localize (e.g., \"'RADIO CITY' on marquee above\").\n   B) Discriminative prop / part‑level prop (weighing scale, open instrument case, woven baskets with fruit, mounted fish, marquee).\n   C) Precise object class (prefer \"moped\", \"cargo bike\", \"motorized scooter\", \"bicycle with basket\", \"surveillance camera\", etc., over generic labels).\n   D) Material/texture (e.g., \"rusted metal\", \"woven straw\").\n   E) Color (e.g., \"red sweatshirt\").\n   F) Reflection/surface condition (e.g., \"wet pavement with reflections\", \"glass reflections\").\n   - Enforce ≤3 descriptors; if none verifiable, omit descriptors.\n\n5) Optionally include exactly one viewpoint token when obvious: {close-up, medium, wide, high-angle, low-angle}.\n\n6) Optionally include exactly one lighting token when obvious: {backlit, front-lit, rim-lit, long-shadow-left, long-shadow-right}.\n\n7) If a clear background anchor is visible, append one concise background noun phrase (single phrase, e.g., \"storefront window\", \"stone embankment\", \"Radio City marquee\"). Omit if no clear anchor.\n\nReflections vs. behind‑glass rule\n- If an element appears doubled, reversed, or overlayed on the glass plane without 3D occlusion → label as \"reflections\".\n- If objects clearly sit on the far side of the glass (shelf, mannequin, handbags) → label as \"on display behind glass\" or \"behind glass\".\n- If uncertain, omit both.\n\nTwo‑pass verification (run before emitting)\na) Text transcription: transcribe quoted text only if every character is clearly readable (high contrast, character size equivalent ≳8pt at image scale). If full string is not readable, do not invent text; instead include sign presence/localization as a descriptor (e.g., \"marquee above\") if position is clear.\nb) Count verification: include a digit only if each instance is ≥50% unobstructed and separable; otherwise use a descriptive phrase (e.g., \"a line of dancers\", \"a group of people\") rather than an incorrect digit.\nc) Object class verification: include a fine class only if internal object confidence >0.60 (or top label margin >0.15); otherwise fall back to the next specific supported class or generic class only if nothing specific is verifiable.\nd) Contact verification: require visible occlusion/adjacency or clear overlapping pixels to assert limb‑object contact or tool interaction.\ne) If any token fails verification, drop that token and recheck sentence for grammaticality.\n\nBrevity & trimming priorities\n- If length limits force removal, prioritize tokens in this order: legible text → part‑level relation / discriminative prop → precise object class → background anchor → material/texture → viewpoint → lighting → color → reflection.\n- Prefer compact, active, factual phrasing and concrete nouns. Do not infer ages, emotions, roles, intent, or unseen attributes. Do not use vague quantifiers (\"several\",\"many\") — use digits only when verified.\n\nNegative rules\n- Do not output a generic label (e.g., \"bicycle\", \"man\", \"building\") if a more specific, visually supported label is available.\n- Do not state exact counts when verification fails.\n- Do not emit micro‑action claims (e.g., \"holding\") unless contact/use is clearly visible.\n\nStyle constraints\n- Single sentence, comma‑separated short phrases, no tags, no lists, no extra lines.\n- Use canonical labels (e.g., \"storefront window\", \"center\"), consistent punctuation for quoted text.\n- Maintain grammaticality after dropping any failed tokens.\n\nCanonical minute examples (follow exact output format):\n- \"1 child left foreground, right hand reaching toward storefront window, right hand touching glass, 'LOEWE' on lower sill at left, glass reflections, storefront window behind.\"\n- \"1 woman center foreground, holding violin with chin and right hand, open instrument case on ground, medium, tiled underground passage behind.\"\n- \"5 dancers center foreground, standing in long line across crosswalk, red and white striped costumes, Radio City marquee above, street behind.\"\n\nFollow these rules exactly to produce one precise caption.",
+  "prompt_id": "textgrad_a31948f47c",
+  "split_csv": "data/splits/flickr30k_main_seed1_val.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal/step_05/val/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal/step_05/val/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal/step_05/val/scores.csv",
+  "data_root": "data",
+  "summary": {
+    "n": 150,
+    "mean_clip": 0.2990116469065348,
+    "mean_siglip": 0.19439255227645238,
+    "mean_caption_len": 22.366666666666667,
+    "generic_rate": 0.0,
+    "mean_delta_clip": -0.02555380140741666,
+    "mean_delta_siglip": -0.004447993412613868,
+    "clip_win_rate": 0.20666666666666667,
+    "siglip_win_rate": 0.45666666666666667
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_007385",
+      "image_relpath": "images/flickr30k/flickr30k_test_007385.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_007385.jpg",
+      "caption": "1 dancer center foreground, right foot lifted, blue and multicolored costume, \"Foods\" sign on building behind, clear sky, long-shadow-right.",
+      "clip_score": 0.2356419861316681,
+      "siglip_score": 0.1469438523054123,
+      "delta_clip": -0.13321486115455622,
+      "delta_siglip": -0.02798457443714142
+    },
+    {
+      "image_id": "flickr30k_test_006851",
+      "image_relpath": "images/flickr30k/flickr30k_test_006851.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_006851.jpg",
+      "caption": "2 children center foreground, holding green poster with \"KEEPING US SAFE FOR\" text, wearing blue shirts, classroom with toys and balloons behind.",
+      "clip_score": 0.2759173810482025,
+      "siglip_score": 0.1755078285932541,
+      "delta_clip": -0.1167757511138916,
+      "delta_siglip": -0.08173368871212
+    },
+    {
+      "image_id": "flickr30k_test_023317",
+      "image_relpath": "images/flickr30k/flickr30k_test_023317.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_023317.jpg",
+      "caption": "1 woman center foreground, right hand touching chin, wearing pink jacket and blue skirt, 'GUEST SERVICES' sign above, red barrel at right, midground.",
+      "clip_score": 0.2800606787204742,
+      "siglip_score": 0.2537576258182525,
+      "delta_clip": -0.11108723282814031,
+      "delta_siglip": 0.035369068384170504
+    },
+    {
+      "image_id": "flickr30k_test_011250",
+      "image_relpath": "images/flickr30k/flickr30k_test_011250.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_011250.jpg",
+      "caption": "2 children center foreground, right hand holding left hand, brown t-shirt with 'LAKE PLACID' text, red striped shirt, grass field, yellow caution tape, airplane background.",
+      "clip_score": 0.3112090826034546,
+      "siglip_score": 0.2516083121299743,
+      "delta_clip": -0.10138469934463501,
+      "delta_siglip": 0.031092688441276523
+    },
+    {
+      "image_id": "flickr30k_test_013546",
+      "image_relpath": "images/flickr30k/flickr30k_test_013546.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_013546.jpg",
+      "caption": "1 child center foreground, left foot on platform, right foot on platform, yellow and blue playground structure, blurred trees background.",
+      "clip_score": 0.2885750234127044,
+      "siglip_score": 0.1730849295854568,
+      "delta_clip": -0.08849316835403448,
+      "delta_siglip": -0.0363444238901138
+    },
+    {
+      "image_id": "flickr30k_test_006161",
+      "image_relpath": "images/flickr30k/flickr30k_test_006161.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_006161.jpg",
+      "caption": "1 woman left foreground, holding broom with left hand, right hand gripping trash bag, wearing straw hat and reflective vest, stone wall behind.",
+      "clip_score": 0.2504645884037018,
+      "siglip_score": 0.1996916234493255,
+      "delta_clip": -0.08751732110977173,
+      "delta_siglip": -0.04464814066886899
+    },
+    {
+      "image_id": "flickr30k_test_008305",
+      "image_relpath": "images/flickr30k/flickr30k_test_008305.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_008305.jpg",
+      "caption": "1 woman left foreground, sitting on curb, holding white bag with \"BONNIE'S\" text, partially cropped at bottom, stone pavement, street behind.",
+      "clip_score": 0.2145936787128448,
+      "siglip_score": 0.1206861957907676,
+      "delta_clip": -0.0849395096302033,
+      "delta_siglip": -0.03428202122449879
+    },
+    {
+      "image_id": "flickr30k_test_009512",
+      "image_relpath": "images/flickr30k/flickr30k_test_009512.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_009512.jpg",
+      "caption": "5 cheerleaders center foreground, red and black uniforms, tattoos on legs, blue tent behind, \"AVIREX\" banner above.",
+      "clip_score": 0.298148512840271,
+      "siglip_score": 0.1643591970205307,
+      "delta_clip": -0.08104324340820312,
+      "delta_siglip": -0.024031475186347906
+    },
+    {
+      "image_id": "flickr30k_test_003587",
+      "image_relpath": "images/flickr30k/flickr30k_test_003587.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_003587.jpg",
+      "caption": "1 man center foreground, wearing black cap with '3' and 'ALBAN', black jacket with 'Plus', 'Coca-Cola', 'Snap-on', 'NASCAR', 'OREO', 'Arbella', 'Racing Champions', 'TIME CHAMPION', 'R3', glasses,",
+      "clip_score": 0.2870588302612304,
+      "siglip_score": 0.1756035685539245,
+      "delta_clip": -0.07822811603546148,
+      "delta_siglip": -0.08870050311088568
+    },
+    {
+      "image_id": "flickr30k_test_008802",
+      "image_relpath": "images/flickr30k/flickr30k_test_008802.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_008802.jpg",
+      "caption": "1 dog center foreground, holding frisbee with mouth, front paws on grass, white frisbee with blue paw print, sunny long-shadow-right, chain-link fence background.",
+      "clip_score": 0.2916141748428345,
+      "siglip_score": 0.1508860886096954,
+      "delta_clip": -0.07719981670379633,
+      "delta_siglip": -0.0426923334598541
+    },
+    {
+      "image_id": "flickr30k_test_000051",
+      "image_relpath": "images/flickr30k/flickr30k_test_000051.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_000051.jpg",
+      "caption": "1 man center foreground, right hand holding wooden board, left foot on floor, 'J.K. LEE' on back of white uniform, red and blue mat background, high-angle.",
+      "clip_score": 0.292850524187088,
+      "siglip_score": 0.2051788866519928,
+      "delta_clip": -0.07576116919517517,
+      "delta_siglip": 0.01900534331798559
+    },
+    {
+      "image_id": "flickr30k_test_001063",
+      "image_relpath": "images/flickr30k/flickr30k_test_001063.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_001063.jpg",
+      "caption": "1 man center foreground, left hand pointing, olive tank top, green blanket on right, beige couch, yellow wall behind.",
+      "clip_score": 0.2646167278289795,
+      "siglip_score": 0.175779178738594,
+      "delta_clip": -0.07540449500083923,
+      "delta_siglip": -0.0602023899555206
+    }
+  ]
+}

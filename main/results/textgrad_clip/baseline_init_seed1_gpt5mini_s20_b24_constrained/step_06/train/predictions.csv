@@ -1,0 +1,433 @@
+split_id,method_id,run_id,order,dataset_index,image_id,image_relpath,reference_captions,prompt_id,prompt_name,prompt_text,caption,candidate_id,selected,model,temperature,top_p,max_new_tokens,generation_config
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_2946798e90,0,4402,flickr30k_test_004402,images/flickr30k/flickr30k_test_004402.jpg,"[""A lady pushes a stroller, behind a child, riding a tricycle, while another child walks along side."", ""An old man in a green shirt is walking down a paved path with three small children."", ""A man and three kids walk up a paved hill."", ""A Family going for a walk in a park."", ""A family walks through a park.""]",textgrad_2946798e90,TextGrad Step 6,"Output exactly one literal, factual sentence (8–20 words) describing only visible content in the image. Do not add labels, examples, lists, annotations, or any extra text.
+
+Definitions: content words exclude a single leading article (a/an/the) and punctuation. A high‑signal token is one of: visible color or pattern, a concrete object class (prefer the most specific multiword class available, e.g., ""electric guitar"", ""motorbike""), a clear count (Arabic numeral), clothing/accessory, or legible text/logo copied verbatim.
+
+Primary rules:
+- Include at least two high‑signal tokens within the first four content words when two are clearly visible; otherwise include at least one high‑signal token within the first three content words.
+- If a visible color/pattern exists, place it immediately before its noun (e.g., ""red bicycle""). Use ""noun with [attribute]"" only if the color cannot appear within the required early content words.
+- Prefer the most specific visible concrete class; do not use generic nouns like ""object"", ""instrument"", or ""item"" when a specific class is clearly visible. Use ""person"" only when a more specific subject is not visually identifiable.
+- If any legible text or logo is present and confidently readable, copy it exactly and place it within the first six content words.
+- Use Arabic numerals for clear counts and place them early. Use ""several"" only for indistinct groups (>3).
+- Allow either a short noun‑phrase caption (no verb) or a concise present‑tense sentence (present simple or present‑participle). If you use a verb, you may place it after the first four content words to keep high‑signal tokens early.
+- Include at most one short spatial connector (""next to"", ""on"", ""near"", ""in front of"") to link the primary subject to a nearby object or surface.
+- Choose the primary subject deterministically: prefer the centermost, largest, highest‑contrast, or the object with an explicit visible attribute (color/number/logo).
+- Do not infer unseen attributes (age, emotion, intent, relationships) and avoid figurative or subjective language. Do not invent specific attributes when they are not visually evident; fall back to a safe generic only if the specific class or attribute is not clearly visible.
+- Count content words carefully (exclude the single leading article and punctuation) when locating the first N content words.
+- Avoid leading generic templates like ""A person..."" or ""There is..."" when a more specific subject is visible.
+
+Output exactly one short sentence only—no extra text.",Child pushes yellow tricycle on paved road near green trees.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_2946798e90,2,27768,flickr30k_test_027768,images/flickr30k/flickr30k_test_027768.jpg,"[""The redheaded girl giggles happily as she swings her pillow at her opponent during a recent pillow fight."", ""A lady in a red shirt with red-hair laugh while throwing a pillow over her left shoulder."", ""A woman with red-hair swings a pillow and laughs."", ""A young redheaded woman laughs at something."", ""A redhead girl in a pillow fight.""]",textgrad_2946798e90,TextGrad Step 6,"Output exactly one literal, factual sentence (8–20 words) describing only visible content in the image. Do not add labels, examples, lists, annotations, or any extra text.
+
+Definitions: content words exclude a single leading article (a/an/the) and punctuation. A high‑signal token is one of: visible color or pattern, a concrete object class (prefer the most specific multiword class available, e.g., ""electric guitar"", ""motorbike""), a clear count (Arabic numeral), clothing/accessory, or legible text/logo copied verbatim.
+
+Primary rules:
+- Include at least two high‑signal tokens within the first four content words when two are clearly visible; otherwise include at least one high‑signal token within the first three content words.
+- If a visible color/pattern exists, place it immediately before its noun (e.g., ""red bicycle""). Use ""noun with [attribute]"" only if the color cannot appear within the required early content words.
+- Prefer the most specific visible concrete class; do not use generic nouns like ""object"", ""instrument"", or ""item"" when a specific class is clearly visible. Use ""person"" only when a more specific subject is not visually identifiable.
+- If any legible text or logo is present and confidently readable, copy it exactly and place it within the first six content words.
+- Use Arabic numerals for clear counts and place them early. Use ""several"" only for indistinct groups (>3).
+- Allow either a short noun‑phrase caption (no verb) or a concise present‑tense sentence (present simple or present‑participle). If you use a verb, you may place it after the first four content words to keep high‑signal tokens early.
+- Include at most one short spatial connector (""next to"", ""on"", ""near"", ""in front of"") to link the primary subject to a nearby object or surface.
+- Choose the primary subject deterministically: prefer the centermost, largest, highest‑contrast, or the object with an explicit visible attribute (color/number/logo).
+- Do not infer unseen attributes (age, emotion, intent, relationships) and avoid figurative or subjective language. Do not invent specific attributes when they are not visually evident; fall back to a safe generic only if the specific class or attribute is not clearly visible.
+- Count content words carefully (exclude the single leading article and punctuation) when locating the first N content words.
+- Avoid leading generic templates like ""A person..."" or ""There is..."" when a more specific subject is visible.
+
+Output exactly one short sentence only—no extra text.",Red-haired person in red sweatshirt holds beige pillow over head.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_2946798e90,4,25027,flickr30k_test_025027,images/flickr30k/flickr30k_test_025027.jpg,"[""A woman in turquoise dress and veil, a woman in orange print dress and blue veil, and a woman in yellow dress and violet veil, seated next to one another and viewed from behind."", ""Three women with headscarves and bright clothing take a ride in a rickshaw."", ""Women in Afghanistan who must cover themselves."", ""Three women are riding in a carriage together."", ""Three women are riding in a cart.""]",textgrad_2946798e90,TextGrad Step 6,"Output exactly one literal, factual sentence (8–20 words) describing only visible content in the image. Do not add labels, examples, lists, annotations, or any extra text.
+
+Definitions: content words exclude a single leading article (a/an/the) and punctuation. A high‑signal token is one of: visible color or pattern, a concrete object class (prefer the most specific multiword class available, e.g., ""electric guitar"", ""motorbike""), a clear count (Arabic numeral), clothing/accessory, or legible text/logo copied verbatim.
+
+Primary rules:
+- Include at least two high‑signal tokens within the first four content words when two are clearly visible; otherwise include at least one high‑signal token within the first three content words.
+- If a visible color/pattern exists, place it immediately before its noun (e.g., ""red bicycle""). Use ""noun with [attribute]"" only if the color cannot appear within the required early content words.
+- Prefer the most specific visible concrete class; do not use generic nouns like ""object"", ""instrument"", or ""item"" when a specific class is clearly visible. Use ""person"" only when a more specific subject is not visually identifiable.
+- If any legible text or logo is present and confidently readable, copy it exactly and place it within the first six content words.
+- Use Arabic numerals for clear counts and place them early. Use ""several"" only for indistinct groups (>3).
+- Allow either a short noun‑phrase caption (no verb) or a concise present‑tense sentence (present simple or present‑participle). If you use a verb, you may place it after the first four content words to keep high‑signal tokens early.
+- Include at most one short spatial connector (""next to"", ""on"", ""near"", ""in front of"") to link the primary subject to a nearby object or surface.
+- Choose the primary subject deterministically: prefer the centermost, largest, highest‑contrast, or the object with an explicit visible attribute (color/number/logo).
+- Do not infer unseen attributes (age, emotion, intent, relationships) and avoid figurative or subjective language. Do not invent specific attributes when they are not visually evident; fall back to a safe generic only if the specific class or attribute is not clearly visible.
+- Count content words carefully (exclude the single leading article and punctuation) when locating the first N content words.
+- Avoid leading generic templates like ""A person..."" or ""There is..."" when a more specific subject is visible.
+
+Output exactly one short sentence only—no extra text.",Three women in colorful headscarves sit on a green bench.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_2946798e90,23,19904,flickr30k_test_019904,images/flickr30k/flickr30k_test_019904.jpg,"[""The man in the tan jacket is taking large steps as he walks past the off white building."", ""A well-dressed, shaven-head young man strides through railings past a restaurant."", ""A man wearing a tan jacket walks into Le Mignon in the afternoon."", ""A man walking across a bridge near a steak restaurant."", ""A bald man walking on a bridge.""]",textgrad_2946798e90,TextGrad Step 6,"Output exactly one literal, factual sentence (8–20 words) describing only visible content in the image. Do not add labels, examples, lists, annotations, or any extra text.
+
+Definitions: content words exclude a single leading article (a/an/the) and punctuation. A high‑signal token is one of: visible color or pattern, a concrete object class (prefer the most specific multiword class available, e.g., ""electric guitar"", ""motorbike""), a clear count (Arabic numeral), clothing/accessory, or legible text/logo copied verbatim.
+
+Primary rules:
+- Include at least two high‑signal tokens within the first four content words when two are clearly visible; otherwise include at least one high‑signal token within the first three content words.
+- If a visible color/pattern exists, place it immediately before its noun (e.g., ""red bicycle""). Use ""noun with [attribute]"" only if the color cannot appear within the required early content words.
+- Prefer the most specific visible concrete class; do not use generic nouns like ""object"", ""instrument"", or ""item"" when a specific class is clearly visible. Use ""person"" only when a more specific subject is not visually identifiable.
+- If any legible text or logo is present and confidently readable, copy it exactly and place it within the first six content words.
+- Use Arabic numerals for clear counts and place them early. Use ""several"" only for indistinct groups (>3).
+- Allow either a short noun‑phrase caption (no verb) or a concise present‑tense sentence (present simple or present‑participle). If you use a verb, you may place it after the first four content words to keep high‑signal tokens early.
+- Include at most one short spatial connector (""next to"", ""on"", ""near"", ""in front of"") to link the primary subject to a nearby object or surface.
+- Choose the primary subject deterministically: prefer the centermost, largest, highest‑contrast, or the object with an explicit visible attribute (color/number/logo).
+- Do not infer unseen attributes (age, emotion, intent, relationships) and avoid figurative or subjective language. Do not invent specific attributes when they are not visually evident; fall back to a safe generic only if the specific class or attribute is not clearly visible.
+- Count content words carefully (exclude the single leading article and punctuation) when locating the first N content words.
+- Avoid leading generic templates like ""A person..."" or ""There is..."" when a more specific subject is visible.
+
+Output exactly one short sentence only—no extra text.",Man walks on bridge near Le Mignon restaurant sign.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_2946798e90,32,7496,flickr30k_test_007496,images/flickr30k/flickr30k_test_007496.jpg,"[""Two men wearing hats play accordions while standing between two burgundy and black pre-World War II automobiles."", ""Two accordion players in period costumes perform between two maroon-colored antique cars."", ""Two old men with hats are standing in between cars with their accordions."", ""Two men between 2 classic cars playing accordions."", ""Two men playing music and displaying old cars.""]",textgrad_2946798e90,TextGrad Step 6,"Output exactly one literal, factual sentence (8–20 words) describing only visible content in the image. Do not add labels, examples, lists, annotations, or any extra text.
+
+Definitions: content words exclude a single leading article (a/an/the) and punctuation. A high‑signal token is one of: visible color or pattern, a concrete object class (prefer the most specific multiword class available, e.g., ""electric guitar"", ""motorbike""), a clear count (Arabic numeral), clothing/accessory, or legible text/logo copied verbatim.
+
+Primary rules:
+- Include at least two high‑signal tokens within the first four content words when two are clearly visible; otherwise include at least one high‑signal token within the first three content words.
+- If a visible color/pattern exists, place it immediately before its noun (e.g., ""red bicycle""). Use ""noun with [attribute]"" only if the color cannot appear within the required early content words.
+- Prefer the most specific visible concrete class; do not use generic nouns like ""object"", ""instrument"", or ""item"" when a specific class is clearly visible. Use ""person"" only when a more specific subject is not visually identifiable.
+- If any legible text or logo is present and confidently readable, copy it exactly and place it within the first six content words.
+- Use Arabic numerals for clear counts and place them early. Use ""several"" only for indistinct groups (>3).
+- Allow either a short noun‑phrase caption (no verb) or a concise present‑tense sentence (present simple or present‑participle). If you use a verb, you may place it after the first four content words to keep high‑signal tokens early.
+- Include at most one short spatial connector (""next to"", ""on"", ""near"", ""in front of"") to link the primary subject to a nearby object or surface.
+- Choose the primary subject deterministically: prefer the centermost, largest, highest‑contrast, or the object with an explicit visible attribute (color/number/logo).
+- Do not infer unseen attributes (age, emotion, intent, relationships) and avoid figurative or subjective language. Do not invent specific attributes when they are not visually evident; fall back to a safe generic only if the specific class or attribute is not clearly visible.
+- Count content words carefully (exclude the single leading article and punctuation) when locating the first N content words.
+- Avoid leading generic templates like ""A person..."" or ""There is..."" when a more specific subject is visible.
+
+Output exactly one short sentence only—no extra text.",Two men play accordions next to vintage cars with license plate 6ZE 638.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_2946798e90,37,10401,flickr30k_test_010401,images/flickr30k/flickr30k_test_010401.jpg,"[""A girl in a blue sweater with a white pattern is jumping into a pile of leaves."", ""A young girl is diving into a pile of brown leaves in the yard."", ""A girl in a sweater diving into a pile of leaves."", ""A girl is jumping into a pile of leaves."", ""A girl is jumping into a pile of leaves""]",textgrad_2946798e90,TextGrad Step 6,"Output exactly one literal, factual sentence (8–20 words) describing only visible content in the image. Do not add labels, examples, lists, annotations, or any extra text.
+
+Definitions: content words exclude a single leading article (a/an/the) and punctuation. A high‑signal token is one of: visible color or pattern, a concrete object class (prefer the most specific multiword class available, e.g., ""electric guitar"", ""motorbike""), a clear count (Arabic numeral), clothing/accessory, or legible text/logo copied verbatim.
+
+Primary rules:
+- Include at least two high‑signal tokens within the first four content words when two are clearly visible; otherwise include at least one high‑signal token within the first three content words.
+- If a visible color/pattern exists, place it immediately before its noun (e.g., ""red bicycle""). Use ""noun with [attribute]"" only if the color cannot appear within the required early content words.
+- Prefer the most specific visible concrete class; do not use generic nouns like ""object"", ""instrument"", or ""item"" when a specific class is clearly visible. Use ""person"" only when a more specific subject is not visually identifiable.
+- If any legible text or logo is present and confidently readable, copy it exactly and place it within the first six content words.
+- Use Arabic numerals for clear counts and place them early. Use ""several"" only for indistinct groups (>3).
+- Allow either a short noun‑phrase caption (no verb) or a concise present‑tense sentence (present simple or present‑participle). If you use a verb, you may place it after the first four content words to keep high‑signal tokens early.
+- Include at most one short spatial connector (""next to"", ""on"", ""near"", ""in front of"") to link the primary subject to a nearby object or surface.
+- Choose the primary subject deterministically: prefer the centermost, largest, highest‑contrast, or the object with an explicit visible attribute (color/number/logo).
+- Do not infer unseen attributes (age, emotion, intent, relationships) and avoid figurative or subjective language. Do not invent specific attributes when they are not visually evident; fall back to a safe generic only if the specific class or attribute is not clearly visible.
+- Count content words carefully (exclude the single leading article and punctuation) when locating the first N content words.
+- Avoid leading generic templates like ""A person..."" or ""There is..."" when a more specific subject is visible.
+
+Output exactly one short sentence only—no extra text.",Girl in blue sweater jumps toward pile of autumn leaves.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_2946798e90,39,731,flickr30k_test_000731,images/flickr30k/flickr30k_test_000731.jpg,"[""Three little blond girls, two in blue, one in pink, play on a sunny beach."", ""Three children are playing in sand near to the beach."", ""Three young girls dance on the beach in the sand."", ""Three children playing in sand at beach"", ""Three girls play in the sand.""]",textgrad_2946798e90,TextGrad Step 6,"Output exactly one literal, factual sentence (8–20 words) describing only visible content in the image. Do not add labels, examples, lists, annotations, or any extra text.
+
+Definitions: content words exclude a single leading article (a/an/the) and punctuation. A high‑signal token is one of: visible color or pattern, a concrete object class (prefer the most specific multiword class available, e.g., ""electric guitar"", ""motorbike""), a clear count (Arabic numeral), clothing/accessory, or legible text/logo copied verbatim.
+
+Primary rules:
+- Include at least two high‑signal tokens within the first four content words when two are clearly visible; otherwise include at least one high‑signal token within the first three content words.
+- If a visible color/pattern exists, place it immediately before its noun (e.g., ""red bicycle""). Use ""noun with [attribute]"" only if the color cannot appear within the required early content words.
+- Prefer the most specific visible concrete class; do not use generic nouns like ""object"", ""instrument"", or ""item"" when a specific class is clearly visible. Use ""person"" only when a more specific subject is not visually identifiable.
+- If any legible text or logo is present and confidently readable, copy it exactly and place it within the first six content words.
+- Use Arabic numerals for clear counts and place them early. Use ""several"" only for indistinct groups (>3).
+- Allow either a short noun‑phrase caption (no verb) or a concise present‑tense sentence (present simple or present‑participle). If you use a verb, you may place it after the first four content words to keep high‑signal tokens early.
+- Include at most one short spatial connector (""next to"", ""on"", ""near"", ""in front of"") to link the primary subject to a nearby object or surface.
+- Choose the primary subject deterministically: prefer the centermost, largest, highest‑contrast, or the object with an explicit visible attribute (color/number/logo).
+- Do not infer unseen attributes (age, emotion, intent, relationships) and avoid figurative or subjective language. Do not invent specific attributes when they are not visually evident; fall back to a safe generic only if the specific class or attribute is not clearly visible.
+- Count content words carefully (exclude the single leading article and punctuation) when locating the first N content words.
+- Avoid leading generic templates like ""A person..."" or ""There is..."" when a more specific subject is visible.
+
+Output exactly one short sentence only—no extra text.",Three children play on sandy beach near wooden posts.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_2946798e90,44,30774,flickr30k_test_030774,images/flickr30k/flickr30k_test_030774.jpg,"[""A little boy underwater in a pool, holding a plastic dinosaur."", ""A little boy swimming underwater with a toy in his hand."", ""A boy is swimming underwater holding a toy in his hand."", ""Child swimming underwater with a toy in his hand."", ""A little boy swims underwater.""]",textgrad_2946798e90,TextGrad Step 6,"Output exactly one literal, factual sentence (8–20 words) describing only visible content in the image. Do not add labels, examples, lists, annotations, or any extra text.
+
+Definitions: content words exclude a single leading article (a/an/the) and punctuation. A high‑signal token is one of: visible color or pattern, a concrete object class (prefer the most specific multiword class available, e.g., ""electric guitar"", ""motorbike""), a clear count (Arabic numeral), clothing/accessory, or legible text/logo copied verbatim.
+
+Primary rules:
+- Include at least two high‑signal tokens within the first four content words when two are clearly visible; otherwise include at least one high‑signal token within the first three content words.
+- If a visible color/pattern exists, place it immediately before its noun (e.g., ""red bicycle""). Use ""noun with [attribute]"" only if the color cannot appear within the required early content words.
+- Prefer the most specific visible concrete class; do not use generic nouns like ""object"", ""instrument"", or ""item"" when a specific class is clearly visible. Use ""person"" only when a more specific subject is not visually identifiable.
+- If any legible text or logo is present and confidently readable, copy it exactly and place it within the first six content words.
+- Use Arabic numerals for clear counts and place them early. Use ""several"" only for indistinct groups (>3).
+- Allow either a short noun‑phrase caption (no verb) or a concise present‑tense sentence (present simple or present‑participle). If you use a verb, you may place it after the first four content words to keep high‑signal tokens early.
+- Include at most one short spatial connector (""next to"", ""on"", ""near"", ""in front of"") to link the primary subject to a nearby object or surface.
+- Choose the primary subject deterministically: prefer the centermost, largest, highest‑contrast, or the object with an explicit visible attribute (color/number/logo).
+- Do not infer unseen attributes (age, emotion, intent, relationships) and avoid figurative or subjective language. Do not invent specific attributes when they are not visually evident; fall back to a safe generic only if the specific class or attribute is not clearly visible.
+- Count content words carefully (exclude the single leading article and punctuation) when locating the first N content words.
+- Avoid leading generic templates like ""A person..."" or ""There is..."" when a more specific subject is visible.
+
+Output exactly one short sentence only—no extra text.",Child swims underwater with bubbles rising around them.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_2946798e90,51,951,flickr30k_test_000951,images/flickr30k/flickr30k_test_000951.jpg,"[""A person wearing a hat and carrying a knapsack walks uphill on a sand dune under a dark, cloudy sky and leaves the only visible footprints behind."", ""A man with a shoulder bag walking in the desert on sand with footprints behind him and the horizon with many stormy clouds."", ""A man walking in the desert wearing a hat, khaki shirt and shorts and very dark sky ahead of him."", ""One man is walking across a desert right into an approaching storm."", ""A man wandering in the desert as the clouds roll in.""]",textgrad_2946798e90,TextGrad Step 6,"Output exactly one literal, factual sentence (8–20 words) describing only visible content in the image. Do not add labels, examples, lists, annotations, or any extra text.
+
+Definitions: content words exclude a single leading article (a/an/the) and punctuation. A high‑signal token is one of: visible color or pattern, a concrete object class (prefer the most specific multiword class available, e.g., ""electric guitar"", ""motorbike""), a clear count (Arabic numeral), clothing/accessory, or legible text/logo copied verbatim.
+
+Primary rules:
+- Include at least two high‑signal tokens within the first four content words when two are clearly visible; otherwise include at least one high‑signal token within the first three content words.
+- If a visible color/pattern exists, place it immediately before its noun (e.g., ""red bicycle""). Use ""noun with [attribute]"" only if the color cannot appear within the required early content words.
+- Prefer the most specific visible concrete class; do not use generic nouns like ""object"", ""instrument"", or ""item"" when a specific class is clearly visible. Use ""person"" only when a more specific subject is not visually identifiable.
+- If any legible text or logo is present and confidently readable, copy it exactly and place it within the first six content words.
+- Use Arabic numerals for clear counts and place them early. Use ""several"" only for indistinct groups (>3).
+- Allow either a short noun‑phrase caption (no verb) or a concise present‑tense sentence (present simple or present‑participle). If you use a verb, you may place it after the first four content words to keep high‑signal tokens early.
+- Include at most one short spatial connector (""next to"", ""on"", ""near"", ""in front of"") to link the primary subject to a nearby object or surface.
+- Choose the primary subject deterministically: prefer the centermost, largest, highest‑contrast, or the object with an explicit visible attribute (color/number/logo).
+- Do not infer unseen attributes (age, emotion, intent, relationships) and avoid figurative or subjective language. Do not invent specific attributes when they are not visually evident; fall back to a safe generic only if the specific class or attribute is not clearly visible.
+- Count content words carefully (exclude the single leading article and punctuation) when locating the first N content words.
+- Avoid leading generic templates like ""A person..."" or ""There is..."" when a more specific subject is visible.
+
+Output exactly one short sentence only—no extra text.",Person walks on sand dune under dark storm clouds.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_2946798e90,53,7264,flickr30k_test_007264,images/flickr30k/flickr30k_test_007264.jpg,"[""Two ladies and a teenage girl all dressed in summer attire are bending down and laughing, showing a small puppy to a little girl."", ""The little girl in a flower dress is talking to the ladies on the street."", ""A woman teaching a young girl not to be afraid of puppies."", ""Three women and a little girl play with a small puppy."", ""A woman bends down and pets a young girl's dog.""]",textgrad_2946798e90,TextGrad Step 6,"Output exactly one literal, factual sentence (8–20 words) describing only visible content in the image. Do not add labels, examples, lists, annotations, or any extra text.
+
+Definitions: content words exclude a single leading article (a/an/the) and punctuation. A high‑signal token is one of: visible color or pattern, a concrete object class (prefer the most specific multiword class available, e.g., ""electric guitar"", ""motorbike""), a clear count (Arabic numeral), clothing/accessory, or legible text/logo copied verbatim.
+
+Primary rules:
+- Include at least two high‑signal tokens within the first four content words when two are clearly visible; otherwise include at least one high‑signal token within the first three content words.
+- If a visible color/pattern exists, place it immediately before its noun (e.g., ""red bicycle""). Use ""noun with [attribute]"" only if the color cannot appear within the required early content words.
+- Prefer the most specific visible concrete class; do not use generic nouns like ""object"", ""instrument"", or ""item"" when a specific class is clearly visible. Use ""person"" only when a more specific subject is not visually identifiable.
+- If any legible text or logo is present and confidently readable, copy it exactly and place it within the first six content words.
+- Use Arabic numerals for clear counts and place them early. Use ""several"" only for indistinct groups (>3).
+- Allow either a short noun‑phrase caption (no verb) or a concise present‑tense sentence (present simple or present‑participle). If you use a verb, you may place it after the first four content words to keep high‑signal tokens early.
+- Include at most one short spatial connector (""next to"", ""on"", ""near"", ""in front of"") to link the primary subject to a nearby object or surface.
+- Choose the primary subject deterministically: prefer the centermost, largest, highest‑contrast, or the object with an explicit visible attribute (color/number/logo).
+- Do not infer unseen attributes (age, emotion, intent, relationships) and avoid figurative or subjective language. Do not invent specific attributes when they are not visually evident; fall back to a safe generic only if the specific class or attribute is not clearly visible.
+- Count content words carefully (exclude the single leading article and punctuation) when locating the first N content words.
+- Avoid leading generic templates like ""A person..."" or ""There is..."" when a more specific subject is visible.
+
+Output exactly one short sentence only—no extra text.",Woman in white top kneels on sidewalk near small dog.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_2946798e90,74,3276,flickr30k_test_003276,images/flickr30k/flickr30k_test_003276.jpg,"[""A group of nicely dressed people sitting at a long table with several bottles of wine on it."", ""People are sitting at long dining tables in a tent at some formal event."", ""A long dinner table with rows of people talking waiting for their food."", ""Many people sit at a long dinner table at a formal event."", ""Banquet attendees are waiting for the meal to be served.""]",textgrad_2946798e90,TextGrad Step 6,"Output exactly one literal, factual sentence (8–20 words) describing only visible content in the image. Do not add labels, examples, lists, annotations, or any extra text.
+
+Definitions: content words exclude a single leading article (a/an/the) and punctuation. A high‑signal token is one of: visible color or pattern, a concrete object class (prefer the most specific multiword class available, e.g., ""electric guitar"", ""motorbike""), a clear count (Arabic numeral), clothing/accessory, or legible text/logo copied verbatim.
+
+Primary rules:
+- Include at least two high‑signal tokens within the first four content words when two are clearly visible; otherwise include at least one high‑signal token within the first three content words.
+- If a visible color/pattern exists, place it immediately before its noun (e.g., ""red bicycle""). Use ""noun with [attribute]"" only if the color cannot appear within the required early content words.
+- Prefer the most specific visible concrete class; do not use generic nouns like ""object"", ""instrument"", or ""item"" when a specific class is clearly visible. Use ""person"" only when a more specific subject is not visually identifiable.
+- If any legible text or logo is present and confidently readable, copy it exactly and place it within the first six content words.
+- Use Arabic numerals for clear counts and place them early. Use ""several"" only for indistinct groups (>3).
+- Allow either a short noun‑phrase caption (no verb) or a concise present‑tense sentence (present simple or present‑participle). If you use a verb, you may place it after the first four content words to keep high‑signal tokens early.
+- Include at most one short spatial connector (""next to"", ""on"", ""near"", ""in front of"") to link the primary subject to a nearby object or surface.
+- Choose the primary subject deterministically: prefer the centermost, largest, highest‑contrast, or the object with an explicit visible attribute (color/number/logo).
+- Do not infer unseen attributes (age, emotion, intent, relationships) and avoid figurative or subjective language. Do not invent specific attributes when they are not visually evident; fall back to a safe generic only if the specific class or attribute is not clearly visible.
+- Count content words carefully (exclude the single leading article and punctuation) when locating the first N content words.
+- Avoid leading generic templates like ""A person..."" or ""There is..."" when a more specific subject is visible.
+
+Output exactly one short sentence only—no extra text.",Several people sit at long table under white tent with wine bottles.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_2946798e90,81,24351,flickr30k_test_024351,images/flickr30k/flickr30k_test_024351.jpg,"[""The dinosaur exhibt is next to a tree that has a balloon stuck in its branches."", ""A black dog looks up at a ball in the air and prepares to catch it."", ""A black dog waits on the grass for a falling yellow ball."", ""A dog is looking up at a ball attached to the string."", ""The animal is near the pond.""]",textgrad_2946798e90,TextGrad Step 6,"Output exactly one literal, factual sentence (8–20 words) describing only visible content in the image. Do not add labels, examples, lists, annotations, or any extra text.
+
+Definitions: content words exclude a single leading article (a/an/the) and punctuation. A high‑signal token is one of: visible color or pattern, a concrete object class (prefer the most specific multiword class available, e.g., ""electric guitar"", ""motorbike""), a clear count (Arabic numeral), clothing/accessory, or legible text/logo copied verbatim.
+
+Primary rules:
+- Include at least two high‑signal tokens within the first four content words when two are clearly visible; otherwise include at least one high‑signal token within the first three content words.
+- If a visible color/pattern exists, place it immediately before its noun (e.g., ""red bicycle""). Use ""noun with [attribute]"" only if the color cannot appear within the required early content words.
+- Prefer the most specific visible concrete class; do not use generic nouns like ""object"", ""instrument"", or ""item"" when a specific class is clearly visible. Use ""person"" only when a more specific subject is not visually identifiable.
+- If any legible text or logo is present and confidently readable, copy it exactly and place it within the first six content words.
+- Use Arabic numerals for clear counts and place them early. Use ""several"" only for indistinct groups (>3).
+- Allow either a short noun‑phrase caption (no verb) or a concise present‑tense sentence (present simple or present‑participle). If you use a verb, you may place it after the first four content words to keep high‑signal tokens early.
+- Include at most one short spatial connector (""next to"", ""on"", ""near"", ""in front of"") to link the primary subject to a nearby object or surface.
+- Choose the primary subject deterministically: prefer the centermost, largest, highest‑contrast, or the object with an explicit visible attribute (color/number/logo).
+- Do not infer unseen attributes (age, emotion, intent, relationships) and avoid figurative or subjective language. Do not invent specific attributes when they are not visually evident; fall back to a safe generic only if the specific class or attribute is not clearly visible.
+- Count content words carefully (exclude the single leading article and punctuation) when locating the first N content words.
+- Avoid leading generic templates like ""A person..."" or ""There is..."" when a more specific subject is visible.
+
+Output exactly one short sentence only—no extra text.",Dark dog leaps toward green tennis ball near pond.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_2946798e90,92,6220,flickr30k_test_006220,images/flickr30k/flickr30k_test_006220.jpg,"[""A crowded and active city street in Asia, with stores and billboards lining the street."", ""A busy street during the daytime in an asian city."", ""A crowd of people walking on a sidewalk in a city."", ""City in japan with crowded streets of people"", ""This asian city is very busy.""]",textgrad_2946798e90,TextGrad Step 6,"Output exactly one literal, factual sentence (8–20 words) describing only visible content in the image. Do not add labels, examples, lists, annotations, or any extra text.
+
+Definitions: content words exclude a single leading article (a/an/the) and punctuation. A high‑signal token is one of: visible color or pattern, a concrete object class (prefer the most specific multiword class available, e.g., ""electric guitar"", ""motorbike""), a clear count (Arabic numeral), clothing/accessory, or legible text/logo copied verbatim.
+
+Primary rules:
+- Include at least two high‑signal tokens within the first four content words when two are clearly visible; otherwise include at least one high‑signal token within the first three content words.
+- If a visible color/pattern exists, place it immediately before its noun (e.g., ""red bicycle""). Use ""noun with [attribute]"" only if the color cannot appear within the required early content words.
+- Prefer the most specific visible concrete class; do not use generic nouns like ""object"", ""instrument"", or ""item"" when a specific class is clearly visible. Use ""person"" only when a more specific subject is not visually identifiable.
+- If any legible text or logo is present and confidently readable, copy it exactly and place it within the first six content words.
+- Use Arabic numerals for clear counts and place them early. Use ""several"" only for indistinct groups (>3).
+- Allow either a short noun‑phrase caption (no verb) or a concise present‑tense sentence (present simple or present‑participle). If you use a verb, you may place it after the first four content words to keep high‑signal tokens early.
+- Include at most one short spatial connector (""next to"", ""on"", ""near"", ""in front of"") to link the primary subject to a nearby object or surface.
+- Choose the primary subject deterministically: prefer the centermost, largest, highest‑contrast, or the object with an explicit visible attribute (color/number/logo).
+- Do not infer unseen attributes (age, emotion, intent, relationships) and avoid figurative or subjective language. Do not invent specific attributes when they are not visually evident; fall back to a safe generic only if the specific class or attribute is not clearly visible.
+- Count content words carefully (exclude the single leading article and punctuation) when locating the first N content words.
+- Avoid leading generic templates like ""A person..."" or ""There is..."" when a more specific subject is visible.
+
+Output exactly one short sentence only—no extra text.",Several people walk under bright signs in a crowded city street.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_2946798e90,96,28917,flickr30k_test_028917,images/flickr30k/flickr30k_test_028917.jpg,"[""Two basketball players one in black and red and one in blue and white playing a game with the ref and crowd in the background."", ""A basketball player wearing white dribbles the ball, while being guarded by another player in a black uniform."", ""Two male basketball players are playing a competitive game while the referee is standing behind watching."", ""Two men playing in a basketball game against each other."", ""A small image used to signify a broken web image link""]",textgrad_2946798e90,TextGrad Step 6,"Output exactly one literal, factual sentence (8–20 words) describing only visible content in the image. Do not add labels, examples, lists, annotations, or any extra text.
+
+Definitions: content words exclude a single leading article (a/an/the) and punctuation. A high‑signal token is one of: visible color or pattern, a concrete object class (prefer the most specific multiword class available, e.g., ""electric guitar"", ""motorbike""), a clear count (Arabic numeral), clothing/accessory, or legible text/logo copied verbatim.
+
+Primary rules:
+- Include at least two high‑signal tokens within the first four content words when two are clearly visible; otherwise include at least one high‑signal token within the first three content words.
+- If a visible color/pattern exists, place it immediately before its noun (e.g., ""red bicycle""). Use ""noun with [attribute]"" only if the color cannot appear within the required early content words.
+- Prefer the most specific visible concrete class; do not use generic nouns like ""object"", ""instrument"", or ""item"" when a specific class is clearly visible. Use ""person"" only when a more specific subject is not visually identifiable.
+- If any legible text or logo is present and confidently readable, copy it exactly and place it within the first six content words.
+- Use Arabic numerals for clear counts and place them early. Use ""several"" only for indistinct groups (>3).
+- Allow either a short noun‑phrase caption (no verb) or a concise present‑tense sentence (present simple or present‑participle). If you use a verb, you may place it after the first four content words to keep high‑signal tokens early.
+- Include at most one short spatial connector (""next to"", ""on"", ""near"", ""in front of"") to link the primary subject to a nearby object or surface.
+- Choose the primary subject deterministically: prefer the centermost, largest, highest‑contrast, or the object with an explicit visible attribute (color/number/logo).
+- Do not infer unseen attributes (age, emotion, intent, relationships) and avoid figurative or subjective language. Do not invent specific attributes when they are not visually evident; fall back to a safe generic only if the specific class or attribute is not clearly visible.
+- Count content words carefully (exclude the single leading article and punctuation) when locating the first N content words.
+- Avoid leading generic templates like ""A person..."" or ""There is..."" when a more specific subject is visible.
+
+Output exactly one short sentence only—no extra text.",Michael Hart Photography captures basketball player in white jersey number 5 dribbling.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_2946798e90,105,15736,flickr30k_test_015736,images/flickr30k/flickr30k_test_015736.jpg,"[""A brown and white dog trots across shallow water with his mouth open."", ""A greyhound walks in the rain through a large puddle."", ""A white and brown dog is walking through the water."", ""A brown spotted dog walks in shallow water."", ""The dog walks through the water.""]",textgrad_2946798e90,TextGrad Step 6,"Output exactly one literal, factual sentence (8–20 words) describing only visible content in the image. Do not add labels, examples, lists, annotations, or any extra text.
+
+Definitions: content words exclude a single leading article (a/an/the) and punctuation. A high‑signal token is one of: visible color or pattern, a concrete object class (prefer the most specific multiword class available, e.g., ""electric guitar"", ""motorbike""), a clear count (Arabic numeral), clothing/accessory, or legible text/logo copied verbatim.
+
+Primary rules:
+- Include at least two high‑signal tokens within the first four content words when two are clearly visible; otherwise include at least one high‑signal token within the first three content words.
+- If a visible color/pattern exists, place it immediately before its noun (e.g., ""red bicycle""). Use ""noun with [attribute]"" only if the color cannot appear within the required early content words.
+- Prefer the most specific visible concrete class; do not use generic nouns like ""object"", ""instrument"", or ""item"" when a specific class is clearly visible. Use ""person"" only when a more specific subject is not visually identifiable.
+- If any legible text or logo is present and confidently readable, copy it exactly and place it within the first six content words.
+- Use Arabic numerals for clear counts and place them early. Use ""several"" only for indistinct groups (>3).
+- Allow either a short noun‑phrase caption (no verb) or a concise present‑tense sentence (present simple or present‑participle). If you use a verb, you may place it after the first four content words to keep high‑signal tokens early.
+- Include at most one short spatial connector (""next to"", ""on"", ""near"", ""in front of"") to link the primary subject to a nearby object or surface.
+- Choose the primary subject deterministically: prefer the centermost, largest, highest‑contrast, or the object with an explicit visible attribute (color/number/logo).
+- Do not infer unseen attributes (age, emotion, intent, relationships) and avoid figurative or subjective language. Do not invent specific attributes when they are not visually evident; fall back to a safe generic only if the specific class or attribute is not clearly visible.
+- Count content words carefully (exclude the single leading article and punctuation) when locating the first N content words.
+- Avoid leading generic templates like ""A person..."" or ""There is..."" when a more specific subject is visible.
+
+Output exactly one short sentence only—no extra text.",White and brown dog walks through shallow water with reflection.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_2946798e90,115,28925,flickr30k_test_028925,images/flickr30k/flickr30k_test_028925.jpg,"[""A kid is using a screwdriver on what looks to be a typewriter."", ""A child is either screwing or unscrewing a screw on a machine."", ""Young child using tools on a machine."", ""A young child turning a screwdriver."", ""A young boy is fixing a typewriter.""]",textgrad_2946798e90,TextGrad Step 6,"Output exactly one literal, factual sentence (8–20 words) describing only visible content in the image. Do not add labels, examples, lists, annotations, or any extra text.
+
+Definitions: content words exclude a single leading article (a/an/the) and punctuation. A high‑signal token is one of: visible color or pattern, a concrete object class (prefer the most specific multiword class available, e.g., ""electric guitar"", ""motorbike""), a clear count (Arabic numeral), clothing/accessory, or legible text/logo copied verbatim.
+
+Primary rules:
+- Include at least two high‑signal tokens within the first four content words when two are clearly visible; otherwise include at least one high‑signal token within the first three content words.
+- If a visible color/pattern exists, place it immediately before its noun (e.g., ""red bicycle""). Use ""noun with [attribute]"" only if the color cannot appear within the required early content words.
+- Prefer the most specific visible concrete class; do not use generic nouns like ""object"", ""instrument"", or ""item"" when a specific class is clearly visible. Use ""person"" only when a more specific subject is not visually identifiable.
+- If any legible text or logo is present and confidently readable, copy it exactly and place it within the first six content words.
+- Use Arabic numerals for clear counts and place them early. Use ""several"" only for indistinct groups (>3).
+- Allow either a short noun‑phrase caption (no verb) or a concise present‑tense sentence (present simple or present‑participle). If you use a verb, you may place it after the first four content words to keep high‑signal tokens early.
+- Include at most one short spatial connector (""next to"", ""on"", ""near"", ""in front of"") to link the primary subject to a nearby object or surface.
+- Choose the primary subject deterministically: prefer the centermost, largest, highest‑contrast, or the object with an explicit visible attribute (color/number/logo).
+- Do not infer unseen attributes (age, emotion, intent, relationships) and avoid figurative or subjective language. Do not invent specific attributes when they are not visually evident; fall back to a safe generic only if the specific class or attribute is not clearly visible.
+- Count content words carefully (exclude the single leading article and punctuation) when locating the first N content words.
+- Avoid leading generic templates like ""A person..."" or ""There is..."" when a more specific subject is visible.
+
+Output exactly one short sentence only—no extra text.",Child in red hoodie repairs typewriter with screwdriver on table.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_2946798e90,116,23037,flickr30k_test_023037,images/flickr30k/flickr30k_test_023037.jpg,"[""A man with a black t-shirt is holding a yellow electric guitar on stage at a music event."", ""A man in black clothing plays electric guitar on stage."", ""A man in a black shirt playing guitar in a band."", ""A guy playing a guitar on a stage smiling."", ""A musician is entertaining the crowd.""]",textgrad_2946798e90,TextGrad Step 6,"Output exactly one literal, factual sentence (8–20 words) describing only visible content in the image. Do not add labels, examples, lists, annotations, or any extra text.
+
+Definitions: content words exclude a single leading article (a/an/the) and punctuation. A high‑signal token is one of: visible color or pattern, a concrete object class (prefer the most specific multiword class available, e.g., ""electric guitar"", ""motorbike""), a clear count (Arabic numeral), clothing/accessory, or legible text/logo copied verbatim.
+
+Primary rules:
+- Include at least two high‑signal tokens within the first four content words when two are clearly visible; otherwise include at least one high‑signal token within the first three content words.
+- If a visible color/pattern exists, place it immediately before its noun (e.g., ""red bicycle""). Use ""noun with [attribute]"" only if the color cannot appear within the required early content words.
+- Prefer the most specific visible concrete class; do not use generic nouns like ""object"", ""instrument"", or ""item"" when a specific class is clearly visible. Use ""person"" only when a more specific subject is not visually identifiable.
+- If any legible text or logo is present and confidently readable, copy it exactly and place it within the first six content words.
+- Use Arabic numerals for clear counts and place them early. Use ""several"" only for indistinct groups (>3).
+- Allow either a short noun‑phrase caption (no verb) or a concise present‑tense sentence (present simple or present‑participle). If you use a verb, you may place it after the first four content words to keep high‑signal tokens early.
+- Include at most one short spatial connector (""next to"", ""on"", ""near"", ""in front of"") to link the primary subject to a nearby object or surface.
+- Choose the primary subject deterministically: prefer the centermost, largest, highest‑contrast, or the object with an explicit visible attribute (color/number/logo).
+- Do not infer unseen attributes (age, emotion, intent, relationships) and avoid figurative or subjective language. Do not invent specific attributes when they are not visually evident; fall back to a safe generic only if the specific class or attribute is not clearly visible.
+- Count content words carefully (exclude the single leading article and punctuation) when locating the first N content words.
+- Avoid leading generic templates like ""A person..."" or ""There is..."" when a more specific subject is visible.
+
+Output exactly one short sentence only—no extra text.",Man plays electric guitar on stage with microphone and drum set visible.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_2946798e90,119,24189,flickr30k_test_024189,images/flickr30k/flickr30k_test_024189.jpg,"[""A man and a woman are standing outside of subway with their travel luggage and sleeping bags."", ""Two people are picking up their belongings in front of a Subway."", ""A man and a woman outside subways picking up their belongings."", ""Two kids in odd clothes in front of a subway shop."", ""Man and woman are in front of Subway restaurant.""]",textgrad_2946798e90,TextGrad Step 6,"Output exactly one literal, factual sentence (8–20 words) describing only visible content in the image. Do not add labels, examples, lists, annotations, or any extra text.
+
+Definitions: content words exclude a single leading article (a/an/the) and punctuation. A high‑signal token is one of: visible color or pattern, a concrete object class (prefer the most specific multiword class available, e.g., ""electric guitar"", ""motorbike""), a clear count (Arabic numeral), clothing/accessory, or legible text/logo copied verbatim.
+
+Primary rules:
+- Include at least two high‑signal tokens within the first four content words when two are clearly visible; otherwise include at least one high‑signal token within the first three content words.
+- If a visible color/pattern exists, place it immediately before its noun (e.g., ""red bicycle""). Use ""noun with [attribute]"" only if the color cannot appear within the required early content words.
+- Prefer the most specific visible concrete class; do not use generic nouns like ""object"", ""instrument"", or ""item"" when a specific class is clearly visible. Use ""person"" only when a more specific subject is not visually identifiable.
+- If any legible text or logo is present and confidently readable, copy it exactly and place it within the first six content words.
+- Use Arabic numerals for clear counts and place them early. Use ""several"" only for indistinct groups (>3).
+- Allow either a short noun‑phrase caption (no verb) or a concise present‑tense sentence (present simple or present‑participle). If you use a verb, you may place it after the first four content words to keep high‑signal tokens early.
+- Include at most one short spatial connector (""next to"", ""on"", ""near"", ""in front of"") to link the primary subject to a nearby object or surface.
+- Choose the primary subject deterministically: prefer the centermost, largest, highest‑contrast, or the object with an explicit visible attribute (color/number/logo).
+- Do not infer unseen attributes (age, emotion, intent, relationships) and avoid figurative or subjective language. Do not invent specific attributes when they are not visually evident; fall back to a safe generic only if the specific class or attribute is not clearly visible.
+- Count content words carefully (exclude the single leading article and punctuation) when locating the first N content words.
+- Avoid leading generic templates like ""A person..."" or ""There is..."" when a more specific subject is visible.
+
+Output exactly one short sentence only—no extra text.",Subway OPEN sign visible as person bends near bags on sidewalk.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_2946798e90,120,12278,flickr30k_test_012278,images/flickr30k/flickr30k_test_012278.jpg,"[""A group of people sit on a roof near a satellite dish while a young animal drinks from a bowl."", ""Group of people sitting on some chairs on their rooftop with a goat."", ""Some people and a goat are on a rooftop in a middle eastern city."", ""Several people are sitting on a roof in a Middle Eastern city."", ""A family sits on a rooftop watching TV.""]",textgrad_2946798e90,TextGrad Step 6,"Output exactly one literal, factual sentence (8–20 words) describing only visible content in the image. Do not add labels, examples, lists, annotations, or any extra text.
+
+Definitions: content words exclude a single leading article (a/an/the) and punctuation. A high‑signal token is one of: visible color or pattern, a concrete object class (prefer the most specific multiword class available, e.g., ""electric guitar"", ""motorbike""), a clear count (Arabic numeral), clothing/accessory, or legible text/logo copied verbatim.
+
+Primary rules:
+- Include at least two high‑signal tokens within the first four content words when two are clearly visible; otherwise include at least one high‑signal token within the first three content words.
+- If a visible color/pattern exists, place it immediately before its noun (e.g., ""red bicycle""). Use ""noun with [attribute]"" only if the color cannot appear within the required early content words.
+- Prefer the most specific visible concrete class; do not use generic nouns like ""object"", ""instrument"", or ""item"" when a specific class is clearly visible. Use ""person"" only when a more specific subject is not visually identifiable.
+- If any legible text or logo is present and confidently readable, copy it exactly and place it within the first six content words.
+- Use Arabic numerals for clear counts and place them early. Use ""several"" only for indistinct groups (>3).
+- Allow either a short noun‑phrase caption (no verb) or a concise present‑tense sentence (present simple or present‑participle). If you use a verb, you may place it after the first four content words to keep high‑signal tokens early.
+- Include at most one short spatial connector (""next to"", ""on"", ""near"", ""in front of"") to link the primary subject to a nearby object or surface.
+- Choose the primary subject deterministically: prefer the centermost, largest, highest‑contrast, or the object with an explicit visible attribute (color/number/logo).
+- Do not infer unseen attributes (age, emotion, intent, relationships) and avoid figurative or subjective language. Do not invent specific attributes when they are not visually evident; fall back to a safe generic only if the specific class or attribute is not clearly visible.
+- Count content words carefully (exclude the single leading article and punctuation) when locating the first N content words.
+- Avoid leading generic templates like ""A person..."" or ""There is..."" when a more specific subject is visible.
+
+Output exactly one short sentence only—no extra text.",Men sit on rooftop with satellite dishes and goat nearby.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_2946798e90,123,21750,flickr30k_test_021750,images/flickr30k/flickr30k_test_021750.jpg,"[""Two women who just had lunch hugging and saying goodbye."", ""Two women holding takeout boxes hugging on the street."", ""Two women are embracing while holding to go packages."", ""Two women, holding food carryout containers, hug."", ""Two blond women are hugging one another.""]",textgrad_2946798e90,TextGrad Step 6,"Output exactly one literal, factual sentence (8–20 words) describing only visible content in the image. Do not add labels, examples, lists, annotations, or any extra text.
+
+Definitions: content words exclude a single leading article (a/an/the) and punctuation. A high‑signal token is one of: visible color or pattern, a concrete object class (prefer the most specific multiword class available, e.g., ""electric guitar"", ""motorbike""), a clear count (Arabic numeral), clothing/accessory, or legible text/logo copied verbatim.
+
+Primary rules:
+- Include at least two high‑signal tokens within the first four content words when two are clearly visible; otherwise include at least one high‑signal token within the first three content words.
+- If a visible color/pattern exists, place it immediately before its noun (e.g., ""red bicycle""). Use ""noun with [attribute]"" only if the color cannot appear within the required early content words.
+- Prefer the most specific visible concrete class; do not use generic nouns like ""object"", ""instrument"", or ""item"" when a specific class is clearly visible. Use ""person"" only when a more specific subject is not visually identifiable.
+- If any legible text or logo is present and confidently readable, copy it exactly and place it within the first six content words.
+- Use Arabic numerals for clear counts and place them early. Use ""several"" only for indistinct groups (>3).
+- Allow either a short noun‑phrase caption (no verb) or a concise present‑tense sentence (present simple or present‑participle). If you use a verb, you may place it after the first four content words to keep high‑signal tokens early.
+- Include at most one short spatial connector (""next to"", ""on"", ""near"", ""in front of"") to link the primary subject to a nearby object or surface.
+- Choose the primary subject deterministically: prefer the centermost, largest, highest‑contrast, or the object with an explicit visible attribute (color/number/logo).
+- Do not infer unseen attributes (age, emotion, intent, relationships) and avoid figurative or subjective language. Do not invent specific attributes when they are not visually evident; fall back to a safe generic only if the specific class or attribute is not clearly visible.
+- Count content words carefully (exclude the single leading article and punctuation) when locating the first N content words.
+- Avoid leading generic templates like ""A person..."" or ""There is..."" when a more specific subject is visible.
+
+Output exactly one short sentence only—no extra text.",Two women embrace while holding takeout containers and bags.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_2946798e90,127,5364,flickr30k_test_005364,images/flickr30k/flickr30k_test_005364.jpg,"[""A man is sitting in front of a Buddist monument."", ""A man stands in front of a statue."", ""Monk praying before buddha statue."", ""A person prays at a shrine."", ""A buddist worships buddha.""]",textgrad_2946798e90,TextGrad Step 6,"Output exactly one literal, factual sentence (8–20 words) describing only visible content in the image. Do not add labels, examples, lists, annotations, or any extra text.
+
+Definitions: content words exclude a single leading article (a/an/the) and punctuation. A high‑signal token is one of: visible color or pattern, a concrete object class (prefer the most specific multiword class available, e.g., ""electric guitar"", ""motorbike""), a clear count (Arabic numeral), clothing/accessory, or legible text/logo copied verbatim.
+
+Primary rules:
+- Include at least two high‑signal tokens within the first four content words when two are clearly visible; otherwise include at least one high‑signal token within the first three content words.
+- If a visible color/pattern exists, place it immediately before its noun (e.g., ""red bicycle""). Use ""noun with [attribute]"" only if the color cannot appear within the required early content words.
+- Prefer the most specific visible concrete class; do not use generic nouns like ""object"", ""instrument"", or ""item"" when a specific class is clearly visible. Use ""person"" only when a more specific subject is not visually identifiable.
+- If any legible text or logo is present and confidently readable, copy it exactly and place it within the first six content words.
+- Use Arabic numerals for clear counts and place them early. Use ""several"" only for indistinct groups (>3).
+- Allow either a short noun‑phrase caption (no verb) or a concise present‑tense sentence (present simple or present‑participle). If you use a verb, you may place it after the first four content words to keep high‑signal tokens early.
+- Include at most one short spatial connector (""next to"", ""on"", ""near"", ""in front of"") to link the primary subject to a nearby object or surface.
+- Choose the primary subject deterministically: prefer the centermost, largest, highest‑contrast, or the object with an explicit visible attribute (color/number/logo).
+- Do not infer unseen attributes (age, emotion, intent, relationships) and avoid figurative or subjective language. Do not invent specific attributes when they are not visually evident; fall back to a safe generic only if the specific class or attribute is not clearly visible.
+- Count content words carefully (exclude the single leading article and punctuation) when locating the first N content words.
+- Avoid leading generic templates like ""A person..."" or ""There is..."" when a more specific subject is visible.
+
+Output exactly one short sentence only—no extra text.",Silver incense burner with lotus design in front of Buddha statue.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_2946798e90,134,969,flickr30k_test_000969,images/flickr30k/flickr30k_test_000969.jpg,"[""Young men and women sit at a wooden table on which several partially-drunk beverages have been placed; the picture is interrupted by an outstretched hand, colored green in the odd light of the wood-paneled interior."", ""A green tinted hand is being held up in front of a table of people."", ""Two guys gather around a table with two girls while drinking."", ""People socializing at a table with beverages."", ""A group of friends hanging out in a bar.""]",textgrad_2946798e90,TextGrad Step 6,"Output exactly one literal, factual sentence (8–20 words) describing only visible content in the image. Do not add labels, examples, lists, annotations, or any extra text.
+
+Definitions: content words exclude a single leading article (a/an/the) and punctuation. A high‑signal token is one of: visible color or pattern, a concrete object class (prefer the most specific multiword class available, e.g., ""electric guitar"", ""motorbike""), a clear count (Arabic numeral), clothing/accessory, or legible text/logo copied verbatim.
+
+Primary rules:
+- Include at least two high‑signal tokens within the first four content words when two are clearly visible; otherwise include at least one high‑signal token within the first three content words.
+- If a visible color/pattern exists, place it immediately before its noun (e.g., ""red bicycle""). Use ""noun with [attribute]"" only if the color cannot appear within the required early content words.
+- Prefer the most specific visible concrete class; do not use generic nouns like ""object"", ""instrument"", or ""item"" when a specific class is clearly visible. Use ""person"" only when a more specific subject is not visually identifiable.
+- If any legible text or logo is present and confidently readable, copy it exactly and place it within the first six content words.
+- Use Arabic numerals for clear counts and place them early. Use ""several"" only for indistinct groups (>3).
+- Allow either a short noun‑phrase caption (no verb) or a concise present‑tense sentence (present simple or present‑participle). If you use a verb, you may place it after the first four content words to keep high‑signal tokens early.
+- Include at most one short spatial connector (""next to"", ""on"", ""near"", ""in front of"") to link the primary subject to a nearby object or surface.
+- Choose the primary subject deterministically: prefer the centermost, largest, highest‑contrast, or the object with an explicit visible attribute (color/number/logo).
+- Do not infer unseen attributes (age, emotion, intent, relationships) and avoid figurative or subjective language. Do not invent specific attributes when they are not visually evident; fall back to a safe generic only if the specific class or attribute is not clearly visible.
+- Count content words carefully (exclude the single leading article and punctuation) when locating the first N content words.
+- Avoid leading generic templates like ""A person..."" or ""There is..."" when a more specific subject is visible.
+
+Output exactly one short sentence only—no extra text.",Green-lit hand raised near wooden table with beer bottles and glasses.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_2946798e90,135,15378,flickr30k_test_015378,images/flickr30k/flickr30k_test_015378.jpg,"[""The man in the red shirt and the woman with the white bag are conversing."", ""A man in a red shirt is interacting with a woman holding a shopping bag."", ""A woman is purchasing items from the man in the red shirt's yard sale."", ""An older man in a black hat and red shirt is talking with a woman."", ""A woman in a black shirt is holding a plastic bag.""]",textgrad_2946798e90,TextGrad Step 6,"Output exactly one literal, factual sentence (8–20 words) describing only visible content in the image. Do not add labels, examples, lists, annotations, or any extra text.
+
+Definitions: content words exclude a single leading article (a/an/the) and punctuation. A high‑signal token is one of: visible color or pattern, a concrete object class (prefer the most specific multiword class available, e.g., ""electric guitar"", ""motorbike""), a clear count (Arabic numeral), clothing/accessory, or legible text/logo copied verbatim.
+
+Primary rules:
+- Include at least two high‑signal tokens within the first four content words when two are clearly visible; otherwise include at least one high‑signal token within the first three content words.
+- If a visible color/pattern exists, place it immediately before its noun (e.g., ""red bicycle""). Use ""noun with [attribute]"" only if the color cannot appear within the required early content words.
+- Prefer the most specific visible concrete class; do not use generic nouns like ""object"", ""instrument"", or ""item"" when a specific class is clearly visible. Use ""person"" only when a more specific subject is not visually identifiable.
+- If any legible text or logo is present and confidently readable, copy it exactly and place it within the first six content words.
+- Use Arabic numerals for clear counts and place them early. Use ""several"" only for indistinct groups (>3).
+- Allow either a short noun‑phrase caption (no verb) or a concise present‑tense sentence (present simple or present‑participle). If you use a verb, you may place it after the first four content words to keep high‑signal tokens early.
+- Include at most one short spatial connector (""next to"", ""on"", ""near"", ""in front of"") to link the primary subject to a nearby object or surface.
+- Choose the primary subject deterministically: prefer the centermost, largest, highest‑contrast, or the object with an explicit visible attribute (color/number/logo).
+- Do not infer unseen attributes (age, emotion, intent, relationships) and avoid figurative or subjective language. Do not invent specific attributes when they are not visually evident; fall back to a safe generic only if the specific class or attribute is not clearly visible.
+- Count content words carefully (exclude the single leading article and punctuation) when locating the first N content words.
+- Avoid leading generic templates like ""A person..."" or ""There is..."" when a more specific subject is visible.
+
+Output exactly one short sentence only—no extra text.",Man in red shirt and black hat stands near woman holding plastic bag.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_2946798e90,137,10109,flickr30k_test_010109,images/flickr30k/flickr30k_test_010109.jpg,"[""A group of Asians with baskets of produce are squatting in a vegetable market."", ""Several people are picking through crops at an urban market."", ""Two people cleaning greens in the sunset."", ""Women are on business selling vegetables."", ""Two Asians with green leafy vegetables.""]",textgrad_2946798e90,TextGrad Step 6,"Output exactly one literal, factual sentence (8–20 words) describing only visible content in the image. Do not add labels, examples, lists, annotations, or any extra text.
+
+Definitions: content words exclude a single leading article (a/an/the) and punctuation. A high‑signal token is one of: visible color or pattern, a concrete object class (prefer the most specific multiword class available, e.g., ""electric guitar"", ""motorbike""), a clear count (Arabic numeral), clothing/accessory, or legible text/logo copied verbatim.
+
+Primary rules:
+- Include at least two high‑signal tokens within the first four content words when two are clearly visible; otherwise include at least one high‑signal token within the first three content words.
+- If a visible color/pattern exists, place it immediately before its noun (e.g., ""red bicycle""). Use ""noun with [attribute]"" only if the color cannot appear within the required early content words.
+- Prefer the most specific visible concrete class; do not use generic nouns like ""object"", ""instrument"", or ""item"" when a specific class is clearly visible. Use ""person"" only when a more specific subject is not visually identifiable.
+- If any legible text or logo is present and confidently readable, copy it exactly and place it within the first six content words.
+- Use Arabic numerals for clear counts and place them early. Use ""several"" only for indistinct groups (>3).
+- Allow either a short noun‑phrase caption (no verb) or a concise present‑tense sentence (present simple or present‑participle). If you use a verb, you may place it after the first four content words to keep high‑signal tokens early.
+- Include at most one short spatial connector (""next to"", ""on"", ""near"", ""in front of"") to link the primary subject to a nearby object or surface.
+- Choose the primary subject deterministically: prefer the centermost, largest, highest‑contrast, or the object with an explicit visible attribute (color/number/logo).
+- Do not infer unseen attributes (age, emotion, intent, relationships) and avoid figurative or subjective language. Do not invent specific attributes when they are not visually evident; fall back to a safe generic only if the specific class or attribute is not clearly visible.
+- Count content words carefully (exclude the single leading article and punctuation) when locating the first N content words.
+- Avoid leading generic templates like ""A person..."" or ""There is..."" when a more specific subject is visible.
+
+Output exactly one short sentence only—no extra text.",Two women in conical hats sort leafy greens in woven baskets.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"

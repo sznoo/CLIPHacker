@@ -1,0 +1,142 @@
+{
+  "prompt": "Output exactly one concise, information‑dense caption: a single grammatical sentence, composed of comma‑separated short phrases, describing only visibly present facts. Use digits for counts, no inference, hedging, or metaphors (no \"appears/likely/seems\"); do not output anything else.\n\nRequired ordering for the sentence (include each item only if clearly visible; omit unverifiable items). Prefer ≤30 words:\n1) Begin with digit(s) + subject noun(s) + spatial anchor for each counted subject: [left|center|right] and [foreground|midground|background]. If partly out of frame, use \"partially cropped at [edge]\".\n2) Immediately after, include one visible action if present plus the specific body/vehicle part or object involved (e.g., \"right hand on fretboard\", \"left foot stepping\", \"holding knife at table edge\"). Run the micro‑action checklist before using \"no-action-visible\"; use \"no-action-visible\" only if absolutely no limb/object contact, gaze direction, posture, object displacement, or interaction is detectable.\n3) Add 1–3 high‑signal discriminative descriptor(s), chosen by priority: (A) exact legible text (transcribe in quotes and localize, e.g., \"'NO PARKING' stenciled on roll‑up door at background right\") > (B) reflection/wetness/surface condition > (C) material/texture > (D) distinctive accessory (hat, bag) > (E) color. If >3 candidates exist, select top 3 by this priority.\n4) If a person/object interacts with another object/structure, require one part‑level relation phrase (e.g., \"sitting on metal chair beside small round table\", \"rear wheel off ground\").\n5) Optionally include exactly one viewpoint token when obvious: {close-up, medium, wide, high-angle, low-angle}. Omit if unclear.\n6) Optionally include exactly one lighting token when obvious: {backlit, front-lit, rim-lit, long-shadow-left, long-shadow-right}. Omit if unclear.\n7) If visible, add one concise background landmark/texture noun phrase (single phrase, e.g., \"wet pavement with ripples\", \"stone embankment\", \"storefront window\", \"pier with canopy\").\n8) Preserve the final ordering in the sentence: [digit+subject+location], [action+part if any], [1–3 descriptors], [viewpoint if included], [lighting if included], [background phrase].\n\nPre-output verification checklist (must be applied before emitting the caption):\n- Did I detect any legible text? If yes, transcribe exact string in quotes and localize.\n- Did I detect limb/object contact, gaze, posture, object displacement, or interaction? If yes, include action+part phrase; otherwise use \"no-action-visible\" or omit action.\n- Did I spot reflections, wet surfaces, or distinctive background landmarks? If yes, include one background noun phrase.\n- Are small props or distinctive clothing/accessories visible? If yes, include up to the top descriptor(s) per priority.\n- Is any subject partially out of frame? If yes, use \"partially cropped at [edge]\".\n\nStyle and constraints:\n- Use compact, active, factual phrasing and concrete nouns (prefer canonical object names: \"acoustic guitar\" not \"instrument\" when specific). Limit descriptors to the top 3 priority items.\n- Do not infer ages, emotions, relationships, or unverified attributes. No hedging words.\n- Keep punctuation simple and phrases comma‑separated in one sentence.\n\nMicro‑examples (do not output these; follow their style):\nPositive: \"1 man center foreground, right hand on fretboard, reddish‑brown acoustic guitar body, medium, front-lit, wet pavement with reflections.\" \nPositive: \"2 boats center and left foreground, people boarding at stern, white hulls with red trim, wide, front-lit, stone embankment behind.\"\nNegative (avoid): \"Several people in a busy scene with objects and unclear lighting.\"",
+  "prompt_id": "textgrad_4a56f6c519",
+  "split_csv": "data/splits/flickr30k_main_seed1_val.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal/step_02/val/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal/step_02/val/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal/step_02/val/scores.csv",
+  "data_root": "data",
+  "summary": {
+    "n": 150,
+    "mean_clip": 0.2948936583598455,
+    "mean_siglip": 0.1832529166340828,
+    "mean_caption_len": 24.053333333333335,
+    "generic_rate": 0.0,
+    "mean_delta_clip": -0.029671789954106013,
+    "mean_delta_siglip": -0.015587629054983457,
+    "clip_win_rate": 0.18666666666666668,
+    "siglip_win_rate": 0.3333333333333333
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_007385",
+      "image_relpath": "images/flickr30k/flickr30k_test_007385.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_007385.jpg",
+      "caption": "1 man center foreground, right arm raised holding baton, blue and multicolored patterned suit, wide, long-shadow-right, storefront with \"Kroger\" sign in background.",
+      "clip_score": 0.2310040593147277,
+      "siglip_score": 0.1241435930132865,
+      "delta_clip": -0.1378527879714966,
+      "delta_siglip": -0.05078483372926722
+    },
+    {
+      "image_id": "flickr30k_test_020068",
+      "image_relpath": "images/flickr30k/flickr30k_test_020068.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_020068.jpg",
+      "caption": "1 woman right foreground, sitting on wooden bench, wearing white shirt and pink scarf, long-shadow-right, grassy park with trees.",
+      "clip_score": 0.2324512302875518,
+      "siglip_score": 0.1569090634584427,
+      "delta_clip": -0.11975046992301949,
+      "delta_siglip": -0.0632923394441604
+    },
+    {
+      "image_id": "flickr30k_test_030505",
+      "image_relpath": "images/flickr30k/flickr30k_test_030505.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_030505.jpg",
+      "caption": "1 person center foreground, no-action-visible, wearing dark suit and glasses, medium, front-lit, storefront window background.",
+      "clip_score": 0.2195115685462951,
+      "siglip_score": -0.0453443229198455,
+      "delta_clip": -0.11617922782897949,
+      "delta_siglip": -0.2160774320363997
+    },
+    {
+      "image_id": "flickr30k_test_030505",
+      "image_relpath": "images/flickr30k/flickr30k_test_030505.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_030505.jpg",
+      "caption": "1 person center foreground, no-action-visible, wearing dark suit and glasses, medium, front-lit, storefront window background.",
+      "clip_score": 0.2195115685462951,
+      "siglip_score": -0.0453443229198455,
+      "delta_clip": -0.11409291625022888,
+      "delta_siglip": -0.2629023492336272
+    },
+    {
+      "image_id": "flickr30k_test_013546",
+      "image_relpath": "images/flickr30k/flickr30k_test_013546.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_013546.jpg",
+      "caption": "1 child center midground, standing on yellow platform, black jacket, blue pants, no-action-visible, medium, front-lit, blurred green trees in background.",
+      "clip_score": 0.2647902965545654,
+      "siglip_score": 0.1820430010557174,
+      "delta_clip": -0.11227789521217352,
+      "delta_siglip": -0.027386352419853183
+    },
+    {
+      "image_id": "flickr30k_test_009512",
+      "image_relpath": "images/flickr30k/flickr30k_test_009512.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_009512.jpg",
+      "caption": "5 women center foreground, no-action-visible, red and black uniforms, \"AVIREX\" banner at background right, medium, front-lit, green artificial turf.",
+      "clip_score": 0.2705939412117004,
+      "siglip_score": 0.1511943340301513,
+      "delta_clip": -0.10859781503677374,
+      "delta_siglip": -0.037196338176727295
+    },
+    {
+      "image_id": "flickr30k_test_026513",
+      "image_relpath": "images/flickr30k/flickr30k_test_026513.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_026513.jpg",
+      "caption": "4 people center and left foreground, holding umbrella, wearing blue and yellow jackets, wet pavement, medium, front-lit, stone embankment behind.",
+      "clip_score": 0.2955883145332336,
+      "siglip_score": 0.1235020756721496,
+      "delta_clip": -0.1070857048034668,
+      "delta_siglip": -0.13651660084724432
+    },
+    {
+      "image_id": "flickr30k_test_016835",
+      "image_relpath": "images/flickr30k/flickr30k_test_016835.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_016835.jpg",
+      "caption": "1 man center foreground, standing, wearing black hat, white checkered shirt, black shorts, red socks, holding no object, no-action-visible, \"Front St E\" street sign visible left midground, wide, front-lit, brick building with windows background.",
+      "clip_score": 0.2760362327098846,
+      "siglip_score": 0.1413085162639618,
+      "delta_clip": -0.10699930787086492,
+      "delta_siglip": -0.09958449006080622
+    },
+    {
+      "image_id": "flickr30k_test_011250",
+      "image_relpath": "images/flickr30k/flickr30k_test_011250.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_011250.jpg",
+      "caption": "2 children center foreground, holding hands, brown shirt with \"LAKE PLACID\" text, red striped shirt, grassy field with yellow caution tape, wide, front-lit, runway and distant plane in background.",
+      "clip_score": 0.3144508600234985,
+      "siglip_score": 0.2615169882774353,
+      "delta_clip": -0.09814292192459112,
+      "delta_siglip": 0.041001364588737516
+    },
+    {
+      "image_id": "flickr30k_test_008802",
+      "image_relpath": "images/flickr30k/flickr30k_test_008802.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_008802.jpg",
+      "caption": "1 dog center foreground, holding frisbee in mouth, black, white, and tan fur, medium, long-shadow-right, chain-link fence in background.",
+      "clip_score": 0.2736495435237884,
+      "siglip_score": 0.1371326744556427,
+      "delta_clip": -0.09516444802284241,
+      "delta_siglip": -0.056445747613906805
+    },
+    {
+      "image_id": "flickr30k_test_028445",
+      "image_relpath": "images/flickr30k/flickr30k_test_028445.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_028445.jpg",
+      "caption": "1 man center foreground, holding blue mesh laundry hamper with white clothes, striped shirt, plaid shorts, red pickup truck right midground, \"XTR\" on tailgate, wide, front-lit, paved road with buildings background.",
+      "clip_score": 0.2729620635509491,
+      "siglip_score": 0.1776161342859268,
+      "delta_clip": -0.0944114625453949,
+      "delta_siglip": -0.039420440793037415
+    },
+    {
+      "image_id": "flickr30k_test_017698",
+      "image_relpath": "images/flickr30k/flickr30k_test_017698.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_017698.jpg",
+      "caption": "7 people center midground, standing, holding papers, wearing helmets, military uniforms, beige building behind, wide, front-lit, gravel ground.",
+      "clip_score": 0.259162425994873,
+      "siglip_score": 0.1775668859481811,
+      "delta_clip": -0.09232383966445928,
+      "delta_siglip": -0.08247298002243048
+    }
+  ]
+}

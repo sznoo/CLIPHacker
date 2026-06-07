@@ -1,0 +1,142 @@
+{
+  "prompt": "Output exactly one concise, information‑dense caption: a single grammatical sentence of comma‑separated short phrases. Use digits for counts; do not infer, hedge, paraphrase, or add anything not visually present. Output nothing else.\n\nRequired phrase ordering (include an item only if visually verifiable; omit unverifiable items). Aim for ≤30 words; allow up to +10% length only to include a fully legible quoted text string or one necessary part‑level relation/background anchor.\n\n1) Start with: [digit] + subject noun(s) + spatial anchor.\n   - Deterministic spatial rule: compute subject centroid x; if x < 0.33 → \"left\"; if 0.33 ≤ x ≤ 0.66 → \"center\"; if x > 0.66 → \"right\".\n   - If subject width >60% image width, emit \"center\" regardless of centroid.\n   - If >5% of subject area lies outside image, append \"partially cropped at [top|bottom|left|right]\".\n   - Add depth token [foreground|midground|background] only if clear from overlap/relative scale; otherwise omit.\n\n2) Immediately after, include exactly one visible micro‑action/part phrase if any of these verifiable cues is present: visible limb‑object contact, object held in hand, visible deformation/pressure, object midair/off ground, clear gaze at a visible object, or motion blur on a limb. Use one of these templates only:\n   - \"[hand] [verb] [object]\" (e.g., \"right hand holding pole\")\n   - \"holding [object] with [hand]\" (e.g., \"holding violin with chin and right hand\")\n   - \"[body_part] [verb] [structure/object]\" (e.g., \"left foot on pedal\")\n   If none apply, include exactly \"no-action-visible\".\n\n3) Then include up to 1–3 high‑signal descriptor(s) chosen by strict priority (pick highest‑ranked verifiable candidates, break ties lexicographically):\n   A) Legible text — transcribe exact string only if every character is clearly readable; include it in quotes and localize (e.g., \"'LOEWE' on lower sill at left\").\n   B) Reflection/surface condition (e.g., \"wet pavement with reflections\", \"glass reflections\").\n   C) Material/texture (e.g., \"rusted metal\", \"woven straw\").\n   D) Distinctive accessory (e.g., \"white hard hat\", \"red pennant\").\n   E) Color (e.g., \"red sweatshirt\").\n   - Enforce ≤3 descriptors; if none verifiable, omit descriptors.\n\n4) If a person/object clearly interacts with another object/structure, include exactly one concise part‑level relation phrase using the template: \"[part] [verb] [object/structure]\" (e.g., \"right hand holding pole\", \"rear wheel off ground\"). Include this only if contact/displacement is visually evident.\n\n5) Optionally include exactly one viewpoint token when obvious: {close-up, medium, wide, high-angle, low-angle}.\n\n6) Optionally include exactly one lighting token when obvious: {backlit, front-lit, rim-lit, long-shadow-left, long-shadow-right}.\n\n7) If a clear background anchor is visible, append one concise background noun phrase (single phrase, e.g., \"storefront window\", \"stone embankment\", \"Radio City marquee\"). Omit if no clear anchor.\n\nReflections vs. behind‑glass rule\n- If an element appears doubled, reversed, or overlayed on the glass plane without 3D occlusion → label as \"reflections\".\n- If objects clearly sit on the far side of the glass (shelf, mannequin, handbags) → label as \"on display behind glass\" or \"behind glass\".\n- If uncertain, omit both.\n\nTwo‑pass verification (must run before emitting):\na) Transcribe quoted text only if every character is readable; otherwise drop text token.\nb) Include a digit count only if each instance is clearly visible and ≥50% unobstructed; otherwise omit count.\nc) Include depth only if overlap/relative scale is unambiguous.\nd) Include \"partially cropped\" only if >5% of subject area is outside image.\ne) Drop any token failing verification and recheck sentence for grammaticality.\n\nBrevity & prioritization\n- If length limits force removal, prioritize tokens in this order: legible text → part‑level relation → background anchor → descriptors → viewpoint → lighting.\n- Use compact, active, factual phrasing and concrete nouns. Do not infer ages, emotions, roles, intent, or unseen attributes. Do not use vague quantifiers (\"several\",\"many\") — use digits only when clear.\n\nStyle constraints\n- Single sentence, comma‑separated short phrases, no tags, no lists, no extra lines.\n- Use canonical labels (e.g., \"storefront window\", \"center\"), consistent punctuation for quoted text.\n\nCanonical good examples (follow exact output format):\n- \"1 child left foreground, reaching toward storefront window, right hand touching glass, 'LOEWE' on lower sill at left, glass reflections, storefront window behind.\"\n- \"1 woman center foreground, holding violin with chin and right hand, open instrument case on ground, medium, tiled underground passage behind.\"\n- \"1 surfer center midground, crouching on surfboard, sharp turn with spray arc behind, sunlit green wave face, low-angle, ocean behind.\"\n- \"5 dancers center foreground, standing in long line across crosswalk, red and white striped costumes, Radio City marquee above, street behind.\"\n\nFollow these rules exactly to produce one precise caption.",
+  "prompt_id": "textgrad_53a1516f54",
+  "split_csv": "data/splits/flickr30k_main_seed1_val.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal/step_04/val/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal/step_04/val/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal/step_04/val/scores.csv",
+  "data_root": "data",
+  "summary": {
+    "n": 150,
+    "mean_clip": 0.29222637434800464,
+    "mean_siglip": 0.19064440920948983,
+    "mean_caption_len": 21.066666666666666,
+    "generic_rate": 0.0,
+    "mean_delta_clip": -0.03233907396594683,
+    "mean_delta_siglip": -0.008196136479576425,
+    "clip_win_rate": 0.17333333333333334,
+    "siglip_win_rate": 0.42
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_011250",
+      "image_relpath": "images/flickr30k/flickr30k_test_011250.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_011250.jpg",
+      "caption": "2 children center foreground, right hand holding left hand, brown shirt with \"LAKE PLACID\" text, red striped shirt, denim shorts, grass field behind.",
+      "clip_score": 0.2789817452430725,
+      "siglip_score": 0.1692499816417694,
+      "delta_clip": -0.1336120367050171,
+      "delta_siglip": -0.05126564204692838
+    },
+    {
+      "image_id": "flickr30k_test_017698",
+      "image_relpath": "images/flickr30k/flickr30k_test_017698.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_017698.jpg",
+      "caption": "1 woman right foreground, holding clipboard with left hand, black jacket, dark hair, no-action-visible, concrete ground, building behind.",
+      "clip_score": 0.2331299185752868,
+      "siglip_score": 0.1089828461408615,
+      "delta_clip": -0.11835634708404547,
+      "delta_siglip": -0.15105701982975006
+    },
+    {
+      "image_id": "flickr30k_test_006851",
+      "image_relpath": "images/flickr30k/flickr30k_test_006851.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_006851.jpg",
+      "caption": "2 children center foreground, holding green poster with \"KEEPING US SAFE FOR\" text, wearing blue shirts, no-action-visible, \"KEEPING US SAFE FOR\" on poster, classroom with balloons and toys behind.",
+      "clip_score": 0.2752736508846283,
+      "siglip_score": 0.1828371882438659,
+      "delta_clip": -0.11741948127746582,
+      "delta_siglip": -0.07440432906150818
+    },
+    {
+      "image_id": "flickr30k_test_023317",
+      "image_relpath": "images/flickr30k/flickr30k_test_023317.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_023317.jpg",
+      "caption": "1 woman center foreground, right hand holding black bag, pink jacket, blue skirt, no-action-visible, red barrel with 'WM' sticker at right, 'GUEST SERVICES' sign above, crowd behind glass.",
+      "clip_score": 0.2803069651126861,
+      "siglip_score": 0.2273697555065155,
+      "delta_clip": -0.1108409464359284,
+      "delta_siglip": 0.0089811980724335
+    },
+    {
+      "image_id": "flickr30k_test_028445",
+      "image_relpath": "images/flickr30k/flickr30k_test_028445.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_028445.jpg",
+      "caption": "1 man center foreground, holding blue mesh laundry hamper with both hands, white mustache, striped shirt, red pickup truck right, paved road behind.",
+      "clip_score": 0.2577198445796966,
+      "siglip_score": 0.1923622786998748,
+      "delta_clip": -0.1096536815166474,
+      "delta_siglip": -0.02467429637908941
+    },
+    {
+      "image_id": "flickr30k_test_015764",
+      "image_relpath": "images/flickr30k/flickr30k_test_015764.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_015764.jpg",
+      "caption": "1 man center foreground, no-action-visible, white shirt, purple lighting, crowd behind glass.",
+      "clip_score": 0.2351708710193634,
+      "siglip_score": 0.1701395511627197,
+      "delta_clip": -0.10696259140968317,
+      "delta_siglip": -0.040981903672218295
+    },
+    {
+      "image_id": "flickr30k_test_012572",
+      "image_relpath": "images/flickr30k/flickr30k_test_012572.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_012572.jpg",
+      "caption": "1 woman center foreground, no-action-visible, purple knitted beanie, brown hair, dark jacket, \"Domino Pizza\" sign at left, store window behind.",
+      "clip_score": 0.2874483168125152,
+      "siglip_score": 0.3179934024810791,
+      "delta_clip": -0.10234355926513677,
+      "delta_siglip": 0.025348573923111017
+    },
+    {
+      "image_id": "flickr30k_test_028445",
+      "image_relpath": "images/flickr30k/flickr30k_test_028445.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_028445.jpg",
+      "caption": "1 man center foreground, holding blue mesh laundry hamper with both hands, white mustache, striped shirt, red pickup truck right, paved road behind.",
+      "clip_score": 0.2577198445796966,
+      "siglip_score": 0.1923622786998748,
+      "delta_clip": -0.10194405913352972,
+      "delta_siglip": -0.028986036777496393
+    },
+    {
+      "image_id": "flickr30k_test_023554",
+      "image_relpath": "images/flickr30k/flickr30k_test_023554.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_023554.jpg",
+      "caption": "1 woman center foreground, no-action-visible, black latex Batman costume with yellow belt, glossy material, purple flag above right, crowd behind.",
+      "clip_score": 0.2827019393444061,
+      "siglip_score": 0.2043070197105407,
+      "delta_clip": -0.10154244303703314,
+      "delta_siglip": -0.0389228761196137
+    },
+    {
+      "image_id": "flickr30k_test_003587",
+      "image_relpath": "images/flickr30k/flickr30k_test_003587.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_003587.jpg",
+      "caption": "1 man center foreground, no-action-visible, black cap with '3' and 'ALBAN', black jacket with 'Plus', 'Coca-Cola', 'Snap-on', 'NASCAR', 'OREO', 'Arbella', 'Racing Champions', 'TIME CHAMPION', 'DAR",
+      "clip_score": 0.2664294838905334,
+      "siglip_score": 0.1884466260671615,
+      "delta_clip": -0.0988574624061585,
+      "delta_siglip": -0.07585744559764868
+    },
+    {
+      "image_id": "flickr30k_test_001063",
+      "image_relpath": "images/flickr30k/flickr30k_test_001063.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_001063.jpg",
+      "caption": "1 man center foreground, right hand pointing downward, olive tank top, light brown hair in ponytail, green blanket on couch right, beige wall behind.",
+      "clip_score": 0.2419893890619278,
+      "siglip_score": 0.197749376296997,
+      "delta_clip": -0.09803183376789093,
+      "delta_siglip": -0.038232192397117615
+    },
+    {
+      "image_id": "flickr30k_test_017698",
+      "image_relpath": "images/flickr30k/flickr30k_test_017698.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_017698.jpg",
+      "caption": "1 woman right foreground, holding clipboard with left hand, black jacket, dark hair, no-action-visible, concrete ground, building behind.",
+      "clip_score": 0.2331299185752868,
+      "siglip_score": 0.1089828461408615,
+      "delta_clip": -0.09672582149505621,
+      "delta_siglip": -0.1562551110982895
+    }
+  ]
+}

@@ -1,0 +1,117 @@
+{
+  "prompt": "Write exactly one literal, factual sentence (8–16 words) describing only visible content in the image. Follow this preferred order: primary visible subject + action/pose + location or nearby object + one clearly visible attribute (color, count, clothing/accessory, or legible text) when present. Include specific, concrete nouns (bicycle, fountain, frisbee, backpack) rather than generic terms (vehicle, structure). Include visible colors and patterns, clothing items, accessories, and legible text/logos verbatim when they can be read. Include counts only when each item is fully visible and unambiguous; if >3 and indistinct, use “several”; if uncertain, omit the number. Require at least one high‑signal token (specific object type, color, a clear count, a clothing/accessory, or legible text) if it is visibly present. Do not infer unseen attributes (age, emotions, relationships, intentions) and do not use figurative, evaluative, or subjective language. Use “person” if gender or age is unclear; use “man,” “woman,” or “child” only when clearly visible. Output exactly one short sentence only — no labels, examples, lists, or extra text. Example weak → stronger: \"Child plays near water.\" → \"Child in blue jacket splashes at a stone fountain.\" \"Person with bike.\" → \"Woman pushes red bicycle across a sunlit city street.\"",
+  "prompt_id": "textgrad_465c32cf71",
+  "split_csv": "data/splits/flickr30k_main_seed1_train.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_02/train/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_02/train/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_02/train/scores.csv",
+  "summary": {
+    "n": 24,
+    "mean_clip": 0.317104771733284,
+    "mean_siglip": 0.1882020918031533,
+    "mean_caption_len": 12.5,
+    "generic_rate": 0.0,
+    "mean_delta_clip": -0.006336895128091181,
+    "mean_delta_siglip": -0.012132758274674417,
+    "clip_win_rate": 0.4583333333333333,
+    "siglip_win_rate": 0.375
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_027198",
+      "caption": "Man in black shirt and cap runs while spraying water from a red water gun.",
+      "clip_score": 0.2717527151107788,
+      "siglip_score": 0.1364893317222595,
+      "delta_clip": -0.06674778461456299,
+      "delta_siglip": -0.004384234547614996
+    },
+    {
+      "image_id": "flickr30k_test_002067",
+      "caption": "Man plays yellow electric guitar on sidewalk near black amplifier.",
+      "clip_score": 0.2728315591812134,
+      "siglip_score": 0.1674200296401977,
+      "delta_clip": -0.061157941818237305,
+      "delta_siglip": -0.0632494539022446
+    },
+    {
+      "image_id": "flickr30k_test_009311",
+      "caption": "Child in plaid shirt leans on fountain edge with blonde hair.",
+      "clip_score": 0.2838180065155029,
+      "siglip_score": 0.1764858067035675,
+      "delta_clip": -0.04674360156059271,
+      "delta_siglip": 0.008807495236396817
+    },
+    {
+      "image_id": "flickr30k_test_021206",
+      "caption": "Man in gray suit plays acoustic guitar while seated on a metal chair.",
+      "clip_score": 0.2852097153663635,
+      "siglip_score": 0.1780411601066589,
+      "delta_clip": -0.03862655162811279,
+      "delta_siglip": 0.0066938400268554965
+    },
+    {
+      "image_id": "flickr30k_test_026288",
+      "caption": "Man in brown shirt crouches beside jackfruit and green leaves on dirt ground.",
+      "clip_score": 0.3433340787887573,
+      "siglip_score": 0.1882905513048172,
+      "delta_clip": -0.0346391499042511,
+      "delta_siglip": -0.031848430633544894
+    },
+    {
+      "image_id": "flickr30k_test_021284",
+      "caption": "Man in black hat and glasses stands near metal barricade with Palestinian flag.",
+      "clip_score": 0.2901524901390075,
+      "siglip_score": 0.1876945495605468,
+      "delta_clip": -0.03211390972137457,
+      "delta_siglip": -0.0481644421815873
+    },
+    {
+      "image_id": "flickr30k_test_012029",
+      "caption": "Several people board a floating temple platform near a stone embankment.",
+      "clip_score": 0.3246314227581024,
+      "siglip_score": 0.1813768148422241,
+      "delta_clip": -0.026553362607955877,
+      "delta_siglip": 0.03976196050643918
+    },
+    {
+      "image_id": "flickr30k_test_028876",
+      "caption": "Man in blue jersey with number 14 performs a handstand on grass near another player in red jersey with number 23.",
+      "clip_score": 0.3137214779853821,
+      "siglip_score": 0.1592694222927093,
+      "delta_clip": -0.019658267498016302,
+      "delta_siglip": 0.0007394552230834961
+    },
+    {
+      "image_id": "flickr30k_test_008358",
+      "caption": "Goalkeeper in red jersey with number 1 dives across green grass field.",
+      "clip_score": 0.3399450778961181,
+      "siglip_score": 0.1910340785980224,
+      "delta_clip": -0.018168270587921198,
+      "delta_siglip": -0.010477751493454007
+    },
+    {
+      "image_id": "flickr30k_test_025024",
+      "caption": "Several children sit on a concrete ledge in front of a blue metal gate.",
+      "clip_score": 0.2811468541622162,
+      "siglip_score": 0.1777970194816589,
+      "delta_clip": -0.010006934404373113,
+      "delta_siglip": -0.03143641352653498
+    },
+    {
+      "image_id": "flickr30k_test_021351",
+      "caption": "Woman in black outfit plays violin near colorful abstract paintings.",
+      "clip_score": 0.3382059037685394,
+      "siglip_score": 0.2200799733400344,
+      "delta_clip": -0.007163763046264704,
+      "delta_siglip": -0.012151628732681302
+    },
+    {
+      "image_id": "flickr30k_test_026129",
+      "caption": "Man in blue jacket adjusts snowshoes near snow-covered trees.",
+      "clip_score": 0.2949072122573852,
+      "siglip_score": 0.1675180494785308,
+      "delta_clip": -0.004509866237640381,
+      "delta_siglip": -0.011119470000267112
+    }
+  ]
+}

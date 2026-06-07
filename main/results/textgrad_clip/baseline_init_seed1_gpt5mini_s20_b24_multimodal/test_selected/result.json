@@ -1,0 +1,142 @@
+{
+  "prompt": "Produce exactly one concise, information-dense caption (one grammatical sentence) describing only visibly present facts. Follow this ordered checklist and include each item only if clearly visible; omit any field you cannot verify:\n\n- 1) Exact count(s) using numerals (e.g., \"3 people\") and arrangement with left/center/right or foreground/midground/background.\n- 2) Main subject(s) and precise action naming specific body/vehicle parts involved (e.g., \"pushing bicycle by the handlebars,\" \"rear wheel lifted,\" \"holding puppet by right hand\").\n- 3) Salient object descriptors: colors, materials, and distinctive accessories (e.g., \"red bag on right handlebar,\" \"chrome frame,\" \"striped shirt\").\n- 4) One short camera viewpoint token (e.g., \"wide shot,\" \"high-angle,\" \"close-up\").\n- 5) One short lighting/shadow token (e.g., \"backlit,\" \"long shadow to left,\" \"spotlight\").\n- 6) One background landmark or surface texture (e.g., \"cracked salt flat,\" \"red-tiled roof,\" \"draped blue tent\").\n\nUse concrete positional language (left/center/right, foreground/midground/background). Do not use vague quantifiers (\"several,\" \"some,\" \"a group\"), do not infer relationships, motivations, emotions, or use metaphors; state only what is directly visible. Keep the sentence concise and information-dense, following the approximate order: count + subject + action/part + descriptors + viewpoint + lighting + background.",
+  "prompt_id": "textgrad_2e7920a9d2",
+  "split_csv": "data/splits/flickr30k_main_seed1_test.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal/test_selected/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal/test_selected/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal/test_selected/scores.csv",
+  "data_root": "data",
+  "summary": {
+    "n": 150,
+    "mean_clip": 0.32689875692129133,
+    "mean_siglip": 0.1927810982366403,
+    "mean_caption_len": 40.72666666666667,
+    "generic_rate": 0.02,
+    "mean_delta_clip": 0.004074338575204217,
+    "mean_delta_siglip": 0.0007678352296352401,
+    "clip_win_rate": 0.55,
+    "siglip_win_rate": 0.54
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_022515",
+      "image_relpath": "images/flickr30k/flickr30k_test_022515.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_022515.jpg",
+      "caption": "One person in foreground right holds phone, another person in midground center wears dark shirt, and a woman in midground left wears white lace top and carries brown bag; wide shot, ambient lighting, storefronts with striped awnings in background.",
+      "clip_score": 0.2985512018203735,
+      "siglip_score": 0.1392914652824401,
+      "delta_clip": -0.11098098754882812,
+      "delta_siglip": -0.12014168500900271
+    },
+    {
+      "image_id": "flickr30k_test_005620",
+      "image_relpath": "images/flickr30k/flickr30k_test_005620.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_005620.jpg",
+      "caption": "Two people in foreground, left person holding yellow cup with right hand, right person holding two yellow cups with both hands, both wearing hoodies, under yellow \"Commercial Drive Station\" sign, wide shot, bright daylight, metal fence and beige wall in midground.",
+      "clip_score": 0.2948320806026459,
+      "siglip_score": 0.2201035022735595,
+      "delta_clip": -0.09490180015563965,
+      "delta_siglip": -0.0686739683151246
+    },
+    {
+      "image_id": "flickr30k_test_012940",
+      "image_relpath": "images/flickr30k/flickr30k_test_012940.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_012940.jpg",
+      "caption": "Two people, one in a red-and-white jacket and one in a dark jacket, stand in the foreground right, facing a parked blue pickup truck with a white license plate; a red car is parked left midground, and a \"No Parking\" sign is visible on a pole left center; wide shot, diffuse lighting",
+      "clip_score": 0.2803729176521301,
+      "siglip_score": 0.1929675191640854,
+      "delta_clip": -0.06435191631317139,
+      "delta_siglip": -0.05985178053379059
+    },
+    {
+      "image_id": "flickr30k_test_005143",
+      "image_relpath": "images/flickr30k/flickr30k_test_005143.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_005143.jpg",
+      "caption": "One dog, wearing a green and black harness, leaps vertically from midground water toward the sky, front paws raised, splashing droplets, viewed from a low-angle close-up with backlighting against a calm horizon.",
+      "clip_score": 0.3068440556526184,
+      "siglip_score": 0.1676646471023559,
+      "delta_clip": -0.05010181665420527,
+      "delta_siglip": -0.021206945180893
+    },
+    {
+      "image_id": "flickr30k_test_012385",
+      "image_relpath": "images/flickr30k/flickr30k_test_012385.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_012385.jpg",
+      "caption": "Three white lambs cluster in foreground, one nursing from a white bucket, while a grey turkey pecks at ground left, and three chickens (brown, black, and speckled) stand on wooden pallet right; wide shot, natural daylight, gravelly dirt ground.",
+      "clip_score": 0.2993688285350799,
+      "siglip_score": 0.143821895122528,
+      "delta_clip": -0.049323141574859675,
+      "delta_siglip": 0.013284102082252502
+    },
+    {
+      "image_id": "flickr30k_test_020058",
+      "image_relpath": "images/flickr30k/flickr30k_test_020058.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_020058.jpg",
+      "caption": "Two people sit on metal benches in the foreground, one wearing a dark blue shirt and the other a light orange shirt, facing away from the camera toward a colorful mosaic wall with yellow, red, and black patterns and a sign reading \"Wilmersdorfer Straße\" above them; wide shot, even lighting,",
+      "clip_score": 0.348798394203186,
+      "siglip_score": 0.2252644449472427,
+      "delta_clip": -0.0476710200309754,
+      "delta_siglip": -0.027647629380226107
+    },
+    {
+      "image_id": "flickr30k_test_002317",
+      "image_relpath": "images/flickr30k/flickr30k_test_002317.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_002317.jpg",
+      "caption": "Three workers in foreground, one holding hammer by right hand, another gripping tool with both hands, both wearing white hard hats and bright green overalls with reflective vests; one worker in center-right holds tool with left hand; background shows construction equipment and gravel bed under wide shot with diffuse lighting.",
+      "clip_score": 0.2926596105098724,
+      "siglip_score": 0.1454669833183288,
+      "delta_clip": -0.047509133815765436,
+      "delta_siglip": -0.01911087334156039
+    },
+    {
+      "image_id": "flickr30k_test_017636",
+      "image_relpath": "images/flickr30k/flickr30k_test_017636.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_017636.jpg",
+      "caption": "One runner in a blue shirt and white shorts raises both arms in the foreground while other runners in varied attire jog across a crosswalk in midground, viewed from a wide shot under diffuse lighting with trees and barricades in the background.",
+      "clip_score": 0.3103575706481933,
+      "siglip_score": 0.1560707688331604,
+      "delta_clip": -0.04684868454933172,
+      "delta_siglip": -0.0298559218645095
+    },
+    {
+      "image_id": "flickr30k_test_026850",
+      "image_relpath": "images/flickr30k/flickr30k_test_026850.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_026850.jpg",
+      "caption": "One person in a blue shirt and black pants is mid-air performing a backflip with a bicycle, holding the handlebars with both hands and the bike's rear wheel is elevated; the scene is captured from a low-angle viewpoint under bright daylight with a backdrop of dense green trees in the midground.",
+      "clip_score": 0.3122122883796692,
+      "siglip_score": 0.1578560471534729,
+      "delta_clip": -0.046171039342880194,
+      "delta_siglip": -0.031849816441535894
+    },
+    {
+      "image_id": "flickr30k_test_002317",
+      "image_relpath": "images/flickr30k/flickr30k_test_002317.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_002317.jpg",
+      "caption": "Three workers in foreground, one holding hammer by right hand, another gripping tool with both hands, both wearing white hard hats and bright green overalls with reflective vests; one worker in center-right holds tool with left hand; background shows construction equipment and gravel bed under wide shot with diffuse lighting.",
+      "clip_score": 0.2926596105098724,
+      "siglip_score": 0.1454669833183288,
+      "delta_clip": -0.045055538415908813,
+      "delta_siglip": -0.05201536417007449
+    },
+    {
+      "image_id": "flickr30k_test_001242",
+      "image_relpath": "images/flickr30k/flickr30k_test_001242.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_001242.jpg",
+      "caption": "Three people walk from right to left across a sidewalk: a silhouetted woman in foreground carrying a dark bag, a woman in pink top and dark pants midground holding a phone to her ear, and a man in dark clothing midground with a backpack; wide shot, strong backlight casting long shadows, beige textured",
+      "clip_score": 0.2940467000007629,
+      "siglip_score": 0.229770541191101,
+      "delta_clip": -0.042416781187057495,
+      "delta_siglip": 0.010219067335128701
+    },
+    {
+      "image_id": "flickr30k_test_014065",
+      "image_relpath": "images/flickr30k/flickr30k_test_014065.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_014065.jpg",
+      "caption": "One man in white pants and gold-and-blue shirt lunges forward with arms raised, dodging a black bull charging from midground right toward foreground left, against a red wall backdrop under bright daylight, viewed from a high-angle wide shot.",
+      "clip_score": 0.3084098994731903,
+      "siglip_score": 0.1659382879734039,
+      "delta_clip": -0.042250365018844604,
+      "delta_siglip": 0.025727182626724215
+    }
+  ]
+}

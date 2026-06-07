@@ -1,0 +1,142 @@
+{
+  "prompt": "Produce exactly one concise, information‑dense caption (one grammatical sentence) describing only visibly present facts. Output exactly one sentence and nothing else.\n\nFollow this ordered checklist and include each item only if clearly visible; omit unverifiable items. Use digits for counts. Do not infer, hedge, or use metaphors (no \"appears/likely/seems\"). Keep the sentence compact (prefer ≤30 words) and comma‑separate short phrases.\n\nOrder and rules:\n1) Start with numeral(s) (digit) + subject noun(s) + precise spatial anchor for each counted subject (left/center/right and foreground/midground/background). If subject is partly out of frame, state \"partially cropped at [edge]\".\n2) Immediately after, include a single visible action if present, and specify the body/vehicle part or object involved (e.g., \"right hand on handlebar\", \"left foot stepping\", \"rear wheel off ground\"). If no clear action is visible, use the token \"no-action-visible\" or omit the action.\n3) Add 1–3 high‑signal descriptor(s) (prefer material/texture, readable text, reflection/wetness, or a distinctive accessory). If legible text appears, transcribe it exactly and localize it (e.g., \"'NO PARKING' stenciled on roll-up door at background right\"). Cap descriptors to 1–3 short facts (color + material/unique accessory preferred).\n4) Choose exactly one viewpoint token if discernible: close-up | medium | wide | high-angle | low-angle.\n5) Choose exactly one lighting token if visible: backlit | front-lit | rim-lit | long-shadow-left | long-shadow-right.\n6) Choose exactly one short background landmark/texture phrase if visible (single noun phrase, e.g., \"wet pavement with ripples\", \"yellow picnic table\", \"roll-up door\", \"plywood roof\").\n7) For people interacting with structures, require pose + placement wording (e.g., \"clinging to top edge near peak, legs dangling\"). For visible building construction, include clear cues when present (exposed studs, plywood, insulation).\n8) No hedging, no inferred attributes (age, emotion, relationships) beyond visible appearance (hair color, clothing, accessories). Use compact, active phrasing and concrete nouns.\n\nOrdering to follow in the sentence: numeral(s) + subject(s)/location, action+part (if any), discriminative descriptor(s) (max 3), viewpoint token, lighting token, background token.\n\nExamples:\nPositive (desired): \"3 children center foreground, right child stepping in ankle‑deep puddle; blue raincoat with yellow drawstrings and sunglasses on center child's forehead; medium; backlit; beige van behind.\"\nNegative (avoid): \"Several kids standing in water, some wearing colorful clothes, a vague busy background with unclear objects and lighting.\"",
+  "prompt_id": "textgrad_faecdbad9d",
+  "split_csv": "data/splits/flickr30k_main_seed1_train.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal/step_02/train/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal/step_02/train/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal/step_02/train/scores.csv",
+  "data_root": "data",
+  "summary": {
+    "n": 24,
+    "mean_clip": 0.2808747148762147,
+    "mean_siglip": 0.1780231154213349,
+    "mean_caption_len": 21.875,
+    "generic_rate": 0.0,
+    "mean_delta_clip": -0.04256695198516052,
+    "mean_delta_siglip": -0.02231173465649287,
+    "clip_win_rate": 0.08333333333333333,
+    "siglip_win_rate": 0.375
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_021206",
+      "image_relpath": "images/flickr30k/flickr30k_test_021206.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_021206.jpg",
+      "caption": "1 man center midground, playing acoustic guitar; gray suit jacket and black trousers; medium; long-shadow-right; wet pavement with ripples.",
+      "clip_score": 0.2171386778354644,
+      "siglip_score": 0.1993586272001266,
+      "delta_clip": -0.10669758915901192,
+      "delta_siglip": 0.02801130712032318
+    },
+    {
+      "image_id": "flickr30k_test_009311",
+      "image_relpath": "images/flickr30k/flickr30k_test_009311.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_009311.jpg",
+      "caption": "1 child center foreground, no-action-visible; blonde hair, light-colored plaid shirt; medium; front-lit; green foliage background.",
+      "clip_score": 0.2372549623250961,
+      "siglip_score": 0.098009318113327,
+      "delta_clip": -0.09330664575099948,
+      "delta_siglip": -0.06966899335384369
+    },
+    {
+      "image_id": "flickr30k_test_012029",
+      "image_relpath": "images/flickr30k/flickr30k_test_012029.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_012029.jpg",
+      "caption": "1 boat center foreground, no-action-visible; white hull with red trim and canopy; wide; front-lit; stone embankment with temple in background.",
+      "clip_score": 0.2636485695838928,
+      "siglip_score": 0.1456688046455383,
+      "delta_clip": -0.08753621578216547,
+      "delta_siglip": 0.00405395030975339
+    },
+    {
+      "image_id": "flickr30k_test_026288",
+      "image_relpath": "images/flickr30k/flickr30k_test_026288.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_026288.jpg",
+      "caption": "1 man center foreground, crouching, no-action-visible; brown shirt, cap, and dark pants; medium; front-lit; dirt ground with scattered jackfruit seeds and green leaves.",
+      "clip_score": 0.2979562878608703,
+      "siglip_score": 0.1921330243349075,
+      "delta_clip": -0.08001694083213812,
+      "delta_siglip": -0.02800595760345459
+    },
+    {
+      "image_id": "flickr30k_test_003349",
+      "image_relpath": "images/flickr30k/flickr30k_test_003349.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_003349.jpg",
+      "caption": "1 child center foreground, no-action-visible; red jacket and dark pants; medium; front-lit; urban street with glass storefront reflection.",
+      "clip_score": 0.2874821424484253,
+      "siglip_score": 0.1358238756656646,
+      "delta_clip": -0.07651650905609131,
+      "delta_siglip": -0.13973370194435122
+    },
+    {
+      "image_id": "flickr30k_test_021351",
+      "image_relpath": "images/flickr30k/flickr30k_test_021351.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_021351.jpg",
+      "caption": "1 woman center midground, playing violin with left hand on neck and right hand on bow; black outfit and ponytail; wide; front-lit; concrete floor with embedded lights.",
+      "clip_score": 0.2724019289016723,
+      "siglip_score": 0.1738380491733551,
+      "delta_clip": -0.07296773791313177,
+      "delta_siglip": -0.0583935528993606
+    },
+    {
+      "image_id": "flickr30k_test_002067",
+      "image_relpath": "images/flickr30k/flickr30k_test_002067.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_002067.jpg",
+      "caption": "1 musician center foreground, left hand holding electric guitar neck, wearing white shirt and black pants; \"Fender\" logo visible on guitar body; medium; front-lit; stone building facade with red awning.",
+      "clip_score": 0.2740236520767212,
+      "siglip_score": 0.17102712392807,
+      "delta_clip": -0.05996584892272949,
+      "delta_siglip": -0.05964235961437228
+    },
+    {
+      "image_id": "flickr30k_test_028876",
+      "image_relpath": "images/flickr30k/flickr30k_test_028876.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_028876.jpg",
+      "caption": "1 player center foreground, upside-down with legs raised, blue jersey with yellow trim and number 14 visible; medium; front-lit; grass field with stadium seating background.",
+      "clip_score": 0.2742536962032318,
+      "siglip_score": 0.1325132250785827,
+      "delta_clip": -0.05912604928016657,
+      "delta_siglip": -0.02601674199104309
+    },
+    {
+      "image_id": "flickr30k_test_028925",
+      "image_relpath": "images/flickr30k/flickr30k_test_028925.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_028925.jpg",
+      "caption": "1 child center foreground, right hand holding screwdriver on typewriter; red hoodie with green circular patch; close-up; front-lit; blurred background with indistinct figures.",
+      "clip_score": 0.2679562270641327,
+      "siglip_score": 0.2237859666347503,
+      "delta_clip": -0.0541766881942749,
+      "delta_siglip": -0.04794672131538397
+    },
+    {
+      "image_id": "flickr30k_test_008358",
+      "image_relpath": "images/flickr30k/flickr30k_test_008358.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_008358.jpg",
+      "caption": "1 goalkeeper midground, diving horizontally with outstretched arms; red jersey with white stripes and number '1', black shorts, green gloves; wide; backlit; grassy field with trees background.",
+      "clip_score": 0.3103297352790832,
+      "siglip_score": 0.2106805890798568,
+      "delta_clip": -0.04778361320495611,
+      "delta_siglip": 0.009168758988380377
+    },
+    {
+      "image_id": "flickr30k_test_021284",
+      "image_relpath": "images/flickr30k/flickr30k_test_021284.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_021284.jpg",
+      "caption": "1 man center foreground, no-action-visible; black hat and dark suit; medium; front-lit; metal barricade and crowd behind.",
+      "clip_score": 0.2773803472518921,
+      "siglip_score": 0.1556096076965332,
+      "delta_clip": -0.04488605260848999,
+      "delta_siglip": -0.08024938404560089
+    },
+    {
+      "image_id": "flickr30k_test_027523",
+      "image_relpath": "images/flickr30k/flickr30k_test_027523.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_027523.jpg",
+      "caption": "1 man center foreground, no-action-visible; blue cap, plaid shirt, brown apron; medium; front-lit; wooden bench with carved sculptures.",
+      "clip_score": 0.3026058673858642,
+      "siglip_score": 0.2378764152526855,
+      "delta_clip": -0.039131700992584284,
+      "delta_siglip": 0.034396231174468994
+    }
+  ]
+}

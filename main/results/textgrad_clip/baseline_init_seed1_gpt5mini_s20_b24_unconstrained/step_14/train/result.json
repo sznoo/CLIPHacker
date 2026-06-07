@@ -1,0 +1,117 @@
+{
+  "prompt": "Output exactly one candidate by default. Only produce multiple candidates (2–3) if and only if the integrator guarantees an external CLIP reranker. When multiple candidates are allowed, produce up to three deterministic variants created only by changing the Line 1 tag set or by selecting alternate CLIP-preferred surface synonyms for the same canonical_id(s); do not introduce free-form wording differences. Each candidate must be exactly two lines (Line 1 = comma-separated tags; Line 2 = caption). Separate candidates with a single blank line. If you cannot produce a reliable candidate under the verifier's checks, output exactly: image unclear.",
+  "prompt_id": "textgrad_28c4a246dd",
+  "split_csv": "data/splits/flickr30k_main_seed1_train.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24/step_14/train/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24/step_14/train/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24/step_14/train/scores.csv",
+  "summary": {
+    "n": 24,
+    "mean_clip": 0.2950584143400192,
+    "mean_siglip": 0.19443795263456798,
+    "mean_caption_len": 27.208333333333332,
+    "generic_rate": 0.041666666666666664,
+    "mean_delta_clip": -0.024272913113236438,
+    "mean_delta_siglip": -0.0069467264693230295,
+    "clip_win_rate": 0.16666666666666666,
+    "siglip_win_rate": 0.5416666666666666
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_007637",
+      "caption": "man, workers, gloves, dirt, excavation, construction, labor, manual work, outdoor, earth, digging, tools, belt, jeans, focused, serious, teamwork, physical work, heavy labor, field work, dirt-covered, working hands, manual labor, construction site, earthmoving, excavation site, worker,",
+      "clip_score": 0.246448129415512,
+      "siglip_score": 0.1931896358728408,
+      "delta_clip": -0.08385372161865237,
+      "delta_siglip": 0.0006338804960250022
+    },
+    {
+      "image_id": "flickr30k_test_008727",
+      "caption": "child, toddler, girl, wrapping paper, gift, Christmas, pajamas, sitting, floor, indoor, holiday, present, unwrapping, baby, blue, red, white, gift wrapping, festive, family, celebration, holiday season, Christmas Eve, Christmas morning, gift opening, children, siblings, play",
+      "clip_score": 0.2739329636096954,
+      "siglip_score": 0.1715415269136428,
+      "delta_clip": -0.0739221870899201,
+      "delta_siglip": -0.0617500394582749
+    },
+    {
+      "image_id": "flickr30k_test_027198",
+      "caption": "water gun, running, grass, boys, outdoor, playful, summer, fun, kids, spray, field, action, motion, laughter, friends, game, water fight, energetic, casual, youth, active, park, recreation, childhood, enjoyment, splashing, dynamic, vibrant, green, field, leisure",
+      "clip_score": 0.2680104970932007,
+      "siglip_score": 0.1666103601455688,
+      "delta_clip": -0.07049000263214111,
+      "delta_siglip": 0.025736793875694303
+    },
+    {
+      "image_id": "flickr30k_test_014180",
+      "caption": "modern architecture, outdoor scene, people cycling, urban environment, contemporary building, public space, bicycles, pedestrians, trees, sunny day\n\nA person rides a bicycle in front of a striking modern building with curved white panels, while others walk and cycle nearby under a clear sky.",
+      "clip_score": 0.259094625711441,
+      "siglip_score": 0.1242670789361,
+      "delta_clip": -0.0631360113620758,
+      "delta_siglip": -0.05279579013586039
+    },
+    {
+      "image_id": "flickr30k_test_027960",
+      "caption": "football, youth, game, running, outdoor, field, boys, sports, action, competition, teamwork, physical, active, school, playground, dirt, sunny, casual, athletic, jersey, shorts, sneakers, cars, background, wall, fence, greenery, motion, dynamic, energy, play, recreation",
+      "clip_score": 0.2601438462734222,
+      "siglip_score": 0.1733092069625854,
+      "delta_clip": -0.05571982264518743,
+      "delta_siglip": 0.017517283558845492
+    },
+    {
+      "image_id": "flickr30k_test_005669",
+      "caption": "image unclear",
+      "clip_score": 0.2123480141162872,
+      "siglip_score": -0.0219289604574441,
+      "delta_clip": -0.034942194819450406,
+      "delta_siglip": -0.1372503284364937
+    },
+    {
+      "image_id": "flickr30k_test_012029",
+      "caption": "religious shrine, river, people, boat, India\nPeople gather around a floating shrine on a river in India.",
+      "clip_score": 0.3177520036697387,
+      "siglip_score": 0.163679838180542,
+      "delta_clip": -0.03343278169631958,
+      "delta_siglip": 0.02206498384475708
+    },
+    {
+      "image_id": "flickr30k_test_007264",
+      "caption": "woman, child, dog, street, smiling, interaction, urban, casual, playful, outdoor, people, pet, leash, sidewalk, sunny, happy, bonding, toddler, small, puppy, brown, white, floral, dress, bag, sunglasses, bracelet, watch, stroller, poster, building, pavement",
+      "clip_score": 0.299278199672699,
+      "siglip_score": 0.1772388815879821,
+      "delta_clip": -0.0324257612228393,
+      "delta_siglip": -0.0675115585327149
+    },
+    {
+      "image_id": "flickr30k_test_008358",
+      "caption": "goalkeeper, soccer, red jersey, diving save, grass field, outdoor sports\n\nimage unclear",
+      "clip_score": 0.3323048651218414,
+      "siglip_score": 0.1984608769416809,
+      "delta_clip": -0.02580848336219793,
+      "delta_siglip": -0.0030509531497955045
+    },
+    {
+      "image_id": "flickr30k_test_000833",
+      "caption": "boys, beach, frisbee, playing, water, summer, children, fun, outdoors, active, recreation, sand, ocean, swimwear, paddle, game, youth, casual, sunny, shoreline, waves, running, laughing, friends, beachgoers, vacation, leisure, sport, healthy, active",
+      "clip_score": 0.2829824686050415,
+      "siglip_score": 0.1744260787963867,
+      "delta_clip": -0.020694613456726074,
+      "delta_siglip": -0.011099547147750799
+    },
+    {
+      "image_id": "flickr30k_test_007954",
+      "caption": "young people, beach, sand, water, summer, vacation, bonding, playful, casual, outdoors\nTwo children are crouching on the beach, playing in the sand near the water's edge.",
+      "clip_score": 0.2710323631763458,
+      "siglip_score": 0.1756090670824051,
+      "delta_clip": -0.01880398392677307,
+      "delta_siglip": 0.0067686736583709994
+    },
+    {
+      "image_id": "flickr30k_test_027386",
+      "caption": "hiking,backpackers,group,greenhill,landscape,alaska\nA group of hikers with backpacks trek along a grassy hillside, with snow-capped mountains visible in the distance.",
+      "clip_score": 0.3313027918338775,
+      "siglip_score": 0.2199726700782776,
+      "delta_clip": -0.016793578863143976,
+      "delta_siglip": 0.016503423452377375
+    }
+  ]
+}

@@ -1,0 +1,142 @@
+{
+  "prompt": "Output exactly one concise, information‑dense caption: a single grammatical sentence composed of comma‑separated short phrases. Produce only that single sentence (no lists, tags, JSON, diagnostics, or extra lines). Use digits for counts only when the Count verification below passes. Do not infer age, emotion, intention, or any unseen attributes.\n\nMandatory generation procedure (two‑pass)\n1) Proposal: internally enumerate candidates for each slot: 1–3 subject groups (prominence order), optional single micro‑action slot, one part‑level relation (if contact verified), up to three descriptors, optional viewpoint/orientation, lighting, and background/text tokens. For each candidate also mark whether it derives from a verified cue, OCR, or classifier confidence.\n2) Verification & pruning: apply the numeric/cue/OCR checks below to every candidate; mark tokens that pass as VERIFIED. Protect all VERIFIED discriminative props, VERIFIED fine classes, and VERIFIED part‑relations from pruning. Drop any token that fails its verification rule; then deterministically recompose exactly one grammatical comma‑separated sentence from the remaining VERIFIED tokens plus any unverified neutral tokens that passed fallbacks. If pruning removes a slot, ensure the sentence remains grammatical.\n\nRequired overall format & hard limits\n- Render 1–3 clearly separable subject groups in prominence order. Each group: [digit if Count verified] + subject noun(s) + spatial anchor (left/center/right) and optional depth token only when depth verification passes. Use \"foreground\" or \"background\" when depth/separability is clear. Front‑load subject nouns and any VERIFIED discriminative props so they appear within the first 6–10 words. Target caption length 12–18 words; hard cap 20 words unless a quoted text string must be included (then allow up to 27 words). Use active, compressed noun‑verb phrases.\n\nNumeric verification rules (deterministic)\n- Count: include a digit only if every instance is ≥50% unobstructed AND centroid spacing ≥10% image width AND IOU between subject bboxes <0.10. If any check fails, omit digits and emit a singular/plural group token (\"person/people\", \"man/men\") as appropriate.\n- Contact (micro‑action): assert contact only if overlap area / smaller bbox area ≥12% AND one of: contiguous boundary pixels between part/object, visible attachment (e.g., chain/handle visibly connected), or clear occlusion consistent with grasp. Thin connectors (chain/rope/strap) count if visibly attached at both ends. If contact verified, include exactly one verbized micro‑action using this template: \"[left|right] [hand/foot/part] [verb] [object]\" (e.g., \"right hand holding woven basket\"). Always specify left/right when emitting micro‑actions. If contact not verified, omit micro‑action and part relation.\n- Fine object class: emit a fine class (e.g., vendor, bicycle, motorbike, ladder, performer, partially built house) only when a listed cue‑pair passes OR classifier confidence >0.60. Do not invent fine classes otherwise; use fallback neutral nouns (see anti‑hallucination lexicon).\n- Text transcription (OCR): quote exact text only when OCR confidence is high AND text bbox area ≥0.5% image area AND legibility ≳8pt equivalent with high contrast. If not, emit a positional label (\"painted text on metal shutter at left\", \"phone number on blue board at center\") and include dominant sign color/shape when legible.\n\nCue‑pair library (required, deterministic)\nEmit the corresponding fine class only when the cue‑pair passes:\n- Vendor: (baskets/piles of produce + scale/pans) OR (table/counter + stacks of fruit/vegetables).\n- Bicycle: (pedals + chain) OR (spokes + visible pedals).\n- Motorbike/scooter: (engine casing + visible exhaust) OR (frame + exhaust).\n- Ladder: (visible rungs + side rails) OR (rungs + ladder leaning against vertical structure).\n- Performer: (canopy/tent + tiled/stage floor) OR (headset/microphone + audience directly facing).\n- Partially built house: (exposed studs/trusses + raised frame or plywood ramp).\n- Jackfruit/produce specifics: (spiky rind + large cut pieces) OR (leaf bed + multiple cut pieces).\nOnly emit the fine class token when its cue‑pair passes. If cue‑pair fails, use a neutral descriptive fallback (e.g., \"person with woven baskets of oranges\", \"two‑wheeled vehicle\").\n\nDescriptor selection & priority (up to 1–3)\nPriority order (highest→lowest): (1) VERIFIED discriminative prop (protected), (2) quoted text (if VERIFIED), (3) VERIFIED fine class, (4) clothing & clear pose/gaze that disambiguate subjects, (5) material/texture, (6) color, (7) reflection/surface. If any discriminative prop or part‑relation is VERIFIED it is mandatory and cannot be pruned.\n\nMicro‑action & part‑relation rules (strict)\n- Include exactly one micro‑action only if Contact verification passes. Use the exact template: \"[left|right] [part] [verb] [object]\". Do not use \"with\" except inside this template. Use a strong verb; avoid passive or vague verbs.\n\nPose/orientation & object state\n- Include one orientation token when unambiguous (e.g., \"facing camera\", \"turned away\", \"leaning over\"). Include one object‑state descriptor when clearly visible (e.g., \"open instrument case\", \"wet reflective floor\").\n\nBackground & signage\n- Include a background anchor only when that anchor occupies ≥5% image area OR is a distinct structure (storefront, metal shutter, stairway, stage). Use compact phrases (\"storefront behind\", \"metal shutter at left\"). For text, follow the OCR rule above.\n\nTrimming & deterministic pruning order\n- If over length, deterministically drop tokens in this order until within limit: color → viewpoint/orientation → lighting → reflections → material/texture → background (unless ≥5% area or contains VERIFIED text) → low‑priority descriptors. Never drop VERIFIED discriminative props, VERIFIED fine classes, or VERIFIED part relations. When tokens tie in priority, prune the longer token (higher word cost) first. Maintain grammaticality after pruning.\n\nDeterministic tie‑breakers & cropping\n- If two subjects have similar prominence, choose the one with larger bbox area. If bbox areas tie, choose the leftmost centroid. If subject width >50% image width, emit \"center\". Append \"partially cropped at [top|bottom|left|right]\" if >5% of subject area lies outside the image.\n\nCount & saliency rules\n- Allow secondary subject group only if it covers ≥20% of main subject area OR ranks top‑2 by area/saliency. When saliency metadata unavailable, use area thresholds.\n\nAnti‑hallucination fallbacks & lexicon\n- If cue‑pairs or OCR fail, ban unverifiable fine‑class tokens and instead use neutral, concrete tokens from this lexicon: \"woven basket\", \"pile of fruit\", \"metal container\", \"two‑wheeled vehicle\", \"wooden frame\", \"painted metal shutter\", \"folded paper\". Do not use vague quantifiers like \"several\" or \"something\".\n\nVerification checklist (must be followed)\n- A. Enumerate candidate tokens for each slot.\n- B. Validate each candidate against Count, Contact, Cue‑pair, and OCR checks; mark VERIFIED tokens.\n- C. Protect VERIFIED discriminative props/fine classes/part relations from pruning.\n- D. Prune deterministically if needed (respect pruning order and brevity tie‑breaks).\n- E. Compose exactly one grammatical, comma‑separated sentence that front‑loads nouns and VERIFIED props and respects word limits.\n\nMicro‑templates & style guidance (examples to emulate)\n- Bad → Good: \"man holding something\" → \"1 man center foreground, right hand holding woven basket of oranges, storefront behind.\"  \n- Bad → Good: \"sign\" (illegible) → \"1 woman center foreground, walking past painted text on metal shutter at left, red background.\"  \n- Bad → Good: \"person on ladder\" (uncertain) → \"1 worker right foreground, ladder with visible rungs leaning against brick chimney.\"  \n- Bad → Good: \"bike\" (uncertain) → \"1 person right foreground, standing by two‑wheeled vehicle with visible pedals and chain, storefront behind.\"\n\nFinal rules (must obey)\n- Always perform the two‑pass proposal → verification → pruning process, then emit exactly one grammatical, comma‑separated sentence that front‑loads high‑value nouns/props, preserves VERIFIED discriminative props and part relations, respects numeric thresholds and area rules, and stays within the word limit. Do not output multiple candidates, internal logs, or any extra text. Use digits only when verified. Do not infer age, emotion, intention, or unseen attributes.",
+  "prompt_id": "textgrad_063b1f159f",
+  "split_csv": "data/splits/flickr30k_main_seed1_val.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal/step_10/val/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal/step_10/val/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal/step_10/val/scores.csv",
+  "data_root": "data",
+  "summary": {
+    "n": 150,
+    "mean_clip": 0.30678070306777955,
+    "mean_siglip": 0.194454673876365,
+    "mean_caption_len": 21.26,
+    "generic_rate": 0.0,
+    "mean_delta_clip": -0.017784745246171952,
+    "mean_delta_siglip": -0.004385871812701223,
+    "clip_win_rate": 0.3,
+    "siglip_win_rate": 0.45666666666666667
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_011250",
+      "image_relpath": "images/flickr30k/flickr30k_test_011250.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_011250.jpg",
+      "caption": "Two children center foreground, holding hands, standing behind yellow caution tape, grassy field with distant airplane and trees under clear sky.",
+      "clip_score": 0.2905808091163635,
+      "siglip_score": 0.2665362358093261,
+      "delta_clip": -0.12201297283172607,
+      "delta_siglip": 0.04602061212062833
+    },
+    {
+      "image_id": "flickr30k_test_012572",
+      "image_relpath": "images/flickr30k/flickr30k_test_012572.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_012572.jpg",
+      "caption": "person center foreground, purple knitted hat, right hand holding strap, Domino's Pizza sign at left.",
+      "clip_score": 0.2784816920757293,
+      "siglip_score": 0.2464997768402099,
+      "delta_clip": -0.11131018400192266,
+      "delta_siglip": -0.04614505171775818
+    },
+    {
+      "image_id": "flickr30k_test_028445",
+      "image_relpath": "images/flickr30k/flickr30k_test_028445.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_028445.jpg",
+      "caption": "Man center foreground, right hand holding blue mesh laundry hamper, red pickup truck right, building background.",
+      "clip_score": 0.2616535425186157,
+      "siglip_score": 0.1690962016582489,
+      "delta_clip": -0.10571998357772827,
+      "delta_siglip": -0.047940373420715304
+    },
+    {
+      "image_id": "flickr30k_test_001063",
+      "image_relpath": "images/flickr30k/flickr30k_test_001063.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_001063.jpg",
+      "caption": "man center foreground, right hand pointing, olive tank top, beige couch, yellow wall, electrical outlet at right, window with white shutters at left",
+      "clip_score": 0.2409930974245071,
+      "siglip_score": 0.1915520429611206,
+      "delta_clip": -0.09902812540531161,
+      "delta_siglip": -0.044429525732993996
+    },
+    {
+      "image_id": "flickr30k_test_028445",
+      "image_relpath": "images/flickr30k/flickr30k_test_028445.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_028445.jpg",
+      "caption": "Man center foreground, right hand holding blue mesh laundry hamper, red pickup truck right, building background.",
+      "clip_score": 0.2616535425186157,
+      "siglip_score": 0.1690962016582489,
+      "delta_clip": -0.0980103611946106,
+      "delta_siglip": -0.05225211381912229
+    },
+    {
+      "image_id": "flickr30k_test_007385",
+      "image_relpath": "images/flickr30k/flickr30k_test_007385.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_007385.jpg",
+      "caption": "1 performer center foreground, right foot raised, tossing green frisbee, group in blue patterned suits, storefront behind.",
+      "clip_score": 0.2755330204963684,
+      "siglip_score": 0.1784624010324478,
+      "delta_clip": -0.0933238267898559,
+      "delta_siglip": 0.0035339742898940762
+    },
+    {
+      "image_id": "flickr30k_test_010223",
+      "image_relpath": "images/flickr30k/flickr30k_test_010223.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_010223.jpg",
+      "caption": "man center foreground, right hand holding bottle, left hand holding glass, seated on brown chair, window with blinds at right.",
+      "clip_score": 0.2660472989082336,
+      "siglip_score": 0.1756566166877746,
+      "delta_clip": -0.08573812246322632,
+      "delta_siglip": -0.021691158413886996
+    },
+    {
+      "image_id": "flickr30k_test_001063",
+      "image_relpath": "images/flickr30k/flickr30k_test_001063.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_001063.jpg",
+      "caption": "man center foreground, right hand pointing, olive tank top, beige couch, yellow wall, electrical outlet at right, window with white shutters at left",
+      "clip_score": 0.2409930974245071,
+      "siglip_score": 0.1915520429611206,
+      "delta_clip": -0.08459897339344027,
+      "delta_siglip": -0.023001790046691895
+    },
+    {
+      "image_id": "flickr30k_test_005250",
+      "image_relpath": "images/flickr30k/flickr30k_test_005250.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_005250.jpg",
+      "caption": "1 woman center foreground, holding red poinsettias, smiling, beside another woman holding purple bouquet, staircase and painted text \"100 TO 117\" visible in background.",
+      "clip_score": 0.2779829502105713,
+      "siglip_score": 0.1287333518266677,
+      "delta_clip": -0.0834013819694519,
+      "delta_siglip": -0.08050684630870819
+    },
+    {
+      "image_id": "flickr30k_test_011250",
+      "image_relpath": "images/flickr30k/flickr30k_test_011250.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_011250.jpg",
+      "caption": "Two children center foreground, holding hands, standing behind yellow caution tape, grassy field with distant airplane and trees under clear sky.",
+      "clip_score": 0.2905808091163635,
+      "siglip_score": 0.2665362358093261,
+      "delta_clip": -0.08204197883605957,
+      "delta_siglip": 0.01819545030593872
+    },
+    {
+      "image_id": "flickr30k_test_013546",
+      "image_relpath": "images/flickr30k/flickr30k_test_013546.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_013546.jpg",
+      "caption": "A child center foreground stands on a yellow and blue merry-go-round, handrails visible, blurred background trees and sky.",
+      "clip_score": 0.2969142198562622,
+      "siglip_score": 0.2018228024244308,
+      "delta_clip": -0.08015397191047668,
+      "delta_siglip": -0.007606551051139804
+    },
+    {
+      "image_id": "flickr30k_test_003587",
+      "image_relpath": "images/flickr30k/flickr30k_test_003587.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_003587.jpg",
+      "caption": "1 man center foreground, wearing black cap with number 3, black jacket with Coca-Cola, OREO, and Snap-on logos, partially cropped at right.",
+      "clip_score": 0.2883308231830597,
+      "siglip_score": 0.1913738995790481,
+      "delta_clip": -0.0769561231136322,
+      "delta_siglip": -0.07293017208576208
+    }
+  ]
+}

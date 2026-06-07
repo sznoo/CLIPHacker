@@ -1,0 +1,142 @@
+{
+  "prompt": "Output exactly one concise, information‑dense caption: a single grammatical sentence composed of comma‑separated short phrases. Produce only that single sentence and nothing else.\n\nFollow these strict, deterministic rules when forming the caption. Treat every numeric threshold below as a hard gate: emit a token only when its gate evaluates TRUE; if the gate fails, emit the specified safe fallback token/structure for that slot (never invent text or unsupported attributes). Never invent brands, celebrity names, ages, emotions, intentions, or unsupported attributes. Avoid hedging words like “probably.” Aim for 10–14 words; hard cap 18 words (allow up to 20 words only when an exact quoted text string is emitted or two VERIFIED fine classes are present).\n\n1) Assembly pipeline (execute in order and front‑load)\n- Build the caption in this order and place the first subject group + any VERIFIED discriminative prop(s) within the first 6–8 words:  \n  A) 0–3 verified subject groups + VERIFIED discriminative props (must appear first). If no subject group verification → emit a single plural fallback noun (people/dogs/vehicles).  \n  B) exactly one VERIFIED micro‑action phrase if contact/motion gate TRUE; else emit a conservative near‑phrase fallback.  \n  C) VERIFIED fine class token if gate TRUE; else use dataset lexicon fallback (storefront, painted metal shutter, two‑wheeled vehicle, woven basket, cart, minivan, marquee).  \n  D) clothing/clear pose/orientation (only if VERIFIED).  \n  E) up to 2 verified nearby anchors/signage (only if VERIFIED; otherwise omit or use compact positional descriptor).  \n  F) cropping/foreground token (only if depth gate TRUE).  \n- If any slot has no VERIFIED token, immediately substitute the explicit fallback and continue to the next slot.\n\n2) Count verification (hard gate)\n- Emit a digit only when Count_verified == TRUE, defined as EITHER: (a) each instance visible_fraction ≥ 0.45 AND pairwise centroid_distance ≥ 0.10 × image_width AND pairwise IoU < 0.10; OR (b) clear repeating/patterned structure with visually separable instances.  \n- If Count_verified == FALSE → use plural noun fallback (people/dogs/vehicles/group of people).\n\n3) Contact / micro‑action verification (hard gate & exact template)\n- Emit a micro‑action ONLY when Contact_verified == TRUE, defined as overlap_area / min(bbox_area) ≥ 0.10 AND contiguous boundary evidence (≈6+ adjacent overlap pixels), OR contact_classifier_confidence ≥ 0.55.  \n- When Contact_verified == TRUE → emit exactly one micro‑action using this template: \"left|right [hand|foot|part] [strong‑verb] [object]\" (example: \"right hand holding woven basket\"). Motion verbs are allowed only with verified contact or motion_classifier_confidence ≥ 0.60.  \n- When Contact_verified == FALSE → emit the conservative fallback template: \"[part] near [object]\" (example: \"right hand near woven basket\").\n\n4) Depth / foreground verification (hard gate)\n- Include \"foreground\"/\"background\" ONLY when Depth_verified == TRUE, defined as EITHER (a) subject_bbox_area ≥ 1.5 × any overlapping bbox_area AND pairwise IoU < 0.20 AND subject centroid is lower, OR (b) segmentation mask shows >60% unoccluded area.  \n- If Depth_verified == FALSE → omit depth tokens.\n\n5) Fine class & cue‑pair verification (hard gate)\n- Emit a fine class (bicycle, motorbike/scooter, vendor/produce stand, ladder, performer, etc.) ONLY when FineClass_verified == TRUE, defined as classifier_confidence ≥ 0.60 OR a prescribed cue‑pair spatially satisfied within 12% image width (e.g., spokes+pedals ⇒ bicycle, engine+exhaust ⇒ motorbike, baskets+scale ⇒ vendor, rungs+rails ⇒ ladder, stage+audience or mic+facing_audience ⇒ performer).  \n- If FineClass_verified == FALSE → emit a dataset‑aware fallback token from the lexicon (storefront, painted metal shutter, two‑wheeled vehicle, woven basket, cart, marquee).\n\n6) OCR / signage quoting (absolute policy)\n- Quote exact text ONLY when OCR_quote_verified == TRUE, defined as OCR_confidence ≥ 0.65 AND text_bbox_area ≥ 0.003 × image_area AND contrast_ratio ≥ 1.5 (exception for short uppercase centered marquee ≤3 words when OCR_confidence ≥ 0.60 and text_bbox_area ≥ 0.004 × image_area).  \n- If OCR_quote_verified == FALSE → NEVER quote characters; instead emit a compact positional descriptor such as \"marquee behind\", \"storefront behind\", or \"three red rectangular signs at upper right\" as the fallback.\n\n7) Priority of descriptors and deterministic pruning\n- Preserve VERIFIED tokens in priority order (high → low): (A) VERIFIED discriminative props or quoted text, (B) VERIFIED part‑relations/micro‑actions, (C) VERIFIED fine class, (D) clothing & clear pose/orientation, (E) color & costume patterns, (F) object state/material, (G) viewpoint/orientation, (H) lighting/reflection, (I) background.  \n- Pruning algorithm (executable): if caption exceeds target/hard cap, iteratively remove tokens from categories in this exact order: H → F → I. NEVER remove VERIFIED tokens from categories A–C or any VERIFIED micro‑action. When multiple candidates equal priority, drop longest token first, then lexicographic tie‑break. Continue until within hard cap.\n\n8) High‑value prop/anchor checklist (attempt detection in priority order)\n- Always attempt to VERIFY and emit these high‑value anchors when present (thresholds above): amp/guitar case, small boats/canopies/awnings, pontoon/pavilion/shrine, corrugated metal shutter, marquee/storefront, bridge rails/diagonal rail, trash can/bin, red rectangular signs, flagpole, guitar/amp case, visible rippling reflections. If verification fails for a listed anchor → use the lexicon fallback token (e.g., \"storefront behind\", \"marquee behind\", \"painted metal shutter\").\n\n9) Cropping and occlusion\n- If subject_bbox_intersection_area / subject_bbox_area < 0.95 and verified as cropped → append compact phrase \"partially cropped at [top|bottom|left|right]\" indicating clipped side(s). Only emit when verified.\n\n10) Anti‑hallucination rules (absolute)\n- Never invent characters in text, partial quoted text, guessed words on signs, brands, ages, emotions, intentions, or unsupported attributes. Do not output probabilistic hedges (\"probably\", \"maybe\") in the final caption. If uncertain, use the prescribed lexicon fallback tokens.\n\n11) Saliency bias\n- When multiple VERIFIED tokens compete, prefer the token(s) that localize to higher visual saliency (strong edges, high contrast text, faces, large color patches). Use saliency to break ties between similarly verified candidates.\n\n12) Micro‑template bank (preferred shapes)\n- Favor captions that match these shapes exactly:  \n  - \"1 woman center foreground, right hand holding woven basket of oranges, storefront behind.\"  \n  - \"two dogs left foreground, small white dog jumping at car passenger window, woman leaning out.\"  \n  - \"1 person right foreground, standing by two‑wheeled vehicle with visible pedals and chain, metal shutter behind.\"  \n  - \"many dancers center foreground, line of red/gold sequined costumes, marquee behind.\"  \n- Negative examples (forbidden hallucinations):  \n  - do NOT output quoted text unless OCR_quote_verified == TRUE (e.g., do NOT output \"LE MIGNON\" unless verified).  \n  - do NOT use vague fallbacks like \"platform\" when a specific verified anchor exists (use \"pontoon pavilion\" if verified).  \n  - do NOT invent brands, celebrity names, ages, or emotions.\n\nFinal emission rule: apply the verification gates and the assembly pipeline deterministically, prune per the pruning algorithm if needed, assemble a single comma‑separated grammatical sentence that is concise and information‑dense, and output exactly that one caption sentence and nothing else.",
+  "prompt_id": "textgrad_c362762aad",
+  "split_csv": "data/splits/flickr30k_main_seed1_val.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal/step_14/val/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal/step_14/val/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal/step_14/val/scores.csv",
+  "data_root": "data",
+  "summary": {
+    "n": 150,
+    "mean_clip": 0.3101947671175003,
+    "mean_siglip": 0.1959381051858266,
+    "mean_caption_len": 17.513333333333332,
+    "generic_rate": 0.0,
+    "mean_delta_clip": -0.014370681196451185,
+    "mean_delta_siglip": -0.0029024405032396314,
+    "clip_win_rate": 0.33,
+    "siglip_win_rate": 0.46
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_023317",
+      "image_relpath": "images/flickr30k/flickr30k_test_023317.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_023317.jpg",
+      "caption": "woman in pink jacket and white hat, right hand near mouth, standing at guest services counter, trash can nearby, \"GUEST SERVICES\" sign above.",
+      "clip_score": 0.2623606920242309,
+      "siglip_score": 0.2711527347564697,
+      "delta_clip": -0.1287872195243836,
+      "delta_siglip": 0.05276417732238772
+    },
+    {
+      "image_id": "flickr30k_test_023900",
+      "image_relpath": "images/flickr30k/flickr30k_test_023900.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_023900.jpg",
+      "caption": "man right foreground, right hand holding skewers, vendor stand with painted metal shutter, marquee behind.",
+      "clip_score": 0.2399996519088745,
+      "siglip_score": 0.1809930354356765,
+      "delta_clip": -0.12180697917938227,
+      "delta_siglip": -0.10982258617877969
+    },
+    {
+      "image_id": "flickr30k_test_005250",
+      "image_relpath": "images/flickr30k/flickr30k_test_005250.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_005250.jpg",
+      "caption": "woman center foreground, right hand holding red poinsettias, black dress, staircase behind, people walking nearby",
+      "clip_score": 0.2617303133010864,
+      "siglip_score": 0.1590879261493683,
+      "delta_clip": -0.09965401887893677,
+      "delta_siglip": -0.05015227198600761
+    },
+    {
+      "image_id": "flickr30k_test_016590",
+      "image_relpath": "images/flickr30k/flickr30k_test_016590.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_016590.jpg",
+      "caption": "woman center foreground, right hand holding woven basket, blue umbrella overhead, stone steps behind",
+      "clip_score": 0.2695436477661133,
+      "siglip_score": 0.1745391488075256,
+      "delta_clip": -0.09504169225692743,
+      "delta_siglip": -0.05165962874889368
+    },
+    {
+      "image_id": "flickr30k_test_023317",
+      "image_relpath": "images/flickr30k/flickr30k_test_023317.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_023317.jpg",
+      "caption": "woman in pink jacket and white hat, right hand near mouth, standing at guest services counter, trash can nearby, \"GUEST SERVICES\" sign above.",
+      "clip_score": 0.2623606920242309,
+      "siglip_score": 0.2711527347564697,
+      "delta_clip": -0.08396986126899719,
+      "delta_siglip": -0.006733953952789251
+    },
+    {
+      "image_id": "flickr30k_test_011250",
+      "image_relpath": "images/flickr30k/flickr30k_test_011250.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_011250.jpg",
+      "caption": "two children standing in grassy field, right hand holding left hand, brown shirt, denim shorts, yellow caution tape behind",
+      "clip_score": 0.3289519548416137,
+      "siglip_score": 0.2289340198040008,
+      "delta_clip": -0.08364182710647589,
+      "delta_siglip": 0.008418396115303012
+    },
+    {
+      "image_id": "flickr30k_test_016590",
+      "image_relpath": "images/flickr30k/flickr30k_test_016590.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_016590.jpg",
+      "caption": "woman center foreground, right hand holding woven basket, blue umbrella overhead, stone steps behind",
+      "clip_score": 0.2695436477661133,
+      "siglip_score": 0.1745391488075256,
+      "delta_clip": -0.08311185240745544,
+      "delta_siglip": -0.054373815655708285
+    },
+    {
+      "image_id": "flickr30k_test_001063",
+      "image_relpath": "images/flickr30k/flickr30k_test_001063.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_001063.jpg",
+      "caption": "man with long hair, right hand pointing, olive tank top, seated on couch, green blanket nearby, painted metal shutter behind",
+      "clip_score": 0.2600437700748443,
+      "siglip_score": 0.234762042760849,
+      "delta_clip": -0.07997745275497442,
+      "delta_siglip": -0.0012195259332656028
+    },
+    {
+      "image_id": "flickr30k_test_023900",
+      "image_relpath": "images/flickr30k/flickr30k_test_023900.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_023900.jpg",
+      "caption": "man right foreground, right hand holding skewers, vendor stand with painted metal shutter, marquee behind.",
+      "clip_score": 0.2399996519088745,
+      "siglip_score": 0.1809930354356765,
+      "delta_clip": -0.07996159791946411,
+      "delta_siglip": -0.036503896117210416
+    },
+    {
+      "image_id": "flickr30k_test_016715",
+      "image_relpath": "images/flickr30k/flickr30k_test_016715.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_016715.jpg",
+      "caption": "woman center foreground, right hand holding wooden post, patterned dress, dry field background",
+      "clip_score": 0.2812061011791229,
+      "siglip_score": 0.1532298028469085,
+      "delta_clip": -0.07922592759132385,
+      "delta_siglip": -0.03725102543830869
+    },
+    {
+      "image_id": "flickr30k_test_023554",
+      "image_relpath": "images/flickr30k/flickr30k_test_023554.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_023554.jpg",
+      "caption": "batwoman costume wearer, right hand touching spiderman costume wearer, purple flag overhead, crowd behind",
+      "clip_score": 0.3118611574172973,
+      "siglip_score": 0.2485704272985458,
+      "delta_clip": -0.0723832249641419,
+      "delta_siglip": 0.0053405314683914185
+    },
+    {
+      "image_id": "flickr30k_test_007385",
+      "image_relpath": "images/flickr30k/flickr30k_test_007385.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_007385.jpg",
+      "caption": "Dancers in blue and multicolored suits toss green frisbees, storefront behind.",
+      "clip_score": 0.3023150265216827,
+      "siglip_score": 0.178730309009552,
+      "delta_clip": -0.06654182076454163,
+      "delta_siglip": 0.003801882266998291
+    }
+  ]
+}

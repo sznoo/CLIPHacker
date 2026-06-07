@@ -1,0 +1,117 @@
+{
+  "prompt": "Generate exactly one short, literal, factual caption (one sentence) describing only visible content in the image. Output one sentence only, 8–20 words total. Do not output lists, labels, explanations, annotations, or any extra text.\n\nDefinitions\n- High‑signal tokens = a visible color or pattern, a concrete specific object class (use the most specific multiword class available), a clear Arabic numeral (digits) count, a clothing/accessory, or legible text/logo copied exactly.\n\nPrimary rules (must follow)\n1. Early high‑signal tokens: the first three content words must contain at least one high‑signal token. If two high‑signal tokens are clearly visible, both must appear within the first three content words. Ignore a single leading article (a/an/the) when counting content words.\n2. Legible text/logo: if any readable text or logo is visible, copy it exactly (including case) and place it within the first five content words.\n3. Specific class: use the most specific visible concrete class. Do not use \"person\" when a more specific visible role/class or multiword class is confidently visible.\n4. Counts: use Arabic numerals for any visible count and place the numeral within the first three content words.\n5. Color/pattern adjacency: color or pattern adjectives must directly precede their noun (e.g., \"red bicycle\"). Use \"noun with [attribute]\" only if placing the adjective immediately would violate rule 1.\n6. Syntax: prefer a short present‑tense sentence (subject + verb). A bare noun phrase is allowed only if any verb would force required high‑signal tokens past their allowed positions.\n7. Prohibited openings: do not begin with generic templates such as \"There is,\" \"A group of,\" or \"Some people\" unless no specific subject can be confidently identified.\n8. Word choice and length: use common color and class words (e.g., \"red\", \"blue\", \"car\", \"bicycle\") rather than rare synonyms. Aim for 9–14 content words while keeping total words 8–20.\n\nDeterministic subject selection\n- Choose the primary subject by this tie‑breaker order: centermost → largest → highest contrast → visible attribute (color/number/logo).\n\nQuick examples (bad → good)\n- Bad: \"There is a group of people near a red bus.\" → Good: \"Red bus sits near 5 people.\"  \n- Bad: \"Two dogs play in the yard.\" → Good: \"2 dogs play on the grass.\"  \n- Bad: \"A man stands beside a sign that says STOP.\" → Good: \"STOP sign stands beside a man.\"\n\nOutput exactly one sentence only—no extra text.",
+  "prompt_id": "textgrad_da4c0e8807",
+  "split_csv": "data/splits/flickr30k_main_seed1_val.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_07/val/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_07/val/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_07/val/scores.csv",
+  "summary": {
+    "n": 150,
+    "mean_clip": 0.3167030119895935,
+    "mean_siglip": 0.1947836560507615,
+    "mean_caption_len": 11.44,
+    "generic_rate": 0.006666666666666667,
+    "mean_delta_clip": -0.007862436324357992,
+    "mean_delta_siglip": -0.0040568896383047105,
+    "clip_win_rate": 0.4,
+    "siglip_win_rate": 0.44666666666666666
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_006851",
+      "caption": "Keeping us safe for safety poster held by two soldiers and two children.",
+      "clip_score": 0.2956444025039673,
+      "siglip_score": 0.249222069978714,
+      "delta_clip": -0.09704872965812683,
+      "delta_siglip": -0.0080194473266601
+    },
+    {
+      "image_id": "flickr30k_test_011250",
+      "caption": "Two boys stand on grass near yellow caution tape with airplane in background.",
+      "clip_score": 0.3408943116664886,
+      "siglip_score": 0.2643796801567077,
+      "delta_clip": -0.07169947028160101,
+      "delta_siglip": 0.04386405646800992
+    },
+    {
+      "image_id": "flickr30k_test_030149",
+      "caption": "Man bowls down lane with green ball in brightly lit alley.",
+      "clip_score": 0.2560053467750549,
+      "siglip_score": 0.1583746075630188,
+      "delta_clip": -0.0685414969921112,
+      "delta_siglip": -0.020355835556983892
+    },
+    {
+      "image_id": "flickr30k_test_005806",
+      "caption": "Woman packs clothes into open black suitcase on floor.",
+      "clip_score": 0.3061505854129791,
+      "siglip_score": 0.145708367228508,
+      "delta_clip": -0.06804344058036799,
+      "delta_siglip": -0.0652156919240951
+    },
+    {
+      "image_id": "flickr30k_test_006161",
+      "caption": "Woman in green vest sweeps street as crowd lines sidewalk.",
+      "clip_score": 0.2707264721393585,
+      "siglip_score": 0.2080001980066299,
+      "delta_clip": -0.06725543737411499,
+      "delta_siglip": -0.03633956611156461
+    },
+    {
+      "image_id": "flickr30k_test_023900",
+      "caption": "UTIAH vendor smiles while holding skewers near illuminated sign.",
+      "clip_score": 0.2948863208293915,
+      "siglip_score": 0.2597761154174804,
+      "delta_clip": -0.0669203102588653,
+      "delta_siglip": -0.031039506196975764
+    },
+    {
+      "image_id": "flickr30k_test_003587",
+      "caption": "Man wearing black cap with number 3 and jacket with Coca-Cola logo.",
+      "clip_score": 0.2995116114616394,
+      "siglip_score": 0.2094666659832,
+      "delta_clip": -0.06577533483505249,
+      "delta_siglip": -0.05483740568161019
+    },
+    {
+      "image_id": "flickr30k_test_018677",
+      "caption": "Man and woman stand on wooden stairs holding plates near wall art.",
+      "clip_score": 0.2764906287193298,
+      "siglip_score": 0.1926684975624084,
+      "delta_clip": -0.06184276938438421,
+      "delta_siglip": -0.020061492919921903
+    },
+    {
+      "image_id": "flickr30k_test_008305",
+      "caption": "gK sign stands beside a man in a black suit.",
+      "clip_score": 0.2388695478439331,
+      "siglip_score": 0.0683234184980392,
+      "delta_clip": -0.06066364049911499,
+      "delta_siglip": -0.08664479851722719
+    },
+    {
+      "image_id": "flickr30k_test_005250",
+      "caption": "Bride holds red flowers, smiling beside woman with purple bouquet.",
+      "clip_score": 0.3025424778461456,
+      "siglip_score": 0.1469277441501617,
+      "delta_clip": -0.05884185433387762,
+      "delta_siglip": -0.062312453985214206
+    },
+    {
+      "image_id": "flickr30k_test_018166",
+      "caption": "Black umbrella shelters woman in lace headscarf near vintage cars.",
+      "clip_score": 0.2758077979087829,
+      "siglip_score": 0.2043819725513458,
+      "delta_clip": -0.058224380016326904,
+      "delta_siglip": -0.06621089577674868
+    },
+    {
+      "image_id": "flickr30k_test_000051",
+      "caption": "J.K. LEE in white uniform kneels, striking wooden board held by opponent in red mat area.",
+      "clip_score": 0.3104277849197387,
+      "siglip_score": 0.2278497219085693,
+      "delta_clip": -0.05818390846252447,
+      "delta_siglip": 0.0416761785745621
+    }
+  ]
+}

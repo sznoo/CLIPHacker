@@ -1,0 +1,117 @@
+{
+  "prompt": "Generate exactly one short, literal, factual caption (one grammatically correct sentence) describing only visible content in the image. Output exactly one sentence only — no extra text. Total words: 8–14 (prefer 9–12). Follow these prioritized rules (apply in order):\n\n1) Subject selection: choose the single subject that maximizes a visibility score combining normalized area and detector confidence, augmented by a small token‑richness bonus for candidates that enable one or more high‑signal tokens (see rule 3). If scores are close, prefer the candidate that yields the richer set of high‑signal tokens rather than strictly larger area. Do not prefer a detected person by default — prefer a person only when that person’s visibility score is within a small margin of the best non‑person candidate or when the person provides discriminative high‑signal tokens (visible numeral, distinct color/pattern, or readable short text).\n\n2) Visibility and minimal size: treat a detection as usable if its combined area% and detector_confidence are meaningfully positive. Ignore very tiny detections below ~0.15% image area unless they have very high OCR_confidence (≥0.75) or an exceptionally clear visual signal (e.g., large jersey numeral). Do not invent attributes or parts of objects not supported by detections.\n\n3) High‑signal tokens (definition and placement): high‑signal tokens = visible colors or patterns, concrete multiword classes (e.g., \"stop sign\", \"double‑decker bus\"), clear Arabic numerals, clothing/accessory terms, or short readable text/logos (1–3 tokens). Require at least one high‑signal token within the first 4 content words (leading articles do not count). If two distinct high‑signal tokens are clearly visible, include both early — the second should appear within the first 6 content words unless grammar absolutely prevents it.\n\n4) OCR/text copying rules: copy short readable text/logos (1–3 tokens) only when OCR_confidence ≥ 0.60 and OCR_bbox_area ≥ 0.2% for small logos; for larger text allow OCR_confidence ≥ 0.55. For extremely small text (<0.2% area) require OCR_confidence ≥ 0.75. Never copy phone numbers or runs of ≥5 consecutive digits or other long digit strings. Do not copy unreadable or low‑confidence text.\n\n5) Second‑object allowance: you may append one compact post‑nominal prepositional or participial phrase (one relation only, e.g., \"by a market stall\", \"on the sidewalk\", \"with number 7\") if that short phrase adds a distinct high‑signal token. Do not chain relations or add long descriptive chains.\n\n6) Wording, ordering, and density: prefer starting with a high‑signal modifier plus class (e.g., \"red bicycle\", \"two dogs\", \"striped shirt\") or a compact noun phrase that places high‑signal tokens early; a leading article is acceptable if it yields natural grammar. Prioritize dense concrete nouns and adjectives (colors, numbers, logos, concrete multiword class names) over weak modifiers. Use present‑tense, concise S V (+ O) sentences; prefer a specific concrete verb when action is clearly visible and use \"is/are\" only when no clear action can be inferred. Use Arabic numerals for visible counts that meet visibility/OCR rules.\n\n7) Safety and literalness: do not invent unseen attributes, emotions, intentions, or dialogue. Do not hallucinate unreadable text. If no high‑signal token meets thresholds, select the next best visible candidate that provides at least one valid high‑signal token without violating visibility or OCR safety rules.\n\nFinal constraints: one sentence only, 8–14 words, literal description of visible content, follow the visibility and OCR guidance above, do not output fallback phrases, and do not add any extra commentary.",
+  "prompt_id": "textgrad_9d995cddf3",
+  "split_csv": "data/splits/flickr30k_main_seed1_val.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_16/val/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_16/val/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_16/val/scores.csv",
+  "summary": {
+    "n": 150,
+    "mean_clip": 0.3242542358239492,
+    "mean_siglip": 0.19140508552392324,
+    "mean_caption_len": 13.506666666666666,
+    "generic_rate": 0.05333333333333334,
+    "mean_delta_clip": -0.000311212490002315,
+    "mean_delta_siglip": -0.007435460165143016,
+    "clip_win_rate": 0.5166666666666667,
+    "siglip_win_rate": 0.44
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_011250",
+      "caption": "Two children stand in a grassy field near yellow caution tape.",
+      "clip_score": 0.2928301095962524,
+      "siglip_score": 0.2270808517932891,
+      "delta_clip": -0.11976367235183721,
+      "delta_siglip": 0.006565228104591314
+    },
+    {
+      "image_id": "flickr30k_test_026513",
+      "caption": "A cameraman in a yellow jacket films with a large camera on a tripod.",
+      "clip_score": 0.3173755407333374,
+      "siglip_score": 0.2106383889913559,
+      "delta_clip": -0.08529847860336298,
+      "delta_siglip": -0.049380287528038025
+    },
+    {
+      "image_id": "flickr30k_test_011250",
+      "caption": "Two children stand in a grassy field near yellow caution tape.",
+      "clip_score": 0.2928301095962524,
+      "siglip_score": 0.2270808517932891,
+      "delta_clip": -0.07979267835617071,
+      "delta_siglip": -0.021259933710098294
+    },
+    {
+      "image_id": "flickr30k_test_011286",
+      "caption": "Three people in orange shorts walk along rocky riverbank.",
+      "clip_score": 0.2790911793708801,
+      "siglip_score": 0.1892420947551727,
+      "delta_clip": -0.07866442203521729,
+      "delta_siglip": -0.03584381937980649
+    },
+    {
+      "image_id": "flickr30k_test_003587",
+      "caption": "Man wearing black cap with number 3 and jacket with sponsor logos.",
+      "clip_score": 0.2906580567359924,
+      "siglip_score": 0.2467146515846252,
+      "delta_clip": -0.07462888956069952,
+      "delta_siglip": -0.017589420080184992
+    },
+    {
+      "image_id": "flickr30k_test_006161",
+      "caption": "A woman in a straw hat and safety vest sweeps the sidewalk near a crowd.",
+      "clip_score": 0.2719624042510986,
+      "siglip_score": 0.2230448722839355,
+      "delta_clip": -0.06601950526237493,
+      "delta_siglip": -0.021294891834259005
+    },
+    {
+      "image_id": "flickr30k_test_016590",
+      "caption": "A woman in a colorful skirt stands near a blue-and-white umbrella by a stone railing.",
+      "clip_score": 0.3031843900680542,
+      "siglip_score": 0.1335292160511016,
+      "delta_clip": -0.06140094995498652,
+      "delta_siglip": -0.09266956150531769
+    },
+    {
+      "image_id": "flickr30k_test_013019",
+      "caption": "Two people walk along a leaf-covered forest path.",
+      "clip_score": 0.2733633518218994,
+      "siglip_score": 0.1664032638072967,
+      "delta_clip": -0.05253767967224121,
+      "delta_siglip": -0.03236560523509979
+    },
+    {
+      "image_id": "flickr30k_test_010223",
+      "caption": "Man in gray shirt holds bottle and glass near window.",
+      "clip_score": 0.2995112836360931,
+      "siglip_score": 0.1113125383853912,
+      "delta_clip": -0.05227413773536682,
+      "delta_siglip": -0.0860352367162704
+    },
+    {
+      "image_id": "flickr30k_test_005806",
+      "caption": "A woman in a beige sweater is packing clothes into an open black suitcase.",
+      "clip_score": 0.322777509689331,
+      "siglip_score": 0.1395123302936554,
+      "delta_clip": -0.05141651630401611,
+      "delta_siglip": -0.0714117288589477
+    },
+    {
+      "image_id": "flickr30k_test_011286",
+      "caption": "Three people in orange shorts walk along rocky riverbank.",
+      "clip_score": 0.2790911793708801,
+      "siglip_score": 0.1892420947551727,
+      "delta_clip": -0.05124366283416748,
+      "delta_siglip": -0.001051813364028903
+    },
+    {
+      "image_id": "flickr30k_test_027582",
+      "caption": "A runner in a red top crosses a street at a crosswalk.",
+      "clip_score": 0.3045823574066162,
+      "siglip_score": 0.1729441881179809,
+      "delta_clip": -0.05074959993362427,
+      "delta_siglip": -0.008064091205596896
+    }
+  ]
+}

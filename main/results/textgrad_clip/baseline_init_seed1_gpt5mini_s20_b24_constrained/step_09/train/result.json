@@ -1,0 +1,117 @@
+{
+  "prompt": "Generate exactly one short, literal, factual caption (one sentence) describing only visible content in the image. Output exactly one sentence only—no extra text. Total words: 8–20.\n\nDefinitions\n- High‑signal tokens = a visible color or pattern, a concrete specific object class (use the most specific multiword class visible), a clear Arabic numeral count, a clothing/accessory, or legible text/logo copied exactly.\n\nGuidelines (follow unless doing so would break grammar or produce an unnatural sentence)\n1. Early high‑signal placement: at least one high‑signal token should appear within the first five content words. If two high‑signal tokens are clearly visible, both should appear within the first five content words. Ignore a single leading article (a/an/the) when counting content words.\n2. Legible text/logo: if readable text or a logo is visible, copy it exactly (including case). Prefer placing it within the first five content words. If exact copying produces an ungrammatical fragment, integrate it grammatically (e.g., \"STOP sign\", \"sign reading 'STOP'\") while keeping it early.\n3. Specific class: use the most specific visible concrete class (prefer multiword classes such as \"stop sign\", \"fire hydrant\", \"rolling metal door\") rather than generic \"person\" when a specific role or class is clear.\n4. Counts: use Arabic numerals for visible counts and prefer placing the numeral within the first five content words.\n5. Color/pattern adjacency: prefer color or pattern adjectives directly before their noun (e.g., \"red bicycle\"). Use \"noun with [color]\" only when immediate adjacency would violate early‑token placement or grammaticality.\n6. Syntax and fluency: prefer a short present‑tense subject + verb sentence using common verbs and collocations (e.g., \"X sits on Y\", \"X holds Y\", \"X leans against Y\"). A bare noun phrase is allowed only if any verb would force required high‑signal tokens past their allowed positions. Always prioritize grammatical, natural phrasing; if obeying a placement preference would break grammar, relax that preference.\n7. Openings: avoid generic openings (\"There is\", \"A group of\", \"Some people\") unless no confident specific subject can be identified or using a generic opening yields a more natural, grammatical caption.\n8. Word choice and length: prefer common color and class words (e.g., \"red, blue, black, bicycle, truck, dog\") over rare synonyms. Aim for about 9–14 content words while keeping total words within 8–20.\n\nDeterministic subject selection\n- Choose the primary subject by this tie‑breaker order: centermost → largest → highest contrast → visible attribute (color/number/logo) → the subject that yields the most natural grammatical sentence given the placement preferences.\n\nPreferred short templates (use as natural patterns, not rigid forms)\n- \"Red bus sits near 5 people.\"\n- \"2 dogs play on the grass.\"\n- \"STOP sign stands beside a man.\"\n- \"Blue canopy shades market stall with OPEN sign.\"\n\nOutput exactly one sentence only—no extra text.",
+  "prompt_id": "textgrad_e1e3424f0c",
+  "split_csv": "data/splits/flickr30k_main_seed1_train.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_09/train/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_09/train/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_09/train/scores.csv",
+  "summary": {
+    "n": 24,
+    "mean_clip": 0.31110727538665134,
+    "mean_siglip": 0.18021449943383527,
+    "mean_caption_len": 11.5,
+    "generic_rate": 0.0,
+    "mean_delta_clip": -0.01607126245896023,
+    "mean_delta_siglip": -0.006482370508213844,
+    "clip_win_rate": 0.2916666666666667,
+    "siglip_win_rate": 0.4583333333333333
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_022801",
+      "caption": "Blue canopy shades market stall with OPEN sign.",
+      "clip_score": 0.2335391044616699,
+      "siglip_score": 0.1016938239336013,
+      "delta_clip": -0.0714700520038605,
+      "delta_siglip": -0.09662415087223061
+    },
+    {
+      "image_id": "flickr30k_test_006091",
+      "caption": "Child in pink shirt and blue cap holds faucet, water streaming down sink.",
+      "clip_score": 0.3244551420211792,
+      "siglip_score": 0.1963040232658386,
+      "delta_clip": -0.060517251491546575,
+      "delta_siglip": -0.04687713086605069
+    },
+    {
+      "image_id": "flickr30k_test_021782",
+      "caption": "Man leans against yellow sign with (212)625-9212.",
+      "clip_score": 0.2884188294410705,
+      "siglip_score": 0.1290566325187683,
+      "delta_clip": -0.0510292649269104,
+      "delta_siglip": -0.0719686150550842
+    },
+    {
+      "image_id": "flickr30k_test_022494",
+      "caption": "Man in orange shirt holds orange ladder near brick chimney.",
+      "clip_score": 0.311192512512207,
+      "siglip_score": 0.1997431367635727,
+      "delta_clip": -0.049925595521926935,
+      "delta_siglip": -0.015961736440658514
+    },
+    {
+      "image_id": "flickr30k_test_014348",
+      "caption": "A batter in a red jersey with number 10 swings at a yellow softball.",
+      "clip_score": 0.2534338235855102,
+      "siglip_score": 0.1340834349393844,
+      "delta_clip": -0.038722217082977295,
+      "delta_siglip": -0.021420136094093295
+    },
+    {
+      "image_id": "flickr30k_test_027386",
+      "caption": "Hikers with backpacks walk along a grassy trail toward distant mountains.",
+      "clip_score": 0.3110208511352539,
+      "siglip_score": 0.177267700433731,
+      "delta_clip": -0.03707551956176758,
+      "delta_siglip": -0.026201546192169217
+    },
+    {
+      "image_id": "flickr30k_test_026274",
+      "caption": "Rider on horse with \"PAY\" banner in background.",
+      "clip_score": 0.2791514098644256,
+      "siglip_score": 0.1243770867586135,
+      "delta_clip": -0.030593067407608088,
+      "delta_siglip": 0.027286745607852908
+    },
+    {
+      "image_id": "flickr30k_test_026288",
+      "caption": "Man in cap sits beside jackfruit and green leaves on dirt ground.",
+      "clip_score": 0.3502957224845886,
+      "siglip_score": 0.1896180957555771,
+      "delta_clip": -0.0276775062084198,
+      "delta_siglip": -0.030520886182785006
+    },
+    {
+      "image_id": "flickr30k_test_005582",
+      "caption": "Black-and-white dog leaps toward car window as brown dog walks nearby.",
+      "clip_score": 0.3269896209239959,
+      "siglip_score": 0.2043839395046234,
+      "delta_clip": -0.027298629283905085,
+      "delta_siglip": 0.028049752116203308
+    },
+    {
+      "image_id": "flickr30k_test_015378",
+      "caption": "Man in red shirt and black hat stands near woman holding plastic bag.",
+      "clip_score": 0.2814605236053467,
+      "siglip_score": 0.2131704688072204,
+      "delta_clip": -0.022985458374023438,
+      "delta_siglip": -0.023288577795028687
+    },
+    {
+      "image_id": "flickr30k_test_010401",
+      "caption": "Girl in blue sweater jumps toward pile of autumn leaves.",
+      "clip_score": 0.3139170110225677,
+      "siglip_score": 0.2129531800746917,
+      "delta_clip": -0.021854251623153687,
+      "delta_siglip": 0.030777633190155
+    },
+    {
+      "image_id": "flickr30k_test_014594",
+      "caption": "Jockey in green and black jacket rides brown horse over wooden fence.",
+      "clip_score": 0.3164328634738922,
+      "siglip_score": 0.1811718046665191,
+      "delta_clip": -0.020619302988052368,
+      "delta_siglip": -0.012861788272857694
+    }
+  ]
+}

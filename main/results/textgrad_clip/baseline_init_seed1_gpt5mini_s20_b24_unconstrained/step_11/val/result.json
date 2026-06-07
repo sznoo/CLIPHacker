@@ -1,0 +1,117 @@
+{
+  "prompt": "Output 1–3 candidate captions. Each candidate must be exactly two lines (Line 1 = tags; Line 2 = caption). If multiple candidates are produced, separate candidates with a single blank line. Integrators should rerank candidates externally with CLIP; if you cannot rely on external reranking, produce only one candidate.\n\nLine 1 — tags (format rules; required)\n- Format: 2–5 comma‑separated lower‑case tokens (prefer exactly 3). No punctuation except commas. No surrounding whitespace beyond single spaces around commas.\n- Token types: visible concrete noun(s) or a single visible adjective (color/size) as the sole attribute token. Multiword fused objects (e.g., \"traffic light\", \"wine bottle\") count as one token.\n- Upstream canonicalization (assumed done before this prompt): map detector/classifier labels to a fixed canonical inventory (recommended: COCO / Visual Genome / CLIP‑common). Normalize plurals→singular and map synonyms→canonical ID. Only accept attribute tokens (colors/sizes) if attribute_confidence ≥ attribute_confidence_threshold.\n- Deduplicate tokens. Order tokens by visual discriminativeness (combine detector confidence + CLIP retrieval frequency; prefer higher score first). Prefer fine‑grained nouns when reliably detected.\n- Forbidden tokens: meta/tooling words, proper nouns/brands, dates/events that are identity‑sensitive, inferred identities/emotions/speculation. Scene/event nouns (e.g., parade, stadium) are permitted only if a scene classifier gives high confidence and they map to canonical inventory.\n- If fewer than two high‑confidence specific nouns remain after filtering, do not invent tags. Still produce a conservative fallback (see Line 2 Option B) when at least one reliable noun exists. If no reliable noun exists, leave Line 1 empty and follow the image unclear rule.\n\nLine 2 — caption (format rules; required)\n- Option A (preferred when possible): one factual sentence in present simple or present progressive, 7–13 words long, containing exactly one clear visible verb or one concrete spatial relation. Grammatical structure should be subject + verb + object/prepositional phrase. Allowed verbs: common visible actions (e.g., sits, stands, rides, holds, carries, walks, leans, looks, points, reads, opens, plays, wears, pushes, pulls, places, covers, is holding, is sitting, dances, performs, marches, runs, climbs, jumps, throws, catches, skates). Domain‑specific verbs are allowed only if supported by an activity/pose detector or strong co‑occurrence confidence.\n- Option B (fallback; use when fewer than two high‑confidence nouns or generator uncertainty): a conservative 2–6 word noun + location/scene phrase (e.g., \"dog on sidewalk\", \"man near tree\", \"red car in street\"). No sentence punctuation.\n- Main noun requirement: the canonical main noun (Line 1 first token) must appear verbatim or as a canonical synonym (same canonical ID) in Line 2 and appear early in the sentence (within the first 3–4 tokens or within the subject phrase such as \"a/the <main_noun> ...\").\n- Token overlap: Option A captions should share at least two canonical tokens with Line 1 (one must be the main noun). Synonyms are allowed if they map to the same canonical ID. Attributes included in Line 1 must appear verbatim or as canonical synonyms in Line 2 if the attribute_confidence ≥ threshold; otherwise omit them.\n- Allowed extra words: determiners (a, the), prepositions (on, in, near, by, next to, in front of, behind), conjunction \"and\", and small function words. One optional trailing period only. No other punctuation or added objects/attributes not in Line 1 (unless they map to the same canonical ID).\n- Anti‑hallucination: do not introduce new objects, attributes, identities, emotions, or speculative actions not present in Line 1 or supported by detectors (attribute_confidence ≥ threshold). If a required check would fail (main noun missing, insufficient token overlap for Option A, verb unsupported, attribute below threshold, or forbidden token introduced), prefer Option B fallback when possible; if no reliable fallback exists, output exactly: image unclear\n\nOperational parameters and tie‑breaking\n- Parameters (defaults & recommendations): attribute_confidence_threshold = 65% (recommend sweep 60/70/75%), preferred_tag_count = 3, tie_break_delta_confidence = 10 percentage points (adaptive: if two classes' detector confidences are close, prefer the noun with higher CLIP retrieval frequency).\n- Prefer a specific canonical noun when its detector confidence exceeds the next-best by tie_break_delta_confidence. If confidences are close, prefer the noun with higher CLIP retrieval frequency or canonical inventory coverage.\n- When ambiguous, be conservative: omit low‑confidence tokens rather than guessing; prefer Option B when only one reliable noun exists; prefer Option A only when all non‑determiner nouns in the sentence can be traced to Line 1 via canonical IDs.\n- Candidate generation: you may produce up to 2–3 alternate candidates (each as two-line blocks) derived from alternate high‑confidence Line 1 sets if upstream canonicalization provides them. If multiple candidates are not supported, produce a single compliant candidate.\n- Diagnostics (must be logged per candidate, not necessarily exposed to end users): for each candidate, record canonical tokens used (IDs), detector confidences, CLIP retrieval frequencies, which Option (A/B) was used, omitted attributes due to thresholding, and any checks that failed or why a fallback/image unclear was chosen. Use these logs to tune thresholds and preferred_tag_count.\n\nSafety and scoring guidance\n- Maximize canonical lexical overlap between Line 1 and Line 2 to improve CLIP alignment while avoiding hallucination. Prefer discriminative, fine‑grained nouns. Do not use proper nouns, inferred identities, or emotions.\n- Allow canonical synonym mapping rather than literal string matching between Line 1 and Line 2 (both must map to same canonical inventory ID). This reduces brittle rejections while preserving traceability.\n- Scene/event nouns are allowed only with high scene classifier confidence and canonical mapping; keep identity/emotion tokens forbidden.\n\nIf you cannot produce a reliable caption even with the conservative fallback rules, output exactly: image unclear\n\nBrief examples (illustrative only)\n- Example A (Option A): Line1: child, motorcycle, red\n  Line2: a child rides a red motorcycle down the street.\n- Example B (fallback Option B): Line1: dog\n  Line2: dog on sidewalk\n- Example C (image unclear): Line1:\n  Line2: image unclear\n\nStrictly follow the rules above. If no valid caption candidate passes these checks after attempting a conservative fallback, return Line 2 = \"image unclear\". Log diagnostics for every candidate to aid tuning and CLIP reranking.",
+  "prompt_id": "textgrad_899a7f1892",
+  "split_csv": "data/splits/flickr30k_main_seed1_val.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24/step_11/val/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24/step_11/val/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24/step_11/val/scores.csv",
+  "summary": {
+    "n": 150,
+    "mean_clip": 0.2921573018034299,
+    "mean_siglip": 0.1700770692775647,
+    "mean_caption_len": 28.033333333333335,
+    "generic_rate": 0.04,
+    "mean_delta_clip": -0.03240814651052157,
+    "mean_delta_siglip": -0.028763476411501565,
+    "clip_win_rate": 0.14666666666666667,
+    "siglip_win_rate": 0.23333333333333334
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_011250",
+      "caption": "child, boy, grass\ntwo boys stand on grass near yellow tape\n\nchild, boy, grass\na boy holds hands with another boy on grass\n\nchild, boy, grass\nboys stand on grass near yellow tape",
+      "clip_score": 0.270387202501297,
+      "siglip_score": 0.1830706745386123,
+      "delta_clip": -0.1422065794467926,
+      "delta_siglip": -0.03744494915008548
+    },
+    {
+      "image_id": "flickr30k_test_007385",
+      "caption": "dancer, street, colorful\n\ndancer performs colorful routine on street\n\ndancer, street, colorful\n\ndancer performs colorful routine on street\n\ndancer, street, colorful\n\ndancer performs colorful routine on street",
+      "clip_score": 0.2380599081516266,
+      "siglip_score": 0.0588144324719905,
+      "delta_clip": -0.13079693913459772,
+      "delta_siglip": -0.11611399427056321
+    },
+    {
+      "image_id": "flickr30k_test_003587",
+      "caption": "man wearing cap and jacket\nman wearing cap and jacket sits near crowd",
+      "clip_score": 0.2357901483774185,
+      "siglip_score": 0.1441128998994827,
+      "delta_clip": -0.1294967979192734,
+      "delta_siglip": -0.12019117176532748
+    },
+    {
+      "image_id": "flickr30k_test_016590",
+      "caption": "child, umbrella, market\na child stands near an umbrella at a market\n\nchild, market, people\nchild at market with people nearby\n\nimage unclear",
+      "clip_score": 0.2454801201820373,
+      "siglip_score": 0.1038746684789657,
+      "delta_clip": -0.11910521984100342,
+      "delta_siglip": -0.12232410907745359
+    },
+    {
+      "image_id": "flickr30k_test_009512",
+      "caption": "woman in red outfit stands with group\nfive women in red and black outfits stand together at event\n\nwoman in red outfit stands with group\nwoman in red outfit stands near others at event\n\nwoman in red outfit stands with group\nwoman in red outfit stands on artificial grass",
+      "clip_score": 0.2677878737449646,
+      "siglip_score": 0.1273916959762573,
+      "delta_clip": -0.11140388250350952,
+      "delta_siglip": -0.06099897623062131
+    },
+    {
+      "image_id": "flickr30k_test_016590",
+      "caption": "child, umbrella, market\na child stands near an umbrella at a market\n\nchild, market, people\nchild at market with people nearby\n\nimage unclear",
+      "clip_score": 0.2454801201820373,
+      "siglip_score": 0.1038746684789657,
+      "delta_clip": -0.10717537999153143,
+      "delta_siglip": -0.1250382959842682
+    },
+    {
+      "image_id": "flickr30k_test_011250",
+      "caption": "child, boy, grass\ntwo boys stand on grass near yellow tape\n\nchild, boy, grass\na boy holds hands with another boy on grass\n\nchild, boy, grass\nboys stand on grass near yellow tape",
+      "clip_score": 0.270387202501297,
+      "siglip_score": 0.1830706745386123,
+      "delta_clip": -0.1022355854511261,
+      "delta_siglip": -0.06527011096477509
+    },
+    {
+      "image_id": "flickr30k_test_023900",
+      "caption": "man holding skewers\nman holds skewers near food stall\n\nman smiling\nman smiles near food stall\n\nimage unclear",
+      "clip_score": 0.2609997391700744,
+      "siglip_score": 0.2173928022384643,
+      "delta_clip": -0.10080689191818237,
+      "delta_siglip": -0.07342281937599188
+    },
+    {
+      "image_id": "flickr30k_test_026125",
+      "caption": "man playing guitar\nman plays guitar on sidewalk\n\nman holding bass\nman holds bass near building\n\nman sitting with instrument\nman sits with instrument on sidewalk",
+      "clip_score": 0.2618768513202667,
+      "siglip_score": 0.1708778589963913,
+      "delta_clip": -0.09683915972709656,
+      "delta_siglip": -0.048967376351356506
+    },
+    {
+      "image_id": "flickr30k_test_008305",
+      "caption": "person on sidewalk\na person sits on the sidewalk near a white bag\n\nperson, bicycle, street\na person rides a bicycle on the street\n\nperson, car, street\na person stands near a car on the street",
+      "clip_score": 0.2056939303874969,
+      "siglip_score": 0.1260736584663391,
+      "delta_clip": -0.0938392579555512,
+      "delta_siglip": -0.02889455854892728
+    },
+    {
+      "image_id": "flickr30k_test_011286",
+      "caption": "person walking on rocks\nthree people walk along rocky riverbank\n\nperson walking on rocks\nperson walks on wet rocks near rushing water\n\nperson walking on rocks\nindividuals traverse rocky terrain beside flowing stream",
+      "clip_score": 0.2660759091377258,
+      "siglip_score": 0.1502295881509781,
+      "delta_clip": -0.09167969226837164,
+      "delta_siglip": -0.0748563259840011
+    },
+    {
+      "image_id": "flickr30k_test_000585",
+      "caption": "workers near crane on construction site\n\ncrane stands near workers on construction site\n\nimage unclear",
+      "clip_score": 0.2507957816123962,
+      "siglip_score": 0.087373249232769,
+      "delta_clip": -0.0862059891223908,
+      "delta_siglip": -0.1205616071820259
+    }
+  ]
+}

@@ -1,0 +1,1105 @@
+split_id,method_id,run_id,order,dataset_index,image_id,image_relpath,reference_captions,prompt_id,prompt_name,prompt_text,caption,candidate_id,selected,model,temperature,top_p,max_new_tokens,generation_config
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_4e86359040,2,27768,flickr30k_test_027768,images/flickr30k/flickr30k_test_027768.jpg,"[""The redheaded girl giggles happily as she swings her pillow at her opponent during a recent pillow fight."", ""A lady in a red shirt with red-hair laugh while throwing a pillow over her left shoulder."", ""A woman with red-hair swings a pillow and laughs."", ""A young redheaded woman laughs at something."", ""A redhead girl in a pillow fight.""]",textgrad_4e86359040,TextGrad Step 4,"Output exactly one concise, information‑dense caption: a single grammatical sentence of comma‑separated short phrases. Use digits for counts; do not infer, hedge, paraphrase, or add anything not visually present. Output nothing else.
+
+Required phrase ordering (include each item only if clearly visible; omit unverifiable items). Aim for ≤30 words; allow up to +10% length only to include a required high‑priority item (legible text, a necessary relation phrase, or a clear background anchor).
+
+1) Start with: [digit] + subject noun(s) + spatial anchor. Spatial rules: if subject width >60% image width use ""center""; otherwise choose left/center/right by centroid. Add depth only if clearly determinable by size/overlap: use [foreground|midground|background]; if depth unclear omit. If partly out of frame, append ""partially cropped at [edge]"".
+
+2) Immediately after, include one visible action+part phrase if any micro‑action cue is present (format: ""[body/part] [verb] [object/target]"" or ""holding [object] with [hand]""). Micro‑action cues (include action if any apply): visible limb‑object contact, object visibly held by hand, visible deformation/pressure, object displacement (midair or off ground), clear gaze toward an object, or motion blur on limbs. If none of these cues apply, include exactly ""no-action-visible"".
+
+3) Then add up to 1–3 high‑signal descriptor(s) chosen by this priority order and cap:
+ A) legible text (transcribe exact string in quotes and localize, e.g. ""'NO PARKING' on door at background right"") — include only if all characters are clearly legible;
+ B) reflection/wetness or surface condition (e.g., ""wet pavement with reflections"");
+ C) material/texture (e.g., ""rusted metal"", ""woven straw"");
+ D) distinctive accessory (e.g., ""white hard hat"", ""red pennant"");
+ E) color. If more than 3 candidates, select highest‑ranked; if tie, choose lexicographically.
+
+4) If a person/object clearly interacts with another object/structure, include one concise part‑level relation phrase (e.g., ""sitting on metal chair"", ""rear wheel off ground"", ""holding pennant over awning""). Include the interacting part (hand, foot, rear wheel, stern).
+
+5) Optionally include exactly one viewpoint token when obvious: {close-up, medium, wide, high-angle, low-angle}.
+
+6) Optionally include exactly one lighting token when obvious: {backlit, front-lit, rim-lit, long-shadow-left, long-shadow-right}.
+
+7) If visible, append one concise background anchor noun phrase (single phrase, e.g., ""stone embankment"", ""storefront window"", ""pier with canopy""). Omit if no clear anchor.
+
+Pre‑output verification (apply before emitting):
+- Transcribe legible text only if all characters readable; otherwise omit text.
+- Include action only if a micro‑action cue above is present; otherwise use ""no-action-visible"".
+- Include at most 3 descriptors from the priority list.
+- If count is uncertain, do not invent a digit.
+- If spatial depth is unclear, omit foreground/midground/background rather than guess.
+- If a subject is partially out of frame, include the exact cropped edge.
+- If any check fails, remove the uncertain token and recheck.
+
+Style constraints:
+- Use compact, active, factual phrasing and concrete nouns (prefer specific labels: ""acoustic guitar"", ""hard hat"", ""pier"").
+- Do not infer ages, emotions, roles, relationships, or unseen attributes.
+- Keep phrases comma‑separated in one sentence; do not output tags, lists, or extra lines.
+
+Examples (bad → corrected; follow exact target format):
+- Bad: ""Several people in a busy scene."" → Good: ""3 people left foreground, standing, colorful saris, medium, storefront window behind.""
+- Bad: ""1 boat"" → Good: ""1 pier center foreground, people on platform, small pavilion with spire, wide, stone embankment behind.""
+- Bad: ""man with cap"" → Good: ""1 worker center foreground, standing on fire‑escape platform, white hard hat, red brick facade behind.""
+- Bad: ""player diving"" → Good: ""1 goalkeeper center foreground, mid‑air dive to right with outstretched gloved hands, white soccer ball to right, goal net behind.""
+- Bad: ""musician playing"" → Good: ""1 man right foreground, right hand on flute, open tip box on ground, medium, storefront window behind.""
+- Bad: ""kids running"" → Good: ""5 boys center foreground, leaning forward as if starting sprint, green training bibs, dirt field with parked cars behind.""
+
+Use these rules to produce exactly one caption that follows the ordering and verification checklist.","1 woman center foreground, holding beige pillow with right hand, red sweatshirt with white logo, orange curly hair, no-action-visible, medium, concrete walkway behind.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_4e86359040,5,2067,flickr30k_test_002067,images/flickr30k/flickr30k_test_002067.jpg,"[""People sitting at tables outside chatting while a musician gets ready to play bass."", ""A man holds a guitar on a busy street while people look on."", ""A little girl is watching a man play guitar on the street."", ""A girl on a city street is looking at a guitar player."", ""A street guitarist is outside a cafe""]",textgrad_4e86359040,TextGrad Step 4,"Output exactly one concise, information‑dense caption: a single grammatical sentence of comma‑separated short phrases. Use digits for counts; do not infer, hedge, paraphrase, or add anything not visually present. Output nothing else.
+
+Required phrase ordering (include each item only if clearly visible; omit unverifiable items). Aim for ≤30 words; allow up to +10% length only to include a required high‑priority item (legible text, a necessary relation phrase, or a clear background anchor).
+
+1) Start with: [digit] + subject noun(s) + spatial anchor. Spatial rules: if subject width >60% image width use ""center""; otherwise choose left/center/right by centroid. Add depth only if clearly determinable by size/overlap: use [foreground|midground|background]; if depth unclear omit. If partly out of frame, append ""partially cropped at [edge]"".
+
+2) Immediately after, include one visible action+part phrase if any micro‑action cue is present (format: ""[body/part] [verb] [object/target]"" or ""holding [object] with [hand]""). Micro‑action cues (include action if any apply): visible limb‑object contact, object visibly held by hand, visible deformation/pressure, object displacement (midair or off ground), clear gaze toward an object, or motion blur on limbs. If none of these cues apply, include exactly ""no-action-visible"".
+
+3) Then add up to 1–3 high‑signal descriptor(s) chosen by this priority order and cap:
+ A) legible text (transcribe exact string in quotes and localize, e.g. ""'NO PARKING' on door at background right"") — include only if all characters are clearly legible;
+ B) reflection/wetness or surface condition (e.g., ""wet pavement with reflections"");
+ C) material/texture (e.g., ""rusted metal"", ""woven straw"");
+ D) distinctive accessory (e.g., ""white hard hat"", ""red pennant"");
+ E) color. If more than 3 candidates, select highest‑ranked; if tie, choose lexicographically.
+
+4) If a person/object clearly interacts with another object/structure, include one concise part‑level relation phrase (e.g., ""sitting on metal chair"", ""rear wheel off ground"", ""holding pennant over awning""). Include the interacting part (hand, foot, rear wheel, stern).
+
+5) Optionally include exactly one viewpoint token when obvious: {close-up, medium, wide, high-angle, low-angle}.
+
+6) Optionally include exactly one lighting token when obvious: {backlit, front-lit, rim-lit, long-shadow-left, long-shadow-right}.
+
+7) If visible, append one concise background anchor noun phrase (single phrase, e.g., ""stone embankment"", ""storefront window"", ""pier with canopy""). Omit if no clear anchor.
+
+Pre‑output verification (apply before emitting):
+- Transcribe legible text only if all characters readable; otherwise omit text.
+- Include action only if a micro‑action cue above is present; otherwise use ""no-action-visible"".
+- Include at most 3 descriptors from the priority list.
+- If count is uncertain, do not invent a digit.
+- If spatial depth is unclear, omit foreground/midground/background rather than guess.
+- If a subject is partially out of frame, include the exact cropped edge.
+- If any check fails, remove the uncertain token and recheck.
+
+Style constraints:
+- Use compact, active, factual phrasing and concrete nouns (prefer specific labels: ""acoustic guitar"", ""hard hat"", ""pier"").
+- Do not infer ages, emotions, roles, relationships, or unseen attributes.
+- Keep phrases comma‑separated in one sentence; do not output tags, lists, or extra lines.
+
+Examples (bad → corrected; follow exact target format):
+- Bad: ""Several people in a busy scene."" → Good: ""3 people left foreground, standing, colorful saris, medium, storefront window behind.""
+- Bad: ""1 boat"" → Good: ""1 pier center foreground, people on platform, small pavilion with spire, wide, stone embankment behind.""
+- Bad: ""man with cap"" → Good: ""1 worker center foreground, standing on fire‑escape platform, white hard hat, red brick facade behind.""
+- Bad: ""player diving"" → Good: ""1 goalkeeper center foreground, mid‑air dive to right with outstretched gloved hands, white soccer ball to right, goal net behind.""
+- Bad: ""musician playing"" → Good: ""1 man right foreground, right hand on flute, open tip box on ground, medium, storefront window behind.""
+- Bad: ""kids running"" → Good: ""5 boys center foreground, leaning forward as if starting sprint, green training bibs, dirt field with parked cars behind.""
+
+Use these rules to produce exactly one caption that follows the ordering and verification checklist.","1 man left foreground, holding electric guitar with right hand, standing on pavement, black guitar case on ground, ""SALON DE THE"" sign visible at background right, wet pavement with reflections, no-action-visible.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_4e86359040,11,15474,flickr30k_test_015474,images/flickr30k/flickr30k_test_015474.jpg,"[""Three Vietnamese women paddle their boats along the river market in the morning."", ""Three boaters paddle their produce to the market in a Vietnamese fishing village."", ""Villagers paddling their boats to their destination."", ""Canoes travel across the water along side buildings."", ""The people are delivering goods by boat""]",textgrad_4e86359040,TextGrad Step 4,"Output exactly one concise, information‑dense caption: a single grammatical sentence of comma‑separated short phrases. Use digits for counts; do not infer, hedge, paraphrase, or add anything not visually present. Output nothing else.
+
+Required phrase ordering (include each item only if clearly visible; omit unverifiable items). Aim for ≤30 words; allow up to +10% length only to include a required high‑priority item (legible text, a necessary relation phrase, or a clear background anchor).
+
+1) Start with: [digit] + subject noun(s) + spatial anchor. Spatial rules: if subject width >60% image width use ""center""; otherwise choose left/center/right by centroid. Add depth only if clearly determinable by size/overlap: use [foreground|midground|background]; if depth unclear omit. If partly out of frame, append ""partially cropped at [edge]"".
+
+2) Immediately after, include one visible action+part phrase if any micro‑action cue is present (format: ""[body/part] [verb] [object/target]"" or ""holding [object] with [hand]""). Micro‑action cues (include action if any apply): visible limb‑object contact, object visibly held by hand, visible deformation/pressure, object displacement (midair or off ground), clear gaze toward an object, or motion blur on limbs. If none of these cues apply, include exactly ""no-action-visible"".
+
+3) Then add up to 1–3 high‑signal descriptor(s) chosen by this priority order and cap:
+ A) legible text (transcribe exact string in quotes and localize, e.g. ""'NO PARKING' on door at background right"") — include only if all characters are clearly legible;
+ B) reflection/wetness or surface condition (e.g., ""wet pavement with reflections"");
+ C) material/texture (e.g., ""rusted metal"", ""woven straw"");
+ D) distinctive accessory (e.g., ""white hard hat"", ""red pennant"");
+ E) color. If more than 3 candidates, select highest‑ranked; if tie, choose lexicographically.
+
+4) If a person/object clearly interacts with another object/structure, include one concise part‑level relation phrase (e.g., ""sitting on metal chair"", ""rear wheel off ground"", ""holding pennant over awning""). Include the interacting part (hand, foot, rear wheel, stern).
+
+5) Optionally include exactly one viewpoint token when obvious: {close-up, medium, wide, high-angle, low-angle}.
+
+6) Optionally include exactly one lighting token when obvious: {backlit, front-lit, rim-lit, long-shadow-left, long-shadow-right}.
+
+7) If visible, append one concise background anchor noun phrase (single phrase, e.g., ""stone embankment"", ""storefront window"", ""pier with canopy""). Omit if no clear anchor.
+
+Pre‑output verification (apply before emitting):
+- Transcribe legible text only if all characters readable; otherwise omit text.
+- Include action only if a micro‑action cue above is present; otherwise use ""no-action-visible"".
+- Include at most 3 descriptors from the priority list.
+- If count is uncertain, do not invent a digit.
+- If spatial depth is unclear, omit foreground/midground/background rather than guess.
+- If a subject is partially out of frame, include the exact cropped edge.
+- If any check fails, remove the uncertain token and recheck.
+
+Style constraints:
+- Use compact, active, factual phrasing and concrete nouns (prefer specific labels: ""acoustic guitar"", ""hard hat"", ""pier"").
+- Do not infer ages, emotions, roles, relationships, or unseen attributes.
+- Keep phrases comma‑separated in one sentence; do not output tags, lists, or extra lines.
+
+Examples (bad → corrected; follow exact target format):
+- Bad: ""Several people in a busy scene."" → Good: ""3 people left foreground, standing, colorful saris, medium, storefront window behind.""
+- Bad: ""1 boat"" → Good: ""1 pier center foreground, people on platform, small pavilion with spire, wide, stone embankment behind.""
+- Bad: ""man with cap"" → Good: ""1 worker center foreground, standing on fire‑escape platform, white hard hat, red brick facade behind.""
+- Bad: ""player diving"" → Good: ""1 goalkeeper center foreground, mid‑air dive to right with outstretched gloved hands, white soccer ball to right, goal net behind.""
+- Bad: ""musician playing"" → Good: ""1 man right foreground, right hand on flute, open tip box on ground, medium, storefront window behind.""
+- Bad: ""kids running"" → Good: ""5 boys center foreground, leaning forward as if starting sprint, green training bibs, dirt field with parked cars behind.""
+
+Use these rules to produce exactly one caption that follows the ordering and verification checklist.","3 boats midground, one with person rowing with oar, another with person holding paddle, third with person holding paddle, muddy water surface, wooden pier with shops, ""DUNG ANH MAI PHAT CO"" sign visible, people on platform, low-angle, stone embankment behind.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_4e86359040,12,21351,flickr30k_test_021351,images/flickr30k/flickr30k_test_021351.jpg,"[""A woman dressed in all black standing in front of colorful picture playing a violin."", ""A woman dressed in black is playing the violin in front of some artwork."", ""A woman in black playing an instrument on the subway platform."", ""A woman on a bright street is playing the violin."", ""A lady performing in a underground train station""]",textgrad_4e86359040,TextGrad Step 4,"Output exactly one concise, information‑dense caption: a single grammatical sentence of comma‑separated short phrases. Use digits for counts; do not infer, hedge, paraphrase, or add anything not visually present. Output nothing else.
+
+Required phrase ordering (include each item only if clearly visible; omit unverifiable items). Aim for ≤30 words; allow up to +10% length only to include a required high‑priority item (legible text, a necessary relation phrase, or a clear background anchor).
+
+1) Start with: [digit] + subject noun(s) + spatial anchor. Spatial rules: if subject width >60% image width use ""center""; otherwise choose left/center/right by centroid. Add depth only if clearly determinable by size/overlap: use [foreground|midground|background]; if depth unclear omit. If partly out of frame, append ""partially cropped at [edge]"".
+
+2) Immediately after, include one visible action+part phrase if any micro‑action cue is present (format: ""[body/part] [verb] [object/target]"" or ""holding [object] with [hand]""). Micro‑action cues (include action if any apply): visible limb‑object contact, object visibly held by hand, visible deformation/pressure, object displacement (midair or off ground), clear gaze toward an object, or motion blur on limbs. If none of these cues apply, include exactly ""no-action-visible"".
+
+3) Then add up to 1–3 high‑signal descriptor(s) chosen by this priority order and cap:
+ A) legible text (transcribe exact string in quotes and localize, e.g. ""'NO PARKING' on door at background right"") — include only if all characters are clearly legible;
+ B) reflection/wetness or surface condition (e.g., ""wet pavement with reflections"");
+ C) material/texture (e.g., ""rusted metal"", ""woven straw"");
+ D) distinctive accessory (e.g., ""white hard hat"", ""red pennant"");
+ E) color. If more than 3 candidates, select highest‑ranked; if tie, choose lexicographically.
+
+4) If a person/object clearly interacts with another object/structure, include one concise part‑level relation phrase (e.g., ""sitting on metal chair"", ""rear wheel off ground"", ""holding pennant over awning""). Include the interacting part (hand, foot, rear wheel, stern).
+
+5) Optionally include exactly one viewpoint token when obvious: {close-up, medium, wide, high-angle, low-angle}.
+
+6) Optionally include exactly one lighting token when obvious: {backlit, front-lit, rim-lit, long-shadow-left, long-shadow-right}.
+
+7) If visible, append one concise background anchor noun phrase (single phrase, e.g., ""stone embankment"", ""storefront window"", ""pier with canopy""). Omit if no clear anchor.
+
+Pre‑output verification (apply before emitting):
+- Transcribe legible text only if all characters readable; otherwise omit text.
+- Include action only if a micro‑action cue above is present; otherwise use ""no-action-visible"".
+- Include at most 3 descriptors from the priority list.
+- If count is uncertain, do not invent a digit.
+- If spatial depth is unclear, omit foreground/midground/background rather than guess.
+- If a subject is partially out of frame, include the exact cropped edge.
+- If any check fails, remove the uncertain token and recheck.
+
+Style constraints:
+- Use compact, active, factual phrasing and concrete nouns (prefer specific labels: ""acoustic guitar"", ""hard hat"", ""pier"").
+- Do not infer ages, emotions, roles, relationships, or unseen attributes.
+- Keep phrases comma‑separated in one sentence; do not output tags, lists, or extra lines.
+
+Examples (bad → corrected; follow exact target format):
+- Bad: ""Several people in a busy scene."" → Good: ""3 people left foreground, standing, colorful saris, medium, storefront window behind.""
+- Bad: ""1 boat"" → Good: ""1 pier center foreground, people on platform, small pavilion with spire, wide, stone embankment behind.""
+- Bad: ""man with cap"" → Good: ""1 worker center foreground, standing on fire‑escape platform, white hard hat, red brick facade behind.""
+- Bad: ""player diving"" → Good: ""1 goalkeeper center foreground, mid‑air dive to right with outstretched gloved hands, white soccer ball to right, goal net behind.""
+- Bad: ""musician playing"" → Good: ""1 man right foreground, right hand on flute, open tip box on ground, medium, storefront window behind.""
+- Bad: ""kids running"" → Good: ""5 boys center foreground, leaning forward as if starting sprint, green training bibs, dirt field with parked cars behind.""
+
+Use these rules to produce exactly one caption that follows the ordering and verification checklist.","1 woman center foreground, holding violin with left hand, black outfit, abstract paintings on wall behind, wide, tiled floor with overhead lighting.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_4e86359040,14,25844,flickr30k_test_025844,images/flickr30k/flickr30k_test_025844.jpg,"[""The two boys, one in orange the other in teal, wrestle in the sand."", ""Two boys are playing in the sand at a playground."", ""Two young boys are wrestling in a sandpit."", ""Two boys wrestle together in the sand."", ""Two boys tussle in the sand at a park.""]",textgrad_4e86359040,TextGrad Step 4,"Output exactly one concise, information‑dense caption: a single grammatical sentence of comma‑separated short phrases. Use digits for counts; do not infer, hedge, paraphrase, or add anything not visually present. Output nothing else.
+
+Required phrase ordering (include each item only if clearly visible; omit unverifiable items). Aim for ≤30 words; allow up to +10% length only to include a required high‑priority item (legible text, a necessary relation phrase, or a clear background anchor).
+
+1) Start with: [digit] + subject noun(s) + spatial anchor. Spatial rules: if subject width >60% image width use ""center""; otherwise choose left/center/right by centroid. Add depth only if clearly determinable by size/overlap: use [foreground|midground|background]; if depth unclear omit. If partly out of frame, append ""partially cropped at [edge]"".
+
+2) Immediately after, include one visible action+part phrase if any micro‑action cue is present (format: ""[body/part] [verb] [object/target]"" or ""holding [object] with [hand]""). Micro‑action cues (include action if any apply): visible limb‑object contact, object visibly held by hand, visible deformation/pressure, object displacement (midair or off ground), clear gaze toward an object, or motion blur on limbs. If none of these cues apply, include exactly ""no-action-visible"".
+
+3) Then add up to 1–3 high‑signal descriptor(s) chosen by this priority order and cap:
+ A) legible text (transcribe exact string in quotes and localize, e.g. ""'NO PARKING' on door at background right"") — include only if all characters are clearly legible;
+ B) reflection/wetness or surface condition (e.g., ""wet pavement with reflections"");
+ C) material/texture (e.g., ""rusted metal"", ""woven straw"");
+ D) distinctive accessory (e.g., ""white hard hat"", ""red pennant"");
+ E) color. If more than 3 candidates, select highest‑ranked; if tie, choose lexicographically.
+
+4) If a person/object clearly interacts with another object/structure, include one concise part‑level relation phrase (e.g., ""sitting on metal chair"", ""rear wheel off ground"", ""holding pennant over awning""). Include the interacting part (hand, foot, rear wheel, stern).
+
+5) Optionally include exactly one viewpoint token when obvious: {close-up, medium, wide, high-angle, low-angle}.
+
+6) Optionally include exactly one lighting token when obvious: {backlit, front-lit, rim-lit, long-shadow-left, long-shadow-right}.
+
+7) If visible, append one concise background anchor noun phrase (single phrase, e.g., ""stone embankment"", ""storefront window"", ""pier with canopy""). Omit if no clear anchor.
+
+Pre‑output verification (apply before emitting):
+- Transcribe legible text only if all characters readable; otherwise omit text.
+- Include action only if a micro‑action cue above is present; otherwise use ""no-action-visible"".
+- Include at most 3 descriptors from the priority list.
+- If count is uncertain, do not invent a digit.
+- If spatial depth is unclear, omit foreground/midground/background rather than guess.
+- If a subject is partially out of frame, include the exact cropped edge.
+- If any check fails, remove the uncertain token and recheck.
+
+Style constraints:
+- Use compact, active, factual phrasing and concrete nouns (prefer specific labels: ""acoustic guitar"", ""hard hat"", ""pier"").
+- Do not infer ages, emotions, roles, relationships, or unseen attributes.
+- Keep phrases comma‑separated in one sentence; do not output tags, lists, or extra lines.
+
+Examples (bad → corrected; follow exact target format):
+- Bad: ""Several people in a busy scene."" → Good: ""3 people left foreground, standing, colorful saris, medium, storefront window behind.""
+- Bad: ""1 boat"" → Good: ""1 pier center foreground, people on platform, small pavilion with spire, wide, stone embankment behind.""
+- Bad: ""man with cap"" → Good: ""1 worker center foreground, standing on fire‑escape platform, white hard hat, red brick facade behind.""
+- Bad: ""player diving"" → Good: ""1 goalkeeper center foreground, mid‑air dive to right with outstretched gloved hands, white soccer ball to right, goal net behind.""
+- Bad: ""musician playing"" → Good: ""1 man right foreground, right hand on flute, open tip box on ground, medium, storefront window behind.""
+- Bad: ""kids running"" → Good: ""5 boys center foreground, leaning forward as if starting sprint, green training bibs, dirt field with parked cars behind.""
+
+Use these rules to produce exactly one caption that follows the ordering and verification checklist.","2 children center foreground, boy holding girl with arms, orange tie-dye shirt, camouflage shorts, sandy ground, grassy area behind.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_4e86359040,18,928,flickr30k_test_000928,images/flickr30k/flickr30k_test_000928.jpg,"[""A woman with a red jacket and her companion eating snacks."", ""A young man and woman enjoy some ribs in the evening."", ""Two people are eating barbecue ribs at night."", ""A man and a woman about to eat."", ""These two people are eating.""]",textgrad_4e86359040,TextGrad Step 4,"Output exactly one concise, information‑dense caption: a single grammatical sentence of comma‑separated short phrases. Use digits for counts; do not infer, hedge, paraphrase, or add anything not visually present. Output nothing else.
+
+Required phrase ordering (include each item only if clearly visible; omit unverifiable items). Aim for ≤30 words; allow up to +10% length only to include a required high‑priority item (legible text, a necessary relation phrase, or a clear background anchor).
+
+1) Start with: [digit] + subject noun(s) + spatial anchor. Spatial rules: if subject width >60% image width use ""center""; otherwise choose left/center/right by centroid. Add depth only if clearly determinable by size/overlap: use [foreground|midground|background]; if depth unclear omit. If partly out of frame, append ""partially cropped at [edge]"".
+
+2) Immediately after, include one visible action+part phrase if any micro‑action cue is present (format: ""[body/part] [verb] [object/target]"" or ""holding [object] with [hand]""). Micro‑action cues (include action if any apply): visible limb‑object contact, object visibly held by hand, visible deformation/pressure, object displacement (midair or off ground), clear gaze toward an object, or motion blur on limbs. If none of these cues apply, include exactly ""no-action-visible"".
+
+3) Then add up to 1–3 high‑signal descriptor(s) chosen by this priority order and cap:
+ A) legible text (transcribe exact string in quotes and localize, e.g. ""'NO PARKING' on door at background right"") — include only if all characters are clearly legible;
+ B) reflection/wetness or surface condition (e.g., ""wet pavement with reflections"");
+ C) material/texture (e.g., ""rusted metal"", ""woven straw"");
+ D) distinctive accessory (e.g., ""white hard hat"", ""red pennant"");
+ E) color. If more than 3 candidates, select highest‑ranked; if tie, choose lexicographically.
+
+4) If a person/object clearly interacts with another object/structure, include one concise part‑level relation phrase (e.g., ""sitting on metal chair"", ""rear wheel off ground"", ""holding pennant over awning""). Include the interacting part (hand, foot, rear wheel, stern).
+
+5) Optionally include exactly one viewpoint token when obvious: {close-up, medium, wide, high-angle, low-angle}.
+
+6) Optionally include exactly one lighting token when obvious: {backlit, front-lit, rim-lit, long-shadow-left, long-shadow-right}.
+
+7) If visible, append one concise background anchor noun phrase (single phrase, e.g., ""stone embankment"", ""storefront window"", ""pier with canopy""). Omit if no clear anchor.
+
+Pre‑output verification (apply before emitting):
+- Transcribe legible text only if all characters readable; otherwise omit text.
+- Include action only if a micro‑action cue above is present; otherwise use ""no-action-visible"".
+- Include at most 3 descriptors from the priority list.
+- If count is uncertain, do not invent a digit.
+- If spatial depth is unclear, omit foreground/midground/background rather than guess.
+- If a subject is partially out of frame, include the exact cropped edge.
+- If any check fails, remove the uncertain token and recheck.
+
+Style constraints:
+- Use compact, active, factual phrasing and concrete nouns (prefer specific labels: ""acoustic guitar"", ""hard hat"", ""pier"").
+- Do not infer ages, emotions, roles, relationships, or unseen attributes.
+- Keep phrases comma‑separated in one sentence; do not output tags, lists, or extra lines.
+
+Examples (bad → corrected; follow exact target format):
+- Bad: ""Several people in a busy scene."" → Good: ""3 people left foreground, standing, colorful saris, medium, storefront window behind.""
+- Bad: ""1 boat"" → Good: ""1 pier center foreground, people on platform, small pavilion with spire, wide, stone embankment behind.""
+- Bad: ""man with cap"" → Good: ""1 worker center foreground, standing on fire‑escape platform, white hard hat, red brick facade behind.""
+- Bad: ""player diving"" → Good: ""1 goalkeeper center foreground, mid‑air dive to right with outstretched gloved hands, white soccer ball to right, goal net behind.""
+- Bad: ""musician playing"" → Good: ""1 man right foreground, right hand on flute, open tip box on ground, medium, storefront window behind.""
+- Bad: ""kids running"" → Good: ""5 boys center foreground, leaning forward as if starting sprint, green training bibs, dirt field with parked cars behind.""
+
+Use these rules to produce exactly one caption that follows the ordering and verification checklist.","2 people center foreground, holding food with hands, wearing glasses, black t-shirt with ""'ROLLING STONES' logo"", red jacket, no-action-visible, dim lighting, dark background.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_4e86359040,24,24978,flickr30k_test_024978,images/flickr30k/flickr30k_test_024978.jpg,"[""A man in a blue shirt and brown pants is sitting next to a parked blue car."", ""A man in a blue sweater is sitting outside in front of a blue car."", ""A man in a blue shirt is sitting beside a blue van"", ""An elderly man sits in a chair in an alleyway."", ""The man in the blue shirt looks very lonely.""]",textgrad_4e86359040,TextGrad Step 4,"Output exactly one concise, information‑dense caption: a single grammatical sentence of comma‑separated short phrases. Use digits for counts; do not infer, hedge, paraphrase, or add anything not visually present. Output nothing else.
+
+Required phrase ordering (include each item only if clearly visible; omit unverifiable items). Aim for ≤30 words; allow up to +10% length only to include a required high‑priority item (legible text, a necessary relation phrase, or a clear background anchor).
+
+1) Start with: [digit] + subject noun(s) + spatial anchor. Spatial rules: if subject width >60% image width use ""center""; otherwise choose left/center/right by centroid. Add depth only if clearly determinable by size/overlap: use [foreground|midground|background]; if depth unclear omit. If partly out of frame, append ""partially cropped at [edge]"".
+
+2) Immediately after, include one visible action+part phrase if any micro‑action cue is present (format: ""[body/part] [verb] [object/target]"" or ""holding [object] with [hand]""). Micro‑action cues (include action if any apply): visible limb‑object contact, object visibly held by hand, visible deformation/pressure, object displacement (midair or off ground), clear gaze toward an object, or motion blur on limbs. If none of these cues apply, include exactly ""no-action-visible"".
+
+3) Then add up to 1–3 high‑signal descriptor(s) chosen by this priority order and cap:
+ A) legible text (transcribe exact string in quotes and localize, e.g. ""'NO PARKING' on door at background right"") — include only if all characters are clearly legible;
+ B) reflection/wetness or surface condition (e.g., ""wet pavement with reflections"");
+ C) material/texture (e.g., ""rusted metal"", ""woven straw"");
+ D) distinctive accessory (e.g., ""white hard hat"", ""red pennant"");
+ E) color. If more than 3 candidates, select highest‑ranked; if tie, choose lexicographically.
+
+4) If a person/object clearly interacts with another object/structure, include one concise part‑level relation phrase (e.g., ""sitting on metal chair"", ""rear wheel off ground"", ""holding pennant over awning""). Include the interacting part (hand, foot, rear wheel, stern).
+
+5) Optionally include exactly one viewpoint token when obvious: {close-up, medium, wide, high-angle, low-angle}.
+
+6) Optionally include exactly one lighting token when obvious: {backlit, front-lit, rim-lit, long-shadow-left, long-shadow-right}.
+
+7) If visible, append one concise background anchor noun phrase (single phrase, e.g., ""stone embankment"", ""storefront window"", ""pier with canopy""). Omit if no clear anchor.
+
+Pre‑output verification (apply before emitting):
+- Transcribe legible text only if all characters readable; otherwise omit text.
+- Include action only if a micro‑action cue above is present; otherwise use ""no-action-visible"".
+- Include at most 3 descriptors from the priority list.
+- If count is uncertain, do not invent a digit.
+- If spatial depth is unclear, omit foreground/midground/background rather than guess.
+- If a subject is partially out of frame, include the exact cropped edge.
+- If any check fails, remove the uncertain token and recheck.
+
+Style constraints:
+- Use compact, active, factual phrasing and concrete nouns (prefer specific labels: ""acoustic guitar"", ""hard hat"", ""pier"").
+- Do not infer ages, emotions, roles, relationships, or unseen attributes.
+- Keep phrases comma‑separated in one sentence; do not output tags, lists, or extra lines.
+
+Examples (bad → corrected; follow exact target format):
+- Bad: ""Several people in a busy scene."" → Good: ""3 people left foreground, standing, colorful saris, medium, storefront window behind.""
+- Bad: ""1 boat"" → Good: ""1 pier center foreground, people on platform, small pavilion with spire, wide, stone embankment behind.""
+- Bad: ""man with cap"" → Good: ""1 worker center foreground, standing on fire‑escape platform, white hard hat, red brick facade behind.""
+- Bad: ""player diving"" → Good: ""1 goalkeeper center foreground, mid‑air dive to right with outstretched gloved hands, white soccer ball to right, goal net behind.""
+- Bad: ""musician playing"" → Good: ""1 man right foreground, right hand on flute, open tip box on ground, medium, storefront window behind.""
+- Bad: ""kids running"" → Good: ""5 boys center foreground, leaning forward as if starting sprint, green training bibs, dirt field with parked cars behind.""
+
+Use these rules to produce exactly one caption that follows the ordering and verification checklist.","1 man center midground, sitting on wooden chair, blue jacket, brown pants, no-action-visible, ""VICO DEL FICO AL PVRGATORIO"" on wall at background, blue car behind, stone wall with peeling paint, narrow alleyway.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_4e86359040,25,25138,flickr30k_test_025138,images/flickr30k/flickr30k_test_025138.jpg,"[""A woman in a black stocking hat and black leather jacket, talking to a man with a beard in a black fleece jacket."", ""A girl in a black sock hat is talking to a man wearing a blue shirt."", ""A woman and man talking to each other in front of a scenic lake."", ""People talking to one another outside near a fountain."", ""A woman in a black beanie looks up at a bearded man.""]",textgrad_4e86359040,TextGrad Step 4,"Output exactly one concise, information‑dense caption: a single grammatical sentence of comma‑separated short phrases. Use digits for counts; do not infer, hedge, paraphrase, or add anything not visually present. Output nothing else.
+
+Required phrase ordering (include each item only if clearly visible; omit unverifiable items). Aim for ≤30 words; allow up to +10% length only to include a required high‑priority item (legible text, a necessary relation phrase, or a clear background anchor).
+
+1) Start with: [digit] + subject noun(s) + spatial anchor. Spatial rules: if subject width >60% image width use ""center""; otherwise choose left/center/right by centroid. Add depth only if clearly determinable by size/overlap: use [foreground|midground|background]; if depth unclear omit. If partly out of frame, append ""partially cropped at [edge]"".
+
+2) Immediately after, include one visible action+part phrase if any micro‑action cue is present (format: ""[body/part] [verb] [object/target]"" or ""holding [object] with [hand]""). Micro‑action cues (include action if any apply): visible limb‑object contact, object visibly held by hand, visible deformation/pressure, object displacement (midair or off ground), clear gaze toward an object, or motion blur on limbs. If none of these cues apply, include exactly ""no-action-visible"".
+
+3) Then add up to 1–3 high‑signal descriptor(s) chosen by this priority order and cap:
+ A) legible text (transcribe exact string in quotes and localize, e.g. ""'NO PARKING' on door at background right"") — include only if all characters are clearly legible;
+ B) reflection/wetness or surface condition (e.g., ""wet pavement with reflections"");
+ C) material/texture (e.g., ""rusted metal"", ""woven straw"");
+ D) distinctive accessory (e.g., ""white hard hat"", ""red pennant"");
+ E) color. If more than 3 candidates, select highest‑ranked; if tie, choose lexicographically.
+
+4) If a person/object clearly interacts with another object/structure, include one concise part‑level relation phrase (e.g., ""sitting on metal chair"", ""rear wheel off ground"", ""holding pennant over awning""). Include the interacting part (hand, foot, rear wheel, stern).
+
+5) Optionally include exactly one viewpoint token when obvious: {close-up, medium, wide, high-angle, low-angle}.
+
+6) Optionally include exactly one lighting token when obvious: {backlit, front-lit, rim-lit, long-shadow-left, long-shadow-right}.
+
+7) If visible, append one concise background anchor noun phrase (single phrase, e.g., ""stone embankment"", ""storefront window"", ""pier with canopy""). Omit if no clear anchor.
+
+Pre‑output verification (apply before emitting):
+- Transcribe legible text only if all characters readable; otherwise omit text.
+- Include action only if a micro‑action cue above is present; otherwise use ""no-action-visible"".
+- Include at most 3 descriptors from the priority list.
+- If count is uncertain, do not invent a digit.
+- If spatial depth is unclear, omit foreground/midground/background rather than guess.
+- If a subject is partially out of frame, include the exact cropped edge.
+- If any check fails, remove the uncertain token and recheck.
+
+Style constraints:
+- Use compact, active, factual phrasing and concrete nouns (prefer specific labels: ""acoustic guitar"", ""hard hat"", ""pier"").
+- Do not infer ages, emotions, roles, relationships, or unseen attributes.
+- Keep phrases comma‑separated in one sentence; do not output tags, lists, or extra lines.
+
+Examples (bad → corrected; follow exact target format):
+- Bad: ""Several people in a busy scene."" → Good: ""3 people left foreground, standing, colorful saris, medium, storefront window behind.""
+- Bad: ""1 boat"" → Good: ""1 pier center foreground, people on platform, small pavilion with spire, wide, stone embankment behind.""
+- Bad: ""man with cap"" → Good: ""1 worker center foreground, standing on fire‑escape platform, white hard hat, red brick facade behind.""
+- Bad: ""player diving"" → Good: ""1 goalkeeper center foreground, mid‑air dive to right with outstretched gloved hands, white soccer ball to right, goal net behind.""
+- Bad: ""musician playing"" → Good: ""1 man right foreground, right hand on flute, open tip box on ground, medium, storefront window behind.""
+- Bad: ""kids running"" → Good: ""5 boys center foreground, leaning forward as if starting sprint, green training bibs, dirt field with parked cars behind.""
+
+Use these rules to produce exactly one caption that follows the ordering and verification checklist.","4 people center foreground, standing near railing, no-action-visible, black beanie, dark jacket, dark hoodie, wet pavement with reflections, stone embankment behind.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_4e86359040,26,69,flickr30k_test_000069,images/flickr30k/flickr30k_test_000069.jpg,"[""A man in a black coat walks past a red spaceship with a parking ticket stuck to its window."", ""A man is standing in front of a small red object that looks like a plane."", ""A man wearing a black jacket is walking towards the street."", ""A man in a black jacket is moving towards a street."", ""Man in black coat examining airplane nose.""]",textgrad_4e86359040,TextGrad Step 4,"Output exactly one concise, information‑dense caption: a single grammatical sentence of comma‑separated short phrases. Use digits for counts; do not infer, hedge, paraphrase, or add anything not visually present. Output nothing else.
+
+Required phrase ordering (include each item only if clearly visible; omit unverifiable items). Aim for ≤30 words; allow up to +10% length only to include a required high‑priority item (legible text, a necessary relation phrase, or a clear background anchor).
+
+1) Start with: [digit] + subject noun(s) + spatial anchor. Spatial rules: if subject width >60% image width use ""center""; otherwise choose left/center/right by centroid. Add depth only if clearly determinable by size/overlap: use [foreground|midground|background]; if depth unclear omit. If partly out of frame, append ""partially cropped at [edge]"".
+
+2) Immediately after, include one visible action+part phrase if any micro‑action cue is present (format: ""[body/part] [verb] [object/target]"" or ""holding [object] with [hand]""). Micro‑action cues (include action if any apply): visible limb‑object contact, object visibly held by hand, visible deformation/pressure, object displacement (midair or off ground), clear gaze toward an object, or motion blur on limbs. If none of these cues apply, include exactly ""no-action-visible"".
+
+3) Then add up to 1–3 high‑signal descriptor(s) chosen by this priority order and cap:
+ A) legible text (transcribe exact string in quotes and localize, e.g. ""'NO PARKING' on door at background right"") — include only if all characters are clearly legible;
+ B) reflection/wetness or surface condition (e.g., ""wet pavement with reflections"");
+ C) material/texture (e.g., ""rusted metal"", ""woven straw"");
+ D) distinctive accessory (e.g., ""white hard hat"", ""red pennant"");
+ E) color. If more than 3 candidates, select highest‑ranked; if tie, choose lexicographically.
+
+4) If a person/object clearly interacts with another object/structure, include one concise part‑level relation phrase (e.g., ""sitting on metal chair"", ""rear wheel off ground"", ""holding pennant over awning""). Include the interacting part (hand, foot, rear wheel, stern).
+
+5) Optionally include exactly one viewpoint token when obvious: {close-up, medium, wide, high-angle, low-angle}.
+
+6) Optionally include exactly one lighting token when obvious: {backlit, front-lit, rim-lit, long-shadow-left, long-shadow-right}.
+
+7) If visible, append one concise background anchor noun phrase (single phrase, e.g., ""stone embankment"", ""storefront window"", ""pier with canopy""). Omit if no clear anchor.
+
+Pre‑output verification (apply before emitting):
+- Transcribe legible text only if all characters readable; otherwise omit text.
+- Include action only if a micro‑action cue above is present; otherwise use ""no-action-visible"".
+- Include at most 3 descriptors from the priority list.
+- If count is uncertain, do not invent a digit.
+- If spatial depth is unclear, omit foreground/midground/background rather than guess.
+- If a subject is partially out of frame, include the exact cropped edge.
+- If any check fails, remove the uncertain token and recheck.
+
+Style constraints:
+- Use compact, active, factual phrasing and concrete nouns (prefer specific labels: ""acoustic guitar"", ""hard hat"", ""pier"").
+- Do not infer ages, emotions, roles, relationships, or unseen attributes.
+- Keep phrases comma‑separated in one sentence; do not output tags, lists, or extra lines.
+
+Examples (bad → corrected; follow exact target format):
+- Bad: ""Several people in a busy scene."" → Good: ""3 people left foreground, standing, colorful saris, medium, storefront window behind.""
+- Bad: ""1 boat"" → Good: ""1 pier center foreground, people on platform, small pavilion with spire, wide, stone embankment behind.""
+- Bad: ""man with cap"" → Good: ""1 worker center foreground, standing on fire‑escape platform, white hard hat, red brick facade behind.""
+- Bad: ""player diving"" → Good: ""1 goalkeeper center foreground, mid‑air dive to right with outstretched gloved hands, white soccer ball to right, goal net behind.""
+- Bad: ""musician playing"" → Good: ""1 man right foreground, right hand on flute, open tip box on ground, medium, storefront window behind.""
+- Bad: ""kids running"" → Good: ""5 boys center foreground, leaning forward as if starting sprint, green training bibs, dirt field with parked cars behind.""
+
+Use these rules to produce exactly one caption that follows the ordering and verification checklist.","1 man center foreground, standing, no-action-visible, red inflatable submarine, illuminated from within, streetlamp at background right, building facade behind.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_4e86359040,34,30974,flickr30k_test_030974,images/flickr30k/flickr30k_test_030974.jpg,"[""Four construction workers, wearing neon vests, stand at a construction site along with some equipment."", ""Construction workers are standing around the back of a dump truck."", ""Men standing around a cement truck on a construction site."", ""Four construction workers standing by a concrete machine."", ""A group of men are gathered around a concrete truck.""]",textgrad_4e86359040,TextGrad Step 4,"Output exactly one concise, information‑dense caption: a single grammatical sentence of comma‑separated short phrases. Use digits for counts; do not infer, hedge, paraphrase, or add anything not visually present. Output nothing else.
+
+Required phrase ordering (include each item only if clearly visible; omit unverifiable items). Aim for ≤30 words; allow up to +10% length only to include a required high‑priority item (legible text, a necessary relation phrase, or a clear background anchor).
+
+1) Start with: [digit] + subject noun(s) + spatial anchor. Spatial rules: if subject width >60% image width use ""center""; otherwise choose left/center/right by centroid. Add depth only if clearly determinable by size/overlap: use [foreground|midground|background]; if depth unclear omit. If partly out of frame, append ""partially cropped at [edge]"".
+
+2) Immediately after, include one visible action+part phrase if any micro‑action cue is present (format: ""[body/part] [verb] [object/target]"" or ""holding [object] with [hand]""). Micro‑action cues (include action if any apply): visible limb‑object contact, object visibly held by hand, visible deformation/pressure, object displacement (midair or off ground), clear gaze toward an object, or motion blur on limbs. If none of these cues apply, include exactly ""no-action-visible"".
+
+3) Then add up to 1–3 high‑signal descriptor(s) chosen by this priority order and cap:
+ A) legible text (transcribe exact string in quotes and localize, e.g. ""'NO PARKING' on door at background right"") — include only if all characters are clearly legible;
+ B) reflection/wetness or surface condition (e.g., ""wet pavement with reflections"");
+ C) material/texture (e.g., ""rusted metal"", ""woven straw"");
+ D) distinctive accessory (e.g., ""white hard hat"", ""red pennant"");
+ E) color. If more than 3 candidates, select highest‑ranked; if tie, choose lexicographically.
+
+4) If a person/object clearly interacts with another object/structure, include one concise part‑level relation phrase (e.g., ""sitting on metal chair"", ""rear wheel off ground"", ""holding pennant over awning""). Include the interacting part (hand, foot, rear wheel, stern).
+
+5) Optionally include exactly one viewpoint token when obvious: {close-up, medium, wide, high-angle, low-angle}.
+
+6) Optionally include exactly one lighting token when obvious: {backlit, front-lit, rim-lit, long-shadow-left, long-shadow-right}.
+
+7) If visible, append one concise background anchor noun phrase (single phrase, e.g., ""stone embankment"", ""storefront window"", ""pier with canopy""). Omit if no clear anchor.
+
+Pre‑output verification (apply before emitting):
+- Transcribe legible text only if all characters readable; otherwise omit text.
+- Include action only if a micro‑action cue above is present; otherwise use ""no-action-visible"".
+- Include at most 3 descriptors from the priority list.
+- If count is uncertain, do not invent a digit.
+- If spatial depth is unclear, omit foreground/midground/background rather than guess.
+- If a subject is partially out of frame, include the exact cropped edge.
+- If any check fails, remove the uncertain token and recheck.
+
+Style constraints:
+- Use compact, active, factual phrasing and concrete nouns (prefer specific labels: ""acoustic guitar"", ""hard hat"", ""pier"").
+- Do not infer ages, emotions, roles, relationships, or unseen attributes.
+- Keep phrases comma‑separated in one sentence; do not output tags, lists, or extra lines.
+
+Examples (bad → corrected; follow exact target format):
+- Bad: ""Several people in a busy scene."" → Good: ""3 people left foreground, standing, colorful saris, medium, storefront window behind.""
+- Bad: ""1 boat"" → Good: ""1 pier center foreground, people on platform, small pavilion with spire, wide, stone embankment behind.""
+- Bad: ""man with cap"" → Good: ""1 worker center foreground, standing on fire‑escape platform, white hard hat, red brick facade behind.""
+- Bad: ""player diving"" → Good: ""1 goalkeeper center foreground, mid‑air dive to right with outstretched gloved hands, white soccer ball to right, goal net behind.""
+- Bad: ""musician playing"" → Good: ""1 man right foreground, right hand on flute, open tip box on ground, medium, storefront window behind.""
+- Bad: ""kids running"" → Good: ""5 boys center foreground, leaning forward as if starting sprint, green training bibs, dirt field with parked cars behind.""
+
+Use these rules to produce exactly one caption that follows the ordering and verification checklist.","4 workers center midground, standing, no-action-visible, white hard hats, orange vests, concrete ground with gravel, cement mixer truck behind, wide, asphalt lot background.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_4e86359040,35,3349,flickr30k_test_003349,images/flickr30k/flickr30k_test_003349.jpg,"[""A small child in a red coat watches the fireplace display through the storefront window of a purse store."", ""A small child in a red coat points to a handbag in a shop window."", ""A child wearing a red coat is pointing into a Loewe store window."", ""A little girl is looking at the window display of a store."", ""A child is window shopping for a brown purse.""]",textgrad_4e86359040,TextGrad Step 4,"Output exactly one concise, information‑dense caption: a single grammatical sentence of comma‑separated short phrases. Use digits for counts; do not infer, hedge, paraphrase, or add anything not visually present. Output nothing else.
+
+Required phrase ordering (include each item only if clearly visible; omit unverifiable items). Aim for ≤30 words; allow up to +10% length only to include a required high‑priority item (legible text, a necessary relation phrase, or a clear background anchor).
+
+1) Start with: [digit] + subject noun(s) + spatial anchor. Spatial rules: if subject width >60% image width use ""center""; otherwise choose left/center/right by centroid. Add depth only if clearly determinable by size/overlap: use [foreground|midground|background]; if depth unclear omit. If partly out of frame, append ""partially cropped at [edge]"".
+
+2) Immediately after, include one visible action+part phrase if any micro‑action cue is present (format: ""[body/part] [verb] [object/target]"" or ""holding [object] with [hand]""). Micro‑action cues (include action if any apply): visible limb‑object contact, object visibly held by hand, visible deformation/pressure, object displacement (midair or off ground), clear gaze toward an object, or motion blur on limbs. If none of these cues apply, include exactly ""no-action-visible"".
+
+3) Then add up to 1–3 high‑signal descriptor(s) chosen by this priority order and cap:
+ A) legible text (transcribe exact string in quotes and localize, e.g. ""'NO PARKING' on door at background right"") — include only if all characters are clearly legible;
+ B) reflection/wetness or surface condition (e.g., ""wet pavement with reflections"");
+ C) material/texture (e.g., ""rusted metal"", ""woven straw"");
+ D) distinctive accessory (e.g., ""white hard hat"", ""red pennant"");
+ E) color. If more than 3 candidates, select highest‑ranked; if tie, choose lexicographically.
+
+4) If a person/object clearly interacts with another object/structure, include one concise part‑level relation phrase (e.g., ""sitting on metal chair"", ""rear wheel off ground"", ""holding pennant over awning""). Include the interacting part (hand, foot, rear wheel, stern).
+
+5) Optionally include exactly one viewpoint token when obvious: {close-up, medium, wide, high-angle, low-angle}.
+
+6) Optionally include exactly one lighting token when obvious: {backlit, front-lit, rim-lit, long-shadow-left, long-shadow-right}.
+
+7) If visible, append one concise background anchor noun phrase (single phrase, e.g., ""stone embankment"", ""storefront window"", ""pier with canopy""). Omit if no clear anchor.
+
+Pre‑output verification (apply before emitting):
+- Transcribe legible text only if all characters readable; otherwise omit text.
+- Include action only if a micro‑action cue above is present; otherwise use ""no-action-visible"".
+- Include at most 3 descriptors from the priority list.
+- If count is uncertain, do not invent a digit.
+- If spatial depth is unclear, omit foreground/midground/background rather than guess.
+- If a subject is partially out of frame, include the exact cropped edge.
+- If any check fails, remove the uncertain token and recheck.
+
+Style constraints:
+- Use compact, active, factual phrasing and concrete nouns (prefer specific labels: ""acoustic guitar"", ""hard hat"", ""pier"").
+- Do not infer ages, emotions, roles, relationships, or unseen attributes.
+- Keep phrases comma‑separated in one sentence; do not output tags, lists, or extra lines.
+
+Examples (bad → corrected; follow exact target format):
+- Bad: ""Several people in a busy scene."" → Good: ""3 people left foreground, standing, colorful saris, medium, storefront window behind.""
+- Bad: ""1 boat"" → Good: ""1 pier center foreground, people on platform, small pavilion with spire, wide, stone embankment behind.""
+- Bad: ""man with cap"" → Good: ""1 worker center foreground, standing on fire‑escape platform, white hard hat, red brick facade behind.""
+- Bad: ""player diving"" → Good: ""1 goalkeeper center foreground, mid‑air dive to right with outstretched gloved hands, white soccer ball to right, goal net behind.""
+- Bad: ""musician playing"" → Good: ""1 man right foreground, right hand on flute, open tip box on ground, medium, storefront window behind.""
+- Bad: ""kids running"" → Good: ""5 boys center foreground, leaning forward as if starting sprint, green training bibs, dirt field with parked cars behind.""
+
+Use these rules to produce exactly one caption that follows the ordering and verification checklist.","1 child left foreground, standing, red jacket, no-action-visible, ""LOEWE"" on glass, wet pavement with reflections, stone embankment behind.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_4e86359040,60,7565,flickr30k_test_007565,images/flickr30k/flickr30k_test_007565.jpg,"[""An infant is crawling on a wood floor, with a water bottle laying nearby."", ""A young baby crawls across the wood floor towards the water bottle."", ""A baby crawls on hardwood floors towards a water bottle."", ""A baby crawls on a wood floor near a bottle of water."", ""A baby on a wood floor with a water bottle""]",textgrad_4e86359040,TextGrad Step 4,"Output exactly one concise, information‑dense caption: a single grammatical sentence of comma‑separated short phrases. Use digits for counts; do not infer, hedge, paraphrase, or add anything not visually present. Output nothing else.
+
+Required phrase ordering (include each item only if clearly visible; omit unverifiable items). Aim for ≤30 words; allow up to +10% length only to include a required high‑priority item (legible text, a necessary relation phrase, or a clear background anchor).
+
+1) Start with: [digit] + subject noun(s) + spatial anchor. Spatial rules: if subject width >60% image width use ""center""; otherwise choose left/center/right by centroid. Add depth only if clearly determinable by size/overlap: use [foreground|midground|background]; if depth unclear omit. If partly out of frame, append ""partially cropped at [edge]"".
+
+2) Immediately after, include one visible action+part phrase if any micro‑action cue is present (format: ""[body/part] [verb] [object/target]"" or ""holding [object] with [hand]""). Micro‑action cues (include action if any apply): visible limb‑object contact, object visibly held by hand, visible deformation/pressure, object displacement (midair or off ground), clear gaze toward an object, or motion blur on limbs. If none of these cues apply, include exactly ""no-action-visible"".
+
+3) Then add up to 1–3 high‑signal descriptor(s) chosen by this priority order and cap:
+ A) legible text (transcribe exact string in quotes and localize, e.g. ""'NO PARKING' on door at background right"") — include only if all characters are clearly legible;
+ B) reflection/wetness or surface condition (e.g., ""wet pavement with reflections"");
+ C) material/texture (e.g., ""rusted metal"", ""woven straw"");
+ D) distinctive accessory (e.g., ""white hard hat"", ""red pennant"");
+ E) color. If more than 3 candidates, select highest‑ranked; if tie, choose lexicographically.
+
+4) If a person/object clearly interacts with another object/structure, include one concise part‑level relation phrase (e.g., ""sitting on metal chair"", ""rear wheel off ground"", ""holding pennant over awning""). Include the interacting part (hand, foot, rear wheel, stern).
+
+5) Optionally include exactly one viewpoint token when obvious: {close-up, medium, wide, high-angle, low-angle}.
+
+6) Optionally include exactly one lighting token when obvious: {backlit, front-lit, rim-lit, long-shadow-left, long-shadow-right}.
+
+7) If visible, append one concise background anchor noun phrase (single phrase, e.g., ""stone embankment"", ""storefront window"", ""pier with canopy""). Omit if no clear anchor.
+
+Pre‑output verification (apply before emitting):
+- Transcribe legible text only if all characters readable; otherwise omit text.
+- Include action only if a micro‑action cue above is present; otherwise use ""no-action-visible"".
+- Include at most 3 descriptors from the priority list.
+- If count is uncertain, do not invent a digit.
+- If spatial depth is unclear, omit foreground/midground/background rather than guess.
+- If a subject is partially out of frame, include the exact cropped edge.
+- If any check fails, remove the uncertain token and recheck.
+
+Style constraints:
+- Use compact, active, factual phrasing and concrete nouns (prefer specific labels: ""acoustic guitar"", ""hard hat"", ""pier"").
+- Do not infer ages, emotions, roles, relationships, or unseen attributes.
+- Keep phrases comma‑separated in one sentence; do not output tags, lists, or extra lines.
+
+Examples (bad → corrected; follow exact target format):
+- Bad: ""Several people in a busy scene."" → Good: ""3 people left foreground, standing, colorful saris, medium, storefront window behind.""
+- Bad: ""1 boat"" → Good: ""1 pier center foreground, people on platform, small pavilion with spire, wide, stone embankment behind.""
+- Bad: ""man with cap"" → Good: ""1 worker center foreground, standing on fire‑escape platform, white hard hat, red brick facade behind.""
+- Bad: ""player diving"" → Good: ""1 goalkeeper center foreground, mid‑air dive to right with outstretched gloved hands, white soccer ball to right, goal net behind.""
+- Bad: ""musician playing"" → Good: ""1 man right foreground, right hand on flute, open tip box on ground, medium, storefront window behind.""
+- Bad: ""kids running"" → Good: ""5 boys center foreground, leaning forward as if starting sprint, green training bibs, dirt field with parked cars behind.""
+
+Use these rules to produce exactly one caption that follows the ordering and verification checklist.","1 baby crawling on wooden floor, reaching toward plastic water bottle, sunlight casting long shadows, no-action-visible, light brown wood grain, bottle partially cropped at right edge.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_4e86359040,63,24934,flickr30k_test_024934,images/flickr30k/flickr30k_test_024934.jpg,"[""A man wearing a striped jacket tentatively looking down onto his hands while walking."", ""A man walks along a cobblestone path, next to a large blue wall."", ""A man walking down a brick path next to a blue wall."", ""A lone man walking along side a blue wall."", ""Solitary man walks past blue wall.""]",textgrad_4e86359040,TextGrad Step 4,"Output exactly one concise, information‑dense caption: a single grammatical sentence of comma‑separated short phrases. Use digits for counts; do not infer, hedge, paraphrase, or add anything not visually present. Output nothing else.
+
+Required phrase ordering (include each item only if clearly visible; omit unverifiable items). Aim for ≤30 words; allow up to +10% length only to include a required high‑priority item (legible text, a necessary relation phrase, or a clear background anchor).
+
+1) Start with: [digit] + subject noun(s) + spatial anchor. Spatial rules: if subject width >60% image width use ""center""; otherwise choose left/center/right by centroid. Add depth only if clearly determinable by size/overlap: use [foreground|midground|background]; if depth unclear omit. If partly out of frame, append ""partially cropped at [edge]"".
+
+2) Immediately after, include one visible action+part phrase if any micro‑action cue is present (format: ""[body/part] [verb] [object/target]"" or ""holding [object] with [hand]""). Micro‑action cues (include action if any apply): visible limb‑object contact, object visibly held by hand, visible deformation/pressure, object displacement (midair or off ground), clear gaze toward an object, or motion blur on limbs. If none of these cues apply, include exactly ""no-action-visible"".
+
+3) Then add up to 1–3 high‑signal descriptor(s) chosen by this priority order and cap:
+ A) legible text (transcribe exact string in quotes and localize, e.g. ""'NO PARKING' on door at background right"") — include only if all characters are clearly legible;
+ B) reflection/wetness or surface condition (e.g., ""wet pavement with reflections"");
+ C) material/texture (e.g., ""rusted metal"", ""woven straw"");
+ D) distinctive accessory (e.g., ""white hard hat"", ""red pennant"");
+ E) color. If more than 3 candidates, select highest‑ranked; if tie, choose lexicographically.
+
+4) If a person/object clearly interacts with another object/structure, include one concise part‑level relation phrase (e.g., ""sitting on metal chair"", ""rear wheel off ground"", ""holding pennant over awning""). Include the interacting part (hand, foot, rear wheel, stern).
+
+5) Optionally include exactly one viewpoint token when obvious: {close-up, medium, wide, high-angle, low-angle}.
+
+6) Optionally include exactly one lighting token when obvious: {backlit, front-lit, rim-lit, long-shadow-left, long-shadow-right}.
+
+7) If visible, append one concise background anchor noun phrase (single phrase, e.g., ""stone embankment"", ""storefront window"", ""pier with canopy""). Omit if no clear anchor.
+
+Pre‑output verification (apply before emitting):
+- Transcribe legible text only if all characters readable; otherwise omit text.
+- Include action only if a micro‑action cue above is present; otherwise use ""no-action-visible"".
+- Include at most 3 descriptors from the priority list.
+- If count is uncertain, do not invent a digit.
+- If spatial depth is unclear, omit foreground/midground/background rather than guess.
+- If a subject is partially out of frame, include the exact cropped edge.
+- If any check fails, remove the uncertain token and recheck.
+
+Style constraints:
+- Use compact, active, factual phrasing and concrete nouns (prefer specific labels: ""acoustic guitar"", ""hard hat"", ""pier"").
+- Do not infer ages, emotions, roles, relationships, or unseen attributes.
+- Keep phrases comma‑separated in one sentence; do not output tags, lists, or extra lines.
+
+Examples (bad → corrected; follow exact target format):
+- Bad: ""Several people in a busy scene."" → Good: ""3 people left foreground, standing, colorful saris, medium, storefront window behind.""
+- Bad: ""1 boat"" → Good: ""1 pier center foreground, people on platform, small pavilion with spire, wide, stone embankment behind.""
+- Bad: ""man with cap"" → Good: ""1 worker center foreground, standing on fire‑escape platform, white hard hat, red brick facade behind.""
+- Bad: ""player diving"" → Good: ""1 goalkeeper center foreground, mid‑air dive to right with outstretched gloved hands, white soccer ball to right, goal net behind.""
+- Bad: ""musician playing"" → Good: ""1 man right foreground, right hand on flute, open tip box on ground, medium, storefront window behind.""
+- Bad: ""kids running"" → Good: ""5 boys center foreground, leaning forward as if starting sprint, green training bibs, dirt field with parked cars behind.""
+
+Use these rules to produce exactly one caption that follows the ordering and verification checklist.","1 man center midground, walking, holding phone with right hand, blue construction wall behind, cobblestone pavement, no-action-visible",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_4e86359040,68,13637,flickr30k_test_013637,images/flickr30k/flickr30k_test_013637.jpg,"[""Person with a blue and black suit is surfing."", ""A surfer is being splashed by an ocean wave."", ""A man in a blue wetsuit surfs."", ""A surfer in blue rides a wave."", ""A surfer makes a big splash.""]",textgrad_4e86359040,TextGrad Step 4,"Output exactly one concise, information‑dense caption: a single grammatical sentence of comma‑separated short phrases. Use digits for counts; do not infer, hedge, paraphrase, or add anything not visually present. Output nothing else.
+
+Required phrase ordering (include each item only if clearly visible; omit unverifiable items). Aim for ≤30 words; allow up to +10% length only to include a required high‑priority item (legible text, a necessary relation phrase, or a clear background anchor).
+
+1) Start with: [digit] + subject noun(s) + spatial anchor. Spatial rules: if subject width >60% image width use ""center""; otherwise choose left/center/right by centroid. Add depth only if clearly determinable by size/overlap: use [foreground|midground|background]; if depth unclear omit. If partly out of frame, append ""partially cropped at [edge]"".
+
+2) Immediately after, include one visible action+part phrase if any micro‑action cue is present (format: ""[body/part] [verb] [object/target]"" or ""holding [object] with [hand]""). Micro‑action cues (include action if any apply): visible limb‑object contact, object visibly held by hand, visible deformation/pressure, object displacement (midair or off ground), clear gaze toward an object, or motion blur on limbs. If none of these cues apply, include exactly ""no-action-visible"".
+
+3) Then add up to 1–3 high‑signal descriptor(s) chosen by this priority order and cap:
+ A) legible text (transcribe exact string in quotes and localize, e.g. ""'NO PARKING' on door at background right"") — include only if all characters are clearly legible;
+ B) reflection/wetness or surface condition (e.g., ""wet pavement with reflections"");
+ C) material/texture (e.g., ""rusted metal"", ""woven straw"");
+ D) distinctive accessory (e.g., ""white hard hat"", ""red pennant"");
+ E) color. If more than 3 candidates, select highest‑ranked; if tie, choose lexicographically.
+
+4) If a person/object clearly interacts with another object/structure, include one concise part‑level relation phrase (e.g., ""sitting on metal chair"", ""rear wheel off ground"", ""holding pennant over awning""). Include the interacting part (hand, foot, rear wheel, stern).
+
+5) Optionally include exactly one viewpoint token when obvious: {close-up, medium, wide, high-angle, low-angle}.
+
+6) Optionally include exactly one lighting token when obvious: {backlit, front-lit, rim-lit, long-shadow-left, long-shadow-right}.
+
+7) If visible, append one concise background anchor noun phrase (single phrase, e.g., ""stone embankment"", ""storefront window"", ""pier with canopy""). Omit if no clear anchor.
+
+Pre‑output verification (apply before emitting):
+- Transcribe legible text only if all characters readable; otherwise omit text.
+- Include action only if a micro‑action cue above is present; otherwise use ""no-action-visible"".
+- Include at most 3 descriptors from the priority list.
+- If count is uncertain, do not invent a digit.
+- If spatial depth is unclear, omit foreground/midground/background rather than guess.
+- If a subject is partially out of frame, include the exact cropped edge.
+- If any check fails, remove the uncertain token and recheck.
+
+Style constraints:
+- Use compact, active, factual phrasing and concrete nouns (prefer specific labels: ""acoustic guitar"", ""hard hat"", ""pier"").
+- Do not infer ages, emotions, roles, relationships, or unseen attributes.
+- Keep phrases comma‑separated in one sentence; do not output tags, lists, or extra lines.
+
+Examples (bad → corrected; follow exact target format):
+- Bad: ""Several people in a busy scene."" → Good: ""3 people left foreground, standing, colorful saris, medium, storefront window behind.""
+- Bad: ""1 boat"" → Good: ""1 pier center foreground, people on platform, small pavilion with spire, wide, stone embankment behind.""
+- Bad: ""man with cap"" → Good: ""1 worker center foreground, standing on fire‑escape platform, white hard hat, red brick facade behind.""
+- Bad: ""player diving"" → Good: ""1 goalkeeper center foreground, mid‑air dive to right with outstretched gloved hands, white soccer ball to right, goal net behind.""
+- Bad: ""musician playing"" → Good: ""1 man right foreground, right hand on flute, open tip box on ground, medium, storefront window behind.""
+- Bad: ""kids running"" → Good: ""5 boys center foreground, leaning forward as if starting sprint, green training bibs, dirt field with parked cars behind.""
+
+Use these rules to produce exactly one caption that follows the ordering and verification checklist.","1 surfer center midground, crouching on surfboard, blue wetsuit, white surfboard, ocean wave splashing around, wide, sunlit water surface.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_4e86359040,78,28178,flickr30k_test_028178,images/flickr30k/flickr30k_test_028178.jpg,"[""A man in a black sweater with a red undershirt playing a trumpet in front of a lighted Christmas tree."", ""The man playing a trumpet in front of a christmas tree looks intense."", ""A man in a black sweater and red shirt plays the trumpet by a tree."", ""A guy with a beard wearing his glasses is blowing on a trumpet."", ""A musician playing some smooth music.""]",textgrad_4e86359040,TextGrad Step 4,"Output exactly one concise, information‑dense caption: a single grammatical sentence of comma‑separated short phrases. Use digits for counts; do not infer, hedge, paraphrase, or add anything not visually present. Output nothing else.
+
+Required phrase ordering (include each item only if clearly visible; omit unverifiable items). Aim for ≤30 words; allow up to +10% length only to include a required high‑priority item (legible text, a necessary relation phrase, or a clear background anchor).
+
+1) Start with: [digit] + subject noun(s) + spatial anchor. Spatial rules: if subject width >60% image width use ""center""; otherwise choose left/center/right by centroid. Add depth only if clearly determinable by size/overlap: use [foreground|midground|background]; if depth unclear omit. If partly out of frame, append ""partially cropped at [edge]"".
+
+2) Immediately after, include one visible action+part phrase if any micro‑action cue is present (format: ""[body/part] [verb] [object/target]"" or ""holding [object] with [hand]""). Micro‑action cues (include action if any apply): visible limb‑object contact, object visibly held by hand, visible deformation/pressure, object displacement (midair or off ground), clear gaze toward an object, or motion blur on limbs. If none of these cues apply, include exactly ""no-action-visible"".
+
+3) Then add up to 1–3 high‑signal descriptor(s) chosen by this priority order and cap:
+ A) legible text (transcribe exact string in quotes and localize, e.g. ""'NO PARKING' on door at background right"") — include only if all characters are clearly legible;
+ B) reflection/wetness or surface condition (e.g., ""wet pavement with reflections"");
+ C) material/texture (e.g., ""rusted metal"", ""woven straw"");
+ D) distinctive accessory (e.g., ""white hard hat"", ""red pennant"");
+ E) color. If more than 3 candidates, select highest‑ranked; if tie, choose lexicographically.
+
+4) If a person/object clearly interacts with another object/structure, include one concise part‑level relation phrase (e.g., ""sitting on metal chair"", ""rear wheel off ground"", ""holding pennant over awning""). Include the interacting part (hand, foot, rear wheel, stern).
+
+5) Optionally include exactly one viewpoint token when obvious: {close-up, medium, wide, high-angle, low-angle}.
+
+6) Optionally include exactly one lighting token when obvious: {backlit, front-lit, rim-lit, long-shadow-left, long-shadow-right}.
+
+7) If visible, append one concise background anchor noun phrase (single phrase, e.g., ""stone embankment"", ""storefront window"", ""pier with canopy""). Omit if no clear anchor.
+
+Pre‑output verification (apply before emitting):
+- Transcribe legible text only if all characters readable; otherwise omit text.
+- Include action only if a micro‑action cue above is present; otherwise use ""no-action-visible"".
+- Include at most 3 descriptors from the priority list.
+- If count is uncertain, do not invent a digit.
+- If spatial depth is unclear, omit foreground/midground/background rather than guess.
+- If a subject is partially out of frame, include the exact cropped edge.
+- If any check fails, remove the uncertain token and recheck.
+
+Style constraints:
+- Use compact, active, factual phrasing and concrete nouns (prefer specific labels: ""acoustic guitar"", ""hard hat"", ""pier"").
+- Do not infer ages, emotions, roles, relationships, or unseen attributes.
+- Keep phrases comma‑separated in one sentence; do not output tags, lists, or extra lines.
+
+Examples (bad → corrected; follow exact target format):
+- Bad: ""Several people in a busy scene."" → Good: ""3 people left foreground, standing, colorful saris, medium, storefront window behind.""
+- Bad: ""1 boat"" → Good: ""1 pier center foreground, people on platform, small pavilion with spire, wide, stone embankment behind.""
+- Bad: ""man with cap"" → Good: ""1 worker center foreground, standing on fire‑escape platform, white hard hat, red brick facade behind.""
+- Bad: ""player diving"" → Good: ""1 goalkeeper center foreground, mid‑air dive to right with outstretched gloved hands, white soccer ball to right, goal net behind.""
+- Bad: ""musician playing"" → Good: ""1 man right foreground, right hand on flute, open tip box on ground, medium, storefront window behind.""
+- Bad: ""kids running"" → Good: ""5 boys center foreground, leaning forward as if starting sprint, green training bibs, dirt field with parked cars behind.""
+
+Use these rules to produce exactly one caption that follows the ordering and verification checklist.","1 man center foreground, holding trumpet with right hand, wearing glasses and red collar, no-action-visible, dark suit, green tree with lights behind, close-up, backlit.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_4e86359040,83,29346,flickr30k_test_029346,images/flickr30k/flickr30k_test_029346.jpg,"[""A surfer wearing a black and red wetsuit on a white surfboard, slices through the waves on a bright blue ocean."", ""A male surfboarder in a black wetsuit is riding a huge wave in beautiful blue water."", ""The man is skillfully surfing a violent wave in the blue ocean."", ""Two people are surfing on a large wave in the ocean."", ""Two people are surfing in the ocean.""]",textgrad_4e86359040,TextGrad Step 4,"Output exactly one concise, information‑dense caption: a single grammatical sentence of comma‑separated short phrases. Use digits for counts; do not infer, hedge, paraphrase, or add anything not visually present. Output nothing else.
+
+Required phrase ordering (include each item only if clearly visible; omit unverifiable items). Aim for ≤30 words; allow up to +10% length only to include a required high‑priority item (legible text, a necessary relation phrase, or a clear background anchor).
+
+1) Start with: [digit] + subject noun(s) + spatial anchor. Spatial rules: if subject width >60% image width use ""center""; otherwise choose left/center/right by centroid. Add depth only if clearly determinable by size/overlap: use [foreground|midground|background]; if depth unclear omit. If partly out of frame, append ""partially cropped at [edge]"".
+
+2) Immediately after, include one visible action+part phrase if any micro‑action cue is present (format: ""[body/part] [verb] [object/target]"" or ""holding [object] with [hand]""). Micro‑action cues (include action if any apply): visible limb‑object contact, object visibly held by hand, visible deformation/pressure, object displacement (midair or off ground), clear gaze toward an object, or motion blur on limbs. If none of these cues apply, include exactly ""no-action-visible"".
+
+3) Then add up to 1–3 high‑signal descriptor(s) chosen by this priority order and cap:
+ A) legible text (transcribe exact string in quotes and localize, e.g. ""'NO PARKING' on door at background right"") — include only if all characters are clearly legible;
+ B) reflection/wetness or surface condition (e.g., ""wet pavement with reflections"");
+ C) material/texture (e.g., ""rusted metal"", ""woven straw"");
+ D) distinctive accessory (e.g., ""white hard hat"", ""red pennant"");
+ E) color. If more than 3 candidates, select highest‑ranked; if tie, choose lexicographically.
+
+4) If a person/object clearly interacts with another object/structure, include one concise part‑level relation phrase (e.g., ""sitting on metal chair"", ""rear wheel off ground"", ""holding pennant over awning""). Include the interacting part (hand, foot, rear wheel, stern).
+
+5) Optionally include exactly one viewpoint token when obvious: {close-up, medium, wide, high-angle, low-angle}.
+
+6) Optionally include exactly one lighting token when obvious: {backlit, front-lit, rim-lit, long-shadow-left, long-shadow-right}.
+
+7) If visible, append one concise background anchor noun phrase (single phrase, e.g., ""stone embankment"", ""storefront window"", ""pier with canopy""). Omit if no clear anchor.
+
+Pre‑output verification (apply before emitting):
+- Transcribe legible text only if all characters readable; otherwise omit text.
+- Include action only if a micro‑action cue above is present; otherwise use ""no-action-visible"".
+- Include at most 3 descriptors from the priority list.
+- If count is uncertain, do not invent a digit.
+- If spatial depth is unclear, omit foreground/midground/background rather than guess.
+- If a subject is partially out of frame, include the exact cropped edge.
+- If any check fails, remove the uncertain token and recheck.
+
+Style constraints:
+- Use compact, active, factual phrasing and concrete nouns (prefer specific labels: ""acoustic guitar"", ""hard hat"", ""pier"").
+- Do not infer ages, emotions, roles, relationships, or unseen attributes.
+- Keep phrases comma‑separated in one sentence; do not output tags, lists, or extra lines.
+
+Examples (bad → corrected; follow exact target format):
+- Bad: ""Several people in a busy scene."" → Good: ""3 people left foreground, standing, colorful saris, medium, storefront window behind.""
+- Bad: ""1 boat"" → Good: ""1 pier center foreground, people on platform, small pavilion with spire, wide, stone embankment behind.""
+- Bad: ""man with cap"" → Good: ""1 worker center foreground, standing on fire‑escape platform, white hard hat, red brick facade behind.""
+- Bad: ""player diving"" → Good: ""1 goalkeeper center foreground, mid‑air dive to right with outstretched gloved hands, white soccer ball to right, goal net behind.""
+- Bad: ""musician playing"" → Good: ""1 man right foreground, right hand on flute, open tip box on ground, medium, storefront window behind.""
+- Bad: ""kids running"" → Good: ""5 boys center foreground, leaning forward as if starting sprint, green training bibs, dirt field with parked cars behind.""
+
+Use these rules to produce exactly one caption that follows the ordering and verification checklist.","1 surfer center foreground, crouching on surfboard, turquoise water with white spray, no-action-visible, low-angle, ocean wave behind.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_4e86359040,105,15736,flickr30k_test_015736,images/flickr30k/flickr30k_test_015736.jpg,"[""A brown and white dog trots across shallow water with his mouth open."", ""A greyhound walks in the rain through a large puddle."", ""A white and brown dog is walking through the water."", ""A brown spotted dog walks in shallow water."", ""The dog walks through the water.""]",textgrad_4e86359040,TextGrad Step 4,"Output exactly one concise, information‑dense caption: a single grammatical sentence of comma‑separated short phrases. Use digits for counts; do not infer, hedge, paraphrase, or add anything not visually present. Output nothing else.
+
+Required phrase ordering (include each item only if clearly visible; omit unverifiable items). Aim for ≤30 words; allow up to +10% length only to include a required high‑priority item (legible text, a necessary relation phrase, or a clear background anchor).
+
+1) Start with: [digit] + subject noun(s) + spatial anchor. Spatial rules: if subject width >60% image width use ""center""; otherwise choose left/center/right by centroid. Add depth only if clearly determinable by size/overlap: use [foreground|midground|background]; if depth unclear omit. If partly out of frame, append ""partially cropped at [edge]"".
+
+2) Immediately after, include one visible action+part phrase if any micro‑action cue is present (format: ""[body/part] [verb] [object/target]"" or ""holding [object] with [hand]""). Micro‑action cues (include action if any apply): visible limb‑object contact, object visibly held by hand, visible deformation/pressure, object displacement (midair or off ground), clear gaze toward an object, or motion blur on limbs. If none of these cues apply, include exactly ""no-action-visible"".
+
+3) Then add up to 1–3 high‑signal descriptor(s) chosen by this priority order and cap:
+ A) legible text (transcribe exact string in quotes and localize, e.g. ""'NO PARKING' on door at background right"") — include only if all characters are clearly legible;
+ B) reflection/wetness or surface condition (e.g., ""wet pavement with reflections"");
+ C) material/texture (e.g., ""rusted metal"", ""woven straw"");
+ D) distinctive accessory (e.g., ""white hard hat"", ""red pennant"");
+ E) color. If more than 3 candidates, select highest‑ranked; if tie, choose lexicographically.
+
+4) If a person/object clearly interacts with another object/structure, include one concise part‑level relation phrase (e.g., ""sitting on metal chair"", ""rear wheel off ground"", ""holding pennant over awning""). Include the interacting part (hand, foot, rear wheel, stern).
+
+5) Optionally include exactly one viewpoint token when obvious: {close-up, medium, wide, high-angle, low-angle}.
+
+6) Optionally include exactly one lighting token when obvious: {backlit, front-lit, rim-lit, long-shadow-left, long-shadow-right}.
+
+7) If visible, append one concise background anchor noun phrase (single phrase, e.g., ""stone embankment"", ""storefront window"", ""pier with canopy""). Omit if no clear anchor.
+
+Pre‑output verification (apply before emitting):
+- Transcribe legible text only if all characters readable; otherwise omit text.
+- Include action only if a micro‑action cue above is present; otherwise use ""no-action-visible"".
+- Include at most 3 descriptors from the priority list.
+- If count is uncertain, do not invent a digit.
+- If spatial depth is unclear, omit foreground/midground/background rather than guess.
+- If a subject is partially out of frame, include the exact cropped edge.
+- If any check fails, remove the uncertain token and recheck.
+
+Style constraints:
+- Use compact, active, factual phrasing and concrete nouns (prefer specific labels: ""acoustic guitar"", ""hard hat"", ""pier"").
+- Do not infer ages, emotions, roles, relationships, or unseen attributes.
+- Keep phrases comma‑separated in one sentence; do not output tags, lists, or extra lines.
+
+Examples (bad → corrected; follow exact target format):
+- Bad: ""Several people in a busy scene."" → Good: ""3 people left foreground, standing, colorful saris, medium, storefront window behind.""
+- Bad: ""1 boat"" → Good: ""1 pier center foreground, people on platform, small pavilion with spire, wide, stone embankment behind.""
+- Bad: ""man with cap"" → Good: ""1 worker center foreground, standing on fire‑escape platform, white hard hat, red brick facade behind.""
+- Bad: ""player diving"" → Good: ""1 goalkeeper center foreground, mid‑air dive to right with outstretched gloved hands, white soccer ball to right, goal net behind.""
+- Bad: ""musician playing"" → Good: ""1 man right foreground, right hand on flute, open tip box on ground, medium, storefront window behind.""
+- Bad: ""kids running"" → Good: ""5 boys center foreground, leaning forward as if starting sprint, green training bibs, dirt field with parked cars behind.""
+
+Use these rules to produce exactly one caption that follows the ordering and verification checklist.","1 greyhound center foreground, walking through shallow water, white coat with brown patches, red collar, no-action-visible, wet surface with reflections, stone embankment behind.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_4e86359040,107,24370,flickr30k_test_024370,images/flickr30k/flickr30k_test_024370.jpg,"[""An aerial view of a large building with many windows, a terracotta roof, and a few pedestrians crossing a street."", ""People are crossing a tree lined street in front of a building."", ""Many people walking near tall building and crossing street"", ""A distant view of a building and the people around it."", ""A large building in the city in the sunlight.""]",textgrad_4e86359040,TextGrad Step 4,"Output exactly one concise, information‑dense caption: a single grammatical sentence of comma‑separated short phrases. Use digits for counts; do not infer, hedge, paraphrase, or add anything not visually present. Output nothing else.
+
+Required phrase ordering (include each item only if clearly visible; omit unverifiable items). Aim for ≤30 words; allow up to +10% length only to include a required high‑priority item (legible text, a necessary relation phrase, or a clear background anchor).
+
+1) Start with: [digit] + subject noun(s) + spatial anchor. Spatial rules: if subject width >60% image width use ""center""; otherwise choose left/center/right by centroid. Add depth only if clearly determinable by size/overlap: use [foreground|midground|background]; if depth unclear omit. If partly out of frame, append ""partially cropped at [edge]"".
+
+2) Immediately after, include one visible action+part phrase if any micro‑action cue is present (format: ""[body/part] [verb] [object/target]"" or ""holding [object] with [hand]""). Micro‑action cues (include action if any apply): visible limb‑object contact, object visibly held by hand, visible deformation/pressure, object displacement (midair or off ground), clear gaze toward an object, or motion blur on limbs. If none of these cues apply, include exactly ""no-action-visible"".
+
+3) Then add up to 1–3 high‑signal descriptor(s) chosen by this priority order and cap:
+ A) legible text (transcribe exact string in quotes and localize, e.g. ""'NO PARKING' on door at background right"") — include only if all characters are clearly legible;
+ B) reflection/wetness or surface condition (e.g., ""wet pavement with reflections"");
+ C) material/texture (e.g., ""rusted metal"", ""woven straw"");
+ D) distinctive accessory (e.g., ""white hard hat"", ""red pennant"");
+ E) color. If more than 3 candidates, select highest‑ranked; if tie, choose lexicographically.
+
+4) If a person/object clearly interacts with another object/structure, include one concise part‑level relation phrase (e.g., ""sitting on metal chair"", ""rear wheel off ground"", ""holding pennant over awning""). Include the interacting part (hand, foot, rear wheel, stern).
+
+5) Optionally include exactly one viewpoint token when obvious: {close-up, medium, wide, high-angle, low-angle}.
+
+6) Optionally include exactly one lighting token when obvious: {backlit, front-lit, rim-lit, long-shadow-left, long-shadow-right}.
+
+7) If visible, append one concise background anchor noun phrase (single phrase, e.g., ""stone embankment"", ""storefront window"", ""pier with canopy""). Omit if no clear anchor.
+
+Pre‑output verification (apply before emitting):
+- Transcribe legible text only if all characters readable; otherwise omit text.
+- Include action only if a micro‑action cue above is present; otherwise use ""no-action-visible"".
+- Include at most 3 descriptors from the priority list.
+- If count is uncertain, do not invent a digit.
+- If spatial depth is unclear, omit foreground/midground/background rather than guess.
+- If a subject is partially out of frame, include the exact cropped edge.
+- If any check fails, remove the uncertain token and recheck.
+
+Style constraints:
+- Use compact, active, factual phrasing and concrete nouns (prefer specific labels: ""acoustic guitar"", ""hard hat"", ""pier"").
+- Do not infer ages, emotions, roles, relationships, or unseen attributes.
+- Keep phrases comma‑separated in one sentence; do not output tags, lists, or extra lines.
+
+Examples (bad → corrected; follow exact target format):
+- Bad: ""Several people in a busy scene."" → Good: ""3 people left foreground, standing, colorful saris, medium, storefront window behind.""
+- Bad: ""1 boat"" → Good: ""1 pier center foreground, people on platform, small pavilion with spire, wide, stone embankment behind.""
+- Bad: ""man with cap"" → Good: ""1 worker center foreground, standing on fire‑escape platform, white hard hat, red brick facade behind.""
+- Bad: ""player diving"" → Good: ""1 goalkeeper center foreground, mid‑air dive to right with outstretched gloved hands, white soccer ball to right, goal net behind.""
+- Bad: ""musician playing"" → Good: ""1 man right foreground, right hand on flute, open tip box on ground, medium, storefront window behind.""
+- Bad: ""kids running"" → Good: ""5 boys center foreground, leaning forward as if starting sprint, green training bibs, dirt field with parked cars behind.""
+
+Use these rules to produce exactly one caption that follows the ordering and verification checklist.","3 trees center midground, no-action-visible, green foliage, red-tiled roof behind, wide, clear blue sky above.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_4e86359040,113,12029,flickr30k_test_012029,images/flickr30k/flickr30k_test_012029.jpg,"[""Four ferry boats are docked at a visitor's center with passengers waiting to board."", ""People congregate on a platform in a river among decorated boats."", ""People are gathered on a platform in water for a ceremony."", ""A group of people waiting to ride boats."", ""People wait to board boats.""]",textgrad_4e86359040,TextGrad Step 4,"Output exactly one concise, information‑dense caption: a single grammatical sentence of comma‑separated short phrases. Use digits for counts; do not infer, hedge, paraphrase, or add anything not visually present. Output nothing else.
+
+Required phrase ordering (include each item only if clearly visible; omit unverifiable items). Aim for ≤30 words; allow up to +10% length only to include a required high‑priority item (legible text, a necessary relation phrase, or a clear background anchor).
+
+1) Start with: [digit] + subject noun(s) + spatial anchor. Spatial rules: if subject width >60% image width use ""center""; otherwise choose left/center/right by centroid. Add depth only if clearly determinable by size/overlap: use [foreground|midground|background]; if depth unclear omit. If partly out of frame, append ""partially cropped at [edge]"".
+
+2) Immediately after, include one visible action+part phrase if any micro‑action cue is present (format: ""[body/part] [verb] [object/target]"" or ""holding [object] with [hand]""). Micro‑action cues (include action if any apply): visible limb‑object contact, object visibly held by hand, visible deformation/pressure, object displacement (midair or off ground), clear gaze toward an object, or motion blur on limbs. If none of these cues apply, include exactly ""no-action-visible"".
+
+3) Then add up to 1–3 high‑signal descriptor(s) chosen by this priority order and cap:
+ A) legible text (transcribe exact string in quotes and localize, e.g. ""'NO PARKING' on door at background right"") — include only if all characters are clearly legible;
+ B) reflection/wetness or surface condition (e.g., ""wet pavement with reflections"");
+ C) material/texture (e.g., ""rusted metal"", ""woven straw"");
+ D) distinctive accessory (e.g., ""white hard hat"", ""red pennant"");
+ E) color. If more than 3 candidates, select highest‑ranked; if tie, choose lexicographically.
+
+4) If a person/object clearly interacts with another object/structure, include one concise part‑level relation phrase (e.g., ""sitting on metal chair"", ""rear wheel off ground"", ""holding pennant over awning""). Include the interacting part (hand, foot, rear wheel, stern).
+
+5) Optionally include exactly one viewpoint token when obvious: {close-up, medium, wide, high-angle, low-angle}.
+
+6) Optionally include exactly one lighting token when obvious: {backlit, front-lit, rim-lit, long-shadow-left, long-shadow-right}.
+
+7) If visible, append one concise background anchor noun phrase (single phrase, e.g., ""stone embankment"", ""storefront window"", ""pier with canopy""). Omit if no clear anchor.
+
+Pre‑output verification (apply before emitting):
+- Transcribe legible text only if all characters readable; otherwise omit text.
+- Include action only if a micro‑action cue above is present; otherwise use ""no-action-visible"".
+- Include at most 3 descriptors from the priority list.
+- If count is uncertain, do not invent a digit.
+- If spatial depth is unclear, omit foreground/midground/background rather than guess.
+- If a subject is partially out of frame, include the exact cropped edge.
+- If any check fails, remove the uncertain token and recheck.
+
+Style constraints:
+- Use compact, active, factual phrasing and concrete nouns (prefer specific labels: ""acoustic guitar"", ""hard hat"", ""pier"").
+- Do not infer ages, emotions, roles, relationships, or unseen attributes.
+- Keep phrases comma‑separated in one sentence; do not output tags, lists, or extra lines.
+
+Examples (bad → corrected; follow exact target format):
+- Bad: ""Several people in a busy scene."" → Good: ""3 people left foreground, standing, colorful saris, medium, storefront window behind.""
+- Bad: ""1 boat"" → Good: ""1 pier center foreground, people on platform, small pavilion with spire, wide, stone embankment behind.""
+- Bad: ""man with cap"" → Good: ""1 worker center foreground, standing on fire‑escape platform, white hard hat, red brick facade behind.""
+- Bad: ""player diving"" → Good: ""1 goalkeeper center foreground, mid‑air dive to right with outstretched gloved hands, white soccer ball to right, goal net behind.""
+- Bad: ""musician playing"" → Good: ""1 man right foreground, right hand on flute, open tip box on ground, medium, storefront window behind.""
+- Bad: ""kids running"" → Good: ""5 boys center foreground, leaning forward as if starting sprint, green training bibs, dirt field with parked cars behind.""
+
+Use these rules to produce exactly one caption that follows the ordering and verification checklist.","1 boat center midground, people on platform, small pavilion with spire, wide, stone embankment behind, no-action-visible, ""श्री गंगाजी मंदिर"" on shrine, wet water surface, white and red attire, holding pennant over awning",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_4e86359040,123,21750,flickr30k_test_021750,images/flickr30k/flickr30k_test_021750.jpg,"[""Two women who just had lunch hugging and saying goodbye."", ""Two women holding takeout boxes hugging on the street."", ""Two women are embracing while holding to go packages."", ""Two women, holding food carryout containers, hug."", ""Two blond women are hugging one another.""]",textgrad_4e86359040,TextGrad Step 4,"Output exactly one concise, information‑dense caption: a single grammatical sentence of comma‑separated short phrases. Use digits for counts; do not infer, hedge, paraphrase, or add anything not visually present. Output nothing else.
+
+Required phrase ordering (include each item only if clearly visible; omit unverifiable items). Aim for ≤30 words; allow up to +10% length only to include a required high‑priority item (legible text, a necessary relation phrase, or a clear background anchor).
+
+1) Start with: [digit] + subject noun(s) + spatial anchor. Spatial rules: if subject width >60% image width use ""center""; otherwise choose left/center/right by centroid. Add depth only if clearly determinable by size/overlap: use [foreground|midground|background]; if depth unclear omit. If partly out of frame, append ""partially cropped at [edge]"".
+
+2) Immediately after, include one visible action+part phrase if any micro‑action cue is present (format: ""[body/part] [verb] [object/target]"" or ""holding [object] with [hand]""). Micro‑action cues (include action if any apply): visible limb‑object contact, object visibly held by hand, visible deformation/pressure, object displacement (midair or off ground), clear gaze toward an object, or motion blur on limbs. If none of these cues apply, include exactly ""no-action-visible"".
+
+3) Then add up to 1–3 high‑signal descriptor(s) chosen by this priority order and cap:
+ A) legible text (transcribe exact string in quotes and localize, e.g. ""'NO PARKING' on door at background right"") — include only if all characters are clearly legible;
+ B) reflection/wetness or surface condition (e.g., ""wet pavement with reflections"");
+ C) material/texture (e.g., ""rusted metal"", ""woven straw"");
+ D) distinctive accessory (e.g., ""white hard hat"", ""red pennant"");
+ E) color. If more than 3 candidates, select highest‑ranked; if tie, choose lexicographically.
+
+4) If a person/object clearly interacts with another object/structure, include one concise part‑level relation phrase (e.g., ""sitting on metal chair"", ""rear wheel off ground"", ""holding pennant over awning""). Include the interacting part (hand, foot, rear wheel, stern).
+
+5) Optionally include exactly one viewpoint token when obvious: {close-up, medium, wide, high-angle, low-angle}.
+
+6) Optionally include exactly one lighting token when obvious: {backlit, front-lit, rim-lit, long-shadow-left, long-shadow-right}.
+
+7) If visible, append one concise background anchor noun phrase (single phrase, e.g., ""stone embankment"", ""storefront window"", ""pier with canopy""). Omit if no clear anchor.
+
+Pre‑output verification (apply before emitting):
+- Transcribe legible text only if all characters readable; otherwise omit text.
+- Include action only if a micro‑action cue above is present; otherwise use ""no-action-visible"".
+- Include at most 3 descriptors from the priority list.
+- If count is uncertain, do not invent a digit.
+- If spatial depth is unclear, omit foreground/midground/background rather than guess.
+- If a subject is partially out of frame, include the exact cropped edge.
+- If any check fails, remove the uncertain token and recheck.
+
+Style constraints:
+- Use compact, active, factual phrasing and concrete nouns (prefer specific labels: ""acoustic guitar"", ""hard hat"", ""pier"").
+- Do not infer ages, emotions, roles, relationships, or unseen attributes.
+- Keep phrases comma‑separated in one sentence; do not output tags, lists, or extra lines.
+
+Examples (bad → corrected; follow exact target format):
+- Bad: ""Several people in a busy scene."" → Good: ""3 people left foreground, standing, colorful saris, medium, storefront window behind.""
+- Bad: ""1 boat"" → Good: ""1 pier center foreground, people on platform, small pavilion with spire, wide, stone embankment behind.""
+- Bad: ""man with cap"" → Good: ""1 worker center foreground, standing on fire‑escape platform, white hard hat, red brick facade behind.""
+- Bad: ""player diving"" → Good: ""1 goalkeeper center foreground, mid‑air dive to right with outstretched gloved hands, white soccer ball to right, goal net behind.""
+- Bad: ""musician playing"" → Good: ""1 man right foreground, right hand on flute, open tip box on ground, medium, storefront window behind.""
+- Bad: ""kids running"" → Good: ""5 boys center foreground, leaning forward as if starting sprint, green training bibs, dirt field with parked cars behind.""
+
+Use these rules to produce exactly one caption that follows the ordering and verification checklist.","2 women center foreground, embracing, holding white takeout containers with hands, blonde hair, sunglasses, striped shirt, red plastic bag, no-action-visible, medium, blurred construction vehicle background.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_4e86359040,124,16660,flickr30k_test_016660,images/flickr30k/flickr30k_test_016660.jpg,"[""A man in swimming trunks stands in front of the door of a house, looking at a swimming pool, out of which, directly in front of the diving board, a pair of feet are sticking up out of the splashed water."", ""An elderly man in black swim trunks watching someone dive into a pool."", ""A man outside his swimming pool while someone else dives in"", ""A man watching a person diving into a swimming pool."", ""A man watches a girl jump into a pool.""]",textgrad_4e86359040,TextGrad Step 4,"Output exactly one concise, information‑dense caption: a single grammatical sentence of comma‑separated short phrases. Use digits for counts; do not infer, hedge, paraphrase, or add anything not visually present. Output nothing else.
+
+Required phrase ordering (include each item only if clearly visible; omit unverifiable items). Aim for ≤30 words; allow up to +10% length only to include a required high‑priority item (legible text, a necessary relation phrase, or a clear background anchor).
+
+1) Start with: [digit] + subject noun(s) + spatial anchor. Spatial rules: if subject width >60% image width use ""center""; otherwise choose left/center/right by centroid. Add depth only if clearly determinable by size/overlap: use [foreground|midground|background]; if depth unclear omit. If partly out of frame, append ""partially cropped at [edge]"".
+
+2) Immediately after, include one visible action+part phrase if any micro‑action cue is present (format: ""[body/part] [verb] [object/target]"" or ""holding [object] with [hand]""). Micro‑action cues (include action if any apply): visible limb‑object contact, object visibly held by hand, visible deformation/pressure, object displacement (midair or off ground), clear gaze toward an object, or motion blur on limbs. If none of these cues apply, include exactly ""no-action-visible"".
+
+3) Then add up to 1–3 high‑signal descriptor(s) chosen by this priority order and cap:
+ A) legible text (transcribe exact string in quotes and localize, e.g. ""'NO PARKING' on door at background right"") — include only if all characters are clearly legible;
+ B) reflection/wetness or surface condition (e.g., ""wet pavement with reflections"");
+ C) material/texture (e.g., ""rusted metal"", ""woven straw"");
+ D) distinctive accessory (e.g., ""white hard hat"", ""red pennant"");
+ E) color. If more than 3 candidates, select highest‑ranked; if tie, choose lexicographically.
+
+4) If a person/object clearly interacts with another object/structure, include one concise part‑level relation phrase (e.g., ""sitting on metal chair"", ""rear wheel off ground"", ""holding pennant over awning""). Include the interacting part (hand, foot, rear wheel, stern).
+
+5) Optionally include exactly one viewpoint token when obvious: {close-up, medium, wide, high-angle, low-angle}.
+
+6) Optionally include exactly one lighting token when obvious: {backlit, front-lit, rim-lit, long-shadow-left, long-shadow-right}.
+
+7) If visible, append one concise background anchor noun phrase (single phrase, e.g., ""stone embankment"", ""storefront window"", ""pier with canopy""). Omit if no clear anchor.
+
+Pre‑output verification (apply before emitting):
+- Transcribe legible text only if all characters readable; otherwise omit text.
+- Include action only if a micro‑action cue above is present; otherwise use ""no-action-visible"".
+- Include at most 3 descriptors from the priority list.
+- If count is uncertain, do not invent a digit.
+- If spatial depth is unclear, omit foreground/midground/background rather than guess.
+- If a subject is partially out of frame, include the exact cropped edge.
+- If any check fails, remove the uncertain token and recheck.
+
+Style constraints:
+- Use compact, active, factual phrasing and concrete nouns (prefer specific labels: ""acoustic guitar"", ""hard hat"", ""pier"").
+- Do not infer ages, emotions, roles, relationships, or unseen attributes.
+- Keep phrases comma‑separated in one sentence; do not output tags, lists, or extra lines.
+
+Examples (bad → corrected; follow exact target format):
+- Bad: ""Several people in a busy scene."" → Good: ""3 people left foreground, standing, colorful saris, medium, storefront window behind.""
+- Bad: ""1 boat"" → Good: ""1 pier center foreground, people on platform, small pavilion with spire, wide, stone embankment behind.""
+- Bad: ""man with cap"" → Good: ""1 worker center foreground, standing on fire‑escape platform, white hard hat, red brick facade behind.""
+- Bad: ""player diving"" → Good: ""1 goalkeeper center foreground, mid‑air dive to right with outstretched gloved hands, white soccer ball to right, goal net behind.""
+- Bad: ""musician playing"" → Good: ""1 man right foreground, right hand on flute, open tip box on ground, medium, storefront window behind.""
+- Bad: ""kids running"" → Good: ""5 boys center foreground, leaning forward as if starting sprint, green training bibs, dirt field with parked cars behind.""
+
+Use these rules to produce exactly one caption that follows the ordering and verification checklist.","1 person center foreground, mid-air dive into pool with legs up, splashing water, no-action-visible, blue pool water, white inflatable float partially cropped at bottom right, wooden shed with white shutters and hanging plants behind.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_4e86359040,128,17070,flickr30k_test_017070,images/flickr30k/flickr30k_test_017070.jpg,"[""A man with a hat and suspenders is walking through cornfields toward a silo in the background."", ""A man in a straw hat and suspenders walks away from the camera towards a field of corn."", ""The solitary man wearing the hat is walking in the field."", ""A man in a straw hat is walking in a cornfield."", ""Farmer walking in his fields.""]",textgrad_4e86359040,TextGrad Step 4,"Output exactly one concise, information‑dense caption: a single grammatical sentence of comma‑separated short phrases. Use digits for counts; do not infer, hedge, paraphrase, or add anything not visually present. Output nothing else.
+
+Required phrase ordering (include each item only if clearly visible; omit unverifiable items). Aim for ≤30 words; allow up to +10% length only to include a required high‑priority item (legible text, a necessary relation phrase, or a clear background anchor).
+
+1) Start with: [digit] + subject noun(s) + spatial anchor. Spatial rules: if subject width >60% image width use ""center""; otherwise choose left/center/right by centroid. Add depth only if clearly determinable by size/overlap: use [foreground|midground|background]; if depth unclear omit. If partly out of frame, append ""partially cropped at [edge]"".
+
+2) Immediately after, include one visible action+part phrase if any micro‑action cue is present (format: ""[body/part] [verb] [object/target]"" or ""holding [object] with [hand]""). Micro‑action cues (include action if any apply): visible limb‑object contact, object visibly held by hand, visible deformation/pressure, object displacement (midair or off ground), clear gaze toward an object, or motion blur on limbs. If none of these cues apply, include exactly ""no-action-visible"".
+
+3) Then add up to 1–3 high‑signal descriptor(s) chosen by this priority order and cap:
+ A) legible text (transcribe exact string in quotes and localize, e.g. ""'NO PARKING' on door at background right"") — include only if all characters are clearly legible;
+ B) reflection/wetness or surface condition (e.g., ""wet pavement with reflections"");
+ C) material/texture (e.g., ""rusted metal"", ""woven straw"");
+ D) distinctive accessory (e.g., ""white hard hat"", ""red pennant"");
+ E) color. If more than 3 candidates, select highest‑ranked; if tie, choose lexicographically.
+
+4) If a person/object clearly interacts with another object/structure, include one concise part‑level relation phrase (e.g., ""sitting on metal chair"", ""rear wheel off ground"", ""holding pennant over awning""). Include the interacting part (hand, foot, rear wheel, stern).
+
+5) Optionally include exactly one viewpoint token when obvious: {close-up, medium, wide, high-angle, low-angle}.
+
+6) Optionally include exactly one lighting token when obvious: {backlit, front-lit, rim-lit, long-shadow-left, long-shadow-right}.
+
+7) If visible, append one concise background anchor noun phrase (single phrase, e.g., ""stone embankment"", ""storefront window"", ""pier with canopy""). Omit if no clear anchor.
+
+Pre‑output verification (apply before emitting):
+- Transcribe legible text only if all characters readable; otherwise omit text.
+- Include action only if a micro‑action cue above is present; otherwise use ""no-action-visible"".
+- Include at most 3 descriptors from the priority list.
+- If count is uncertain, do not invent a digit.
+- If spatial depth is unclear, omit foreground/midground/background rather than guess.
+- If a subject is partially out of frame, include the exact cropped edge.
+- If any check fails, remove the uncertain token and recheck.
+
+Style constraints:
+- Use compact, active, factual phrasing and concrete nouns (prefer specific labels: ""acoustic guitar"", ""hard hat"", ""pier"").
+- Do not infer ages, emotions, roles, relationships, or unseen attributes.
+- Keep phrases comma‑separated in one sentence; do not output tags, lists, or extra lines.
+
+Examples (bad → corrected; follow exact target format):
+- Bad: ""Several people in a busy scene."" → Good: ""3 people left foreground, standing, colorful saris, medium, storefront window behind.""
+- Bad: ""1 boat"" → Good: ""1 pier center foreground, people on platform, small pavilion with spire, wide, stone embankment behind.""
+- Bad: ""man with cap"" → Good: ""1 worker center foreground, standing on fire‑escape platform, white hard hat, red brick facade behind.""
+- Bad: ""player diving"" → Good: ""1 goalkeeper center foreground, mid‑air dive to right with outstretched gloved hands, white soccer ball to right, goal net behind.""
+- Bad: ""musician playing"" → Good: ""1 man right foreground, right hand on flute, open tip box on ground, medium, storefront window behind.""
+- Bad: ""kids running"" → Good: ""5 boys center foreground, leaning forward as if starting sprint, green training bibs, dirt field with parked cars behind.""
+
+Use these rules to produce exactly one caption that follows the ordering and verification checklist.","1 man center midground, walking through field, straw hat, denim overalls, no-action-visible, tall cornfield background, farm silo and barn behind, wide, backlit.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_4e86359040,130,12886,flickr30k_test_012886,images/flickr30k/flickr30k_test_012886.jpg,"[""Man with long dark hair, wearing a gray winter cap and sunglasses, hiking gear across his back, tracking in snow with two hiking poles."", ""A man in a ski outfit and gear standing in the snow, smiling and posing for a picture."", ""A woman hiking in the snow using ski poles."", ""A man is in the snow holding ski poles."", ""A man that is skiing with glasses on.""]",textgrad_4e86359040,TextGrad Step 4,"Output exactly one concise, information‑dense caption: a single grammatical sentence of comma‑separated short phrases. Use digits for counts; do not infer, hedge, paraphrase, or add anything not visually present. Output nothing else.
+
+Required phrase ordering (include each item only if clearly visible; omit unverifiable items). Aim for ≤30 words; allow up to +10% length only to include a required high‑priority item (legible text, a necessary relation phrase, or a clear background anchor).
+
+1) Start with: [digit] + subject noun(s) + spatial anchor. Spatial rules: if subject width >60% image width use ""center""; otherwise choose left/center/right by centroid. Add depth only if clearly determinable by size/overlap: use [foreground|midground|background]; if depth unclear omit. If partly out of frame, append ""partially cropped at [edge]"".
+
+2) Immediately after, include one visible action+part phrase if any micro‑action cue is present (format: ""[body/part] [verb] [object/target]"" or ""holding [object] with [hand]""). Micro‑action cues (include action if any apply): visible limb‑object contact, object visibly held by hand, visible deformation/pressure, object displacement (midair or off ground), clear gaze toward an object, or motion blur on limbs. If none of these cues apply, include exactly ""no-action-visible"".
+
+3) Then add up to 1–3 high‑signal descriptor(s) chosen by this priority order and cap:
+ A) legible text (transcribe exact string in quotes and localize, e.g. ""'NO PARKING' on door at background right"") — include only if all characters are clearly legible;
+ B) reflection/wetness or surface condition (e.g., ""wet pavement with reflections"");
+ C) material/texture (e.g., ""rusted metal"", ""woven straw"");
+ D) distinctive accessory (e.g., ""white hard hat"", ""red pennant"");
+ E) color. If more than 3 candidates, select highest‑ranked; if tie, choose lexicographically.
+
+4) If a person/object clearly interacts with another object/structure, include one concise part‑level relation phrase (e.g., ""sitting on metal chair"", ""rear wheel off ground"", ""holding pennant over awning""). Include the interacting part (hand, foot, rear wheel, stern).
+
+5) Optionally include exactly one viewpoint token when obvious: {close-up, medium, wide, high-angle, low-angle}.
+
+6) Optionally include exactly one lighting token when obvious: {backlit, front-lit, rim-lit, long-shadow-left, long-shadow-right}.
+
+7) If visible, append one concise background anchor noun phrase (single phrase, e.g., ""stone embankment"", ""storefront window"", ""pier with canopy""). Omit if no clear anchor.
+
+Pre‑output verification (apply before emitting):
+- Transcribe legible text only if all characters readable; otherwise omit text.
+- Include action only if a micro‑action cue above is present; otherwise use ""no-action-visible"".
+- Include at most 3 descriptors from the priority list.
+- If count is uncertain, do not invent a digit.
+- If spatial depth is unclear, omit foreground/midground/background rather than guess.
+- If a subject is partially out of frame, include the exact cropped edge.
+- If any check fails, remove the uncertain token and recheck.
+
+Style constraints:
+- Use compact, active, factual phrasing and concrete nouns (prefer specific labels: ""acoustic guitar"", ""hard hat"", ""pier"").
+- Do not infer ages, emotions, roles, relationships, or unseen attributes.
+- Keep phrases comma‑separated in one sentence; do not output tags, lists, or extra lines.
+
+Examples (bad → corrected; follow exact target format):
+- Bad: ""Several people in a busy scene."" → Good: ""3 people left foreground, standing, colorful saris, medium, storefront window behind.""
+- Bad: ""1 boat"" → Good: ""1 pier center foreground, people on platform, small pavilion with spire, wide, stone embankment behind.""
+- Bad: ""man with cap"" → Good: ""1 worker center foreground, standing on fire‑escape platform, white hard hat, red brick facade behind.""
+- Bad: ""player diving"" → Good: ""1 goalkeeper center foreground, mid‑air dive to right with outstretched gloved hands, white soccer ball to right, goal net behind.""
+- Bad: ""musician playing"" → Good: ""1 man right foreground, right hand on flute, open tip box on ground, medium, storefront window behind.""
+- Bad: ""kids running"" → Good: ""5 boys center foreground, leaning forward as if starting sprint, green training bibs, dirt field with parked cars behind.""
+
+Use these rules to produce exactly one caption that follows the ordering and verification checklist.","1 person center foreground, holding ski poles with hands, wearing gray beanie, yellow vest, black backpack, snow-covered ground, trees in background, long-shadow-right.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_4e86359040,133,24011,flickr30k_test_024011,images/flickr30k/flickr30k_test_024011.jpg,"[""Street performers with Santa Clause in the middle and ladies on the sides joining hands."", ""A man in a Santa suit stands amid a long row of dancers on a New York City street."", ""Santa and dancers outside of Radio City Music Hall in NYC."", ""Santa is in the line of dancers for the parade."", ""A dance in a city featuring Santa.""]",textgrad_4e86359040,TextGrad Step 4,"Output exactly one concise, information‑dense caption: a single grammatical sentence of comma‑separated short phrases. Use digits for counts; do not infer, hedge, paraphrase, or add anything not visually present. Output nothing else.
+
+Required phrase ordering (include each item only if clearly visible; omit unverifiable items). Aim for ≤30 words; allow up to +10% length only to include a required high‑priority item (legible text, a necessary relation phrase, or a clear background anchor).
+
+1) Start with: [digit] + subject noun(s) + spatial anchor. Spatial rules: if subject width >60% image width use ""center""; otherwise choose left/center/right by centroid. Add depth only if clearly determinable by size/overlap: use [foreground|midground|background]; if depth unclear omit. If partly out of frame, append ""partially cropped at [edge]"".
+
+2) Immediately after, include one visible action+part phrase if any micro‑action cue is present (format: ""[body/part] [verb] [object/target]"" or ""holding [object] with [hand]""). Micro‑action cues (include action if any apply): visible limb‑object contact, object visibly held by hand, visible deformation/pressure, object displacement (midair or off ground), clear gaze toward an object, or motion blur on limbs. If none of these cues apply, include exactly ""no-action-visible"".
+
+3) Then add up to 1–3 high‑signal descriptor(s) chosen by this priority order and cap:
+ A) legible text (transcribe exact string in quotes and localize, e.g. ""'NO PARKING' on door at background right"") — include only if all characters are clearly legible;
+ B) reflection/wetness or surface condition (e.g., ""wet pavement with reflections"");
+ C) material/texture (e.g., ""rusted metal"", ""woven straw"");
+ D) distinctive accessory (e.g., ""white hard hat"", ""red pennant"");
+ E) color. If more than 3 candidates, select highest‑ranked; if tie, choose lexicographically.
+
+4) If a person/object clearly interacts with another object/structure, include one concise part‑level relation phrase (e.g., ""sitting on metal chair"", ""rear wheel off ground"", ""holding pennant over awning""). Include the interacting part (hand, foot, rear wheel, stern).
+
+5) Optionally include exactly one viewpoint token when obvious: {close-up, medium, wide, high-angle, low-angle}.
+
+6) Optionally include exactly one lighting token when obvious: {backlit, front-lit, rim-lit, long-shadow-left, long-shadow-right}.
+
+7) If visible, append one concise background anchor noun phrase (single phrase, e.g., ""stone embankment"", ""storefront window"", ""pier with canopy""). Omit if no clear anchor.
+
+Pre‑output verification (apply before emitting):
+- Transcribe legible text only if all characters readable; otherwise omit text.
+- Include action only if a micro‑action cue above is present; otherwise use ""no-action-visible"".
+- Include at most 3 descriptors from the priority list.
+- If count is uncertain, do not invent a digit.
+- If spatial depth is unclear, omit foreground/midground/background rather than guess.
+- If a subject is partially out of frame, include the exact cropped edge.
+- If any check fails, remove the uncertain token and recheck.
+
+Style constraints:
+- Use compact, active, factual phrasing and concrete nouns (prefer specific labels: ""acoustic guitar"", ""hard hat"", ""pier"").
+- Do not infer ages, emotions, roles, relationships, or unseen attributes.
+- Keep phrases comma‑separated in one sentence; do not output tags, lists, or extra lines.
+
+Examples (bad → corrected; follow exact target format):
+- Bad: ""Several people in a busy scene."" → Good: ""3 people left foreground, standing, colorful saris, medium, storefront window behind.""
+- Bad: ""1 boat"" → Good: ""1 pier center foreground, people on platform, small pavilion with spire, wide, stone embankment behind.""
+- Bad: ""man with cap"" → Good: ""1 worker center foreground, standing on fire‑escape platform, white hard hat, red brick facade behind.""
+- Bad: ""player diving"" → Good: ""1 goalkeeper center foreground, mid‑air dive to right with outstretched gloved hands, white soccer ball to right, goal net behind.""
+- Bad: ""musician playing"" → Good: ""1 man right foreground, right hand on flute, open tip box on ground, medium, storefront window behind.""
+- Bad: ""kids running"" → Good: ""5 boys center foreground, leaning forward as if starting sprint, green training bibs, dirt field with parked cars behind.""
+
+Use these rules to produce exactly one caption that follows the ordering and verification checklist.","12 dancers center foreground, standing in line, no-action-visible, ""RADIO CITY"" sign above, red and white striped costumes, street with crosswalk, building facade behind.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"

@@ -1,0 +1,601 @@
+split_id,method_id,run_id,order,dataset_index,image_id,image_relpath,reference_captions,prompt_id,prompt_name,prompt_text,caption,candidate_id,selected,model,temperature,top_p,max_new_tokens,generation_config
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_e1e3424f0c,3,26288,flickr30k_test_026288,images/flickr30k/flickr30k_test_026288.jpg,"[""A local man is crouched on the ground next to some fresh fruit that his has just cut open with the knife in his hand."", ""Black male dressed like he maybe homeless hovering over food."", ""A man cutting and skinning a fruit that has green skin."", ""A man is chopping up food on the ground."", ""A man is carving a melon.""]",textgrad_e1e3424f0c,TextGrad Step 9,"Generate exactly one short, literal, factual caption (one sentence) describing only visible content in the image. Output exactly one sentence only—no extra text. Total words: 8–20.
+
+Definitions
+- High‑signal tokens = a visible color or pattern, a concrete specific object class (use the most specific multiword class visible), a clear Arabic numeral count, a clothing/accessory, or legible text/logo copied exactly.
+
+Guidelines (follow unless doing so would break grammar or produce an unnatural sentence)
+1. Early high‑signal placement: at least one high‑signal token should appear within the first five content words. If two high‑signal tokens are clearly visible, both should appear within the first five content words. Ignore a single leading article (a/an/the) when counting content words.
+2. Legible text/logo: if readable text or a logo is visible, copy it exactly (including case). Prefer placing it within the first five content words. If exact copying produces an ungrammatical fragment, integrate it grammatically (e.g., ""STOP sign"", ""sign reading 'STOP'"") while keeping it early.
+3. Specific class: use the most specific visible concrete class (prefer multiword classes such as ""stop sign"", ""fire hydrant"", ""rolling metal door"") rather than generic ""person"" when a specific role or class is clear.
+4. Counts: use Arabic numerals for visible counts and prefer placing the numeral within the first five content words.
+5. Color/pattern adjacency: prefer color or pattern adjectives directly before their noun (e.g., ""red bicycle""). Use ""noun with [color]"" only when immediate adjacency would violate early‑token placement or grammaticality.
+6. Syntax and fluency: prefer a short present‑tense subject + verb sentence using common verbs and collocations (e.g., ""X sits on Y"", ""X holds Y"", ""X leans against Y""). A bare noun phrase is allowed only if any verb would force required high‑signal tokens past their allowed positions. Always prioritize grammatical, natural phrasing; if obeying a placement preference would break grammar, relax that preference.
+7. Openings: avoid generic openings (""There is"", ""A group of"", ""Some people"") unless no confident specific subject can be identified or using a generic opening yields a more natural, grammatical caption.
+8. Word choice and length: prefer common color and class words (e.g., ""red, blue, black, bicycle, truck, dog"") over rare synonyms. Aim for about 9–14 content words while keeping total words within 8–20.
+
+Deterministic subject selection
+- Choose the primary subject by this tie‑breaker order: centermost → largest → highest contrast → visible attribute (color/number/logo) → the subject that yields the most natural grammatical sentence given the placement preferences.
+
+Preferred short templates (use as natural patterns, not rigid forms)
+- ""Red bus sits near 5 people.""
+- ""2 dogs play on the grass.""
+- ""STOP sign stands beside a man.""
+- ""Blue canopy shades market stall with OPEN sign.""
+
+Output exactly one sentence only—no extra text.",Man in cap sits beside jackfruit and green leaves on dirt ground.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_e1e3424f0c,9,24935,flickr30k_test_024935,images/flickr30k/flickr30k_test_024935.jpg,"[""A group of shoppers gather at a fresh produce stand in order to make their selections."", ""A group of African Americans gather a street vendor."", ""Customers are waiting to get some food."", ""Hungry people are shopping for food."", ""A line is forming for the food cart.""]",textgrad_e1e3424f0c,TextGrad Step 9,"Generate exactly one short, literal, factual caption (one sentence) describing only visible content in the image. Output exactly one sentence only—no extra text. Total words: 8–20.
+
+Definitions
+- High‑signal tokens = a visible color or pattern, a concrete specific object class (use the most specific multiword class visible), a clear Arabic numeral count, a clothing/accessory, or legible text/logo copied exactly.
+
+Guidelines (follow unless doing so would break grammar or produce an unnatural sentence)
+1. Early high‑signal placement: at least one high‑signal token should appear within the first five content words. If two high‑signal tokens are clearly visible, both should appear within the first five content words. Ignore a single leading article (a/an/the) when counting content words.
+2. Legible text/logo: if readable text or a logo is visible, copy it exactly (including case). Prefer placing it within the first five content words. If exact copying produces an ungrammatical fragment, integrate it grammatically (e.g., ""STOP sign"", ""sign reading 'STOP'"") while keeping it early.
+3. Specific class: use the most specific visible concrete class (prefer multiword classes such as ""stop sign"", ""fire hydrant"", ""rolling metal door"") rather than generic ""person"" when a specific role or class is clear.
+4. Counts: use Arabic numerals for visible counts and prefer placing the numeral within the first five content words.
+5. Color/pattern adjacency: prefer color or pattern adjectives directly before their noun (e.g., ""red bicycle""). Use ""noun with [color]"" only when immediate adjacency would violate early‑token placement or grammaticality.
+6. Syntax and fluency: prefer a short present‑tense subject + verb sentence using common verbs and collocations (e.g., ""X sits on Y"", ""X holds Y"", ""X leans against Y""). A bare noun phrase is allowed only if any verb would force required high‑signal tokens past their allowed positions. Always prioritize grammatical, natural phrasing; if obeying a placement preference would break grammar, relax that preference.
+7. Openings: avoid generic openings (""There is"", ""A group of"", ""Some people"") unless no confident specific subject can be identified or using a generic opening yields a more natural, grammatical caption.
+8. Word choice and length: prefer common color and class words (e.g., ""red, blue, black, bicycle, truck, dog"") over rare synonyms. Aim for about 9–14 content words while keeping total words within 8–20.
+
+Deterministic subject selection
+- Choose the primary subject by this tie‑breaker order: centermost → largest → highest contrast → visible attribute (color/number/logo) → the subject that yields the most natural grammatical sentence given the placement preferences.
+
+Preferred short templates (use as natural patterns, not rigid forms)
+- ""Red bus sits near 5 people.""
+- ""2 dogs play on the grass.""
+- ""STOP sign stands beside a man.""
+- ""Blue canopy shades market stall with OPEN sign.""
+
+Output exactly one sentence only—no extra text.",Man in checkered apron stands at fruit stand with customers.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_e1e3424f0c,20,27386,flickr30k_test_027386,images/flickr30k/flickr30k_test_027386.jpg,"[""A single-file group of people wearing backpacks and other gear are hiking up the side of a green-covered mountain."", ""A group of backpackers treks across a green hill with snowcapped mountains off in the distance."", ""A line of backpackers trekking across a very green, hilly landscape."", ""A group of people are hiking along a grassy area."", ""Hiking in the mountains to have a scenic picnic.""]",textgrad_e1e3424f0c,TextGrad Step 9,"Generate exactly one short, literal, factual caption (one sentence) describing only visible content in the image. Output exactly one sentence only—no extra text. Total words: 8–20.
+
+Definitions
+- High‑signal tokens = a visible color or pattern, a concrete specific object class (use the most specific multiword class visible), a clear Arabic numeral count, a clothing/accessory, or legible text/logo copied exactly.
+
+Guidelines (follow unless doing so would break grammar or produce an unnatural sentence)
+1. Early high‑signal placement: at least one high‑signal token should appear within the first five content words. If two high‑signal tokens are clearly visible, both should appear within the first five content words. Ignore a single leading article (a/an/the) when counting content words.
+2. Legible text/logo: if readable text or a logo is visible, copy it exactly (including case). Prefer placing it within the first five content words. If exact copying produces an ungrammatical fragment, integrate it grammatically (e.g., ""STOP sign"", ""sign reading 'STOP'"") while keeping it early.
+3. Specific class: use the most specific visible concrete class (prefer multiword classes such as ""stop sign"", ""fire hydrant"", ""rolling metal door"") rather than generic ""person"" when a specific role or class is clear.
+4. Counts: use Arabic numerals for visible counts and prefer placing the numeral within the first five content words.
+5. Color/pattern adjacency: prefer color or pattern adjectives directly before their noun (e.g., ""red bicycle""). Use ""noun with [color]"" only when immediate adjacency would violate early‑token placement or grammaticality.
+6. Syntax and fluency: prefer a short present‑tense subject + verb sentence using common verbs and collocations (e.g., ""X sits on Y"", ""X holds Y"", ""X leans against Y""). A bare noun phrase is allowed only if any verb would force required high‑signal tokens past their allowed positions. Always prioritize grammatical, natural phrasing; if obeying a placement preference would break grammar, relax that preference.
+7. Openings: avoid generic openings (""There is"", ""A group of"", ""Some people"") unless no confident specific subject can be identified or using a generic opening yields a more natural, grammatical caption.
+8. Word choice and length: prefer common color and class words (e.g., ""red, blue, black, bicycle, truck, dog"") over rare synonyms. Aim for about 9–14 content words while keeping total words within 8–20.
+
+Deterministic subject selection
+- Choose the primary subject by this tie‑breaker order: centermost → largest → highest contrast → visible attribute (color/number/logo) → the subject that yields the most natural grammatical sentence given the placement preferences.
+
+Preferred short templates (use as natural patterns, not rigid forms)
+- ""Red bus sits near 5 people.""
+- ""2 dogs play on the grass.""
+- ""STOP sign stands beside a man.""
+- ""Blue canopy shades market stall with OPEN sign.""
+
+Output exactly one sentence only—no extra text.",Hikers with backpacks walk along a grassy trail toward distant mountains.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_e1e3424f0c,25,25138,flickr30k_test_025138,images/flickr30k/flickr30k_test_025138.jpg,"[""A woman in a black stocking hat and black leather jacket, talking to a man with a beard in a black fleece jacket."", ""A girl in a black sock hat is talking to a man wearing a blue shirt."", ""A woman and man talking to each other in front of a scenic lake."", ""People talking to one another outside near a fountain."", ""A woman in a black beanie looks up at a bearded man.""]",textgrad_e1e3424f0c,TextGrad Step 9,"Generate exactly one short, literal, factual caption (one sentence) describing only visible content in the image. Output exactly one sentence only—no extra text. Total words: 8–20.
+
+Definitions
+- High‑signal tokens = a visible color or pattern, a concrete specific object class (use the most specific multiword class visible), a clear Arabic numeral count, a clothing/accessory, or legible text/logo copied exactly.
+
+Guidelines (follow unless doing so would break grammar or produce an unnatural sentence)
+1. Early high‑signal placement: at least one high‑signal token should appear within the first five content words. If two high‑signal tokens are clearly visible, both should appear within the first five content words. Ignore a single leading article (a/an/the) when counting content words.
+2. Legible text/logo: if readable text or a logo is visible, copy it exactly (including case). Prefer placing it within the first five content words. If exact copying produces an ungrammatical fragment, integrate it grammatically (e.g., ""STOP sign"", ""sign reading 'STOP'"") while keeping it early.
+3. Specific class: use the most specific visible concrete class (prefer multiword classes such as ""stop sign"", ""fire hydrant"", ""rolling metal door"") rather than generic ""person"" when a specific role or class is clear.
+4. Counts: use Arabic numerals for visible counts and prefer placing the numeral within the first five content words.
+5. Color/pattern adjacency: prefer color or pattern adjectives directly before their noun (e.g., ""red bicycle""). Use ""noun with [color]"" only when immediate adjacency would violate early‑token placement or grammaticality.
+6. Syntax and fluency: prefer a short present‑tense subject + verb sentence using common verbs and collocations (e.g., ""X sits on Y"", ""X holds Y"", ""X leans against Y""). A bare noun phrase is allowed only if any verb would force required high‑signal tokens past their allowed positions. Always prioritize grammatical, natural phrasing; if obeying a placement preference would break grammar, relax that preference.
+7. Openings: avoid generic openings (""There is"", ""A group of"", ""Some people"") unless no confident specific subject can be identified or using a generic opening yields a more natural, grammatical caption.
+8. Word choice and length: prefer common color and class words (e.g., ""red, blue, black, bicycle, truck, dog"") over rare synonyms. Aim for about 9–14 content words while keeping total words within 8–20.
+
+Deterministic subject selection
+- Choose the primary subject by this tie‑breaker order: centermost → largest → highest contrast → visible attribute (color/number/logo) → the subject that yields the most natural grammatical sentence given the placement preferences.
+
+Preferred short templates (use as natural patterns, not rigid forms)
+- ""Red bus sits near 5 people.""
+- ""2 dogs play on the grass.""
+- ""STOP sign stands beside a man.""
+- ""Blue canopy shades market stall with OPEN sign.""
+
+Output exactly one sentence only—no extra text.",Four people stand near a railing beside a canal.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_e1e3424f0c,26,69,flickr30k_test_000069,images/flickr30k/flickr30k_test_000069.jpg,"[""A man in a black coat walks past a red spaceship with a parking ticket stuck to its window."", ""A man is standing in front of a small red object that looks like a plane."", ""A man wearing a black jacket is walking towards the street."", ""A man in a black jacket is moving towards a street."", ""Man in black coat examining airplane nose.""]",textgrad_e1e3424f0c,TextGrad Step 9,"Generate exactly one short, literal, factual caption (one sentence) describing only visible content in the image. Output exactly one sentence only—no extra text. Total words: 8–20.
+
+Definitions
+- High‑signal tokens = a visible color or pattern, a concrete specific object class (use the most specific multiword class visible), a clear Arabic numeral count, a clothing/accessory, or legible text/logo copied exactly.
+
+Guidelines (follow unless doing so would break grammar or produce an unnatural sentence)
+1. Early high‑signal placement: at least one high‑signal token should appear within the first five content words. If two high‑signal tokens are clearly visible, both should appear within the first five content words. Ignore a single leading article (a/an/the) when counting content words.
+2. Legible text/logo: if readable text or a logo is visible, copy it exactly (including case). Prefer placing it within the first five content words. If exact copying produces an ungrammatical fragment, integrate it grammatically (e.g., ""STOP sign"", ""sign reading 'STOP'"") while keeping it early.
+3. Specific class: use the most specific visible concrete class (prefer multiword classes such as ""stop sign"", ""fire hydrant"", ""rolling metal door"") rather than generic ""person"" when a specific role or class is clear.
+4. Counts: use Arabic numerals for visible counts and prefer placing the numeral within the first five content words.
+5. Color/pattern adjacency: prefer color or pattern adjectives directly before their noun (e.g., ""red bicycle""). Use ""noun with [color]"" only when immediate adjacency would violate early‑token placement or grammaticality.
+6. Syntax and fluency: prefer a short present‑tense subject + verb sentence using common verbs and collocations (e.g., ""X sits on Y"", ""X holds Y"", ""X leans against Y""). A bare noun phrase is allowed only if any verb would force required high‑signal tokens past their allowed positions. Always prioritize grammatical, natural phrasing; if obeying a placement preference would break grammar, relax that preference.
+7. Openings: avoid generic openings (""There is"", ""A group of"", ""Some people"") unless no confident specific subject can be identified or using a generic opening yields a more natural, grammatical caption.
+8. Word choice and length: prefer common color and class words (e.g., ""red, blue, black, bicycle, truck, dog"") over rare synonyms. Aim for about 9–14 content words while keeping total words within 8–20.
+
+Deterministic subject selection
+- Choose the primary subject by this tie‑breaker order: centermost → largest → highest contrast → visible attribute (color/number/logo) → the subject that yields the most natural grammatical sentence given the placement preferences.
+
+Preferred short templates (use as natural patterns, not rigid forms)
+- ""Red bus sits near 5 people.""
+- ""2 dogs play on the grass.""
+- ""STOP sign stands beside a man.""
+- ""Blue canopy shades market stall with OPEN sign.""
+
+Output exactly one sentence only—no extra text.","A man in a dark suit stands beside a large, glowing red sculpture shaped like a submarine.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_e1e3424f0c,27,22801,flickr30k_test_022801,images/flickr30k/flickr30k_test_022801.jpg,"[""People are walking down the street with vendors on the side on a beautiful, sunny day."", ""People are gathered at some kind of shop on the side of the street."", ""A boy with a yellow shirt and yellow do-rag walking through a town."", ""Multiple people are walking down a street at a street fair"", ""People walk down a street with shops along the way.""]",textgrad_e1e3424f0c,TextGrad Step 9,"Generate exactly one short, literal, factual caption (one sentence) describing only visible content in the image. Output exactly one sentence only—no extra text. Total words: 8–20.
+
+Definitions
+- High‑signal tokens = a visible color or pattern, a concrete specific object class (use the most specific multiword class visible), a clear Arabic numeral count, a clothing/accessory, or legible text/logo copied exactly.
+
+Guidelines (follow unless doing so would break grammar or produce an unnatural sentence)
+1. Early high‑signal placement: at least one high‑signal token should appear within the first five content words. If two high‑signal tokens are clearly visible, both should appear within the first five content words. Ignore a single leading article (a/an/the) when counting content words.
+2. Legible text/logo: if readable text or a logo is visible, copy it exactly (including case). Prefer placing it within the first five content words. If exact copying produces an ungrammatical fragment, integrate it grammatically (e.g., ""STOP sign"", ""sign reading 'STOP'"") while keeping it early.
+3. Specific class: use the most specific visible concrete class (prefer multiword classes such as ""stop sign"", ""fire hydrant"", ""rolling metal door"") rather than generic ""person"" when a specific role or class is clear.
+4. Counts: use Arabic numerals for visible counts and prefer placing the numeral within the first five content words.
+5. Color/pattern adjacency: prefer color or pattern adjectives directly before their noun (e.g., ""red bicycle""). Use ""noun with [color]"" only when immediate adjacency would violate early‑token placement or grammaticality.
+6. Syntax and fluency: prefer a short present‑tense subject + verb sentence using common verbs and collocations (e.g., ""X sits on Y"", ""X holds Y"", ""X leans against Y""). A bare noun phrase is allowed only if any verb would force required high‑signal tokens past their allowed positions. Always prioritize grammatical, natural phrasing; if obeying a placement preference would break grammar, relax that preference.
+7. Openings: avoid generic openings (""There is"", ""A group of"", ""Some people"") unless no confident specific subject can be identified or using a generic opening yields a more natural, grammatical caption.
+8. Word choice and length: prefer common color and class words (e.g., ""red, blue, black, bicycle, truck, dog"") over rare synonyms. Aim for about 9–14 content words while keeping total words within 8–20.
+
+Deterministic subject selection
+- Choose the primary subject by this tie‑breaker order: centermost → largest → highest contrast → visible attribute (color/number/logo) → the subject that yields the most natural grammatical sentence given the placement preferences.
+
+Preferred short templates (use as natural patterns, not rigid forms)
+- ""Red bus sits near 5 people.""
+- ""2 dogs play on the grass.""
+- ""STOP sign stands beside a man.""
+- ""Blue canopy shades market stall with OPEN sign.""
+
+Output exactly one sentence only—no extra text.",Blue canopy shades market stall with OPEN sign.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_e1e3424f0c,28,14594,flickr30k_test_014594,images/flickr30k/flickr30k_test_014594.jpg,"[""A person aquestrian horse jumping over a wooden fence."", ""A horse and rider jumping a small fence."", ""A horse and rider jump over a fence."", ""A horse jumps over a wooden fence."", ""A jockey on a horse jumps a fence.""]",textgrad_e1e3424f0c,TextGrad Step 9,"Generate exactly one short, literal, factual caption (one sentence) describing only visible content in the image. Output exactly one sentence only—no extra text. Total words: 8–20.
+
+Definitions
+- High‑signal tokens = a visible color or pattern, a concrete specific object class (use the most specific multiword class visible), a clear Arabic numeral count, a clothing/accessory, or legible text/logo copied exactly.
+
+Guidelines (follow unless doing so would break grammar or produce an unnatural sentence)
+1. Early high‑signal placement: at least one high‑signal token should appear within the first five content words. If two high‑signal tokens are clearly visible, both should appear within the first five content words. Ignore a single leading article (a/an/the) when counting content words.
+2. Legible text/logo: if readable text or a logo is visible, copy it exactly (including case). Prefer placing it within the first five content words. If exact copying produces an ungrammatical fragment, integrate it grammatically (e.g., ""STOP sign"", ""sign reading 'STOP'"") while keeping it early.
+3. Specific class: use the most specific visible concrete class (prefer multiword classes such as ""stop sign"", ""fire hydrant"", ""rolling metal door"") rather than generic ""person"" when a specific role or class is clear.
+4. Counts: use Arabic numerals for visible counts and prefer placing the numeral within the first five content words.
+5. Color/pattern adjacency: prefer color or pattern adjectives directly before their noun (e.g., ""red bicycle""). Use ""noun with [color]"" only when immediate adjacency would violate early‑token placement or grammaticality.
+6. Syntax and fluency: prefer a short present‑tense subject + verb sentence using common verbs and collocations (e.g., ""X sits on Y"", ""X holds Y"", ""X leans against Y""). A bare noun phrase is allowed only if any verb would force required high‑signal tokens past their allowed positions. Always prioritize grammatical, natural phrasing; if obeying a placement preference would break grammar, relax that preference.
+7. Openings: avoid generic openings (""There is"", ""A group of"", ""Some people"") unless no confident specific subject can be identified or using a generic opening yields a more natural, grammatical caption.
+8. Word choice and length: prefer common color and class words (e.g., ""red, blue, black, bicycle, truck, dog"") over rare synonyms. Aim for about 9–14 content words while keeping total words within 8–20.
+
+Deterministic subject selection
+- Choose the primary subject by this tie‑breaker order: centermost → largest → highest contrast → visible attribute (color/number/logo) → the subject that yields the most natural grammatical sentence given the placement preferences.
+
+Preferred short templates (use as natural patterns, not rigid forms)
+- ""Red bus sits near 5 people.""
+- ""2 dogs play on the grass.""
+- ""STOP sign stands beside a man.""
+- ""Blue canopy shades market stall with OPEN sign.""
+
+Output exactly one sentence only—no extra text.",Jockey in green and black jacket rides brown horse over wooden fence.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_e1e3424f0c,31,26274,flickr30k_test_026274,images/flickr30k/flickr30k_test_026274.jpg,"[""A man in a black hat is rearing up on his brown horse while a crowd of people look on from a distance."", ""A man in a black cowboy hat holds on as his horse rears up."", ""A man on a horse galloping onto its back two feet."", ""Cowboy holding on to the horse"", ""Man riding a bucking bronco!""]",textgrad_e1e3424f0c,TextGrad Step 9,"Generate exactly one short, literal, factual caption (one sentence) describing only visible content in the image. Output exactly one sentence only—no extra text. Total words: 8–20.
+
+Definitions
+- High‑signal tokens = a visible color or pattern, a concrete specific object class (use the most specific multiword class visible), a clear Arabic numeral count, a clothing/accessory, or legible text/logo copied exactly.
+
+Guidelines (follow unless doing so would break grammar or produce an unnatural sentence)
+1. Early high‑signal placement: at least one high‑signal token should appear within the first five content words. If two high‑signal tokens are clearly visible, both should appear within the first five content words. Ignore a single leading article (a/an/the) when counting content words.
+2. Legible text/logo: if readable text or a logo is visible, copy it exactly (including case). Prefer placing it within the first five content words. If exact copying produces an ungrammatical fragment, integrate it grammatically (e.g., ""STOP sign"", ""sign reading 'STOP'"") while keeping it early.
+3. Specific class: use the most specific visible concrete class (prefer multiword classes such as ""stop sign"", ""fire hydrant"", ""rolling metal door"") rather than generic ""person"" when a specific role or class is clear.
+4. Counts: use Arabic numerals for visible counts and prefer placing the numeral within the first five content words.
+5. Color/pattern adjacency: prefer color or pattern adjectives directly before their noun (e.g., ""red bicycle""). Use ""noun with [color]"" only when immediate adjacency would violate early‑token placement or grammaticality.
+6. Syntax and fluency: prefer a short present‑tense subject + verb sentence using common verbs and collocations (e.g., ""X sits on Y"", ""X holds Y"", ""X leans against Y""). A bare noun phrase is allowed only if any verb would force required high‑signal tokens past their allowed positions. Always prioritize grammatical, natural phrasing; if obeying a placement preference would break grammar, relax that preference.
+7. Openings: avoid generic openings (""There is"", ""A group of"", ""Some people"") unless no confident specific subject can be identified or using a generic opening yields a more natural, grammatical caption.
+8. Word choice and length: prefer common color and class words (e.g., ""red, blue, black, bicycle, truck, dog"") over rare synonyms. Aim for about 9–14 content words while keeping total words within 8–20.
+
+Deterministic subject selection
+- Choose the primary subject by this tie‑breaker order: centermost → largest → highest contrast → visible attribute (color/number/logo) → the subject that yields the most natural grammatical sentence given the placement preferences.
+
+Preferred short templates (use as natural patterns, not rigid forms)
+- ""Red bus sits near 5 people.""
+- ""2 dogs play on the grass.""
+- ""STOP sign stands beside a man.""
+- ""Blue canopy shades market stall with OPEN sign.""
+
+Output exactly one sentence only—no extra text.","Rider on horse with ""PAY"" banner in background.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_e1e3424f0c,37,10401,flickr30k_test_010401,images/flickr30k/flickr30k_test_010401.jpg,"[""A girl in a blue sweater with a white pattern is jumping into a pile of leaves."", ""A young girl is diving into a pile of brown leaves in the yard."", ""A girl in a sweater diving into a pile of leaves."", ""A girl is jumping into a pile of leaves."", ""A girl is jumping into a pile of leaves""]",textgrad_e1e3424f0c,TextGrad Step 9,"Generate exactly one short, literal, factual caption (one sentence) describing only visible content in the image. Output exactly one sentence only—no extra text. Total words: 8–20.
+
+Definitions
+- High‑signal tokens = a visible color or pattern, a concrete specific object class (use the most specific multiword class visible), a clear Arabic numeral count, a clothing/accessory, or legible text/logo copied exactly.
+
+Guidelines (follow unless doing so would break grammar or produce an unnatural sentence)
+1. Early high‑signal placement: at least one high‑signal token should appear within the first five content words. If two high‑signal tokens are clearly visible, both should appear within the first five content words. Ignore a single leading article (a/an/the) when counting content words.
+2. Legible text/logo: if readable text or a logo is visible, copy it exactly (including case). Prefer placing it within the first five content words. If exact copying produces an ungrammatical fragment, integrate it grammatically (e.g., ""STOP sign"", ""sign reading 'STOP'"") while keeping it early.
+3. Specific class: use the most specific visible concrete class (prefer multiword classes such as ""stop sign"", ""fire hydrant"", ""rolling metal door"") rather than generic ""person"" when a specific role or class is clear.
+4. Counts: use Arabic numerals for visible counts and prefer placing the numeral within the first five content words.
+5. Color/pattern adjacency: prefer color or pattern adjectives directly before their noun (e.g., ""red bicycle""). Use ""noun with [color]"" only when immediate adjacency would violate early‑token placement or grammaticality.
+6. Syntax and fluency: prefer a short present‑tense subject + verb sentence using common verbs and collocations (e.g., ""X sits on Y"", ""X holds Y"", ""X leans against Y""). A bare noun phrase is allowed only if any verb would force required high‑signal tokens past their allowed positions. Always prioritize grammatical, natural phrasing; if obeying a placement preference would break grammar, relax that preference.
+7. Openings: avoid generic openings (""There is"", ""A group of"", ""Some people"") unless no confident specific subject can be identified or using a generic opening yields a more natural, grammatical caption.
+8. Word choice and length: prefer common color and class words (e.g., ""red, blue, black, bicycle, truck, dog"") over rare synonyms. Aim for about 9–14 content words while keeping total words within 8–20.
+
+Deterministic subject selection
+- Choose the primary subject by this tie‑breaker order: centermost → largest → highest contrast → visible attribute (color/number/logo) → the subject that yields the most natural grammatical sentence given the placement preferences.
+
+Preferred short templates (use as natural patterns, not rigid forms)
+- ""Red bus sits near 5 people.""
+- ""2 dogs play on the grass.""
+- ""STOP sign stands beside a man.""
+- ""Blue canopy shades market stall with OPEN sign.""
+
+Output exactly one sentence only—no extra text.",Girl in blue sweater jumps toward pile of autumn leaves.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_e1e3424f0c,39,731,flickr30k_test_000731,images/flickr30k/flickr30k_test_000731.jpg,"[""Three little blond girls, two in blue, one in pink, play on a sunny beach."", ""Three children are playing in sand near to the beach."", ""Three young girls dance on the beach in the sand."", ""Three children playing in sand at beach"", ""Three girls play in the sand.""]",textgrad_e1e3424f0c,TextGrad Step 9,"Generate exactly one short, literal, factual caption (one sentence) describing only visible content in the image. Output exactly one sentence only—no extra text. Total words: 8–20.
+
+Definitions
+- High‑signal tokens = a visible color or pattern, a concrete specific object class (use the most specific multiword class visible), a clear Arabic numeral count, a clothing/accessory, or legible text/logo copied exactly.
+
+Guidelines (follow unless doing so would break grammar or produce an unnatural sentence)
+1. Early high‑signal placement: at least one high‑signal token should appear within the first five content words. If two high‑signal tokens are clearly visible, both should appear within the first five content words. Ignore a single leading article (a/an/the) when counting content words.
+2. Legible text/logo: if readable text or a logo is visible, copy it exactly (including case). Prefer placing it within the first five content words. If exact copying produces an ungrammatical fragment, integrate it grammatically (e.g., ""STOP sign"", ""sign reading 'STOP'"") while keeping it early.
+3. Specific class: use the most specific visible concrete class (prefer multiword classes such as ""stop sign"", ""fire hydrant"", ""rolling metal door"") rather than generic ""person"" when a specific role or class is clear.
+4. Counts: use Arabic numerals for visible counts and prefer placing the numeral within the first five content words.
+5. Color/pattern adjacency: prefer color or pattern adjectives directly before their noun (e.g., ""red bicycle""). Use ""noun with [color]"" only when immediate adjacency would violate early‑token placement or grammaticality.
+6. Syntax and fluency: prefer a short present‑tense subject + verb sentence using common verbs and collocations (e.g., ""X sits on Y"", ""X holds Y"", ""X leans against Y""). A bare noun phrase is allowed only if any verb would force required high‑signal tokens past their allowed positions. Always prioritize grammatical, natural phrasing; if obeying a placement preference would break grammar, relax that preference.
+7. Openings: avoid generic openings (""There is"", ""A group of"", ""Some people"") unless no confident specific subject can be identified or using a generic opening yields a more natural, grammatical caption.
+8. Word choice and length: prefer common color and class words (e.g., ""red, blue, black, bicycle, truck, dog"") over rare synonyms. Aim for about 9–14 content words while keeping total words within 8–20.
+
+Deterministic subject selection
+- Choose the primary subject by this tie‑breaker order: centermost → largest → highest contrast → visible attribute (color/number/logo) → the subject that yields the most natural grammatical sentence given the placement preferences.
+
+Preferred short templates (use as natural patterns, not rigid forms)
+- ""Red bus sits near 5 people.""
+- ""2 dogs play on the grass.""
+- ""STOP sign stands beside a man.""
+- ""Blue canopy shades market stall with OPEN sign.""
+
+Output exactly one sentence only—no extra text.",Three children play on sandy beach near wooden posts.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_e1e3424f0c,47,22494,flickr30k_test_022494,images/flickr30k/flickr30k_test_022494.jpg,"[""A man in an orange shirt and gray pants with white paint on them looks at the camera while standing near an orange ladder and a gray and white brick wall."", ""A house painter in clothes covered in paint pauses to look at the camera."", ""A man in an orange shirt with an orange ladder next to a brick wall."", ""A man in an orange shirt is holding a ladder."", ""A worker grabs a ladder to move it around.""]",textgrad_e1e3424f0c,TextGrad Step 9,"Generate exactly one short, literal, factual caption (one sentence) describing only visible content in the image. Output exactly one sentence only—no extra text. Total words: 8–20.
+
+Definitions
+- High‑signal tokens = a visible color or pattern, a concrete specific object class (use the most specific multiword class visible), a clear Arabic numeral count, a clothing/accessory, or legible text/logo copied exactly.
+
+Guidelines (follow unless doing so would break grammar or produce an unnatural sentence)
+1. Early high‑signal placement: at least one high‑signal token should appear within the first five content words. If two high‑signal tokens are clearly visible, both should appear within the first five content words. Ignore a single leading article (a/an/the) when counting content words.
+2. Legible text/logo: if readable text or a logo is visible, copy it exactly (including case). Prefer placing it within the first five content words. If exact copying produces an ungrammatical fragment, integrate it grammatically (e.g., ""STOP sign"", ""sign reading 'STOP'"") while keeping it early.
+3. Specific class: use the most specific visible concrete class (prefer multiword classes such as ""stop sign"", ""fire hydrant"", ""rolling metal door"") rather than generic ""person"" when a specific role or class is clear.
+4. Counts: use Arabic numerals for visible counts and prefer placing the numeral within the first five content words.
+5. Color/pattern adjacency: prefer color or pattern adjectives directly before their noun (e.g., ""red bicycle""). Use ""noun with [color]"" only when immediate adjacency would violate early‑token placement or grammaticality.
+6. Syntax and fluency: prefer a short present‑tense subject + verb sentence using common verbs and collocations (e.g., ""X sits on Y"", ""X holds Y"", ""X leans against Y""). A bare noun phrase is allowed only if any verb would force required high‑signal tokens past their allowed positions. Always prioritize grammatical, natural phrasing; if obeying a placement preference would break grammar, relax that preference.
+7. Openings: avoid generic openings (""There is"", ""A group of"", ""Some people"") unless no confident specific subject can be identified or using a generic opening yields a more natural, grammatical caption.
+8. Word choice and length: prefer common color and class words (e.g., ""red, blue, black, bicycle, truck, dog"") over rare synonyms. Aim for about 9–14 content words while keeping total words within 8–20.
+
+Deterministic subject selection
+- Choose the primary subject by this tie‑breaker order: centermost → largest → highest contrast → visible attribute (color/number/logo) → the subject that yields the most natural grammatical sentence given the placement preferences.
+
+Preferred short templates (use as natural patterns, not rigid forms)
+- ""Red bus sits near 5 people.""
+- ""2 dogs play on the grass.""
+- ""STOP sign stands beside a man.""
+- ""Blue canopy shades market stall with OPEN sign.""
+
+Output exactly one sentence only—no extra text.",Man in orange shirt holds orange ladder near brick chimney.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_e1e3424f0c,55,14348,flickr30k_test_014348,images/flickr30k/flickr30k_test_014348.jpg,"[""A baseball player in a red shirt and white pants is swinging the bat towards a yellow ball whilst three people look on."", ""A baseball player recoils from an action involving a bat while opposing team members look on."", ""A woman swings at a softball on a playing field while other players look on."", ""A girl in a red and white uniform is swinging a bat."", ""A girl swings a bat during a softball game.""]",textgrad_e1e3424f0c,TextGrad Step 9,"Generate exactly one short, literal, factual caption (one sentence) describing only visible content in the image. Output exactly one sentence only—no extra text. Total words: 8–20.
+
+Definitions
+- High‑signal tokens = a visible color or pattern, a concrete specific object class (use the most specific multiword class visible), a clear Arabic numeral count, a clothing/accessory, or legible text/logo copied exactly.
+
+Guidelines (follow unless doing so would break grammar or produce an unnatural sentence)
+1. Early high‑signal placement: at least one high‑signal token should appear within the first five content words. If two high‑signal tokens are clearly visible, both should appear within the first five content words. Ignore a single leading article (a/an/the) when counting content words.
+2. Legible text/logo: if readable text or a logo is visible, copy it exactly (including case). Prefer placing it within the first five content words. If exact copying produces an ungrammatical fragment, integrate it grammatically (e.g., ""STOP sign"", ""sign reading 'STOP'"") while keeping it early.
+3. Specific class: use the most specific visible concrete class (prefer multiword classes such as ""stop sign"", ""fire hydrant"", ""rolling metal door"") rather than generic ""person"" when a specific role or class is clear.
+4. Counts: use Arabic numerals for visible counts and prefer placing the numeral within the first five content words.
+5. Color/pattern adjacency: prefer color or pattern adjectives directly before their noun (e.g., ""red bicycle""). Use ""noun with [color]"" only when immediate adjacency would violate early‑token placement or grammaticality.
+6. Syntax and fluency: prefer a short present‑tense subject + verb sentence using common verbs and collocations (e.g., ""X sits on Y"", ""X holds Y"", ""X leans against Y""). A bare noun phrase is allowed only if any verb would force required high‑signal tokens past their allowed positions. Always prioritize grammatical, natural phrasing; if obeying a placement preference would break grammar, relax that preference.
+7. Openings: avoid generic openings (""There is"", ""A group of"", ""Some people"") unless no confident specific subject can be identified or using a generic opening yields a more natural, grammatical caption.
+8. Word choice and length: prefer common color and class words (e.g., ""red, blue, black, bicycle, truck, dog"") over rare synonyms. Aim for about 9–14 content words while keeping total words within 8–20.
+
+Deterministic subject selection
+- Choose the primary subject by this tie‑breaker order: centermost → largest → highest contrast → visible attribute (color/number/logo) → the subject that yields the most natural grammatical sentence given the placement preferences.
+
+Preferred short templates (use as natural patterns, not rigid forms)
+- ""Red bus sits near 5 people.""
+- ""2 dogs play on the grass.""
+- ""STOP sign stands beside a man.""
+- ""Blue canopy shades market stall with OPEN sign.""
+
+Output exactly one sentence only—no extra text.",A batter in a red jersey with number 10 swings at a yellow softball.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_e1e3424f0c,60,7565,flickr30k_test_007565,images/flickr30k/flickr30k_test_007565.jpg,"[""An infant is crawling on a wood floor, with a water bottle laying nearby."", ""A young baby crawls across the wood floor towards the water bottle."", ""A baby crawls on hardwood floors towards a water bottle."", ""A baby crawls on a wood floor near a bottle of water."", ""A baby on a wood floor with a water bottle""]",textgrad_e1e3424f0c,TextGrad Step 9,"Generate exactly one short, literal, factual caption (one sentence) describing only visible content in the image. Output exactly one sentence only—no extra text. Total words: 8–20.
+
+Definitions
+- High‑signal tokens = a visible color or pattern, a concrete specific object class (use the most specific multiword class visible), a clear Arabic numeral count, a clothing/accessory, or legible text/logo copied exactly.
+
+Guidelines (follow unless doing so would break grammar or produce an unnatural sentence)
+1. Early high‑signal placement: at least one high‑signal token should appear within the first five content words. If two high‑signal tokens are clearly visible, both should appear within the first five content words. Ignore a single leading article (a/an/the) when counting content words.
+2. Legible text/logo: if readable text or a logo is visible, copy it exactly (including case). Prefer placing it within the first five content words. If exact copying produces an ungrammatical fragment, integrate it grammatically (e.g., ""STOP sign"", ""sign reading 'STOP'"") while keeping it early.
+3. Specific class: use the most specific visible concrete class (prefer multiword classes such as ""stop sign"", ""fire hydrant"", ""rolling metal door"") rather than generic ""person"" when a specific role or class is clear.
+4. Counts: use Arabic numerals for visible counts and prefer placing the numeral within the first five content words.
+5. Color/pattern adjacency: prefer color or pattern adjectives directly before their noun (e.g., ""red bicycle""). Use ""noun with [color]"" only when immediate adjacency would violate early‑token placement or grammaticality.
+6. Syntax and fluency: prefer a short present‑tense subject + verb sentence using common verbs and collocations (e.g., ""X sits on Y"", ""X holds Y"", ""X leans against Y""). A bare noun phrase is allowed only if any verb would force required high‑signal tokens past their allowed positions. Always prioritize grammatical, natural phrasing; if obeying a placement preference would break grammar, relax that preference.
+7. Openings: avoid generic openings (""There is"", ""A group of"", ""Some people"") unless no confident specific subject can be identified or using a generic opening yields a more natural, grammatical caption.
+8. Word choice and length: prefer common color and class words (e.g., ""red, blue, black, bicycle, truck, dog"") over rare synonyms. Aim for about 9–14 content words while keeping total words within 8–20.
+
+Deterministic subject selection
+- Choose the primary subject by this tie‑breaker order: centermost → largest → highest contrast → visible attribute (color/number/logo) → the subject that yields the most natural grammatical sentence given the placement preferences.
+
+Preferred short templates (use as natural patterns, not rigid forms)
+- ""Red bus sits near 5 people.""
+- ""2 dogs play on the grass.""
+- ""STOP sign stands beside a man.""
+- ""Blue canopy shades market stall with OPEN sign.""
+
+Output exactly one sentence only—no extra text.",Baby crawls on wooden floor near plastic water bottle.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_e1e3424f0c,73,21046,flickr30k_test_021046,images/flickr30k/flickr30k_test_021046.jpg,"[""A man and a woman are seated, holding reading materials, while he looks into the camera and she looks down into her partly rolled-up magazine."", ""A young man and woman sit beside each other on the subway train."", ""A man and a woman are reading while riding the subway."", ""A man and woman riding on a subway car."", ""Several people sit on the subway.""]",textgrad_e1e3424f0c,TextGrad Step 9,"Generate exactly one short, literal, factual caption (one sentence) describing only visible content in the image. Output exactly one sentence only—no extra text. Total words: 8–20.
+
+Definitions
+- High‑signal tokens = a visible color or pattern, a concrete specific object class (use the most specific multiword class visible), a clear Arabic numeral count, a clothing/accessory, or legible text/logo copied exactly.
+
+Guidelines (follow unless doing so would break grammar or produce an unnatural sentence)
+1. Early high‑signal placement: at least one high‑signal token should appear within the first five content words. If two high‑signal tokens are clearly visible, both should appear within the first five content words. Ignore a single leading article (a/an/the) when counting content words.
+2. Legible text/logo: if readable text or a logo is visible, copy it exactly (including case). Prefer placing it within the first five content words. If exact copying produces an ungrammatical fragment, integrate it grammatically (e.g., ""STOP sign"", ""sign reading 'STOP'"") while keeping it early.
+3. Specific class: use the most specific visible concrete class (prefer multiword classes such as ""stop sign"", ""fire hydrant"", ""rolling metal door"") rather than generic ""person"" when a specific role or class is clear.
+4. Counts: use Arabic numerals for visible counts and prefer placing the numeral within the first five content words.
+5. Color/pattern adjacency: prefer color or pattern adjectives directly before their noun (e.g., ""red bicycle""). Use ""noun with [color]"" only when immediate adjacency would violate early‑token placement or grammaticality.
+6. Syntax and fluency: prefer a short present‑tense subject + verb sentence using common verbs and collocations (e.g., ""X sits on Y"", ""X holds Y"", ""X leans against Y""). A bare noun phrase is allowed only if any verb would force required high‑signal tokens past their allowed positions. Always prioritize grammatical, natural phrasing; if obeying a placement preference would break grammar, relax that preference.
+7. Openings: avoid generic openings (""There is"", ""A group of"", ""Some people"") unless no confident specific subject can be identified or using a generic opening yields a more natural, grammatical caption.
+8. Word choice and length: prefer common color and class words (e.g., ""red, blue, black, bicycle, truck, dog"") over rare synonyms. Aim for about 9–14 content words while keeping total words within 8–20.
+
+Deterministic subject selection
+- Choose the primary subject by this tie‑breaker order: centermost → largest → highest contrast → visible attribute (color/number/logo) → the subject that yields the most natural grammatical sentence given the placement preferences.
+
+Preferred short templates (use as natural patterns, not rigid forms)
+- ""Red bus sits near 5 people.""
+- ""2 dogs play on the grass.""
+- ""STOP sign stands beside a man.""
+- ""Blue canopy shades market stall with OPEN sign.""
+
+Output exactly one sentence only—no extra text.",Man in dark suit holds paper while woman in yellow hoodie reads magazine.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_e1e3424f0c,75,6091,flickr30k_test_006091,images/flickr30k/flickr30k_test_006091.jpg,"[""A little girl is sitting on the counter dangling one foot in the sink whilst holding a dish jet washer."", ""A young girl wearing red sunglasses sits near a sink and holds the faucet."", ""A little girl wearing sunglasses puts her feet into the kitchen sink."", ""A young, barefoot girl in red sunglasses plays in a sink."", ""A little girl plays with a faucet.""]",textgrad_e1e3424f0c,TextGrad Step 9,"Generate exactly one short, literal, factual caption (one sentence) describing only visible content in the image. Output exactly one sentence only—no extra text. Total words: 8–20.
+
+Definitions
+- High‑signal tokens = a visible color or pattern, a concrete specific object class (use the most specific multiword class visible), a clear Arabic numeral count, a clothing/accessory, or legible text/logo copied exactly.
+
+Guidelines (follow unless doing so would break grammar or produce an unnatural sentence)
+1. Early high‑signal placement: at least one high‑signal token should appear within the first five content words. If two high‑signal tokens are clearly visible, both should appear within the first five content words. Ignore a single leading article (a/an/the) when counting content words.
+2. Legible text/logo: if readable text or a logo is visible, copy it exactly (including case). Prefer placing it within the first five content words. If exact copying produces an ungrammatical fragment, integrate it grammatically (e.g., ""STOP sign"", ""sign reading 'STOP'"") while keeping it early.
+3. Specific class: use the most specific visible concrete class (prefer multiword classes such as ""stop sign"", ""fire hydrant"", ""rolling metal door"") rather than generic ""person"" when a specific role or class is clear.
+4. Counts: use Arabic numerals for visible counts and prefer placing the numeral within the first five content words.
+5. Color/pattern adjacency: prefer color or pattern adjectives directly before their noun (e.g., ""red bicycle""). Use ""noun with [color]"" only when immediate adjacency would violate early‑token placement or grammaticality.
+6. Syntax and fluency: prefer a short present‑tense subject + verb sentence using common verbs and collocations (e.g., ""X sits on Y"", ""X holds Y"", ""X leans against Y""). A bare noun phrase is allowed only if any verb would force required high‑signal tokens past their allowed positions. Always prioritize grammatical, natural phrasing; if obeying a placement preference would break grammar, relax that preference.
+7. Openings: avoid generic openings (""There is"", ""A group of"", ""Some people"") unless no confident specific subject can be identified or using a generic opening yields a more natural, grammatical caption.
+8. Word choice and length: prefer common color and class words (e.g., ""red, blue, black, bicycle, truck, dog"") over rare synonyms. Aim for about 9–14 content words while keeping total words within 8–20.
+
+Deterministic subject selection
+- Choose the primary subject by this tie‑breaker order: centermost → largest → highest contrast → visible attribute (color/number/logo) → the subject that yields the most natural grammatical sentence given the placement preferences.
+
+Preferred short templates (use as natural patterns, not rigid forms)
+- ""Red bus sits near 5 people.""
+- ""2 dogs play on the grass.""
+- ""STOP sign stands beside a man.""
+- ""Blue canopy shades market stall with OPEN sign.""
+
+Output exactly one sentence only—no extra text.","Child in pink shirt and blue cap holds faucet, water streaming down sink.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_e1e3424f0c,81,24351,flickr30k_test_024351,images/flickr30k/flickr30k_test_024351.jpg,"[""The dinosaur exhibt is next to a tree that has a balloon stuck in its branches."", ""A black dog looks up at a ball in the air and prepares to catch it."", ""A black dog waits on the grass for a falling yellow ball."", ""A dog is looking up at a ball attached to the string."", ""The animal is near the pond.""]",textgrad_e1e3424f0c,TextGrad Step 9,"Generate exactly one short, literal, factual caption (one sentence) describing only visible content in the image. Output exactly one sentence only—no extra text. Total words: 8–20.
+
+Definitions
+- High‑signal tokens = a visible color or pattern, a concrete specific object class (use the most specific multiword class visible), a clear Arabic numeral count, a clothing/accessory, or legible text/logo copied exactly.
+
+Guidelines (follow unless doing so would break grammar or produce an unnatural sentence)
+1. Early high‑signal placement: at least one high‑signal token should appear within the first five content words. If two high‑signal tokens are clearly visible, both should appear within the first five content words. Ignore a single leading article (a/an/the) when counting content words.
+2. Legible text/logo: if readable text or a logo is visible, copy it exactly (including case). Prefer placing it within the first five content words. If exact copying produces an ungrammatical fragment, integrate it grammatically (e.g., ""STOP sign"", ""sign reading 'STOP'"") while keeping it early.
+3. Specific class: use the most specific visible concrete class (prefer multiword classes such as ""stop sign"", ""fire hydrant"", ""rolling metal door"") rather than generic ""person"" when a specific role or class is clear.
+4. Counts: use Arabic numerals for visible counts and prefer placing the numeral within the first five content words.
+5. Color/pattern adjacency: prefer color or pattern adjectives directly before their noun (e.g., ""red bicycle""). Use ""noun with [color]"" only when immediate adjacency would violate early‑token placement or grammaticality.
+6. Syntax and fluency: prefer a short present‑tense subject + verb sentence using common verbs and collocations (e.g., ""X sits on Y"", ""X holds Y"", ""X leans against Y""). A bare noun phrase is allowed only if any verb would force required high‑signal tokens past their allowed positions. Always prioritize grammatical, natural phrasing; if obeying a placement preference would break grammar, relax that preference.
+7. Openings: avoid generic openings (""There is"", ""A group of"", ""Some people"") unless no confident specific subject can be identified or using a generic opening yields a more natural, grammatical caption.
+8. Word choice and length: prefer common color and class words (e.g., ""red, blue, black, bicycle, truck, dog"") over rare synonyms. Aim for about 9–14 content words while keeping total words within 8–20.
+
+Deterministic subject selection
+- Choose the primary subject by this tie‑breaker order: centermost → largest → highest contrast → visible attribute (color/number/logo) → the subject that yields the most natural grammatical sentence given the placement preferences.
+
+Preferred short templates (use as natural patterns, not rigid forms)
+- ""Red bus sits near 5 people.""
+- ""2 dogs play on the grass.""
+- ""STOP sign stands beside a man.""
+- ""Blue canopy shades market stall with OPEN sign.""
+
+Output exactly one sentence only—no extra text.",Brown dog leaps to catch green tennis ball near pond.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_e1e3424f0c,90,29824,flickr30k_test_029824,images/flickr30k/flickr30k_test_029824.jpg,"[""A woman stands behind a display table advertising the London 2012 Olympics in front of a sign reading, \""Bienvenus Welcome.\"""", ""A female worker is standing behind a table that says London 2012 above the Olympic rings."", ""A young woman is standing behind an information stall at the 2012 London Olympic Games."", ""Woman posing in her booth during the London 2012 olympics"", ""The olympic official is smiling for the camera""]",textgrad_e1e3424f0c,TextGrad Step 9,"Generate exactly one short, literal, factual caption (one sentence) describing only visible content in the image. Output exactly one sentence only—no extra text. Total words: 8–20.
+
+Definitions
+- High‑signal tokens = a visible color or pattern, a concrete specific object class (use the most specific multiword class visible), a clear Arabic numeral count, a clothing/accessory, or legible text/logo copied exactly.
+
+Guidelines (follow unless doing so would break grammar or produce an unnatural sentence)
+1. Early high‑signal placement: at least one high‑signal token should appear within the first five content words. If two high‑signal tokens are clearly visible, both should appear within the first five content words. Ignore a single leading article (a/an/the) when counting content words.
+2. Legible text/logo: if readable text or a logo is visible, copy it exactly (including case). Prefer placing it within the first five content words. If exact copying produces an ungrammatical fragment, integrate it grammatically (e.g., ""STOP sign"", ""sign reading 'STOP'"") while keeping it early.
+3. Specific class: use the most specific visible concrete class (prefer multiword classes such as ""stop sign"", ""fire hydrant"", ""rolling metal door"") rather than generic ""person"" when a specific role or class is clear.
+4. Counts: use Arabic numerals for visible counts and prefer placing the numeral within the first five content words.
+5. Color/pattern adjacency: prefer color or pattern adjectives directly before their noun (e.g., ""red bicycle""). Use ""noun with [color]"" only when immediate adjacency would violate early‑token placement or grammaticality.
+6. Syntax and fluency: prefer a short present‑tense subject + verb sentence using common verbs and collocations (e.g., ""X sits on Y"", ""X holds Y"", ""X leans against Y""). A bare noun phrase is allowed only if any verb would force required high‑signal tokens past their allowed positions. Always prioritize grammatical, natural phrasing; if obeying a placement preference would break grammar, relax that preference.
+7. Openings: avoid generic openings (""There is"", ""A group of"", ""Some people"") unless no confident specific subject can be identified or using a generic opening yields a more natural, grammatical caption.
+8. Word choice and length: prefer common color and class words (e.g., ""red, blue, black, bicycle, truck, dog"") over rare synonyms. Aim for about 9–14 content words while keeping total words within 8–20.
+
+Deterministic subject selection
+- Choose the primary subject by this tie‑breaker order: centermost → largest → highest contrast → visible attribute (color/number/logo) → the subject that yields the most natural grammatical sentence given the placement preferences.
+
+Preferred short templates (use as natural patterns, not rigid forms)
+- ""Red bus sits near 5 people.""
+- ""2 dogs play on the grass.""
+- ""STOP sign stands beside a man.""
+- ""Blue canopy shades market stall with OPEN sign.""
+
+Output exactly one sentence only—no extra text.",Welcome sign with London 2012 Olympics logo stands behind a smiling woman at a registration desk.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_e1e3424f0c,94,9311,flickr30k_test_009311,images/flickr30k/flickr30k_test_009311.jpg,"[""A toddler plays in a water fountain with his mouth open and ready for a drink."", ""A baby sticking out his tonge while looking at a spraying water fountain."", ""A baby trying to catch water from a fountain in his mouth"", ""A small boy is playing at a water fountain"", ""A baby reaching into a water fountain.""]",textgrad_e1e3424f0c,TextGrad Step 9,"Generate exactly one short, literal, factual caption (one sentence) describing only visible content in the image. Output exactly one sentence only—no extra text. Total words: 8–20.
+
+Definitions
+- High‑signal tokens = a visible color or pattern, a concrete specific object class (use the most specific multiword class visible), a clear Arabic numeral count, a clothing/accessory, or legible text/logo copied exactly.
+
+Guidelines (follow unless doing so would break grammar or produce an unnatural sentence)
+1. Early high‑signal placement: at least one high‑signal token should appear within the first five content words. If two high‑signal tokens are clearly visible, both should appear within the first five content words. Ignore a single leading article (a/an/the) when counting content words.
+2. Legible text/logo: if readable text or a logo is visible, copy it exactly (including case). Prefer placing it within the first five content words. If exact copying produces an ungrammatical fragment, integrate it grammatically (e.g., ""STOP sign"", ""sign reading 'STOP'"") while keeping it early.
+3. Specific class: use the most specific visible concrete class (prefer multiword classes such as ""stop sign"", ""fire hydrant"", ""rolling metal door"") rather than generic ""person"" when a specific role or class is clear.
+4. Counts: use Arabic numerals for visible counts and prefer placing the numeral within the first five content words.
+5. Color/pattern adjacency: prefer color or pattern adjectives directly before their noun (e.g., ""red bicycle""). Use ""noun with [color]"" only when immediate adjacency would violate early‑token placement or grammaticality.
+6. Syntax and fluency: prefer a short present‑tense subject + verb sentence using common verbs and collocations (e.g., ""X sits on Y"", ""X holds Y"", ""X leans against Y""). A bare noun phrase is allowed only if any verb would force required high‑signal tokens past their allowed positions. Always prioritize grammatical, natural phrasing; if obeying a placement preference would break grammar, relax that preference.
+7. Openings: avoid generic openings (""There is"", ""A group of"", ""Some people"") unless no confident specific subject can be identified or using a generic opening yields a more natural, grammatical caption.
+8. Word choice and length: prefer common color and class words (e.g., ""red, blue, black, bicycle, truck, dog"") over rare synonyms. Aim for about 9–14 content words while keeping total words within 8–20.
+
+Deterministic subject selection
+- Choose the primary subject by this tie‑breaker order: centermost → largest → highest contrast → visible attribute (color/number/logo) → the subject that yields the most natural grammatical sentence given the placement preferences.
+
+Preferred short templates (use as natural patterns, not rigid forms)
+- ""Red bus sits near 5 people.""
+- ""2 dogs play on the grass.""
+- ""STOP sign stands beside a man.""
+- ""Blue canopy shades market stall with OPEN sign.""
+
+Output exactly one sentence only—no extra text.",Child with blonde hair leans near water fountain.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_e1e3424f0c,98,27728,flickr30k_test_027728,images/flickr30k/flickr30k_test_027728.jpg,"[""A person wearing deep sea scuba diving gear standing in front of a body of water that is surrounded by hills."", ""There is a guy in a scuba outfit and he is in front of water and mountains."", ""A man on a boat is wearing a diving outfit and looking at the camera."", ""A person in SCUBA gear poses in front of a vast expanse of water."", ""Someone dressed in scuba gear has a body of water behind him.""]",textgrad_e1e3424f0c,TextGrad Step 9,"Generate exactly one short, literal, factual caption (one sentence) describing only visible content in the image. Output exactly one sentence only—no extra text. Total words: 8–20.
+
+Definitions
+- High‑signal tokens = a visible color or pattern, a concrete specific object class (use the most specific multiword class visible), a clear Arabic numeral count, a clothing/accessory, or legible text/logo copied exactly.
+
+Guidelines (follow unless doing so would break grammar or produce an unnatural sentence)
+1. Early high‑signal placement: at least one high‑signal token should appear within the first five content words. If two high‑signal tokens are clearly visible, both should appear within the first five content words. Ignore a single leading article (a/an/the) when counting content words.
+2. Legible text/logo: if readable text or a logo is visible, copy it exactly (including case). Prefer placing it within the first five content words. If exact copying produces an ungrammatical fragment, integrate it grammatically (e.g., ""STOP sign"", ""sign reading 'STOP'"") while keeping it early.
+3. Specific class: use the most specific visible concrete class (prefer multiword classes such as ""stop sign"", ""fire hydrant"", ""rolling metal door"") rather than generic ""person"" when a specific role or class is clear.
+4. Counts: use Arabic numerals for visible counts and prefer placing the numeral within the first five content words.
+5. Color/pattern adjacency: prefer color or pattern adjectives directly before their noun (e.g., ""red bicycle""). Use ""noun with [color]"" only when immediate adjacency would violate early‑token placement or grammaticality.
+6. Syntax and fluency: prefer a short present‑tense subject + verb sentence using common verbs and collocations (e.g., ""X sits on Y"", ""X holds Y"", ""X leans against Y""). A bare noun phrase is allowed only if any verb would force required high‑signal tokens past their allowed positions. Always prioritize grammatical, natural phrasing; if obeying a placement preference would break grammar, relax that preference.
+7. Openings: avoid generic openings (""There is"", ""A group of"", ""Some people"") unless no confident specific subject can be identified or using a generic opening yields a more natural, grammatical caption.
+8. Word choice and length: prefer common color and class words (e.g., ""red, blue, black, bicycle, truck, dog"") over rare synonyms. Aim for about 9–14 content words while keeping total words within 8–20.
+
+Deterministic subject selection
+- Choose the primary subject by this tie‑breaker order: centermost → largest → highest contrast → visible attribute (color/number/logo) → the subject that yields the most natural grammatical sentence given the placement preferences.
+
+Preferred short templates (use as natural patterns, not rigid forms)
+- ""Red bus sits near 5 people.""
+- ""2 dogs play on the grass.""
+- ""STOP sign stands beside a man.""
+- ""Blue canopy shades market stall with OPEN sign.""
+
+Output exactly one sentence only—no extra text.","Diver in black wetsuit with yellow hose and ""Suacqua"" logo stands in blue water.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_e1e3424f0c,101,12889,flickr30k_test_012889,images/flickr30k/flickr30k_test_012889.jpg,"[""A cyclist is performing a jumping stunt in front of a city skyline."", ""A person doing a bicycle jump, a skyline in the background."", ""A boy wearing a white helmet jumping on his bike."", ""A biker gets high in the air against a skyline."", ""A man is in the air on his bicycle.""]",textgrad_e1e3424f0c,TextGrad Step 9,"Generate exactly one short, literal, factual caption (one sentence) describing only visible content in the image. Output exactly one sentence only—no extra text. Total words: 8–20.
+
+Definitions
+- High‑signal tokens = a visible color or pattern, a concrete specific object class (use the most specific multiword class visible), a clear Arabic numeral count, a clothing/accessory, or legible text/logo copied exactly.
+
+Guidelines (follow unless doing so would break grammar or produce an unnatural sentence)
+1. Early high‑signal placement: at least one high‑signal token should appear within the first five content words. If two high‑signal tokens are clearly visible, both should appear within the first five content words. Ignore a single leading article (a/an/the) when counting content words.
+2. Legible text/logo: if readable text or a logo is visible, copy it exactly (including case). Prefer placing it within the first five content words. If exact copying produces an ungrammatical fragment, integrate it grammatically (e.g., ""STOP sign"", ""sign reading 'STOP'"") while keeping it early.
+3. Specific class: use the most specific visible concrete class (prefer multiword classes such as ""stop sign"", ""fire hydrant"", ""rolling metal door"") rather than generic ""person"" when a specific role or class is clear.
+4. Counts: use Arabic numerals for visible counts and prefer placing the numeral within the first five content words.
+5. Color/pattern adjacency: prefer color or pattern adjectives directly before their noun (e.g., ""red bicycle""). Use ""noun with [color]"" only when immediate adjacency would violate early‑token placement or grammaticality.
+6. Syntax and fluency: prefer a short present‑tense subject + verb sentence using common verbs and collocations (e.g., ""X sits on Y"", ""X holds Y"", ""X leans against Y""). A bare noun phrase is allowed only if any verb would force required high‑signal tokens past their allowed positions. Always prioritize grammatical, natural phrasing; if obeying a placement preference would break grammar, relax that preference.
+7. Openings: avoid generic openings (""There is"", ""A group of"", ""Some people"") unless no confident specific subject can be identified or using a generic opening yields a more natural, grammatical caption.
+8. Word choice and length: prefer common color and class words (e.g., ""red, blue, black, bicycle, truck, dog"") over rare synonyms. Aim for about 9–14 content words while keeping total words within 8–20.
+
+Deterministic subject selection
+- Choose the primary subject by this tie‑breaker order: centermost → largest → highest contrast → visible attribute (color/number/logo) → the subject that yields the most natural grammatical sentence given the placement preferences.
+
+Preferred short templates (use as natural patterns, not rigid forms)
+- ""Red bus sits near 5 people.""
+- ""2 dogs play on the grass.""
+- ""STOP sign stands beside a man.""
+- ""Blue canopy shades market stall with OPEN sign.""
+
+Output exactly one sentence only—no extra text.",A cyclist in a white helmet and shirt performs a wheelie on a bicycle above a river with city buildings in the background.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_e1e3424f0c,111,21782,flickr30k_test_021782,images/flickr30k/flickr30k_test_021782.jpg,"[""An oriental man in a blue shirt is leaning against a chain."", ""Some men stand near a sign written in English and Chinese."", ""Street vendors talk to each other while others walk by."", ""Two Asian men rest by a sign on an urban street."", ""A man is watching what to get in the shops.""]",textgrad_e1e3424f0c,TextGrad Step 9,"Generate exactly one short, literal, factual caption (one sentence) describing only visible content in the image. Output exactly one sentence only—no extra text. Total words: 8–20.
+
+Definitions
+- High‑signal tokens = a visible color or pattern, a concrete specific object class (use the most specific multiword class visible), a clear Arabic numeral count, a clothing/accessory, or legible text/logo copied exactly.
+
+Guidelines (follow unless doing so would break grammar or produce an unnatural sentence)
+1. Early high‑signal placement: at least one high‑signal token should appear within the first five content words. If two high‑signal tokens are clearly visible, both should appear within the first five content words. Ignore a single leading article (a/an/the) when counting content words.
+2. Legible text/logo: if readable text or a logo is visible, copy it exactly (including case). Prefer placing it within the first five content words. If exact copying produces an ungrammatical fragment, integrate it grammatically (e.g., ""STOP sign"", ""sign reading 'STOP'"") while keeping it early.
+3. Specific class: use the most specific visible concrete class (prefer multiword classes such as ""stop sign"", ""fire hydrant"", ""rolling metal door"") rather than generic ""person"" when a specific role or class is clear.
+4. Counts: use Arabic numerals for visible counts and prefer placing the numeral within the first five content words.
+5. Color/pattern adjacency: prefer color or pattern adjectives directly before their noun (e.g., ""red bicycle""). Use ""noun with [color]"" only when immediate adjacency would violate early‑token placement or grammaticality.
+6. Syntax and fluency: prefer a short present‑tense subject + verb sentence using common verbs and collocations (e.g., ""X sits on Y"", ""X holds Y"", ""X leans against Y""). A bare noun phrase is allowed only if any verb would force required high‑signal tokens past their allowed positions. Always prioritize grammatical, natural phrasing; if obeying a placement preference would break grammar, relax that preference.
+7. Openings: avoid generic openings (""There is"", ""A group of"", ""Some people"") unless no confident specific subject can be identified or using a generic opening yields a more natural, grammatical caption.
+8. Word choice and length: prefer common color and class words (e.g., ""red, blue, black, bicycle, truck, dog"") over rare synonyms. Aim for about 9–14 content words while keeping total words within 8–20.
+
+Deterministic subject selection
+- Choose the primary subject by this tie‑breaker order: centermost → largest → highest contrast → visible attribute (color/number/logo) → the subject that yields the most natural grammatical sentence given the placement preferences.
+
+Preferred short templates (use as natural patterns, not rigid forms)
+- ""Red bus sits near 5 people.""
+- ""2 dogs play on the grass.""
+- ""STOP sign stands beside a man.""
+- ""Blue canopy shades market stall with OPEN sign.""
+
+Output exactly one sentence only—no extra text.",Man leans against yellow sign with (212)625-9212.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_e1e3424f0c,135,15378,flickr30k_test_015378,images/flickr30k/flickr30k_test_015378.jpg,"[""The man in the red shirt and the woman with the white bag are conversing."", ""A man in a red shirt is interacting with a woman holding a shopping bag."", ""A woman is purchasing items from the man in the red shirt's yard sale."", ""An older man in a black hat and red shirt is talking with a woman."", ""A woman in a black shirt is holding a plastic bag.""]",textgrad_e1e3424f0c,TextGrad Step 9,"Generate exactly one short, literal, factual caption (one sentence) describing only visible content in the image. Output exactly one sentence only—no extra text. Total words: 8–20.
+
+Definitions
+- High‑signal tokens = a visible color or pattern, a concrete specific object class (use the most specific multiword class visible), a clear Arabic numeral count, a clothing/accessory, or legible text/logo copied exactly.
+
+Guidelines (follow unless doing so would break grammar or produce an unnatural sentence)
+1. Early high‑signal placement: at least one high‑signal token should appear within the first five content words. If two high‑signal tokens are clearly visible, both should appear within the first five content words. Ignore a single leading article (a/an/the) when counting content words.
+2. Legible text/logo: if readable text or a logo is visible, copy it exactly (including case). Prefer placing it within the first five content words. If exact copying produces an ungrammatical fragment, integrate it grammatically (e.g., ""STOP sign"", ""sign reading 'STOP'"") while keeping it early.
+3. Specific class: use the most specific visible concrete class (prefer multiword classes such as ""stop sign"", ""fire hydrant"", ""rolling metal door"") rather than generic ""person"" when a specific role or class is clear.
+4. Counts: use Arabic numerals for visible counts and prefer placing the numeral within the first five content words.
+5. Color/pattern adjacency: prefer color or pattern adjectives directly before their noun (e.g., ""red bicycle""). Use ""noun with [color]"" only when immediate adjacency would violate early‑token placement or grammaticality.
+6. Syntax and fluency: prefer a short present‑tense subject + verb sentence using common verbs and collocations (e.g., ""X sits on Y"", ""X holds Y"", ""X leans against Y""). A bare noun phrase is allowed only if any verb would force required high‑signal tokens past their allowed positions. Always prioritize grammatical, natural phrasing; if obeying a placement preference would break grammar, relax that preference.
+7. Openings: avoid generic openings (""There is"", ""A group of"", ""Some people"") unless no confident specific subject can be identified or using a generic opening yields a more natural, grammatical caption.
+8. Word choice and length: prefer common color and class words (e.g., ""red, blue, black, bicycle, truck, dog"") over rare synonyms. Aim for about 9–14 content words while keeping total words within 8–20.
+
+Deterministic subject selection
+- Choose the primary subject by this tie‑breaker order: centermost → largest → highest contrast → visible attribute (color/number/logo) → the subject that yields the most natural grammatical sentence given the placement preferences.
+
+Preferred short templates (use as natural patterns, not rigid forms)
+- ""Red bus sits near 5 people.""
+- ""2 dogs play on the grass.""
+- ""STOP sign stands beside a man.""
+- ""Blue canopy shades market stall with OPEN sign.""
+
+Output exactly one sentence only—no extra text.",Man in red shirt and black hat stands near woman holding plastic bag.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_e1e3424f0c,145,5582,flickr30k_test_005582,images/flickr30k/flickr30k_test_005582.jpg,"[""A small black and white dog jumps at a woman in a white jeep while a golden dog follows beside them."", ""A dog jumps up towards a woman in a car, while another dog is outside the car."", ""An orange dog and a little white dog with black spots are next to a white car."", ""A small dog jumps by a car to reach a lady's face while another dog watches."", ""White and black dog jumps at someone through car window.""]",textgrad_e1e3424f0c,TextGrad Step 9,"Generate exactly one short, literal, factual caption (one sentence) describing only visible content in the image. Output exactly one sentence only—no extra text. Total words: 8–20.
+
+Definitions
+- High‑signal tokens = a visible color or pattern, a concrete specific object class (use the most specific multiword class visible), a clear Arabic numeral count, a clothing/accessory, or legible text/logo copied exactly.
+
+Guidelines (follow unless doing so would break grammar or produce an unnatural sentence)
+1. Early high‑signal placement: at least one high‑signal token should appear within the first five content words. If two high‑signal tokens are clearly visible, both should appear within the first five content words. Ignore a single leading article (a/an/the) when counting content words.
+2. Legible text/logo: if readable text or a logo is visible, copy it exactly (including case). Prefer placing it within the first five content words. If exact copying produces an ungrammatical fragment, integrate it grammatically (e.g., ""STOP sign"", ""sign reading 'STOP'"") while keeping it early.
+3. Specific class: use the most specific visible concrete class (prefer multiword classes such as ""stop sign"", ""fire hydrant"", ""rolling metal door"") rather than generic ""person"" when a specific role or class is clear.
+4. Counts: use Arabic numerals for visible counts and prefer placing the numeral within the first five content words.
+5. Color/pattern adjacency: prefer color or pattern adjectives directly before their noun (e.g., ""red bicycle""). Use ""noun with [color]"" only when immediate adjacency would violate early‑token placement or grammaticality.
+6. Syntax and fluency: prefer a short present‑tense subject + verb sentence using common verbs and collocations (e.g., ""X sits on Y"", ""X holds Y"", ""X leans against Y""). A bare noun phrase is allowed only if any verb would force required high‑signal tokens past their allowed positions. Always prioritize grammatical, natural phrasing; if obeying a placement preference would break grammar, relax that preference.
+7. Openings: avoid generic openings (""There is"", ""A group of"", ""Some people"") unless no confident specific subject can be identified or using a generic opening yields a more natural, grammatical caption.
+8. Word choice and length: prefer common color and class words (e.g., ""red, blue, black, bicycle, truck, dog"") over rare synonyms. Aim for about 9–14 content words while keeping total words within 8–20.
+
+Deterministic subject selection
+- Choose the primary subject by this tie‑breaker order: centermost → largest → highest contrast → visible attribute (color/number/logo) → the subject that yields the most natural grammatical sentence given the placement preferences.
+
+Preferred short templates (use as natural patterns, not rigid forms)
+- ""Red bus sits near 5 people.""
+- ""2 dogs play on the grass.""
+- ""STOP sign stands beside a man.""
+- ""Blue canopy shades market stall with OPEN sign.""
+
+Output exactly one sentence only—no extra text.",Black-and-white dog leaps toward car window as brown dog walks nearby.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_e1e3424f0c,147,16457,flickr30k_test_016457,images/flickr30k/flickr30k_test_016457.jpg,"[""A man in a black shirt painting a duplicate copy of another painting hanging in an art gallery."", ""A man is recreating a classic painting using a paintbrush and color pallet."", ""This man is looking at a painting, with a brush in his hand."", ""A male paused in thought while painting a picture."", ""A man replicating a painting.""]",textgrad_e1e3424f0c,TextGrad Step 9,"Generate exactly one short, literal, factual caption (one sentence) describing only visible content in the image. Output exactly one sentence only—no extra text. Total words: 8–20.
+
+Definitions
+- High‑signal tokens = a visible color or pattern, a concrete specific object class (use the most specific multiword class visible), a clear Arabic numeral count, a clothing/accessory, or legible text/logo copied exactly.
+
+Guidelines (follow unless doing so would break grammar or produce an unnatural sentence)
+1. Early high‑signal placement: at least one high‑signal token should appear within the first five content words. If two high‑signal tokens are clearly visible, both should appear within the first five content words. Ignore a single leading article (a/an/the) when counting content words.
+2. Legible text/logo: if readable text or a logo is visible, copy it exactly (including case). Prefer placing it within the first five content words. If exact copying produces an ungrammatical fragment, integrate it grammatically (e.g., ""STOP sign"", ""sign reading 'STOP'"") while keeping it early.
+3. Specific class: use the most specific visible concrete class (prefer multiword classes such as ""stop sign"", ""fire hydrant"", ""rolling metal door"") rather than generic ""person"" when a specific role or class is clear.
+4. Counts: use Arabic numerals for visible counts and prefer placing the numeral within the first five content words.
+5. Color/pattern adjacency: prefer color or pattern adjectives directly before their noun (e.g., ""red bicycle""). Use ""noun with [color]"" only when immediate adjacency would violate early‑token placement or grammaticality.
+6. Syntax and fluency: prefer a short present‑tense subject + verb sentence using common verbs and collocations (e.g., ""X sits on Y"", ""X holds Y"", ""X leans against Y""). A bare noun phrase is allowed only if any verb would force required high‑signal tokens past their allowed positions. Always prioritize grammatical, natural phrasing; if obeying a placement preference would break grammar, relax that preference.
+7. Openings: avoid generic openings (""There is"", ""A group of"", ""Some people"") unless no confident specific subject can be identified or using a generic opening yields a more natural, grammatical caption.
+8. Word choice and length: prefer common color and class words (e.g., ""red, blue, black, bicycle, truck, dog"") over rare synonyms. Aim for about 9–14 content words while keeping total words within 8–20.
+
+Deterministic subject selection
+- Choose the primary subject by this tie‑breaker order: centermost → largest → highest contrast → visible attribute (color/number/logo) → the subject that yields the most natural grammatical sentence given the placement preferences.
+
+Preferred short templates (use as natural patterns, not rigid forms)
+- ""Red bus sits near 5 people.""
+- ""2 dogs play on the grass.""
+- ""STOP sign stands beside a man.""
+- ""Blue canopy shades market stall with OPEN sign.""
+
+Output exactly one sentence only—no extra text.",Artist paints portrait on easel with palette in hand.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"

@@ -1,0 +1,117 @@
+{
+  "prompt": "Generate exactly one short, literal, factual caption (one sentence) describing only visible content in the image. Output exactly one sentence only—no extra text. Total words: 8–20.\n\nDefinitions\n- High‑signal token = a visible color/pattern; a concrete, specific object class (prefer multiword classes like \"stop sign\", \"fire hydrant\", \"rolling metal door\"); a clear Arabic numeral; a clothing/accessory; or legible text/logo copied exactly when it meets OCR prominence rules below.\n- Content words = all words except a single leading article (a/an/the) if present.\n\nVisibility and OCR (deterministic)\n- An object is \"clearly visible\" if area ≥1.5% of image OR (area ≥0.8% AND detector_confidence ≥0.45).\n- Copy legible text/logo exactly only if OCR_confidence ≥0.60 AND OCR_bbox_area ≥1.5% AND OCR_token_count ≤6 AND the text contains no run of ≥5 consecutive digits and does not match phone‑number patterns; format copied text as \"sign reading 'TEXT'\" or \"shirt with 'TEXT'\".\n- Treat counts/digits as visible only if digits are clearly legible per the OCR/visibility rules above.\n\nSalience and subject selection (deterministic)\n- Compute a salience score: Salience = 0.5*(area_norm) + 0.3*(detector_confidence) + 0.15*(center_score) + 0.05*(local_contrast). If area >40% of image, multiply its area_norm by 0.5 before computing Salience (to downweight large background regions).\n- Choose the subject with the highest salience. If two candidates are within 5% salience, pick the one that yields more distinct high‑signal tokens early (see placement rules).\n\nPlacement and high‑signal token rules\n- Require at least one high‑signal token within the first 4 content words, unless doing so forces an unnatural subject‑verb order; in that case allow a single deterministic exception per caption with the token placed no later than the first 6 content words.\n- If two distinct high‑signal tokens are clearly visible, require both to appear within the first five content words only when this does not make the sentence ungrammatical; otherwise include both as early as grammar allows and prefer placing one before the verb.\n- When a visible numeral/count meets visibility rules, use Arabic numerals and place it early.\n\nClass and wording preferences\n- Use the most specific concrete class visible (prefer multiword classes). Place one distinctive attribute (color, pattern, accessory) directly before its noun when available (e.g., \"red bicycle\").\n- Prefer concise present‑tense S + V (+ O) sentences using common collocations (\"X holds Y\", \"X sits on Y\", \"X leans against Y\").\n- Avoid generic openings (\"There is\", \"A group of\", \"Some people\") unless no subject meets the \"clearly visible\" thresholds.\n- Avoid long subordinate clauses and conjunctions like \"while\", \"as\", or stacked prepositional phrases unless they add a distinct high‑signal token and keep total words ≤20. Allow at most one compact additional descriptor or prepositional phrase.\n\nDeterministic tie‑breakers and limits\n- When subjects tie, prefer the one that yields more distinct high‑signal tokens early (color, multiword class, accessory).\n- For OCR/text: forbid copying long digit sequences and phone numbers; include text only when it meets the OCR rules above.\n- Limit modifiers: at most one extra descriptive phrase (e.g., \"woman in blue jacket, holding a phone\" counts as compact). Aim for ~9–12 content words when possible.\n\nExamples (do not output these; follow style)\n- Good: \"Young woman in red coat holds a black umbrella.\" \n- Good: \"White stop sign beside a brick building.\"\n- Bad: \"A group of people sitting at a table while others stand in the background and talk.\" (too generic/long)\n- Bad: \"Man leans on sign with 212-625-9212 printed.\" (do not copy phone numbers / low‑confidence OCR)\n\nOutput rule reminder: produce exactly one one‑sentence caption, no extra text, within 8–20 words, following the deterministic visibility, OCR, salience, placement, and syntax rules above.",
+  "prompt_id": "textgrad_168c484817",
+  "split_csv": "data/splits/flickr30k_main_seed1_val.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_10/val/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_10/val/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_10/val/scores.csv",
+  "summary": {
+    "n": 150,
+    "mean_clip": 0.31814583390951157,
+    "mean_siglip": 0.19332356641689932,
+    "mean_caption_len": 12.946666666666667,
+    "generic_rate": 0.0,
+    "mean_delta_clip": -0.006419614404439928,
+    "mean_delta_siglip": -0.005516979272166891,
+    "clip_win_rate": 0.42,
+    "siglip_win_rate": 0.4266666666666667
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_011250",
+      "caption": "Two boys stand in grass near yellow caution tape, one holding the other's hand.",
+      "clip_score": 0.3089016079902649,
+      "siglip_score": 0.228948712348938,
+      "delta_clip": -0.10369217395782471,
+      "delta_siglip": 0.008433088660240201
+    },
+    {
+      "image_id": "flickr30k_test_017698",
+      "caption": "Woman in black jacket holds clipboard near soldiers in camouflage uniforms.",
+      "clip_score": 0.2740916311740875,
+      "siglip_score": 0.1823735237121582,
+      "delta_clip": -0.07739463448524475,
+      "delta_siglip": -0.07766634225845337
+    },
+    {
+      "image_id": "flickr30k_test_003587",
+      "caption": "Man in black cap and jacket with \"3\" and sponsor logos leans forward.",
+      "clip_score": 0.2888987064361572,
+      "siglip_score": 0.2111190855503082,
+      "delta_clip": -0.07638823986053467,
+      "delta_siglip": -0.05318498611450198
+    },
+    {
+      "image_id": "flickr30k_test_011286",
+      "caption": "Three people in orange shorts walk along rocky riverbank through forested area.",
+      "clip_score": 0.2821711301803589,
+      "siglip_score": 0.1972213387489318,
+      "delta_clip": -0.07558447122573853,
+      "delta_siglip": -0.02786457538604739
+    },
+    {
+      "image_id": "flickr30k_test_016590",
+      "caption": "Woman in colorful skirt holds blue-and-white umbrella near stone steps.",
+      "clip_score": 0.2906852662563324,
+      "siglip_score": 0.1271061450242996,
+      "delta_clip": -0.07390007376670832,
+      "delta_siglip": -0.0990926325321197
+    },
+    {
+      "image_id": "flickr30k_test_023900",
+      "caption": "Man holds skewers in front of a food stall sign reading 'UTIAH'.",
+      "clip_score": 0.2928968966007232,
+      "siglip_score": 0.2397602796554565,
+      "delta_clip": -0.06890973448753357,
+      "delta_siglip": -0.05105534195899969
+    },
+    {
+      "image_id": "flickr30k_test_023317",
+      "caption": "Woman in pink jacket and white hat stands near guest services booth.",
+      "clip_score": 0.325378954410553,
+      "siglip_score": 0.2424737364053726,
+      "delta_clip": -0.06576895713806152,
+      "delta_siglip": 0.02408517897129059
+    },
+    {
+      "image_id": "flickr30k_test_005806",
+      "caption": "Woman in beige sweater packs clothes into open black suitcase on tatami floor.",
+      "clip_score": 0.3098868429660797,
+      "siglip_score": 0.1968317329883575,
+      "delta_clip": -0.0643071830272674,
+      "delta_siglip": -0.014092326164245605
+    },
+    {
+      "image_id": "flickr30k_test_011250",
+      "caption": "Two boys stand in grass near yellow caution tape, one holding the other's hand.",
+      "clip_score": 0.3089016079902649,
+      "siglip_score": 0.228948712348938,
+      "delta_clip": -0.0637211799621582,
+      "delta_siglip": -0.019392073154449407
+    },
+    {
+      "image_id": "flickr30k_test_024264",
+      "caption": "Modern building with stone base and glass facade under blue sky.",
+      "clip_score": 0.2474000751972198,
+      "siglip_score": 0.0925866067409515,
+      "delta_clip": -0.0629959404468537,
+      "delta_siglip": -0.1384812444448471
+    },
+    {
+      "image_id": "flickr30k_test_016590",
+      "caption": "Woman in colorful skirt holds blue-and-white umbrella near stone steps.",
+      "clip_score": 0.2906852662563324,
+      "siglip_score": 0.1271061450242996,
+      "delta_clip": -0.06197023391723633,
+      "delta_siglip": -0.1018068194389343
+    },
+    {
+      "image_id": "flickr30k_test_027582",
+      "caption": "Runner in red top and black shorts crosses street at crosswalk.",
+      "clip_score": 0.2946559190750122,
+      "siglip_score": 0.185868039727211,
+      "delta_clip": -0.06067603826522827,
+      "delta_siglip": 0.004859760403633201
+    }
+  ]
+}

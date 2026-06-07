@@ -1,0 +1,117 @@
+{
+  "prompt": "Output exactly two lines only.\n\nLine 1 — tags (format rules)\n- 2–5 comma-separated lower-case tokens (prefer exactly 3). No punctuation except commas.\n- Tokens should be visible concrete nouns or a single visible adjective (color/size) as the sole attribute token. Multiword fused objects (e.g., \"traffic light\", \"wine bottle\") may count as one token.\n- Required pre-filtering & canonicalization (assume an external or prior step): map detector/classifier labels to canonical, high‑coverage visual nouns (prefer COCO/Visual Genome/CLIP-common classes). Filter out non-nouns and convert multiword labels to canonical fused nouns when appropriate (e.g., \"welcome sign\" → \"sign\"; \"sofa\" → \"couch\"). Only accept attribute tokens (colors/sizes) if the attribute detector confidence ≥ attribute_confidence_threshold (default 75%; tune 60/70/75).\n- Allow lemmatized/canonical matches: tokens may be normalized (plural→singular, synonyms→canonical class) for matching with captions. Synonyms are allowed only if they map back to a canonical tag via the mapping step.\n- Deduplicate tokens; order by visual discriminativeness (most distinctive / likely recognized by CLIP/classifiers first). Prefer fine‑grained nouns (e.g., \"trumpet\" over \"man\" when reliable).\n- If fewer than two high-confidence specific nouns are available after filtering, prefer the compact fallback (Line 2 Option B) or output \"image unclear\".\n- Forbidden tokens in Line 1: meta/instruction words, tooling vocabulary (prompt, detectors, thresholds, score, clip, siglip, example, etc.), proper nouns, brand names, dates, events, emotions, or inferred identities.\n\nLine 2 — caption (format rules)\n- Option A (preferred): one factual short sentence (9–12 words) in present simple or simple progressive that contains one clear visual verb or a concrete spatial relation.\n- Option B (fallback): a 2–3 word phrase (main noun + visible location) when a compliant 9–12 word caption would require guessing.\n- If tags cannot be produced reliably, output exactly: image unclear\n- The main noun from Line 1 must appear in Line 2 in canonical/lemmatized form. To allow more natural phrasing, the caption may start with either: \"<main_noun> ...\" or \"the <main_noun> ...\" or have the main noun within the first two tokens.\n- Non-fallback captions must have at least two token overlaps with Line 1 in canonical/lemmatized form (one must be the main noun). Every non-determiner noun in Line 2 must correspond to a Line 1 token via the canonicalization mapping; otherwise do not output that caption.\n- Allowed extra words: determiners, prepositions (on, in, near, by, next to, in front of, behind), small conjunctions (and), one optional period at sentence end. No other punctuation.\n- Verbs: require one clear common visual verb or spatial relation. Expanded allowed verbs include common visual actions and simple progressive forms (e.g., sits, stands, lies, holds, carries, walks, rides, leans, looks, points, reads, opens, plays, wears, pushes, pulls, places, covers, is holding, is sitting). Use the simplest verb justified by visible evidence.\n- Attributes: an attribute token in Line 1 must appear verbatim in Line 2. Do not introduce attributes, objects, locations, identities, or inferred facts not present in Line 1 unless supported by high-confidence detectors per the attribute threshold. Prefer omission over guessing.\n\nConservatism and anti-hallucination\n- Forbid proper nouns, emotions, intentions, or speculative inferences. Captions must be strictly visually verifiable from Line 1 tokens and high-confidence detections.\n- If attribute confidence is below the configured threshold, omit the attribute.\n- Use multiword compound nouns when the compound detector confidence is high; do not split compounds into unrelated tokens.\n\nOperational note (integrators / generator)\n- This prompt assumes an upstream pre-filtering/canonicalization step (POS filter, mapping to canonical classes, confidence thresholds). Tune attribute_confidence_threshold (recommended sweep 60/70/75%) and preferred tag count (2–5).\n- Prefer generating a small set of alternative compliant tag sets (e.g., up to 3 variants) when label confidence is ambiguous so a downstream CLIP reranker can choose the best candidate.\n- Keep candidate generation, CLIP reranking, and final selection outside this prompt. The frozen VLM should follow the concise visual rules above.\n\nStrictly follow the Line 1 / Line 2 rules above. If no valid caption candidate passes these checks, return Line 2 = \"image unclear\".",
+  "prompt_id": "textgrad_420af965c9",
+  "split_csv": "data/splits/flickr30k_main_seed1_val.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24/step_09/val/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24/step_09/val/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24/step_09/val/scores.csv",
+  "summary": {
+    "n": 150,
+    "mean_clip": 0.2856497810284297,
+    "mean_siglip": 0.1550391395141681,
+    "mean_caption_len": 9.106666666666667,
+    "generic_rate": 0.0,
+    "mean_delta_clip": -0.03891566728552183,
+    "mean_delta_siglip": -0.043801406174898146,
+    "clip_win_rate": 0.11333333333333333,
+    "siglip_win_rate": 0.11666666666666667
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_017698",
+      "caption": "people stand near building\npeople stand near building",
+      "clip_score": 0.2003734111785888,
+      "siglip_score": 0.1448271721601486,
+      "delta_clip": -0.15111285448074346,
+      "delta_siglip": -0.11521269381046298
+    },
+    {
+      "image_id": "flickr30k_test_000051",
+      "caption": "person, mat, stick\nperson kneels on mat holding stick",
+      "clip_score": 0.2385390102863311,
+      "siglip_score": 0.0956120789051055,
+      "delta_clip": -0.1300726830959321,
+      "delta_siglip": -0.09056146442890171
+    },
+    {
+      "image_id": "flickr30k_test_017698",
+      "caption": "people stand near building\npeople stand near building",
+      "clip_score": 0.2003734111785888,
+      "siglip_score": 0.1448271721601486,
+      "delta_clip": -0.1294823288917542,
+      "delta_siglip": -0.12041078507900241
+    },
+    {
+      "image_id": "flickr30k_test_023900",
+      "caption": "sign, food, vendor\nvendor holds skewers near food sign",
+      "clip_score": 0.2389429956674575,
+      "siglip_score": 0.1968401968479156,
+      "delta_clip": -0.12286363542079928,
+      "delta_siglip": -0.09397542476654058
+    },
+    {
+      "image_id": "flickr30k_test_019151",
+      "caption": "- person, tray, cup\nthe person sits on the tray near a cup",
+      "clip_score": 0.1909541487693786,
+      "siglip_score": 0.0396532788872718,
+      "delta_clip": -0.12213116884231567,
+      "delta_siglip": -0.1384280249476433
+    },
+    {
+      "image_id": "flickr30k_test_011250",
+      "caption": "boy holds hand of toddler\ntwo children stand near yellow tape on grass",
+      "clip_score": 0.2947762608528137,
+      "siglip_score": 0.2195967435836792,
+      "delta_clip": -0.11781752109527588,
+      "delta_siglip": -0.000918880105018588
+    },
+    {
+      "image_id": "flickr30k_test_019151",
+      "caption": "- person, tray, cup\nthe person sits on the tray near a cup",
+      "clip_score": 0.1909541487693786,
+      "siglip_score": 0.0396532788872718,
+      "delta_clip": -0.11732608079910278,
+      "delta_siglip": -0.1102793887257576
+    },
+    {
+      "image_id": "flickr30k_test_016590",
+      "caption": "umbrella, person, water\nperson stands near water with umbrella",
+      "clip_score": 0.2484334111213684,
+      "siglip_score": 0.0483841076493263,
+      "delta_clip": -0.11615192890167231,
+      "delta_siglip": -0.177814669907093
+    },
+    {
+      "image_id": "flickr30k_test_000585",
+      "caption": "crane workers bench\nworkers stand near crane and bench",
+      "clip_score": 0.2209101617336273,
+      "siglip_score": 0.1075281649827957,
+      "delta_clip": -0.1160916090011597,
+      "delta_siglip": -0.10040669143199919
+    },
+    {
+      "image_id": "flickr30k_test_022222",
+      "caption": "- cart, man, green\nThe man stands near the green-covered cart.",
+      "clip_score": 0.2689567804336548,
+      "siglip_score": 0.1819899678230285,
+      "delta_clip": -0.11480611562728882,
+      "delta_siglip": -0.0581659078598023
+    },
+    {
+      "image_id": "flickr30k_test_015764",
+      "caption": "- man, crowd, light\nthe man sits at the light",
+      "clip_score": 0.2314511090517044,
+      "siglip_score": 0.107696458697319,
+      "delta_clip": -0.11068235337734217,
+      "delta_siglip": -0.10342499613761899
+    },
+    {
+      "image_id": "flickr30k_test_011286",
+      "caption": "people walking on rocks near river\nthree people walking on rocky riverbank",
+      "clip_score": 0.2493176460266113,
+      "siglip_score": 0.1301158368587494,
+      "delta_clip": -0.10843795537948611,
+      "delta_siglip": -0.0949700772762298
+    }
+  ]
+}

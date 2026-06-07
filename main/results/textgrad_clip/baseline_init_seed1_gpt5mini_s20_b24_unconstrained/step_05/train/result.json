@@ -1,0 +1,117 @@
+{
+  "prompt": "Output exactly two lines only.\n\nLine 1 (tags) — required format and rules:\n- Provide exactly 2–5 comma-separated tokens (no punctuation except commas). First token = main object (lower-case common noun). You may append a visually certain count immediately after the main noun (digit or word), e.g., \"child\", \"child 2\", \"person one\".\n- At least 2 tokens must be nouns (including the main noun). At most 1 token may be a visible attribute (color or size). Do NOT include verbs, proper nouns, brand names, inferred facts, emotions, events, or dates.\n- Use only lower-case common nouns and simple adjectives (dog, child, car, red, small). No articles. Deduplicate and prefer the most specific single noun (e.g., choose \"child\" not \"person, child\"). No repeated words or near-synonyms.\n- Order tags by salience (most discriminative first). Prefer compact, high-information nouns (2–4 tokens ideal).\n\nLine 2 (caption) — required format and hard rules:\n- Either (A) one factual short sentence in present simple or present progressive of 7–14 words, OR (B) a 2–3 word fallback caption (main noun + short visible location, e.g., \"child sidewalk\") if a compliant 7–14 word caption would require guessing. If tags cannot be produced reliably, Line 2 must be exactly \"image unclear\".\n- The main noun from Line 1 must appear verbatim in token positions 1–3 of Line 2. This is a hard requirement; candidates failing this are invalid.\n- If Line 1 includes a numeric count, reflect it in the caption with correct morphology: singular -> third-person singular verb (adds -s), plural -> base verb and plural noun form (e.g., \"1 child stands\", \"2 children stand\").\n- Include at most one clearly visible color or size and at most one simple spatial relation/preposition (on, in, near, by, in front of, behind). Use only concrete, directly visible facts. Do NOT add proper nouns, intentions, emotions, or invented facts.\n- No punctuation except an optional single period at the end of the sentence.\n\nLexical reinforcement and anti-hallucination (HARD CONSTRAINTS):\n- Require at least 2 exact token overlaps between Line 1 and Line 2 (noun or attribute). If it is impossible to produce two reliable overlaps, do NOT invent attributes — instead output the 2–3 word fallback (main noun + location) or, if even tags cannot be trusted, output \"image unclear\".\n- If only one overlap is truly available, treat the candidate as invalid and use the fallback instead.\n- Only include a color/size when visually certain. If an attribute token appears in tags, it must appear verbatim in caption.\n\nCandidate generation, systematic variation, and reranking (required):\n- Internally generate N = 6 diverse candidate compliant outputs (each = Line1 + Line2) before returning anything. Systematically create controlled variations:\n  1) main noun + 1 salient object (high overlap)\n  2) main noun + visible attribute (if obvious)\n  3) main noun + spatial relation + salient object (if visible)\n  4) count-aware variant if numeric count is visible (sing/plural)\n  5) compact 2–3 word fallback (main noun + location)\n  6) alternate high-overlap object choice (if present)\n- Use deterministic templates to fill candidates (examples):\n  - \"[main noun] [verb] [preposition] [object]\"\n  - \"[count] [main noun plural] [verb] [preposition] [object]\"\n  - \"[main noun] [verb] [attribute] [object]\"\n  - \"[main noun] [location]\" (fallback)\n- Ensure each candidate obeys the hard constraints above.\n\nRerank procedure:\n- If a CLIP scorer is available, compute final_score = 0.7 * CLIP + 0.3 * normalized_proxy_score and select the top candidate that passes self-checks.\n- If CLIP unavailable, compute proxy_score for each candidate using the formula below, normalize proxy_score across candidates, and pick the top candidate that passes self-checks.\n\nProxy scoring (explicit):\nproxy_score = 8*(main-noun overlap: 1 if main noun verbatim appears in caption else 0)\n             + 6*(each additional exact overlap)\n             + 4*(visible-attribute overlap present)\n             + 2*(positional bonus: +2 if main noun at position 1, +1 if at position 2–3)\n             - 5*(generic-noun penalty if any tag ∈ {person, people, man, woman} used when a more specific noun is reliably visible)\n             - 3*(duplicates-collapsed penalty)\n             - 2*(each tag beyond 3)\n             - 1*(caption length beyond 12 words)\nBreak ties by: more overlaps, then fewer tags, then main noun at position 1.\n\nDeterministic self-checks (must pass before returning output):\n1. Tags: 2–5 comma-separated tokens, all lower-case nouns/adjectives only, ≤1 attribute, deduplicated.\n2. Caption: 7–14 words OR valid 2–3 word fallback OR exactly \"image unclear\".\n3. Overlap: ≥2 exact token overlaps between Line 1 and Line 2 (noun or attribute). If not met, candidate invalid.\n4. Main noun position: main noun verbatim appears at token position 1–3 in the caption. If not, candidate invalid.\n5. Count/morphology: if Line 1 has a numeric count, caption morphology must match (pluralization and verb form).\n6. Attribute mirroring: if an attribute appears in tags, the same token must appear verbatim in the caption.\n7. Forbidden content: no proper nouns, inferred facts, emotions; no punctuation except allowed commas in Line 1 and optional final period in Line 2.\nIf the top-ranked candidate fails any self-check, select the next best candidate that passes. If none pass, output the most reliable tags you can produce (2–5 tokens) and Line 2 = \"image unclear\". If tags themselves cannot be produced reliably, output Line1 = (tags you can trust) and Line2 = \"image unclear\".\n\nAdditional heuristics and safeguards:\n- Penalize generic nouns; prefer specific discriminative nouns (e.g., \"trumpet\" over \"person\") when visually clear.\n- Be conservative with attributes and counts: omit when uncertain.\n- Prefer 2–4 tags; penalize long exhaustive tag lists.\n- Normalize plurals and numeric notation deterministically (e.g., \"2\" for two).\n- Ensure at least two verbatim overlaps are kept where possible; this is prioritized over producing a longer or more fluent sentence.\n\nOutput requirement reminder:\n- The VLM must follow the two-line output format exactly: Line 1 = tags (2–5 comma-separated tokens), Line 2 = caption (7–14 words) OR 2–3 word fallback OR \"image unclear\". No extra lines or commentary.",
+  "prompt_id": "textgrad_c4da494389",
+  "split_csv": "data/splits/flickr30k_main_seed1_train.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24/step_05/train/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24/step_05/train/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24/step_05/train/scores.csv",
+  "summary": {
+    "n": 24,
+    "mean_clip": 0.27997327595949173,
+    "mean_siglip": 0.15117649020006255,
+    "mean_caption_len": 11.333333333333334,
+    "generic_rate": 0.0,
+    "mean_delta_clip": -0.04117695117990176,
+    "mean_delta_siglip": -0.030962286827464897,
+    "clip_win_rate": 0.08333333333333333,
+    "siglip_win_rate": 0.3333333333333333
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_024011",
+      "caption": "dancer, person, street, red\ndancer stands on street near red car",
+      "clip_score": 0.2128320336341858,
+      "siglip_score": 0.057012528181076,
+      "delta_clip": -0.16862237453460693,
+      "delta_siglip": -0.11558948457241061
+    },
+    {
+      "image_id": "flickr30k_test_023641",
+      "caption": "person, tree, pavement, bench\nperson walks on pavement near tree and bench",
+      "clip_score": 0.2497313618659973,
+      "siglip_score": 0.1228847205638885,
+      "delta_clip": -0.08851164579391482,
+      "delta_siglip": -0.056753411889076205
+    },
+    {
+      "image_id": "flickr30k_test_030024",
+      "caption": "person, table, wine, bottle, glass\nperson sits at table with wine bottle and glass",
+      "clip_score": 0.2224815189838409,
+      "siglip_score": 0.1413345783948898,
+      "delta_clip": -0.07998993992805481,
+      "delta_siglip": -0.04288071393966669
+    },
+    {
+      "image_id": "flickr30k_test_000069",
+      "caption": "airplane, man, red, street\nred airplane stands on street near man",
+      "clip_score": 0.2539648115634918,
+      "siglip_score": 0.1844361722469329,
+      "delta_clip": -0.07479497790336609,
+      "delta_siglip": 0.0050569623708724976
+    },
+    {
+      "image_id": "flickr30k_test_018651",
+      "caption": "man, bicycle, oranges, basket, red\nman stands near bicycle with oranges in basket",
+      "clip_score": 0.3324916064739227,
+      "siglip_score": 0.1696929931640625,
+      "delta_clip": -0.0697320699691773,
+      "delta_siglip": -0.02685068547725669
+    },
+    {
+      "image_id": "flickr30k_test_021750",
+      "caption": "person, bag, food, red\ntwo people hug near red bag with food",
+      "clip_score": 0.2610710859298706,
+      "siglip_score": 0.1783181428909301,
+      "delta_clip": -0.06286484003067011,
+      "delta_siglip": 0.011442914605140603
+    },
+    {
+      "image_id": "flickr30k_test_019904",
+      "caption": "person, railing, sign, building\nperson walks on railing near building sign",
+      "clip_score": 0.2712470591068268,
+      "siglip_score": 0.1182205751538276,
+      "delta_clip": -0.06007471680641174,
+      "delta_siglip": -0.16630407422780996
+    },
+    {
+      "image_id": "flickr30k_test_012773",
+      "caption": "person, stage, woman, blue\nperson stands on stage near woman",
+      "clip_score": 0.2294913530349731,
+      "siglip_score": 0.0938305631279945,
+      "delta_clip": -0.0572434663772583,
+      "delta_siglip": -0.08601193875074391
+    },
+    {
+      "image_id": "flickr30k_test_013247",
+      "caption": "person, building, sign, outdoor\nperson walks in front of outdoor world building",
+      "clip_score": 0.2827816903591156,
+      "siglip_score": 0.1819400787353515,
+      "delta_clip": -0.05658790469169611,
+      "delta_siglip": 0.0307495445013046
+    },
+    {
+      "image_id": "flickr30k_test_017741",
+      "caption": "person, bench, window, blue\ntwo people sit on bench near window",
+      "clip_score": 0.2679609060287475,
+      "siglip_score": 0.1863631308078766,
+      "delta_clip": -0.051415920257568415,
+      "delta_siglip": -0.055806547403335516
+    },
+    {
+      "image_id": "flickr30k_test_021351",
+      "caption": "person, violin, painting, wall\nperson plays violin in front of painting wall",
+      "clip_score": 0.2995001375675201,
+      "siglip_score": 0.1656416952610016,
+      "delta_clip": -0.04586952924728399,
+      "delta_siglip": -0.06658990681171412
+    },
+    {
+      "image_id": "flickr30k_test_018116",
+      "caption": "person, tool, gold, newspaper\nperson works on gold with tools on newspaper",
+      "clip_score": 0.2876660227775574,
+      "siglip_score": 0.1525605022907257,
+      "delta_clip": -0.040377527475357,
+      "delta_siglip": -0.0012839436531066895
+    }
+  ]
+}

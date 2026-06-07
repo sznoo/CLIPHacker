@@ -1,0 +1,117 @@
+{
+  "prompt": "Default enforced behavior (no early rejects)\n\nPrimary objective\n- MAXIMIZE CLIP image–text similarity (primary). SigLIP is diagnostic only.\n\nHard-ordered step sequence (MUST be followed; only one system-level exception: catastrophic system failure)\n1) ALWAYS generate the full set of deterministic candidate captions (up to 3) for every image. NEVER return \"image unclear\" before completing Steps 1–3 below.\n2) NORMALIZE all generated candidates using the exact CLIP tokenizer/normalizer before any comparisons, whitelist checks, or reranking.\n3) RERANK all normalized candidates using the CLIP reranker (external preferred; internal required if external unavailable). If NO CLIP reranker exists at all, run the calibrated no-reranker heuristic and set reranker_absent = true in logs.\n4) APPLY acceptance/margin/format checks to the top-ranked normalized candidate. Only after Steps 1–4 fail may the system return \"image unclear\".\n\nOutput requirements\n- If an acceptable candidate is found after Steps 1–4, return EXACTLY one final accepted candidate in two lines:\n  Line 1: exactly 3 canonical tags (comma-separated, no trailing comma). Hyphens allowed for multiword tokens.\n  Line 2: one concise sentence ending with a single period.\n- If, AFTER full generation + normalization + reranking/fallback + acceptance checks (with cosmetic-tolerant subject matching) NO candidate is acceptable, return EXACTLY and ONLY:\nimage unclear\n\nTokenization / normalization (MUST)\n- Use the exact CLIP normalization/tokenization for all generation, internal checks, and reranking input:\n  - Unicode NFC, lowercase, collapse repeated whitespace to single space, normalize hyphens to ASCII hyphen, strip surrounding punctuation except a permitted terminal period, canonicalize diacritics.\n- Document and version the normalizer; log both original and normalized strings. Cosmetic diffs (hyphenation/case/Unicode) are tolerated for subject matching but must be logged.\n\nCanonical vocabulary and per-surface-token validation (MUST at generation time)\n- Integrator MUST provide per-surface-token lists marked keep, neutral, demote (from dev CLIP ablations). Generator MUST:\n  - Prefer keep tokens for each slot.\n  - Use neutral tokens ONLY when no keep exists for a required slot; every neutral usage must be logged per-example.\n  - NEVER generate tokens marked demote.\n- Do NOT block candidate generation if a keep verb is absent; include dev-validated neutral/fallback verbs as candidates instead.\n\nCandidate format and composition (generation-first, deterministic)\n- ALWAYS generate up to 3 deterministic, non-identical candidates (canonical priority lists, documented tie-breakers). Candidates must differ along at least one of these axes:\n  a) verb (keep→neutral/fallback chain),\n  b) attribute type/token (color/count/position),\n  c) primary-tag synonym (CLIP-validated).\n- Candidate two-line format for each candidate during generation:\n  Line 1 (tags): exactly 3 tags, ordered:\n    1) primary object token — REQUIRED and should be supported by detector_primary_tag_threshold (if detector exists).\n    2) action token — include only if action_detector_confidence ≥ action_inclusion_threshold AND token ∈ keep ∪ allowed-neutral (if no keep exists).\n    3) one salient attribute token — choose exactly one of {color OR count OR position}, from keep ∪ neutral (neutral only when no keep exists).\n  - Allow deterministic expansion to 4 tags ONLY when: (a) every extra tag has detector_confidence ≥ high_confidence_threshold AND (b) per-token CLIP benefit validated on dev.\n  - No synonyms/repeats within a candidate.\n  Line 2 (caption sentence):\n    - Must begin with Line1 primary tag's preferred surface token AFTER normalization (subject-first).\n    - Sentence shape: [Subject] [active-verb] [object/relationship (optional)] [single salient attribute phrase].\n    - Active verbs from CLIP-validated verb-list (keep preferred; neutral/fallback allowed when no keep).\n    - INCLUDE EXACTLY ONE salient attribute and reuse the exact attribute token from Line1.\n    - Target token length: 10–13 tokens. Hard max 15 tokens. Permit shorter only if constraints satisfied.\n    - No commas, no lists, no subordinate clauses, no speculative language. End with a single period.\n\nDeterminism and candidate diversity (MUST)\n- Candidate generation MUST be deterministic across runs for the same inputs (canonical priority lists, tie-breakers documented).\n- No candidate may be trivially identical to another (e.g., identical tokens with cosmetic punctuation differences). If fewer than 3 distinct candidates are possible under constraints, still produce the distinct set (1–3).\n\nReranking and fallback (MUST-run)\n- RERANK all normalized candidates with CLIP and choose highest-scoring candidate.\n- If no external reranker, an INTERNAL CLIP reranker is REQUIRED. If truly no CLIP model is available, use the calibrated fallback heuristic (see below), but set reranker_absent = true and log heuristic scores.\n- Reranker MUST receive normalized strings.\n\nNo-reranker calibrated fallback heuristic (ONLY when no CLIP reranker exists)\n- Score = w1 * TagPrecisionScore + w2 * RerankMarginProxy - w3 * LengthPenalty - w4 * SubjectMismatchPenalty\n  - Default hints: emphasize TagPrecisionScore and RerankMarginProxy; penalize substantive subject mismatches heavily.\n  - LengthPenalty = max(0, token_count - 13).\n  - SubjectMismatchPenalty = 0 for cosmetic-normalization-only diffs; = 1 for substantive mismatches.\n  - RerankMarginProxy = normalized(best_tag_precision - second_best_tag_precision).\n- Integrator MUST tune weights on dev and log calibration results.\n\nAcceptance thresholds and margin-based acceptance (MUST be tuned on dev)\n- Default starting clip_threshold = 0.20. Integrator MUST sweep clip_threshold in [0.20, 0.24] and set final value on dev.\n- Acceptance rules:\n  - If top_CLIP ≥ clip_threshold → ACCEPT (subject to unit/format checks).\n  - If top_CLIP < clip_threshold: allow margin-based acceptance ONLY when BOTH:\n    a) top_vs_next_margin ≥ margin_accept_threshold (tunable on dev), AND\n    b) TagPrecisionScore ≥ tag_precision_threshold (tuned on dev).\n  - If reranker_absent: analogous checks using the heuristic score and a tuned heuristic_accept_threshold.\n- All margin-accept decisions MUST be logged with per-example reasoning. Margin acceptance MUST be enabled only after dev evidence supports it.\n\nVerifier / \"image unclear\" (conservative, post-generation)\n- RETURN EXACTLY AND ONLY \"image unclear\" if ANY of these apply after full generation + reranking/fallback + unit/format checks:\n  1) No primary object detected above detector_primary_tag_threshold AND no high-confidence alternate primary exists across generated candidates.\n  2) After CLIP reranking: top candidate CLIP score < clip_threshold AND (top_vs_next_margin < margin_accept_threshold OR TagPrecisionScore insufficient). (If reranker absent: analogous using heuristic.)\n  3) Any strict formatting/unit test fails after normalization and cosmetic-tolerant subject match: invalid tag set, wrong tag count, Line2 contains commas/multiple attributes, Line2 token_count > 15, or disallowed verb.\n  4) Active-verb unavailability: no candidate contains a validated verb (keep or neutral/fallback) and no dev-approved verb-fallback exists.\n- When returning \"image unclear\", output EXACTLY the lower-case string with single space and no punctuation:\nimage unclear\n\nAutomated checks and unit tests (MUST run programmatically after reranking/fallback)\n1) Whitelist/CLIP-preference check: every Line1 tag ∈ keep ∪ allowed-neutral-for-this-id (neutral usage must be logged).\n2) Tag count/composition: default exactly 3 tags; expansions only per validated rule.\n3) Subject reuse: normalized(Line2 subject) must match normalized(Line1 primary); cosmetic diffs allowed and logged.\n4) Length: token_count(Line2) ≤ 15; prefer 10–13.\n5) Punctuation: no commas; Line2 ends with a single period.\n6) Verb presence: at least one candidate must contain a keep or neutral/fallback verb; final verb must be permitted per dev policy.\n7) Grounding: detector confidences for included tags must meet thresholds (unless neutral token usage explicitly allowed).\n8) Tokenization-normalization: normalized strings must match CLIP normalizer exactly; log cosmetic diffs but do not fail on them.\n- If any automated checks fail after the full flow, return \"image unclear\". Do NOT attempt to auto-rewrite beyond canonical normalization.\n\nTelemetry, logging, and CI gating (MANDATORY)\n- For every invocation, log:\n  - All generated candidates (original + normalized), which tokens are keep/neutral/demote, candidate-level CLIP scores and margins, detector confidences, TagPrecisionScore, reranker_absent flag if set, final decision, and single canonical failure reason if \"image unclear\".\n  - Per-token average CLIP contribution (dev data) and per-example per-token CLIP deltas when reranker used.\n- CI gating: Integrator MUST block deployment if dev validation sweep yields mean_delta_clip < 0 or clip_win_rate below an agreed threshold. Run dev sweeps for clip_threshold, margin_accept_threshold, action/scene/primary thresholds, and heuristic weight tuning.\n\nDev calibration requirements (MUST before production)\n- Build per-primary keep/neutral/demote token lists using per-surface CLIP ablations; lock keep tokens only when positive & stable.\n- Tune clip_threshold, margin_accept_threshold, TagPrecisionScore formula, detector thresholds, and fallback heuristic weights to maximize mean_CLIP and mean_delta_clip.\n- Validate 4th-tag expansion rule and any candidate-count increases on dev before enabling in production.\n\nOperational and determinism notes (MUST)\n- Candidate generation MUST be deterministic; variation should be CLIP-guided and prioritized by expected per-token CLIP contribution (keep > neutral).\n- If fewer than 3 distinct candidates can be produced under constraints, still perform reranking on those candidates; do not return \"image unclear\" merely because fewer candidates were possible.\n- Regularly re-run per-token CLIP validation when CLIP model versions or upstream data change.\n\nShort checklist (immediate enforcement)\n- DO NOT return \"image unclear\" before generating candidates and reranking/fallback.\n- ALWAYS normalize with CLIP normalizer before reranking.\n- GENERATE up to 3 deterministic, diverse candidates using keep-first token lists.\n- RERANK using CLIP reranker (internal if necessary); if absent use calibrated heuristic and set reranker_absent.\n- APPLY acceptance/margin/unit checks; only then may \"image unclear\" be returned.\n\nFinal requirement restated\n- If, after unconditional candidate generation, normalization, reranking/fallback, margin consideration, and formatting/unit checks (with cosmetic-tolerant subject matching), no acceptable candidate remains, output EXACTLY and ONLY:\nimage unclear",
+  "prompt_id": "textgrad_80bb5d3da1",
+  "split_csv": "data/splits/flickr30k_main_seed1_val.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24/step_18/val/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24/step_18/val/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24/step_18/val/scores.csv",
+  "summary": {
+    "n": 150,
+    "mean_clip": 0.29052056968212125,
+    "mean_siglip": 0.16859283293286956,
+    "mean_caption_len": 17.42,
+    "generic_rate": 0.1,
+    "mean_delta_clip": -0.03404487863183022,
+    "mean_delta_siglip": -0.030247712756196664,
+    "clip_win_rate": 0.15666666666666668,
+    "siglip_win_rate": 0.2
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_023900",
+      "caption": "utiah, vendor, smiling  \nA smiling vendor stands beside a stall displaying utiah skewers.",
+      "clip_score": 0.2010913044214248,
+      "siglip_score": 0.2675509452819824,
+      "delta_clip": -0.16071532666683197,
+      "delta_siglip": -0.023264676332473755
+    },
+    {
+      "image_id": "flickr30k_test_023317",
+      "caption": "woman, standing, pink  \nA woman in a pink jacket stands at a guest services booth.",
+      "clip_score": 0.2708197236061096,
+      "siglip_score": 0.2163938134908676,
+      "delta_clip": -0.12032818794250488,
+      "delta_siglip": -0.0019947439432144165
+    },
+    {
+      "image_id": "flickr30k_test_001063",
+      "caption": "man, pointing, sitting\nA man is sitting and pointing.",
+      "clip_score": 0.2202579975128173,
+      "siglip_score": 0.1240125745534896,
+      "delta_clip": -0.11976322531700143,
+      "delta_siglip": -0.111968994140625
+    },
+    {
+      "image_id": "flickr30k_test_006161",
+      "caption": "person, cleaning, street\nA person is cleaning the street.",
+      "clip_score": 0.2189119160175323,
+      "siglip_score": 0.1517915427684784,
+      "delta_clip": -0.11906999349594122,
+      "delta_siglip": -0.0925482213497161
+    },
+    {
+      "image_id": "flickr30k_test_023900",
+      "caption": "utiah, vendor, smiling  \nA smiling vendor stands beside a stall displaying utiah skewers.",
+      "clip_score": 0.2010913044214248,
+      "siglip_score": 0.2675509452819824,
+      "delta_clip": -0.11886994540691381,
+      "delta_siglip": 0.050054013729095514
+    },
+    {
+      "image_id": "flickr30k_test_018166",
+      "caption": "person, walking, street\nA person walks down a street.",
+      "clip_score": 0.22037073969841,
+      "siglip_score": 0.116077683866024,
+      "delta_clip": -0.1136614382266998,
+      "delta_siglip": -0.15451518446207047
+    },
+    {
+      "image_id": "flickr30k_test_005250",
+      "caption": "woman, holding, red\n\nA woman holds a bouquet of red flowers.",
+      "clip_score": 0.2480991929769516,
+      "siglip_score": 0.1066541969776153,
+      "delta_clip": -0.1132851392030716,
+      "delta_siglip": -0.10258600115776059
+    },
+    {
+      "image_id": "flickr30k_test_023088",
+      "caption": "man, walking, street\nA man is walking on the street.",
+      "clip_score": 0.2268540263175964,
+      "siglip_score": 0.112152524292469,
+      "delta_clip": -0.1123529672622681,
+      "delta_siglip": -0.07531159371137619
+    },
+    {
+      "image_id": "flickr30k_test_001063",
+      "caption": "man, pointing, sitting\nA man is sitting and pointing.",
+      "clip_score": 0.2202579975128173,
+      "siglip_score": 0.1240125745534896,
+      "delta_clip": -0.10533407330513009,
+      "delta_siglip": -0.0905412584543229
+    },
+    {
+      "image_id": "flickr30k_test_014603",
+      "caption": "bmx rider, jumping, green\nA bmx rider is jumping on a green bike in front of a building.",
+      "clip_score": 0.2589926421642303,
+      "siglip_score": 0.1532215178012848,
+      "delta_clip": -0.10519006848335272,
+      "delta_siglip": -0.06848782300949091
+    },
+    {
+      "image_id": "flickr30k_test_027271",
+      "caption": "guitarist, playing, blue  \nA guitarist is playing a blue electric guitar.",
+      "clip_score": 0.2245488762855529,
+      "siglip_score": 0.0679033249616622,
+      "delta_clip": -0.10416257381439212,
+      "delta_siglip": -0.12715059518814092
+    },
+    {
+      "image_id": "flickr30k_test_006161",
+      "caption": "person, cleaning, street\nA person is cleaning the street.",
+      "clip_score": 0.2189119160175323,
+      "siglip_score": 0.1517915427684784,
+      "delta_clip": -0.10236167907714849,
+      "delta_siglip": -0.048721298575401306
+    }
+  ]
+}

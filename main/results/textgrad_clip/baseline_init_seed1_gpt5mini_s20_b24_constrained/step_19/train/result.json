@@ -1,0 +1,117 @@
+{
+  "prompt": "Generate exactly one short, literal, factual caption: one grammatically correct sentence describing only visibly present content. Output exactly one sentence and nothing else. Sentence length: 8–12 words (prefer 9–11). Follow these rules in order:\n\n1) Subject selection and salience: compute salience = area_fraction × detector_confidence × (1 + center_bonus) + token_bonus. center_bonus = 0.10 if the detection centroid lies inside the central 25% of the image area, otherwise 0. token_bonus = 0.0015 applied only when a candidate contains a robust high‑signal token (see rules 3–5). Select the detection with highest salience. If two candidates’ saliences are within 10%, prefer (in order) a person, then the larger bbox area, then the more centered bbox, then the token_bonus winner.\n\n2) Detection usability: treat a detection as usable only if salience ≥ 0.002. Allow smaller detections only when there is strong readable text or a clearly visible numeral: i.e., OCR_confidence ≥ 0.75 and OCR_bbox_area ≥ 0.002, or a numeral detection_confidence ≥ 0.80 and bbox_area ≥ 0.002.\n\n3) High‑signal tokens and placement: high‑signal tokens include visible colors or patterns, concrete multiword classes (e.g., \"stop sign\", \"double‑decker bus\"), clear Arabic numerals, clothing/accessory names (e.g., \"baseball cap\"), and short readable logos/text (1–3 tokens). Require at least one high‑signal token to appear within the first three content words of the sentence (leading articles \"a/an/the\" do not count as content words). If two distinct high‑signal tokens are visible, place the second no later than the fourth content word.\n\n4) OCR/text copying: copy short readable text/logos (1–3 tokens) only if (OCR_confidence ≥ 0.60 and OCR_bbox_area ≥ 0.005) OR (OCR_confidence ≥ 0.75 and OCR_bbox_area ≥ 0.002). Never copy runs of ≥5 consecutive digits or low‑confidence/unreadable text. If OCR is borderline, describe generically (e.g., \"sign with letters\") instead of copying uncertain text.\n\n5) Token gating for subject selection: apply token_bonus only when the token’s bbox_area ≥ 0.005 and token/OCR confidence meets thresholds in rule 4. The token_bonus may break ties but must not allow tiny, low‑confidence tokens to win.\n\n6) Second‑object allowance: you may append one compact post‑nominal relation up to 4 tokens (for example, \"on the sidewalk\", \"with number 7\") only if that relation introduces a distinct high‑signal token. Do not chain relations or add longer descriptive chains.\n\n7) Wording, grammar, and tense: prefer starting with a high‑signal modifier plus class (e.g., \"red bicycle\", \"two dogs\", \"striped shirt\"). Use present‑tense active verbs when an action/posture is clearly visible (walking, holding, jumping); otherwise use \"is/are.\" Use Arabic numerals for visible counts that meet visibility rules. Allow leading determiners; count content words excluding them.\n\n8) Safety and literalness: do not invent unseen attributes, emotions, intentions, dialogue, or unreadable text. Avoid generic placeholders like \"object\" or a vague \"person\" when a more specific visible class, color, number, or logo is present.\n\n9) Simple failure checks: if the chosen subject bbox_area < 0.002 but another detection’s bbox_area > 1.5× larger, switch to the larger detection. Never assert a readable string unless OCR thresholds in rule 4 are met.\n\n10) Short guidance and examples (keep style concise):\n- Prefer concrete, visually discriminative tokens: colors, multiword classes, clothing/accessories, visible numerals, readable logos.\n- Good examples: \"red bicycle is parked on the sidewalk.\" \"two dogs stand in shallow water.\"\n- Bad examples to avoid: \"object on left.\" \"man happy.\"\n\nFinal constraints: one sentence only, 8–12 words (prefer 9–11), literal description of visible content, include a required high‑signal token early (within first three content words), follow the OCR and usability thresholds above, and do not add extra commentary or multiple outputs.",
+  "prompt_id": "textgrad_3a61d8f645",
+  "split_csv": "data/splits/flickr30k_main_seed1_train.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_19/train/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_19/train/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_19/train/scores.csv",
+  "summary": {
+    "n": 24,
+    "mean_clip": 0.3159412524352471,
+    "mean_siglip": 0.19425400129208958,
+    "mean_caption_len": 9.666666666666666,
+    "generic_rate": 0.0,
+    "mean_delta_clip": -0.008847575634717933,
+    "mean_delta_siglip": -0.010737334378063687,
+    "clip_win_rate": 0.4166666666666667,
+    "siglip_win_rate": 0.5416666666666666
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_023643",
+      "caption": "Young girl with pink headband smiles at camera under umbrella.",
+      "clip_score": 0.2313328087329864,
+      "siglip_score": 0.1443149000406265,
+      "delta_clip": -0.0955792367458344,
+      "delta_siglip": -0.13161008059978488
+    },
+    {
+      "image_id": "flickr30k_test_006091",
+      "caption": "Child in pink shirt and blue cap plays with kitchen faucet.",
+      "clip_score": 0.3153139650821686,
+      "siglip_score": 0.2030369490385055,
+      "delta_clip": -0.0696584284305572,
+      "delta_siglip": -0.04014420509338379
+    },
+    {
+      "image_id": "flickr30k_test_015736",
+      "caption": "White and brown dog walks through shallow water.",
+      "clip_score": 0.2995041012763977,
+      "siglip_score": 0.1850560456514358,
+      "delta_clip": -0.048241496086120605,
+      "delta_siglip": -0.024714335799217196
+    },
+    {
+      "image_id": "flickr30k_test_019904",
+      "caption": "Man in tan jacket walks on metal bridge railing.",
+      "clip_score": 0.2884972095489502,
+      "siglip_score": 0.1871921718120575,
+      "delta_clip": -0.04282456636428833,
+      "delta_siglip": -0.09733247756958008
+    },
+    {
+      "image_id": "flickr30k_test_010401",
+      "caption": "Girl in blue sweater jumps toward pile of autumn leaves.",
+      "clip_score": 0.3139170110225677,
+      "siglip_score": 0.2129531800746917,
+      "delta_clip": -0.021854251623153687,
+      "delta_siglip": 0.030777633190155
+    },
+    {
+      "image_id": "flickr30k_test_022801",
+      "caption": "Yellow-shirted person walks on sidewalk near market stalls.",
+      "clip_score": 0.2852398753166199,
+      "siglip_score": 0.1765258461236953,
+      "delta_clip": -0.019769281148910522,
+      "delta_siglip": -0.02179212868213662
+    },
+    {
+      "image_id": "flickr30k_test_016234",
+      "caption": "Striped-shirt child laughs while puppeteer manipulates marionette.",
+      "clip_score": 0.2392095774412155,
+      "siglip_score": 0.1432698220014572,
+      "delta_clip": -0.017648771405220004,
+      "delta_siglip": -0.045811519026756314
+    },
+    {
+      "image_id": "flickr30k_test_003961",
+      "caption": "Woman holds red American Girl Place bag near window.",
+      "clip_score": 0.3325275778770447,
+      "siglip_score": 0.2196719646453857,
+      "delta_clip": -0.016921043395996038,
+      "delta_siglip": -0.050973415374755915
+    },
+    {
+      "image_id": "flickr30k_test_016246",
+      "caption": "Child in blue shorts walks holding colorful balloons.",
+      "clip_score": 0.3211900591850281,
+      "siglip_score": 0.1599864363670349,
+      "delta_clip": -0.013453960418701116,
+      "delta_siglip": -0.0474458038806915
+    },
+    {
+      "image_id": "flickr30k_test_029824",
+      "caption": "Smiling woman in purple shirt stands behind London 2012 Olympics welcome desk.",
+      "clip_score": 0.3786207139492035,
+      "siglip_score": 0.2528731822967529,
+      "delta_clip": -0.013034582138061523,
+      "delta_siglip": 0.0068667232990264615
+    },
+    {
+      "image_id": "flickr30k_test_000928",
+      "caption": "Man in black Rolling Stones shirt holds food.",
+      "clip_score": 0.2860817015171051,
+      "siglip_score": 0.1840803623199463,
+      "delta_clip": -0.007152765989303589,
+      "delta_siglip": 0.018006965517997797
+    },
+    {
+      "image_id": "flickr30k_test_009311",
+      "caption": "Blond-haired child sticks tongue out near water fountain.",
+      "clip_score": 0.3253489136695862,
+      "siglip_score": 0.1995971202850341,
+      "delta_clip": -0.005212694406509399,
+      "delta_siglip": 0.03191880881786341
+    }
+  ]
+}

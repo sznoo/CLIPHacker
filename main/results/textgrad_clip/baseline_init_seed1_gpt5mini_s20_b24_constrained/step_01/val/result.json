@@ -1,0 +1,117 @@
+{
+  "prompt": "Write exactly one literal, factual sentence (8–16 words) describing only visible content in the image. Follow this preferred order: primary visible subject + action/pose + location or nearby object + one clearly visible attribute (color, count, clothing/accessory, or legible text) when present. Include specific, concrete nouns (bicycle, fountain, frisbee, backpack) rather than generic terms (vehicle, structure). Include visible colors and patterns, clothing items, accessories, and legible text/logos verbatim when they can be read. Include counts only when each item is fully visible and unambiguous; if >3 and indistinct, use “several”; if uncertain, omit the number. Require at least one high‑signal token (specific object type, color, a clear count, a clothing/accessory, or legible text) if it is visibly present. Do not infer unseen attributes (age, emotions, relationships, intentions) and do not use figurative, evaluative, or subjective language. Use “person” if gender or age is unclear; use “man,” “woman,” or “child” only when clearly visible. Output exactly one short sentence only — no labels, examples, lists, or extra text. Example weak → stronger: \"Child plays near water.\" → \"Child in blue jacket splashes at a stone fountain.\" \"Person with bike.\" → \"Woman pushes red bicycle across a sunlit city street.\"",
+  "prompt_id": "textgrad_465c32cf71",
+  "split_csv": "data/splits/flickr30k_main_seed1_val.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_01/val/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_01/val/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_01/val/scores.csv",
+  "summary": {
+    "n": 150,
+    "mean_clip": 0.30896275808413826,
+    "mean_siglip": 0.18180117751161257,
+    "mean_caption_len": 12.553333333333333,
+    "generic_rate": 0.0,
+    "mean_delta_clip": -0.015602690229813258,
+    "mean_delta_siglip": -0.017039368177453676,
+    "clip_win_rate": 0.31666666666666665,
+    "siglip_win_rate": 0.31
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_011250",
+      "caption": "Two children stand near yellow caution tape on a grassy field.",
+      "clip_score": 0.3018147945404053,
+      "siglip_score": 0.2270674109458923,
+      "delta_clip": -0.11077898740768433,
+      "delta_siglip": 0.006551787257194519
+    },
+    {
+      "image_id": "flickr30k_test_003587",
+      "caption": "Man in black cap and jacket with \"3\" logo looks down at a track.",
+      "clip_score": 0.27537402510643,
+      "siglip_score": 0.2229400277137756,
+      "delta_clip": -0.0899129211902619,
+      "delta_siglip": -0.041364043951034574
+    },
+    {
+      "image_id": "flickr30k_test_016835",
+      "caption": "Man in black hat and checkered shirt stands on street near burning torches.",
+      "clip_score": 0.2991267740726471,
+      "siglip_score": 0.1503918915987014,
+      "delta_clip": -0.08390876650810242,
+      "delta_siglip": -0.09050111472606662
+    },
+    {
+      "image_id": "flickr30k_test_013980",
+      "caption": "Woman in white top dances near keyboard with glowing green keys.",
+      "clip_score": 0.2378518283367157,
+      "siglip_score": 0.0738929212093353,
+      "delta_clip": -0.08058473467826838,
+      "delta_siglip": -0.0881447494029999
+    },
+    {
+      "image_id": "flickr30k_test_006548",
+      "caption": "Person in orange vest stands near green-painted station sign reading \"BENT OAK\".",
+      "clip_score": 0.2699067592620849,
+      "siglip_score": 0.1322956979274749,
+      "delta_clip": -0.08050855994224548,
+      "delta_siglip": -0.049379214644432096
+    },
+    {
+      "image_id": "flickr30k_test_001063",
+      "caption": "Man in olive tank top sits on couch near window with white blinds.",
+      "clip_score": 0.2601597011089325,
+      "siglip_score": 0.1687593609094619,
+      "delta_clip": -0.07986152172088623,
+      "delta_siglip": -0.06722220778465271
+    },
+    {
+      "image_id": "flickr30k_test_017698",
+      "caption": "Woman in black jacket holds paper near soldiers in camouflage uniforms.",
+      "clip_score": 0.2726223766803741,
+      "siglip_score": 0.189860463142395,
+      "delta_clip": -0.07886388897895819,
+      "delta_siglip": -0.07017940282821658
+    },
+    {
+      "image_id": "flickr30k_test_006548",
+      "caption": "Person in orange vest stands near green-painted station sign reading \"BENT OAK\".",
+      "clip_score": 0.2699067592620849,
+      "siglip_score": 0.1322956979274749,
+      "delta_clip": -0.07794040441513067,
+      "delta_siglip": -0.0850827544927597
+    },
+    {
+      "image_id": "flickr30k_test_026513",
+      "caption": "Man in yellow jacket operates camera on tripod near black umbrella.",
+      "clip_score": 0.3249474167823791,
+      "siglip_score": 0.1967293620109558,
+      "delta_clip": -0.07772660255432129,
+      "delta_siglip": -0.06328931450843811
+    },
+    {
+      "image_id": "flickr30k_test_005806",
+      "caption": "Woman in beige sweater bends over open black suitcase on tatami floor.",
+      "clip_score": 0.2966302633285522,
+      "siglip_score": 0.2193377614021301,
+      "delta_clip": -0.07756376266479492,
+      "delta_siglip": 0.008413702249527005
+    },
+    {
+      "image_id": "flickr30k_test_008305",
+      "caption": "Woman in black jacket rides bicycle past parked white van.",
+      "clip_score": 0.2231815010309219,
+      "siglip_score": 0.0770395547151565,
+      "delta_clip": -0.07635168731212619,
+      "delta_siglip": -0.07792866230010989
+    },
+    {
+      "image_id": "flickr30k_test_006537",
+      "caption": "Man in orange vest walks toward train at Kilburn station platform.",
+      "clip_score": 0.3173747360706329,
+      "siglip_score": 0.2452467679977417,
+      "delta_clip": -0.0741061270236969,
+      "delta_siglip": 0.027543514966964805
+    }
+  ]
+}

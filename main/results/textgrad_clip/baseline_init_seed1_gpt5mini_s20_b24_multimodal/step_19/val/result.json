@@ -1,0 +1,142 @@
+{
+  "prompt": "Produce exactly one concise, information‑dense caption: a single grammatical sentence of comma‑separated short phrases. Output only that one sentence and nothing else.\n\nOutput slots (emit in this order; slots 1–3 are mandatory and must be preserved if they contain MEDIUM/HIGH verified tokens):\n1) Subject token (0–3 subject groups) plus one chosen anchor/prop token (see deterministic anchor priority below).\n2) Micro‑action / contact (always emit one, see Micro‑action rules).\n3) Fine class (verified label or dataset token); if not MEDIUM/HIGH verified, use the safe plural fallback \"people/dogs/vehicles/vendor stand\".\n4) Clothing / clear pose / orientation — include only when MEDIUM/HIGH verified.\n5) Up to two anchors/signage (only if MEDIUM/HIGH verified; otherwise use neutral positional anchors such as \"storefront behind\", \"marquee above\").\n6) Spatial/cropping/depth token if MEDIUM/HIGH verified.\n\nDeterministic anchor priority (select the highest available and place it early):\n- 1st: OCR text (use full quoted text if OCR_conf ≥ 0.85; else one short quoted token ≤6 chars only if 0.50 ≤ OCR_conf < 0.85 AND saliency_score ≥ threshold).\n- 2nd: large prop/signage (largest segmented area or flagged prop).\n- 3rd: people/faces (detected fine class).\n- 4th: distinctive color/clothing patch.\nPlace the chosen anchor within the first 6–8 words together with the subject token. If no MEDIUM/HIGH anchor exists, use a neutral anchor and still place it within the first 8 words.\n\nVerification gating (use provided detector/OCR/motion outputs with these actionable if/elif rules):\n- OCR_HIGH: OCR_conf ≥ 0.85 → emit full quoted text and placement phrase (e.g., \"on wall left\").\n- OCR_MED: 0.50 ≤ OCR_conf < 0.85 AND saliency_score ≥ threshold → emit one short quoted token (≤6 chars) and placement.\n- Otherwise → do not emit text; use neutral positional anchor.\n- SEGMENTATION_HIGH: segmentation_iou ≥ 0.75 (treat as HIGH verification).\n- SEGMENTATION_MED: 0.40 ≤ segmentation_iou < 0.75 (treat as MEDIUM verification).\n- COUNT_DIGITS: emit digits only if detector_count_confidence ≥ 0.70; otherwise use plural nouns. If detector strongly indicates zero, you may emit \"none\".\n\nMicro‑action rules (always emit one; pick the highest evidence template available):\n- HIGH evidence (use when part segmentation or motion_confidence ≥ 0.85): exact form \"left|right [hand|foot|part] [strong‑verb] [object]\" (e.g., \"right hand holding basket\").\n- MEDIUM evidence (use when segmentation_iou ≥ 0.40 OR detector_confidence ≥ 0.70): pick one verb from whitelist {jumping, pawing, clearing, showing, speaking, holding, carrying, pushing, pulling, strumming, leaning}. You may append a short orientation token (\"back view\", \"seen from behind\") when MEDIUM verifies orientation.\n- LOW evidence (fallback): \"[part] near [object]\" (e.g., \"right hand near object\").\nNever omit or hedge this slot.\n\nFine class and clothing:\n- Emit fine class or clothing only when verified at MEDIUM/HIGH. If not verified, use the safe plural fallback. MEDIUM whitelist tokens (boat, canoe, shrine/temple, ghats/steps, children, performer, vendor, vendor stand, parade participant, marquee, boats, canopies, flagpole, ladder, bicycle, hedgerow, trees, \"navy sweater\", \"red patterned dress\", \"white blouse\") may be emitted only when MEDIUM verification applies and only in their designated slot.\n\nOCR and signage specifics:\n- If emitting OCR text, always include a short placement phrase (e.g., \"on wall left\", \"above the doorway\"). Do not invent, complete, or guess partial text. If OCR_MED has low saliency, revert to a neutral anchor.\n\nFirst‑words rule and deterministic minimal rewrite:\n- Within the first 8 words, include the subject token (or plural fallback) and the chosen anchor token (OCR token if selected, otherwise prop/people/color anchor). If this cannot be satisfied, auto‑rewrite to this minimal safe caption exactly (use this template and nothing else):\n  \"group of people, storefront behind, right hand near object, people/dogs/vehicles/vendor stand.\"\n(This minimal template is the deterministic fallback to ensure a valid single sentence when requirements fail.)\n\nPruning and length control:\n- Target: 10–16 words. Hard cap: 22 words. Allow +2 words beyond target when a HIGH anchor is present or when BOTH a MEDIUM anchor and a MEDIUM micro‑action are present.\n- Prune deterministically in this order until within caps:\n  1) Compress adjective chains (e.g., \"large red metal\" → \"large red metal\" compacted).\n  2) Remove lighting/reflection descriptors.\n  3) Remove object state/material descriptors.\n  4) Remove background/ancillary context.\n- Never prune tokens used to satisfy verification rules (OCR quoted text, MEDIUM/HIGH anchors, verified counts) in slots 1–3.\n\nCounts and numerals:\n- Emit exact digits only when detector_count_confidence ≥ 0.70. Otherwise use plural nouns; do not use vague quantifiers like \"several\" or \"a few\". If detector indicates zero with high confidence, emit \"none\".\n\nAnti‑hallucination absolutes (do not do these):\n- Do not invent brand names, complete partial text, invent ages, emotions, intentions, or unsupported attributes.\n- No hedging language or speculative words (may, maybe, possibly, appears to be).\n- If a detail is not verified at MEDIUM/HIGH, replace it with an approved neutral fallback (e.g., \"storefront behind\", \"marquee above\", \"object on table\", \"group of people\").\n\nFinal validator (must pass before emitting caption):\n- One grammatical sentence of comma‑separated short phrases.\n- First 6–8 words include subject token (or plural fallback) and chosen anchor (or neutral anchor).\n- Micro‑action slot present and follows the templates above.\n- Length within caps and pruning rules applied.\n- No hedges, no invented text/brands, no duplicated phrases.\n- Only allowed MEDIUM tokens are used under MEDIUM verification.\n- If any check fails, emit the deterministic minimal safe caption given above.\n\nSuccinct exemplars (ideal outputs for reference):\n- OCR_HIGH example: \"group of people, right hand holding 'Le Mignon' sign on wall left, storefront behind.\"\n- PROP_MED example: \"woman, right hand holding red shopping bag, storefront behind, marquee above.\"\n- PEOPLE_MED example: \"two people, back view sitting on bench, black tufted bench foreground, floor reflections.\"\n- LOW evidence example: \"group of people, right hand near object, people/dogs/vehicles/vendor stand.\"\n\nAdhere strictly to these rules and emit only the single final caption sentence.",
+  "prompt_id": "textgrad_dc547fb413",
+  "split_csv": "data/splits/flickr30k_main_seed1_val.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal/step_19/val/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal/step_19/val/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal/step_19/val/scores.csv",
+  "data_root": "data",
+  "summary": {
+    "n": 150,
+    "mean_clip": 0.27944435467322665,
+    "mean_siglip": 0.15707985424747065,
+    "mean_caption_len": 13.54,
+    "generic_rate": 0.0,
+    "mean_delta_clip": -0.045121093640724814,
+    "mean_delta_siglip": -0.041760691441595554,
+    "clip_win_rate": 0.09333333333333334,
+    "siglip_win_rate": 0.18666666666666668
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_011250",
+      "image_relpath": "images/flickr30k/flickr30k_test_011250.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_011250.jpg",
+      "caption": "two children, yellow caution tape behind, holding hands, people/dogs/vehicles/vendor stand.",
+      "clip_score": 0.2509629726409912,
+      "siglip_score": 0.2031655609607696,
+      "delta_clip": -0.1616308093070984,
+      "delta_siglip": -0.01735006272792819
+    },
+    {
+      "image_id": "flickr30k_test_026513",
+      "image_relpath": "images/flickr30k/flickr30k_test_026513.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_026513.jpg",
+      "caption": "group of people, yellow jacket operating camera, right hand adjusting tripod, people/dogs/vehicles/vendor stand.",
+      "clip_score": 0.2602247595787048,
+      "siglip_score": 0.171937957406044,
+      "delta_clip": -0.1424492597579956,
+      "delta_siglip": -0.08808071911334991
+    },
+    {
+      "image_id": "flickr30k_test_024759",
+      "image_relpath": "images/flickr30k/flickr30k_test_024759.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_024759.jpg",
+      "caption": "two people, right hand near object, people/dogs/vehicles/vendor stand.",
+      "clip_score": 0.1815242022275924,
+      "siglip_score": 0.07101571559906,
+      "delta_clip": -0.1360429972410202,
+      "delta_siglip": -0.1745202839374542
+    },
+    {
+      "image_id": "flickr30k_test_017698",
+      "image_relpath": "images/flickr30k/flickr30k_test_017698.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_017698.jpg",
+      "caption": "group of people, woman holding paper, right hand near object, people/dogs/vehicles/vendor stand.",
+      "clip_score": 0.2231186926364898,
+      "siglip_score": 0.0777675509452819,
+      "delta_clip": -0.12836757302284246,
+      "delta_siglip": -0.18227231502532967
+    },
+    {
+      "image_id": "flickr30k_test_003587",
+      "image_relpath": "images/flickr30k/flickr30k_test_003587.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_003587.jpg",
+      "caption": "man, cap with \"3\" logo, right hand near object, people/dogs/vehicles/vendor stand.",
+      "clip_score": 0.2371629774570465,
+      "siglip_score": 0.1162168383598327,
+      "delta_clip": -0.12812396883964539,
+      "delta_siglip": -0.14808723330497747
+    },
+    {
+      "image_id": "flickr30k_test_011286",
+      "image_relpath": "images/flickr30k/flickr30k_test_011286.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_011286.jpg",
+      "caption": "three people, orange shorts, walking on rocks, right foot stepping, people/dogs/vehicles/vendor stand.",
+      "clip_score": 0.2297476530075073,
+      "siglip_score": 0.1564152240753173,
+      "delta_clip": -0.12800794839859012,
+      "delta_siglip": -0.06867069005966189
+    },
+    {
+      "image_id": "flickr30k_test_006851",
+      "image_relpath": "images/flickr30k/flickr30k_test_006851.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_006851.jpg",
+      "caption": "two soldiers, right hand holding \"KEEPING US SAFE\" sign, children standing beside, people/dogs/vehicles/vendor stand.",
+      "clip_score": 0.2663631439208984,
+      "siglip_score": 0.2151364833116531,
+      "delta_clip": -0.12632998824119573,
+      "delta_siglip": -0.04210503399372098
+    },
+    {
+      "image_id": "flickr30k_test_011250",
+      "image_relpath": "images/flickr30k/flickr30k_test_011250.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_011250.jpg",
+      "caption": "two children, yellow caution tape behind, holding hands, people/dogs/vehicles/vendor stand.",
+      "clip_score": 0.2509629726409912,
+      "siglip_score": 0.2031655609607696,
+      "delta_clip": -0.12165981531143188,
+      "delta_siglip": -0.0451752245426178
+    },
+    {
+      "image_id": "flickr30k_test_006548",
+      "image_relpath": "images/flickr30k/flickr30k_test_006548.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_006548.jpg",
+      "caption": "workers, \"BENT OAK\" sign on pole, right hand near scaffolding, people/dogs/vehicles/vendor stand.",
+      "clip_score": 0.2320229709148407,
+      "siglip_score": 0.08331860601902,
+      "delta_clip": -0.11839234828948969,
+      "delta_siglip": -0.09835630655288699
+    },
+    {
+      "image_id": "flickr30k_test_000051",
+      "image_relpath": "images/flickr30k/flickr30k_test_000051.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_000051.jpg",
+      "caption": "man in white uniform with \"J.K. LEE\" on back, right hand holding wooden board, performing martial arts strike, people/dogs/vehicles/vendor stand.",
+      "clip_score": 0.251146137714386,
+      "siglip_score": 0.1630543172359466,
+      "delta_clip": -0.1174655556678772,
+      "delta_siglip": -0.023119226098060608
+    },
+    {
+      "image_id": "flickr30k_test_023088",
+      "image_relpath": "images/flickr30k/flickr30k_test_023088.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_023088.jpg",
+      "caption": "two men, one holding briefcase, standing on sidewalk, storefront behind, right hand near object, people/dogs/vehicles/vendor stand.",
+      "clip_score": 0.2229086756706237,
+      "siglip_score": 0.1530100852251052,
+      "delta_clip": -0.1162983179092408,
+      "delta_siglip": -0.034454032778739985
+    },
+    {
+      "image_id": "flickr30k_test_006548",
+      "image_relpath": "images/flickr30k/flickr30k_test_006548.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_006548.jpg",
+      "caption": "workers, \"BENT OAK\" sign on pole, right hand near scaffolding, people/dogs/vehicles/vendor stand.",
+      "clip_score": 0.2320229709148407,
+      "siglip_score": 0.08331860601902,
+      "delta_clip": -0.11582419276237488,
+      "delta_siglip": -0.1340598464012146
+    }
+  ]
+}

@@ -1,0 +1,117 @@
+{
+  "prompt": "Output two lines only.\n\nLine 1 (tags): comma-separated visible objects, counts (use digits), and colors/sizes (up to 6 items).\n\nLine 2 (caption): one factual caption in present tense using base verbs, 6–12 words. Use the structure: main object → action → location/pose. Include count and a color/size if visible. Use common nouns and digits for numbers. Do NOT use metaphors, opinions, emotions, storytelling, invented facts, rare or subjective adjectives.\n\nIf no clear action is visible, Line 2 may be 2–4 words as \"object + location\" (e.g., \"red car parked on street\"). If the image is highly ambiguous, list only tags on Line 1 and provide a short generic caption (2–3 words) on Line 2 (e.g., \"group of people\"). No punctuation except commas in tags and an optional period at the end of the caption.",
+  "prompt_id": "textgrad_5a2be40909",
+  "split_csv": "data/splits/flickr30k_main_seed1_val.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24/step_00/val/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24/step_00/val/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24/step_00/val/scores.csv",
+  "summary": {
+    "n": 150,
+    "mean_clip": 0.30090167830387754,
+    "mean_siglip": 0.17677986149986585,
+    "mean_caption_len": 16.28,
+    "generic_rate": 0.0,
+    "mean_delta_clip": -0.02366377001007398,
+    "mean_delta_siglip": -0.022060684189200395,
+    "clip_win_rate": 0.20666666666666667,
+    "siglip_win_rate": 0.27
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_023900",
+      "caption": "man holding skewers near food stall\nman holding skewers near food stall",
+      "clip_score": 0.2286076247692108,
+      "siglip_score": 0.2031893730163574,
+      "delta_clip": -0.133199006319046,
+      "delta_siglip": -0.08762624859809878
+    },
+    {
+      "image_id": "flickr30k_test_011250",
+      "caption": "two boys standing on grass holding hands\ntwo boys holding hands on grass field",
+      "clip_score": 0.2993636727333069,
+      "siglip_score": 0.125467449426651,
+      "delta_clip": -0.11323010921478271,
+      "delta_siglip": -0.09504817426204679
+    },
+    {
+      "image_id": "flickr30k_test_026513",
+      "caption": "camera, tripod, umbrella, jacket, bag, person  \nCrew films scene with camera on tripod outdoors",
+      "clip_score": 0.2902846336364746,
+      "siglip_score": 0.2361848354339599,
+      "delta_clip": -0.11238938570022577,
+      "delta_siglip": -0.023833841085434015
+    },
+    {
+      "image_id": "flickr30k_test_003587",
+      "caption": "man wearing black cap and jacket with logos\nman in black jacket seated at event",
+      "clip_score": 0.2590767741203308,
+      "siglip_score": 0.1860175281763076,
+      "delta_clip": -0.10621017217636108,
+      "delta_siglip": -0.07828654348850259
+    },
+    {
+      "image_id": "flickr30k_test_023317",
+      "caption": "woman wearing pink jacket and blue skirt standing at guest services booth\nwoman standing at guest services booth",
+      "clip_score": 0.2915346622467041,
+      "siglip_score": 0.2152310013771057,
+      "delta_clip": -0.0996132493019104,
+      "delta_siglip": -0.0031575560569762906
+    },
+    {
+      "image_id": "flickr30k_test_007385",
+      "caption": "people, 10, blue, colorful, frisbee, store\nTen people in blue outfits throw frisbees on street",
+      "clip_score": 0.2729986310005188,
+      "siglip_score": 0.1223337203264236,
+      "delta_clip": -0.09585821628570551,
+      "delta_siglip": -0.05259470641613011
+    },
+    {
+      "image_id": "flickr30k_test_022056",
+      "caption": "children, adults, books, green shirt, white cap, yellow bag  \nchild in green shirt stands with hands on head",
+      "clip_score": 0.2575896978378296,
+      "siglip_score": 0.1622812449932098,
+      "delta_clip": -0.09435036778450012,
+      "delta_siglip": -0.07354013621807098
+    },
+    {
+      "image_id": "flickr30k_test_023900",
+      "caption": "man holding skewers near food stall\nman holding skewers near food stall",
+      "clip_score": 0.2286076247692108,
+      "siglip_score": 0.2031893730163574,
+      "delta_clip": -0.09135362505912784,
+      "delta_siglip": -0.014307558536529513
+    },
+    {
+      "image_id": "flickr30k_test_011286",
+      "caption": "three people walking on rocks near river\nthree people walking on rocky riverbank",
+      "clip_score": 0.2668101787567138,
+      "siglip_score": 0.1334639936685562,
+      "delta_clip": -0.0909454226493836,
+      "delta_siglip": -0.09162192046642298
+    },
+    {
+      "image_id": "flickr30k_test_015524",
+      "caption": "two children skating on ice rink\ntwo children skating on ice rink",
+      "clip_score": 0.2960890531539917,
+      "siglip_score": 0.1682859063148498,
+      "delta_clip": -0.08343204855918879,
+      "delta_siglip": -0.02688875794410711
+    },
+    {
+      "image_id": "flickr30k_test_005250",
+      "caption": "woman holding red flowers smiling indoors  \nwoman holding red flowers smiling indoors",
+      "clip_score": 0.2787759900093078,
+      "siglip_score": 0.1030931994318962,
+      "delta_clip": -0.08260834217071539,
+      "delta_siglip": -0.1061469987034797
+    },
+    {
+      "image_id": "flickr30k_test_028189",
+      "caption": "man, 1, wearing white cap, holding board, standing, near insulation panel, tall grass\nman holding board standing near insulation panel",
+      "clip_score": 0.2701797187328338,
+      "siglip_score": 0.2304134219884872,
+      "delta_clip": -0.08056280016899109,
+      "delta_siglip": -0.031422331929206904
+    }
+  ]
+}

@@ -1,0 +1,142 @@
+{
+  "prompt": "Output exactly one concise, information‑dense caption: a single grammatical sentence of comma‑separated short phrases. Use digits for counts only when each instance is clearly visible; do not infer, hedge, paraphrase, or add anything not visually present. Output only that one sentence.\n\nRequired phrase ordering (include an item only if visually verifiable; omit unverifiable items). Aim for ≤30 words; allow up to +10% length only to include a fully legible quoted text string or one necessary part‑level relation/background anchor.\n\n1) Start with: [digit] + subject noun(s) + spatial anchor.\n   - Spatial anchor rules: compute subject centroid x; if x < 0.33 → \"left\"; if 0.33 ≤ x ≤ 0.66 → \"center\"; if x > 0.66 → \"right\".\n   - If subject width >60% image width, emit \"center\" regardless of centroid.\n   - If >5% of subject area lies outside image, append \"partially cropped at [top|bottom|left|right]\".\n   - Add depth token [foreground|midground|background] only if overlap/relative scale unambiguously indicates depth.\n\n2) Include exactly one micro‑action phrase only if clear functional contact or use is visually evident (visible limb‑object contact, instrument at mouth, object midair, visible deformation/pressure, motion blur on a limb, or clear gaze at a visible object). Use one of these templates:\n   - \"[hand] [verb] [object]\" (e.g., \"right hand holding pole\")\n   - \"holding [object] with [hand]\" (e.g., \"holding violin with chin and right hand\")\n   - \"[body_part] [verb] [structure/object]\" (e.g., \"left foot on pedal\")\n   - If no such clear contact/use is verifiable, omit the micro‑action token (do not print filler phrases).\n\n3) Immediately after micro‑action, include exactly one part‑level relation or contact phrase whenever any limb/object contact, tool touching workpiece, or displacement is visually evident; use the template \"[part] [verb] [object/structure]\" (e.g., \"right hand holding pole\", \"rear wheel off ground\"). If no contact is present, omit this clause.\n\n4) Then include up to 1–3 high‑signal descriptor(s) chosen by strict priority (pick the highest‑ranked verifiable candidates; break ties lexicographically). Priority order:\n   A) Fully legible text — transcribe exact string only if every character is clearly readable; include it in quotes and localize (e.g., \"'RADIO CITY' on marquee above\").\n   B) Discriminative prop / part‑level prop (weighing scale, open instrument case, woven baskets with fruit, mounted fish, marquee).\n   C) Precise object class (prefer \"moped\", \"cargo bike\", \"motorized scooter\", \"bicycle with basket\", \"surveillance camera\", etc., over generic labels).\n   D) Material/texture (e.g., \"rusted metal\", \"woven straw\").\n   E) Color (e.g., \"red sweatshirt\").\n   F) Reflection/surface condition (e.g., \"wet pavement with reflections\", \"glass reflections\").\n   - Enforce ≤3 descriptors; if none verifiable, omit descriptors.\n\n5) Optionally include exactly one viewpoint token when obvious: {close-up, medium, wide, high-angle, low-angle}.\n\n6) Optionally include exactly one lighting token when obvious: {backlit, front-lit, rim-lit, long-shadow-left, long-shadow-right}.\n\n7) If a clear background anchor is visible, append one concise background noun phrase (single phrase, e.g., \"storefront window\", \"stone embankment\", \"Radio City marquee\"). Omit if no clear anchor.\n\nReflections vs. behind‑glass rule\n- If an element appears doubled, reversed, or overlayed on the glass plane without 3D occlusion → label as \"reflections\".\n- If objects clearly sit on the far side of the glass (shelf, mannequin, handbags) → label as \"on display behind glass\" or \"behind glass\".\n- If uncertain, omit both.\n\nTwo‑pass verification (run before emitting)\na) Text transcription: transcribe quoted text only if every character is clearly readable (high contrast, character size equivalent ≳8pt at image scale). If full string is not readable, do not invent text; instead include sign presence/localization as a descriptor (e.g., \"marquee above\") if position is clear.\nb) Count verification: include a digit only if each instance is ≥50% unobstructed and separable; otherwise use a descriptive phrase (e.g., \"a line of dancers\", \"a group of people\") rather than an incorrect digit.\nc) Object class verification: include a fine class only if internal object confidence >0.60 (or top label margin >0.15); otherwise fall back to the next specific supported class or generic class only if nothing specific is verifiable.\nd) Contact verification: require visible occlusion/adjacency or clear overlapping pixels to assert limb‑object contact or tool interaction.\ne) If any token fails verification, drop that token and recheck sentence for grammaticality.\n\nBrevity & trimming priorities\n- If length limits force removal, prioritize tokens in this order: legible text → part‑level relation / discriminative prop → precise object class → background anchor → material/texture → viewpoint → lighting → color → reflection.\n- Prefer compact, active, factual phrasing and concrete nouns. Do not infer ages, emotions, roles, intent, or unseen attributes. Do not use vague quantifiers (\"several\",\"many\") — use digits only when verified.\n\nNegative rules\n- Do not output a generic label (e.g., \"bicycle\", \"man\", \"building\") if a more specific, visually supported label is available.\n- Do not state exact counts when verification fails.\n- Do not emit micro‑action claims (e.g., \"holding\") unless contact/use is clearly visible.\n\nStyle constraints\n- Single sentence, comma‑separated short phrases, no tags, no lists, no extra lines.\n- Use canonical labels (e.g., \"storefront window\", \"center\"), consistent punctuation for quoted text.\n- Maintain grammaticality after dropping any failed tokens.\n\nCanonical minute examples (follow exact output format):\n- \"1 child left foreground, right hand reaching toward storefront window, right hand touching glass, 'LOEWE' on lower sill at left, glass reflections, storefront window behind.\"\n- \"1 woman center foreground, holding violin with chin and right hand, open instrument case on ground, medium, tiled underground passage behind.\"\n- \"5 dancers center foreground, standing in long line across crosswalk, red and white striped costumes, Radio City marquee above, street behind.\"\n\nFollow these rules exactly to produce one precise caption.",
+  "prompt_id": "textgrad_a31948f47c",
+  "split_csv": "data/splits/flickr30k_main_seed1_train.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal/step_06/train/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal/step_06/train/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal/step_06/train/scores.csv",
+  "data_root": "data",
+  "summary": {
+    "n": 24,
+    "mean_clip": 0.2996301508198182,
+    "mean_siglip": 0.1884893434277425,
+    "mean_caption_len": 21.958333333333332,
+    "generic_rate": 0.0,
+    "mean_delta_clip": -0.01498623751103878,
+    "mean_delta_siglip": -0.008797679018850119,
+    "clip_win_rate": 0.375,
+    "siglip_win_rate": 0.5833333333333334
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_015378",
+      "image_relpath": "images/flickr30k/flickr30k_test_015378.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_015378.jpg",
+      "caption": "1 man center foreground, right hand holding phone, right hand touching phone, red shirt, gray pants, stone wall behind.",
+      "clip_score": 0.2271175980567932,
+      "siglip_score": 0.128116101026535,
+      "delta_clip": -0.0773283839225769,
+      "delta_siglip": -0.10834294557571408
+    },
+    {
+      "image_id": "flickr30k_test_012278",
+      "image_relpath": "images/flickr30k/flickr30k_test_012278.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_012278.jpg",
+      "caption": "3 men center midground, sitting on couches, red cloth draped over one couch, black-and-white goat standing right, stone wall background.",
+      "clip_score": 0.2310578376054763,
+      "siglip_score": 0.1483837068080902,
+      "delta_clip": -0.0668787509202958,
+      "delta_siglip": -0.058564037084579385
+    },
+    {
+      "image_id": "flickr30k_test_028925",
+      "image_relpath": "images/flickr30k/flickr30k_test_028925.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_028925.jpg",
+      "caption": "1 child center foreground, right hand holding screwdriver, screwdriver touching typewriter mechanism, red sweatshirt, gray typewriter, medium.",
+      "clip_score": 0.2665520906448364,
+      "siglip_score": 0.2628993988037109,
+      "delta_clip": -0.05558082461357117,
+      "delta_siglip": -0.008833289146423395
+    },
+    {
+      "image_id": "flickr30k_test_030774",
+      "image_relpath": "images/flickr30k/flickr30k_test_030774.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_030774.jpg",
+      "caption": "1 child center foreground, left hand holding small dark object, bubbles around, underwater, blue water.",
+      "clip_score": 0.2845568060874939,
+      "siglip_score": 0.1806801259517669,
+      "delta_clip": -0.046503931283950806,
+      "delta_siglip": 0.02262178063392642
+    },
+    {
+      "image_id": "flickr30k_test_015736",
+      "image_relpath": "images/flickr30k/flickr30k_test_015736.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_015736.jpg",
+      "caption": "1 greyhound center foreground, walking through shallow water, white coat with brown patches, wet reflective surface, low-angle.",
+      "clip_score": 0.3032785654067993,
+      "siglip_score": 0.2119938135147094,
+      "delta_clip": -0.044467031955718994,
+      "delta_siglip": 0.0022234320640563965
+    },
+    {
+      "image_id": "flickr30k_test_010401",
+      "image_relpath": "images/flickr30k/flickr30k_test_010401.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_010401.jpg",
+      "caption": "1 girl center foreground, hands reaching toward leaf pile, midair above leaf pile, blue sweater with white collar, brown pants, silver vehicle background.",
+      "clip_score": 0.2924549579620361,
+      "siglip_score": 0.2310865521430969,
+      "delta_clip": -0.0433163046836853,
+      "delta_siglip": 0.04891100525856021
+    },
+    {
+      "image_id": "flickr30k_test_000969",
+      "image_relpath": "images/flickr30k/flickr30k_test_000969.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_000969.jpg",
+      "caption": "1 woman left foreground, left hand raised, glass reflections, wooden table midground, dim lighting, framed artwork background.",
+      "clip_score": 0.2628042995929718,
+      "siglip_score": 0.1013436615467071,
+      "delta_clip": -0.03331351280212402,
+      "delta_siglip": -0.05095922946929929
+    },
+    {
+      "image_id": "flickr30k_test_019904",
+      "image_relpath": "images/flickr30k/flickr30k_test_019904.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_019904.jpg",
+      "caption": "1 man center foreground, walking on bridge, 'LE MIGNON' on red sign at left, 'LE MIGNON' on red sign at right, brick building behind.",
+      "clip_score": 0.3022373914718628,
+      "siglip_score": 0.2475516349077224,
+      "delta_clip": -0.029084384441375732,
+      "delta_siglip": -0.03697301447391518
+    },
+    {
+      "image_id": "flickr30k_test_021750",
+      "image_relpath": "images/flickr30k/flickr30k_test_021750.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_021750.jpg",
+      "caption": "2 women center foreground, left embracing right, right holding white takeout container, left holding red plastic bag, both wearing sunglasses, midground vehicles blurred behind.",
+      "clip_score": 0.2951449155807495,
+      "siglip_score": 0.2432586848735809,
+      "delta_clip": -0.028791010379791204,
+      "delta_siglip": 0.07638345658779142
+    },
+    {
+      "image_id": "flickr30k_test_024351",
+      "image_relpath": "images/flickr30k/flickr30k_test_024351.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_024351.jpg",
+      "caption": "1 dog center foreground, jumping to catch tennis ball, front paws off ground, dark wet fur, green foliage background.",
+      "clip_score": 0.3016451001167297,
+      "siglip_score": 0.1616663336753845,
+      "delta_clip": -0.027319550514221247,
+      "delta_siglip": 0.008912116289138794
+    },
+    {
+      "image_id": "flickr30k_test_007496",
+      "image_relpath": "images/flickr30k/flickr30k_test_007496.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_007496.jpg",
+      "caption": "2 men center foreground, playing accordions, standing beside vintage cars, '6ZE 638' license plate visible, brick building background.",
+      "clip_score": 0.2923229336738586,
+      "siglip_score": 0.2079396992921829,
+      "delta_clip": -0.020378768444061335,
+      "delta_siglip": 0.0011020749807358066
+    },
+    {
+      "image_id": "flickr30k_test_024189",
+      "image_relpath": "images/flickr30k/flickr30k_test_024189.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_024189.jpg",
+      "caption": "1 man center foreground, bending over, right hand touching black bag, 2 bags on ground, \"SUBWAY OPEN\" neon sign visible, storefront window behind.",
+      "clip_score": 0.3110577166080475,
+      "siglip_score": 0.1728546619415283,
+      "delta_clip": -0.015556633472442627,
+      "delta_siglip": -0.0645613223314285
+    }
+  ]
+}

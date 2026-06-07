@@ -1,0 +1,117 @@
+{
+  "prompt": "Generate exactly one short, literal, factual caption: one grammatically correct sentence describing only visibly present content. Output exactly one sentence and nothing else. Sentence length: 9–11 words (prefer 9–10). Follow these rules in order:\n\n1) Subject selection: choose the detection with the highest score = area_fraction × detector_confidence. If two candidates’ scores are within 10%, prefer the candidate whose high‑signal token meets the token gating (see rule 3). Do not bias against people—choose a person when its score is highest.\n\n2) Detection usability: treat a detection as usable only if area_fraction × detector_confidence ≥ 0.0015. Allow smaller detections only when OCR_confidence ≥ 0.75 or an explicit large clear numeral is detected.\n\n3) High‑signal tokens and placement: high‑signal tokens are visible colors/patterns, concrete multiword classes (e.g., \"stop sign\", \"double‑decker bus\"), clear Arabic numerals, clothing/accessory names, or short readable text/logos (1–3 tokens). Require at least one high‑signal token to appear as the first or second content word (leading articles \"a/an/the\" do not count as content words). If two distinct high‑signal tokens are visible, place the second no later than the fourth content word.\n\n4) OCR/text copying: copy short readable text/logos (1–3 tokens) only if either (OCR_confidence ≥ 0.60 and OCR_bbox_area ≥ 0.2% of the image) or (OCR_confidence ≥ 0.75 when OCR_bbox_area < 0.2%). Never copy runs of ≥5 consecutive digits or low‑confidence/unreadable text.\n\n5) Token gating for subject selection: apply a token bonus only when the candidate’s high‑signal token bbox_area ≥ 0.2% and token/OCR confidence meets the thresholds above. The token bonus may break ties but must not allow tiny, low‑confidence tokens to win.\n\n6) Second‑object allowance: you may append one compact post‑nominal relation (≤3 tokens, e.g., \"on the sidewalk\", \"with number 7\") only if it adds a distinct high‑signal token. Do not chain relations or add longer descriptive chains.\n\n7) Wording and grammar: prefer starting with a high‑signal modifier plus class (e.g., \"red bicycle\", \"two dogs\", \"striped shirt\"). Use present‑tense active phrasing with a concrete visible verb when action is clear (standing, walking, holding, jumping, playing); otherwise use \"is/are.\" Use Arabic numerals for visible counts that meet visibility rules. Avoid leading filler words and long weak modifiers.\n\n8) Safety and literalness: do not invent unseen attributes, emotions, intentions, dialogue, or unreadable text. Avoid generic placeholders like \"object\" or broad \"person\" when a more specific visible class, color, number, or logo is present.\n\nFinal constraints: one sentence only, 9–11 words, literal description of visible content, include required high‑signal token early, follow the OCR and usability rules above, do not output fallback phrases or any extra commentary.",
+  "prompt_id": "textgrad_7ff1e4fb81",
+  "split_csv": "data/splits/flickr30k_main_seed1_val.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_17/val/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_17/val/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_17/val/scores.csv",
+  "summary": {
+    "n": 150,
+    "mean_clip": 0.30901336977879207,
+    "mean_siglip": 0.1772216898202896,
+    "mean_caption_len": 9.4,
+    "generic_rate": 0.0,
+    "mean_delta_clip": -0.01555207853515943,
+    "mean_delta_siglip": -0.02161885586877664,
+    "clip_win_rate": 0.31333333333333335,
+    "siglip_win_rate": 0.2833333333333333
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_011250",
+      "caption": "Two children stand in grass near yellow caution tape.",
+      "clip_score": 0.2847816944122314,
+      "siglip_score": 0.2097965031862259,
+      "delta_clip": -0.1278120875358582,
+      "delta_siglip": -0.010719120502471896
+    },
+    {
+      "image_id": "flickr30k_test_021601",
+      "caption": "Man in beige coat walks with cane on sidewalk.",
+      "clip_score": 0.2396362125873565,
+      "siglip_score": 0.0982517302036285,
+      "delta_clip": -0.1037982702255249,
+      "delta_siglip": -0.1296955943107605
+    },
+    {
+      "image_id": "flickr30k_test_018677",
+      "caption": "Woman in white top and red skirt holds plate.",
+      "clip_score": 0.242305189371109,
+      "siglip_score": 0.0996178239583969,
+      "delta_clip": -0.09602820873260498,
+      "delta_siglip": -0.1131121665239334
+    },
+    {
+      "image_id": "flickr30k_test_026513",
+      "caption": "Yellow-jacketed cameraman operates camera on tripod outdoors.",
+      "clip_score": 0.310159832239151,
+      "siglip_score": 0.1994527131319046,
+      "delta_clip": -0.09251418709754938,
+      "delta_siglip": -0.06056596338748932
+    },
+    {
+      "image_id": "flickr30k_test_017698",
+      "caption": "Woman in black jacket holds clipboard near soldiers.",
+      "clip_score": 0.2620590329170227,
+      "siglip_score": 0.1686974018812179,
+      "delta_clip": -0.08942723274230957,
+      "delta_siglip": -0.09134246408939367
+    },
+    {
+      "image_id": "flickr30k_test_011250",
+      "caption": "Two children stand in grass near yellow caution tape.",
+      "clip_score": 0.2847816944122314,
+      "siglip_score": 0.2097965031862259,
+      "delta_clip": -0.0878410935401917,
+      "delta_siglip": -0.038544282317161505
+    },
+    {
+      "image_id": "flickr30k_test_016590",
+      "caption": "Woman in colorful skirt holds umbrella near fountain.",
+      "clip_score": 0.2782398462295532,
+      "siglip_score": 0.1190975829958915,
+      "delta_clip": -0.0863454937934875,
+      "delta_siglip": -0.10710119456052779
+    },
+    {
+      "image_id": "flickr30k_test_023900",
+      "caption": "Man in striped shirt holds skewers near \"UTIAH\" sign.",
+      "clip_score": 0.2759913206100464,
+      "siglip_score": 0.2227203547954559,
+      "delta_clip": -0.0858153104782104,
+      "delta_siglip": -0.06809526681900027
+    },
+    {
+      "image_id": "flickr30k_test_005806",
+      "caption": "Woman in beige sweater packs clothes into open black suitcase.",
+      "clip_score": 0.2900846004486084,
+      "siglip_score": 0.1332746744155883,
+      "delta_clip": -0.08410942554473871,
+      "delta_siglip": -0.0776493847370148
+    },
+    {
+      "image_id": "flickr30k_test_026753",
+      "caption": "Man in black shirt with \"LOVE\" text grinds rail on inline skates.",
+      "clip_score": 0.248860627412796,
+      "siglip_score": 0.1859456598758697,
+      "delta_clip": -0.08273062109947202,
+      "delta_siglip": 0.028404653072357205
+    },
+    {
+      "image_id": "flickr30k_test_003587",
+      "caption": "Man in black cap and jacket with number 3 logo.",
+      "clip_score": 0.282701313495636,
+      "siglip_score": 0.1473736613988876,
+      "delta_clip": -0.08258563280105591,
+      "delta_siglip": -0.11693041026592257
+    },
+    {
+      "image_id": "flickr30k_test_023088",
+      "caption": "Man in suit holding briefcase stands on sidewalk.",
+      "clip_score": 0.2582343816757202,
+      "siglip_score": 0.1332988291978836,
+      "delta_clip": -0.08097261190414429,
+      "delta_siglip": -0.05416528880596158
+    }
+  ]
+}

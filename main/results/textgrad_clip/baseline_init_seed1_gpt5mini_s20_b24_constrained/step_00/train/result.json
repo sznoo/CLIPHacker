@@ -1,0 +1,117 @@
+{
+  "prompt": "Write a caption for this image.",
+  "prompt_id": "textgrad_7f3b4f879f",
+  "split_csv": "data/splits/flickr30k_main_seed1_train.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_00/train/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_00/train/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_00/train/scores.csv",
+  "summary": {
+    "n": 24,
+    "mean_clip": 0.3191537621120612,
+    "mean_siglip": 0.19382374826818696,
+    "mean_caption_len": 32.375,
+    "generic_rate": 0.0,
+    "mean_delta_clip": 7.450580594610863e-09,
+    "mean_delta_siglip": -1.862645149230957e-09,
+    "clip_win_rate": 0.20833333333333334,
+    "siglip_win_rate": 0.16666666666666666
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_016410",
+      "caption": "Shredding the dirt: A shirtless biker leans into a daring BMX trick, muscles taut and wheels airborne against a backdrop of green hills and clear blue sky.",
+      "clip_score": 0.3215638399124145,
+      "siglip_score": 0.1425092816352844,
+      "delta_clip": -5.960464483090178e-08,
+      "delta_siglip": -1.192092894952701e-07
+    },
+    {
+      "image_id": "flickr30k_test_024370",
+      "caption": "A sunny day in a European city, with a grand, tree-lined street flanked by classic architecture and pedestrians strolling along the sidewalks.",
+      "clip_score": 0.2645592391490936,
+      "siglip_score": 0.1000408753752708,
+      "delta_clip": -2.9802322443206464e-08,
+      "delta_siglip": -7.450580599699386e-08
+    },
+    {
+      "image_id": "flickr30k_test_003863",
+      "caption": "Five friends leap joyfully in unison over a vast, cracked salt flat, arms raised as they chase a yellow ball under a clear blue sky.",
+      "clip_score": 0.345549464225769,
+      "siglip_score": 0.2227599024772644,
+      "delta_clip": 0.0,
+      "delta_siglip": 0.0
+    },
+    {
+      "image_id": "flickr30k_test_016234",
+      "caption": "Under a draped blue tent, a lively puppet show captivates a group of children and adults, their faces lit with wonder and delight as they watch the colorful marionette perform.",
+      "clip_score": 0.2568583488464355,
+      "siglip_score": 0.1890813410282135,
+      "delta_clip": 0.0,
+      "delta_siglip": 0.0
+    },
+    {
+      "image_id": "flickr30k_test_019370",
+      "caption": "A man walks his bicycle across a sunlit street, pausing at a crosswalk under bright daylight.",
+      "clip_score": 0.3398851156234741,
+      "siglip_score": 0.1867705732583999,
+      "delta_clip": 0.0,
+      "delta_siglip": 0.0
+    },
+    {
+      "image_id": "flickr30k_test_010401",
+      "caption": "A joyful child leaps mid-air toward a vibrant pile of autumn leaves, arms outstretched in pure, playful delight.",
+      "clip_score": 0.3357712626457214,
+      "siglip_score": 0.1821755468845367,
+      "delta_clip": 0.0,
+      "delta_siglip": 0.0
+    },
+    {
+      "image_id": "flickr30k_test_003075",
+      "caption": "Children play joyfully in a puddle on a rainy day, with one in a blue raincoat and another in a white shirt and sunglasses, surrounded by parked cars.",
+      "clip_score": 0.3705548048019409,
+      "siglip_score": 0.2195499688386917,
+      "delta_clip": 0.0,
+      "delta_siglip": 0.0
+    },
+    {
+      "image_id": "flickr30k_test_024978",
+      "caption": "A man sits quietly on a folding chair in a narrow, weathered alleyway, gazing thoughtfully as a vibrant blue car rests nearby. The crumbling walls and faded graffiti hint at the passage of time, while the soft light casts long shadows, creating a contemplative, almost cinematic stillness.",
+      "clip_score": 0.3341253101825714,
+      "siglip_score": 0.2450508773326873,
+      "delta_clip": 0.0,
+      "delta_siglip": 0.0
+    },
+    {
+      "image_id": "flickr30k_test_000951",
+      "caption": "A lone traveler walks across golden dunes under a brooding, storm-filled sky — solitude and adventure meet beneath the weight of impending weather.",
+      "clip_score": 0.3178962469100952,
+      "siglip_score": 0.208938181400299,
+      "delta_clip": 0.0,
+      "delta_siglip": 0.0
+    },
+    {
+      "image_id": "flickr30k_test_025024",
+      "caption": "A group of joyful children sits together on a concrete ledge, smiling and posing playfully for the camera in front of a metal-barred storefront.",
+      "clip_score": 0.2911537885665893,
+      "siglip_score": 0.2092334330081939,
+      "delta_clip": 0.0,
+      "delta_siglip": 0.0
+    },
+    {
+      "image_id": "flickr30k_test_007169",
+      "caption": "Through the bars of a railing, a candid street scene unfolds: a young girl with a colorful backpack walks past, while a woman in a hat carries a large red bag. In the background, another person sits on a stone ledge, engrossed in reading a newspaper. The setting appears to be a grand, historic",
+      "clip_score": 0.2910429835319519,
+      "siglip_score": 0.2304977476596832,
+      "delta_clip": 0.0,
+      "delta_siglip": 0.0
+    },
+    {
+      "image_id": "flickr30k_test_024934",
+      "caption": "A man in a vibrant orange vest walks confidently down a cobblestone street, passing by a striking blue construction wall under a clear sky.",
+      "clip_score": 0.3036097884178161,
+      "siglip_score": 0.1867090463638305,
+      "delta_clip": 0.0,
+      "delta_siglip": 0.0
+    }
+  ]
+}

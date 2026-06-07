@@ -1,0 +1,117 @@
+{
+  "prompt": "Write a caption for this image.",
+  "prompt_id": "textgrad_7f3b4f879f",
+  "split_csv": "data/splits/flickr30k_main_seed1_test.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/test_selected/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/test_selected/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/test_selected/scores.csv",
+  "summary": {
+    "n": 150,
+    "mean_clip": 0.3183667421340942,
+    "mean_siglip": 0.18454093545675276,
+    "mean_caption_len": 27.053333333333335,
+    "generic_rate": 0.04,
+    "mean_delta_clip": -0.004457676211992897,
+    "mean_delta_siglip": -0.007472327550252281,
+    "clip_win_rate": 0.35333333333333333,
+    "siglip_win_rate": 0.36333333333333334
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_022515",
+      "caption": "A man in a vibrant Hawaiian shirt captures a candid moment on his phone as he walks through a bustling, neon-lit street filled with people and lively storefronts.",
+      "clip_score": 0.3205349445343017,
+      "siglip_score": 0.2201322615146637,
+      "delta_clip": -0.0889972448348999,
+      "delta_siglip": -0.03930088877677912
+    },
+    {
+      "image_id": "flickr30k_test_028914",
+      "caption": "A hiker stands on a forest trail overlooking a serene lake, accompanied by a loyal German Shepherd, with misty mountains and towering evergreens framing the peaceful wilderness scene.",
+      "clip_score": 0.2892757356166839,
+      "siglip_score": 0.1685205101966858,
+      "delta_clip": -0.0712397992610932,
+      "delta_siglip": -0.0477792471647262
+    },
+    {
+      "image_id": "flickr30k_test_016016",
+      "caption": "A vibrant, energetic dance performance unfolds under a covered stage, with dancers in colorful, flowing attire mid-motion—hair whipping, skirts swirling, and expressions of pure joy and freedom as they move in unison to the rhythm.",
+      "clip_score": 0.2789490818977356,
+      "siglip_score": 0.1436627507209777,
+      "delta_clip": -0.0647193193435669,
+      "delta_siglip": -0.03658595681190499
+    },
+    {
+      "image_id": "flickr30k_test_005620",
+      "caption": "Two friends laugh joyfully at Commercial Drive Station, sipping from bright yellow cups of coffee or tea, capturing a moment of pure, carefree happiness on their commute.",
+      "clip_score": 0.3267326056957245,
+      "siglip_score": 0.2455095648765564,
+      "delta_clip": -0.06300127506256104,
+      "delta_siglip": -0.043267905712127686
+    },
+    {
+      "image_id": "flickr30k_test_028504",
+      "caption": "Intense rugby tackle: players grapple for possession as one athlete clutches the ball while being brought down by opponents on a vibrant green field.",
+      "clip_score": 0.2894813418388366,
+      "siglip_score": 0.1351143419742584,
+      "delta_clip": -0.0592399537563324,
+      "delta_siglip": -0.025303274393081693
+    },
+    {
+      "image_id": "flickr30k_test_004358",
+      "caption": "A joyful Valentine’s Day celebration unfolds on a cobblestone street, as a person in a leather jacket holds a cluster of heart-shaped balloons, while another person rides a bicycle past, carrying a bag and a tool — a charming, everyday moment captured with a touch of romance and urban life.",
+      "clip_score": 0.3375690579414367,
+      "siglip_score": 0.2189873605966568,
+      "delta_clip": -0.05430322885513311,
+      "delta_siglip": -0.016539961099624606
+    },
+    {
+      "image_id": "flickr30k_test_017636",
+      "caption": "Runners cross the finish line in a vibrant autumn marathon, cheered on by spectators and bathed in the golden hues of falling leaves.",
+      "clip_score": 0.305048406124115,
+      "siglip_score": 0.1576783657073974,
+      "delta_clip": -0.052157849073410034,
+      "delta_siglip": -0.028248324990272494
+    },
+    {
+      "image_id": "flickr30k_test_006566",
+      "caption": "A group of friends gathers around a wooden picnic table, laughing and toasting with green glass bottles under a bright, tree-lined sky — capturing the carefree joy of a summer get-together.",
+      "clip_score": 0.2865707874298095,
+      "siglip_score": 0.1592793017625808,
+      "delta_clip": -0.050565421581268366,
+      "delta_siglip": -0.014279916882515009
+    },
+    {
+      "image_id": "flickr30k_test_018373",
+      "caption": "Two men chatting outdoors on a sunny day, surrounded by greenery and urban scenery in the background.",
+      "clip_score": 0.2595000863075256,
+      "siglip_score": 0.1776662468910217,
+      "delta_clip": -0.04966175556182861,
+      "delta_siglip": -0.0311534702777862
+    },
+    {
+      "image_id": "flickr30k_test_006980",
+      "caption": "A joyful little girl with colorful face paint savors a fluffy blue cotton candy, her bare feet and playful sandals adding to the carefree summer vibe.",
+      "clip_score": 0.3031434118747711,
+      "siglip_score": 0.2476036995649337,
+      "delta_clip": -0.04828718304634089,
+      "delta_siglip": 0.013309374451637185
+    },
+    {
+      "image_id": "flickr30k_test_002774",
+      "caption": "A shirtless skateboarder with a chiseled physique and a chain necklace leans into a trick on a rusty ramp, his focused expression and dynamic pose capturing the raw energy of street skateboarding under a canopy of green trees.",
+      "clip_score": 0.329281747341156,
+      "siglip_score": 0.160800352692604,
+      "delta_clip": -0.04657596349716181,
+      "delta_siglip": -0.05449195206165319
+    },
+    {
+      "image_id": "flickr30k_test_027129",
+      "caption": "A group of hikers treks along a winding dirt path through a lush, green forest, with one woman in red pants and a backpack leading the way.",
+      "clip_score": 0.2777541279792785,
+      "siglip_score": 0.1585741192102432,
+      "delta_clip": -0.046479701995849665,
+      "delta_siglip": -0.026984348893165616
+    }
+  ]
+}

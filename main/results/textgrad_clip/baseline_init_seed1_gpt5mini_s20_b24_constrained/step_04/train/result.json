@@ -1,0 +1,117 @@
+{
+  "prompt": "Output exactly one literal, factual sentence (8–16 words) describing only visible content in the image. Do not add labels, examples, lists, or extra text. Structure the sentence as: Primary subject (noun) + at least one high‑signal attribute + action/pose and, if visible, a short spatial/location phrase or nearby object. Place at least one high‑signal token within the first five words; include a second high‑signal token when it is clearly visible. High‑signal tokens = specific object class (e.g., electric guitar, fountain), visible color or pattern, clear count, clothing/accessory, or legible text/logo (include exact text verbatim). Keep attribute immediately before the noun (e.g., “red bicycle,” not “bicycle that is red”); short compound attributes or hyphenation (e.g., “dark-blue jacket,” “red-and-white flag”) are allowed when both attributes are visible. Prefer specific nouns (saxophone, motorbike, banner) over generic terms. Use present‑participle verbs for visible actions (riding, holding, standing). If a distinct nearby object or surface is visible, include a short spatial token (next to, on, in front of, near) to link them. Use Arabic numerals when each item is fully visible and separable; if more than three or indistinct use “several”; if uncertain, omit counts. Use “person” when gender/age/role is unclear; use “man,” “woman,” or “child” only when clearly visible. Do not infer unseen attributes (age, emotion, intent, relationships) and avoid figurative or subjective language. Output exactly one short sentence only — no extra text.",
+  "prompt_id": "textgrad_dd84b16e68",
+  "split_csv": "data/splits/flickr30k_main_seed1_train.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_04/train/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_04/train/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_04/train/scores.csv",
+  "summary": {
+    "n": 24,
+    "mean_clip": 0.3110409540434678,
+    "mean_siglip": 0.18835515280564621,
+    "mean_caption_len": 10.958333333333334,
+    "generic_rate": 0.0,
+    "mean_delta_clip": -0.012305896729230879,
+    "mean_delta_siglip": -0.004107302365203702,
+    "clip_win_rate": 0.3333333333333333,
+    "siglip_win_rate": 0.5
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_024011",
+      "caption": "Several dancers in red-and-white costumes stand on a street near Radio City Music Hall.",
+      "clip_score": 0.3172597289085388,
+      "siglip_score": 0.1726686358451843,
+      "delta_clip": -0.0641946792602539,
+      "delta_siglip": 6.662309169769287e-05
+    },
+    {
+      "image_id": "flickr30k_test_002067",
+      "caption": "Man holding yellow electric guitar stands near black amplifier on sidewalk.",
+      "clip_score": 0.2811368703842163,
+      "siglip_score": 0.1653148233890533,
+      "delta_clip": -0.052852630615234375,
+      "delta_siglip": -0.065354660153389
+    },
+    {
+      "image_id": "flickr30k_test_015736",
+      "caption": "White-and-brown dog with red collar walks through shallow water.",
+      "clip_score": 0.2965657413005829,
+      "siglip_score": 0.1786092221736908,
+      "delta_clip": -0.051179856061935425,
+      "delta_siglip": -0.031161159276962197
+    },
+    {
+      "image_id": "flickr30k_test_015474",
+      "caption": "Woman in white hat paddles wooden boat near riverbank shops.",
+      "clip_score": 0.286895215511322,
+      "siglip_score": 0.1708390265703201,
+      "delta_clip": -0.041888207197189276,
+      "delta_siglip": 7.842481136319246e-05
+    },
+    {
+      "image_id": "flickr30k_test_024978",
+      "caption": "Man in blue jacket sits on wooden chair near blue car.",
+      "clip_score": 0.2969163656234741,
+      "siglip_score": 0.1891038119792938,
+      "delta_clip": -0.03720894455909729,
+      "delta_siglip": -0.0559470653533935
+    },
+    {
+      "image_id": "flickr30k_test_028178",
+      "caption": "Man with glasses and red shirt holding trumpet near lit tree.",
+      "clip_score": 0.3513312637805938,
+      "siglip_score": 0.2308997213840484,
+      "delta_clip": -0.0363937914371491,
+      "delta_siglip": 0.0062233805656433105
+    },
+    {
+      "image_id": "flickr30k_test_021750",
+      "caption": "Two women holding takeout containers embrace near a red plastic bag.",
+      "clip_score": 0.295402318239212,
+      "siglip_score": 0.2281955182552337,
+      "delta_clip": -0.028533607721328735,
+      "delta_siglip": 0.06132028996944422
+    },
+    {
+      "image_id": "flickr30k_test_021351",
+      "caption": "Woman in black holding violin stands near colorful paintings.",
+      "clip_score": 0.3178067207336426,
+      "siglip_score": 0.2040580809116363,
+      "delta_clip": -0.0275629460811615,
+      "delta_siglip": -0.028173521161079407
+    },
+    {
+      "image_id": "flickr30k_test_003349",
+      "caption": "Child in red jacket holding bag stands near LOEWE store window.",
+      "clip_score": 0.3391528725624084,
+      "siglip_score": 0.2274801135063171,
+      "delta_clip": -0.02484577894210821,
+      "delta_siglip": -0.0480774641036987
+    },
+    {
+      "image_id": "flickr30k_test_024370",
+      "caption": "Several people cross street near large green trees.",
+      "clip_score": 0.2400005161762237,
+      "siglip_score": 0.0994011759757995,
+      "delta_clip": -0.024558752775192316,
+      "delta_siglip": -0.0006397739052772938
+    },
+    {
+      "image_id": "flickr30k_test_027768",
+      "caption": "Red-haired woman in red sweatshirt holding beige pillow.",
+      "clip_score": 0.322705864906311,
+      "siglip_score": 0.2144071161746978,
+      "delta_clip": -0.019482076168060303,
+      "delta_siglip": -0.017410203814506614
+    },
+    {
+      "image_id": "flickr30k_test_025138",
+      "caption": "Woman in black beanie standing near railing with group.",
+      "clip_score": 0.2626990079879761,
+      "siglip_score": 0.1678485572338104,
+      "delta_clip": -0.01862135529518122,
+      "delta_siglip": 0.019240334630012484
+    }
+  ]
+}

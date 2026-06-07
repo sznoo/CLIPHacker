@@ -1,0 +1,625 @@
+split_id,method_id,run_id,order,dataset_index,image_id,image_relpath,reference_captions,prompt_id,prompt_name,prompt_text,caption,candidate_id,selected,model,temperature,top_p,max_new_tokens,generation_config
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_3a61d8f645,2,27768,flickr30k_test_027768,images/flickr30k/flickr30k_test_027768.jpg,"[""The redheaded girl giggles happily as she swings her pillow at her opponent during a recent pillow fight."", ""A lady in a red shirt with red-hair laugh while throwing a pillow over her left shoulder."", ""A woman with red-hair swings a pillow and laughs."", ""A young redheaded woman laughs at something."", ""A redhead girl in a pillow fight.""]",textgrad_3a61d8f645,TextGrad Step 19,"Generate exactly one short, literal, factual caption: one grammatically correct sentence describing only visibly present content. Output exactly one sentence and nothing else. Sentence length: 8–12 words (prefer 9–11). Follow these rules in order:
+
+1) Subject selection and salience: compute salience = area_fraction × detector_confidence × (1 + center_bonus) + token_bonus. center_bonus = 0.10 if the detection centroid lies inside the central 25% of the image area, otherwise 0. token_bonus = 0.0015 applied only when a candidate contains a robust high‑signal token (see rules 3–5). Select the detection with highest salience. If two candidates’ saliences are within 10%, prefer (in order) a person, then the larger bbox area, then the more centered bbox, then the token_bonus winner.
+
+2) Detection usability: treat a detection as usable only if salience ≥ 0.002. Allow smaller detections only when there is strong readable text or a clearly visible numeral: i.e., OCR_confidence ≥ 0.75 and OCR_bbox_area ≥ 0.002, or a numeral detection_confidence ≥ 0.80 and bbox_area ≥ 0.002.
+
+3) High‑signal tokens and placement: high‑signal tokens include visible colors or patterns, concrete multiword classes (e.g., ""stop sign"", ""double‑decker bus""), clear Arabic numerals, clothing/accessory names (e.g., ""baseball cap""), and short readable logos/text (1–3 tokens). Require at least one high‑signal token to appear within the first three content words of the sentence (leading articles ""a/an/the"" do not count as content words). If two distinct high‑signal tokens are visible, place the second no later than the fourth content word.
+
+4) OCR/text copying: copy short readable text/logos (1–3 tokens) only if (OCR_confidence ≥ 0.60 and OCR_bbox_area ≥ 0.005) OR (OCR_confidence ≥ 0.75 and OCR_bbox_area ≥ 0.002). Never copy runs of ≥5 consecutive digits or low‑confidence/unreadable text. If OCR is borderline, describe generically (e.g., ""sign with letters"") instead of copying uncertain text.
+
+5) Token gating for subject selection: apply token_bonus only when the token’s bbox_area ≥ 0.005 and token/OCR confidence meets thresholds in rule 4. The token_bonus may break ties but must not allow tiny, low‑confidence tokens to win.
+
+6) Second‑object allowance: you may append one compact post‑nominal relation up to 4 tokens (for example, ""on the sidewalk"", ""with number 7"") only if that relation introduces a distinct high‑signal token. Do not chain relations or add longer descriptive chains.
+
+7) Wording, grammar, and tense: prefer starting with a high‑signal modifier plus class (e.g., ""red bicycle"", ""two dogs"", ""striped shirt""). Use present‑tense active verbs when an action/posture is clearly visible (walking, holding, jumping); otherwise use ""is/are."" Use Arabic numerals for visible counts that meet visibility rules. Allow leading determiners; count content words excluding them.
+
+8) Safety and literalness: do not invent unseen attributes, emotions, intentions, dialogue, or unreadable text. Avoid generic placeholders like ""object"" or a vague ""person"" when a more specific visible class, color, number, or logo is present.
+
+9) Simple failure checks: if the chosen subject bbox_area < 0.002 but another detection’s bbox_area > 1.5× larger, switch to the larger detection. Never assert a readable string unless OCR thresholds in rule 4 are met.
+
+10) Short guidance and examples (keep style concise):
+- Prefer concrete, visually discriminative tokens: colors, multiword classes, clothing/accessories, visible numerals, readable logos.
+- Good examples: ""red bicycle is parked on the sidewalk."" ""two dogs stand in shallow water.""
+- Bad examples to avoid: ""object on left."" ""man happy.""
+
+Final constraints: one sentence only, 8–12 words (prefer 9–11), literal description of visible content, include a required high‑signal token early (within first three content words), follow the OCR and usability thresholds above, and do not add extra commentary or multiple outputs.",Red-haired person in red sweatshirt holds pillow over head.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_3a61d8f645,7,3863,flickr30k_test_003863,images/flickr30k/flickr30k_test_003863.jpg,"[""A group of six people have jumped into the air in the middle of nowhere and one is catching a ball."", ""A group of people are jumping into the air with their arms held high."", ""Six people are jumping in the air, one of them throwing a ball."", ""A group of people in a desert jumping, one throwing a ball."", ""Six people jump for ball.""]",textgrad_3a61d8f645,TextGrad Step 19,"Generate exactly one short, literal, factual caption: one grammatically correct sentence describing only visibly present content. Output exactly one sentence and nothing else. Sentence length: 8–12 words (prefer 9–11). Follow these rules in order:
+
+1) Subject selection and salience: compute salience = area_fraction × detector_confidence × (1 + center_bonus) + token_bonus. center_bonus = 0.10 if the detection centroid lies inside the central 25% of the image area, otherwise 0. token_bonus = 0.0015 applied only when a candidate contains a robust high‑signal token (see rules 3–5). Select the detection with highest salience. If two candidates’ saliences are within 10%, prefer (in order) a person, then the larger bbox area, then the more centered bbox, then the token_bonus winner.
+
+2) Detection usability: treat a detection as usable only if salience ≥ 0.002. Allow smaller detections only when there is strong readable text or a clearly visible numeral: i.e., OCR_confidence ≥ 0.75 and OCR_bbox_area ≥ 0.002, or a numeral detection_confidence ≥ 0.80 and bbox_area ≥ 0.002.
+
+3) High‑signal tokens and placement: high‑signal tokens include visible colors or patterns, concrete multiword classes (e.g., ""stop sign"", ""double‑decker bus""), clear Arabic numerals, clothing/accessory names (e.g., ""baseball cap""), and short readable logos/text (1–3 tokens). Require at least one high‑signal token to appear within the first three content words of the sentence (leading articles ""a/an/the"" do not count as content words). If two distinct high‑signal tokens are visible, place the second no later than the fourth content word.
+
+4) OCR/text copying: copy short readable text/logos (1–3 tokens) only if (OCR_confidence ≥ 0.60 and OCR_bbox_area ≥ 0.005) OR (OCR_confidence ≥ 0.75 and OCR_bbox_area ≥ 0.002). Never copy runs of ≥5 consecutive digits or low‑confidence/unreadable text. If OCR is borderline, describe generically (e.g., ""sign with letters"") instead of copying uncertain text.
+
+5) Token gating for subject selection: apply token_bonus only when the token’s bbox_area ≥ 0.005 and token/OCR confidence meets thresholds in rule 4. The token_bonus may break ties but must not allow tiny, low‑confidence tokens to win.
+
+6) Second‑object allowance: you may append one compact post‑nominal relation up to 4 tokens (for example, ""on the sidewalk"", ""with number 7"") only if that relation introduces a distinct high‑signal token. Do not chain relations or add longer descriptive chains.
+
+7) Wording, grammar, and tense: prefer starting with a high‑signal modifier plus class (e.g., ""red bicycle"", ""two dogs"", ""striped shirt""). Use present‑tense active verbs when an action/posture is clearly visible (walking, holding, jumping); otherwise use ""is/are."" Use Arabic numerals for visible counts that meet visibility rules. Allow leading determiners; count content words excluding them.
+
+8) Safety and literalness: do not invent unseen attributes, emotions, intentions, dialogue, or unreadable text. Avoid generic placeholders like ""object"" or a vague ""person"" when a more specific visible class, color, number, or logo is present.
+
+9) Simple failure checks: if the chosen subject bbox_area < 0.002 but another detection’s bbox_area > 1.5× larger, switch to the larger detection. Never assert a readable string unless OCR thresholds in rule 4 are met.
+
+10) Short guidance and examples (keep style concise):
+- Prefer concrete, visually discriminative tokens: colors, multiword classes, clothing/accessories, visible numerals, readable logos.
+- Good examples: ""red bicycle is parked on the sidewalk."" ""two dogs stand in shallow water.""
+- Bad examples to avoid: ""object on left."" ""man happy.""
+
+Final constraints: one sentence only, 8–12 words (prefer 9–11), literal description of visible content, include a required high‑signal token early (within first three content words), follow the OCR and usability thresholds above, and do not add extra commentary or multiple outputs.","Five people jump mid-air on salt flats, tossing a yellow ball.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_3a61d8f645,8,16234,flickr30k_test_016234,images/flickr30k/flickr30k_test_016234.jpg,"[""The young child is yelling into the microphone, while other children watch."", ""A young boy vocalizes in to a microphone held by a blond woman in black."", ""A young child is in front of a microphone as other people are watching."", ""Little kid is taking a bit of something from a puppet."", ""A boy yells into a microphone held by a woman.""]",textgrad_3a61d8f645,TextGrad Step 19,"Generate exactly one short, literal, factual caption: one grammatically correct sentence describing only visibly present content. Output exactly one sentence and nothing else. Sentence length: 8–12 words (prefer 9–11). Follow these rules in order:
+
+1) Subject selection and salience: compute salience = area_fraction × detector_confidence × (1 + center_bonus) + token_bonus. center_bonus = 0.10 if the detection centroid lies inside the central 25% of the image area, otherwise 0. token_bonus = 0.0015 applied only when a candidate contains a robust high‑signal token (see rules 3–5). Select the detection with highest salience. If two candidates’ saliences are within 10%, prefer (in order) a person, then the larger bbox area, then the more centered bbox, then the token_bonus winner.
+
+2) Detection usability: treat a detection as usable only if salience ≥ 0.002. Allow smaller detections only when there is strong readable text or a clearly visible numeral: i.e., OCR_confidence ≥ 0.75 and OCR_bbox_area ≥ 0.002, or a numeral detection_confidence ≥ 0.80 and bbox_area ≥ 0.002.
+
+3) High‑signal tokens and placement: high‑signal tokens include visible colors or patterns, concrete multiword classes (e.g., ""stop sign"", ""double‑decker bus""), clear Arabic numerals, clothing/accessory names (e.g., ""baseball cap""), and short readable logos/text (1–3 tokens). Require at least one high‑signal token to appear within the first three content words of the sentence (leading articles ""a/an/the"" do not count as content words). If two distinct high‑signal tokens are visible, place the second no later than the fourth content word.
+
+4) OCR/text copying: copy short readable text/logos (1–3 tokens) only if (OCR_confidence ≥ 0.60 and OCR_bbox_area ≥ 0.005) OR (OCR_confidence ≥ 0.75 and OCR_bbox_area ≥ 0.002). Never copy runs of ≥5 consecutive digits or low‑confidence/unreadable text. If OCR is borderline, describe generically (e.g., ""sign with letters"") instead of copying uncertain text.
+
+5) Token gating for subject selection: apply token_bonus only when the token’s bbox_area ≥ 0.005 and token/OCR confidence meets thresholds in rule 4. The token_bonus may break ties but must not allow tiny, low‑confidence tokens to win.
+
+6) Second‑object allowance: you may append one compact post‑nominal relation up to 4 tokens (for example, ""on the sidewalk"", ""with number 7"") only if that relation introduces a distinct high‑signal token. Do not chain relations or add longer descriptive chains.
+
+7) Wording, grammar, and tense: prefer starting with a high‑signal modifier plus class (e.g., ""red bicycle"", ""two dogs"", ""striped shirt""). Use present‑tense active verbs when an action/posture is clearly visible (walking, holding, jumping); otherwise use ""is/are."" Use Arabic numerals for visible counts that meet visibility rules. Allow leading determiners; count content words excluding them.
+
+8) Safety and literalness: do not invent unseen attributes, emotions, intentions, dialogue, or unreadable text. Avoid generic placeholders like ""object"" or a vague ""person"" when a more specific visible class, color, number, or logo is present.
+
+9) Simple failure checks: if the chosen subject bbox_area < 0.002 but another detection’s bbox_area > 1.5× larger, switch to the larger detection. Never assert a readable string unless OCR thresholds in rule 4 are met.
+
+10) Short guidance and examples (keep style concise):
+- Prefer concrete, visually discriminative tokens: colors, multiword classes, clothing/accessories, visible numerals, readable logos.
+- Good examples: ""red bicycle is parked on the sidewalk."" ""two dogs stand in shallow water.""
+- Bad examples to avoid: ""object on left."" ""man happy.""
+
+Final constraints: one sentence only, 8–12 words (prefer 9–11), literal description of visible content, include a required high‑signal token early (within first three content words), follow the OCR and usability thresholds above, and do not add extra commentary or multiple outputs.",Striped-shirt child laughs while puppeteer manipulates marionette.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_3a61d8f645,14,25844,flickr30k_test_025844,images/flickr30k/flickr30k_test_025844.jpg,"[""The two boys, one in orange the other in teal, wrestle in the sand."", ""Two boys are playing in the sand at a playground."", ""Two young boys are wrestling in a sandpit."", ""Two boys wrestle together in the sand."", ""Two boys tussle in the sand at a park.""]",textgrad_3a61d8f645,TextGrad Step 19,"Generate exactly one short, literal, factual caption: one grammatically correct sentence describing only visibly present content. Output exactly one sentence and nothing else. Sentence length: 8–12 words (prefer 9–11). Follow these rules in order:
+
+1) Subject selection and salience: compute salience = area_fraction × detector_confidence × (1 + center_bonus) + token_bonus. center_bonus = 0.10 if the detection centroid lies inside the central 25% of the image area, otherwise 0. token_bonus = 0.0015 applied only when a candidate contains a robust high‑signal token (see rules 3–5). Select the detection with highest salience. If two candidates’ saliences are within 10%, prefer (in order) a person, then the larger bbox area, then the more centered bbox, then the token_bonus winner.
+
+2) Detection usability: treat a detection as usable only if salience ≥ 0.002. Allow smaller detections only when there is strong readable text or a clearly visible numeral: i.e., OCR_confidence ≥ 0.75 and OCR_bbox_area ≥ 0.002, or a numeral detection_confidence ≥ 0.80 and bbox_area ≥ 0.002.
+
+3) High‑signal tokens and placement: high‑signal tokens include visible colors or patterns, concrete multiword classes (e.g., ""stop sign"", ""double‑decker bus""), clear Arabic numerals, clothing/accessory names (e.g., ""baseball cap""), and short readable logos/text (1–3 tokens). Require at least one high‑signal token to appear within the first three content words of the sentence (leading articles ""a/an/the"" do not count as content words). If two distinct high‑signal tokens are visible, place the second no later than the fourth content word.
+
+4) OCR/text copying: copy short readable text/logos (1–3 tokens) only if (OCR_confidence ≥ 0.60 and OCR_bbox_area ≥ 0.005) OR (OCR_confidence ≥ 0.75 and OCR_bbox_area ≥ 0.002). Never copy runs of ≥5 consecutive digits or low‑confidence/unreadable text. If OCR is borderline, describe generically (e.g., ""sign with letters"") instead of copying uncertain text.
+
+5) Token gating for subject selection: apply token_bonus only when the token’s bbox_area ≥ 0.005 and token/OCR confidence meets thresholds in rule 4. The token_bonus may break ties but must not allow tiny, low‑confidence tokens to win.
+
+6) Second‑object allowance: you may append one compact post‑nominal relation up to 4 tokens (for example, ""on the sidewalk"", ""with number 7"") only if that relation introduces a distinct high‑signal token. Do not chain relations or add longer descriptive chains.
+
+7) Wording, grammar, and tense: prefer starting with a high‑signal modifier plus class (e.g., ""red bicycle"", ""two dogs"", ""striped shirt""). Use present‑tense active verbs when an action/posture is clearly visible (walking, holding, jumping); otherwise use ""is/are."" Use Arabic numerals for visible counts that meet visibility rules. Allow leading determiners; count content words excluding them.
+
+8) Safety and literalness: do not invent unseen attributes, emotions, intentions, dialogue, or unreadable text. Avoid generic placeholders like ""object"" or a vague ""person"" when a more specific visible class, color, number, or logo is present.
+
+9) Simple failure checks: if the chosen subject bbox_area < 0.002 but another detection’s bbox_area > 1.5× larger, switch to the larger detection. Never assert a readable string unless OCR thresholds in rule 4 are met.
+
+10) Short guidance and examples (keep style concise):
+- Prefer concrete, visually discriminative tokens: colors, multiword classes, clothing/accessories, visible numerals, readable logos.
+- Good examples: ""red bicycle is parked on the sidewalk."" ""two dogs stand in shallow water.""
+- Bad examples to avoid: ""object on left."" ""man happy.""
+
+Final constraints: one sentence only, 8–12 words (prefer 9–11), literal description of visible content, include a required high‑signal token early (within first three content words), follow the OCR and usability thresholds above, and do not add extra commentary or multiple outputs.",Orange-shirted boy holds blonde child in sandy area.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_3a61d8f645,18,928,flickr30k_test_000928,images/flickr30k/flickr30k_test_000928.jpg,"[""A woman with a red jacket and her companion eating snacks."", ""A young man and woman enjoy some ribs in the evening."", ""Two people are eating barbecue ribs at night."", ""A man and a woman about to eat."", ""These two people are eating.""]",textgrad_3a61d8f645,TextGrad Step 19,"Generate exactly one short, literal, factual caption: one grammatically correct sentence describing only visibly present content. Output exactly one sentence and nothing else. Sentence length: 8–12 words (prefer 9–11). Follow these rules in order:
+
+1) Subject selection and salience: compute salience = area_fraction × detector_confidence × (1 + center_bonus) + token_bonus. center_bonus = 0.10 if the detection centroid lies inside the central 25% of the image area, otherwise 0. token_bonus = 0.0015 applied only when a candidate contains a robust high‑signal token (see rules 3–5). Select the detection with highest salience. If two candidates’ saliences are within 10%, prefer (in order) a person, then the larger bbox area, then the more centered bbox, then the token_bonus winner.
+
+2) Detection usability: treat a detection as usable only if salience ≥ 0.002. Allow smaller detections only when there is strong readable text or a clearly visible numeral: i.e., OCR_confidence ≥ 0.75 and OCR_bbox_area ≥ 0.002, or a numeral detection_confidence ≥ 0.80 and bbox_area ≥ 0.002.
+
+3) High‑signal tokens and placement: high‑signal tokens include visible colors or patterns, concrete multiword classes (e.g., ""stop sign"", ""double‑decker bus""), clear Arabic numerals, clothing/accessory names (e.g., ""baseball cap""), and short readable logos/text (1–3 tokens). Require at least one high‑signal token to appear within the first three content words of the sentence (leading articles ""a/an/the"" do not count as content words). If two distinct high‑signal tokens are visible, place the second no later than the fourth content word.
+
+4) OCR/text copying: copy short readable text/logos (1–3 tokens) only if (OCR_confidence ≥ 0.60 and OCR_bbox_area ≥ 0.005) OR (OCR_confidence ≥ 0.75 and OCR_bbox_area ≥ 0.002). Never copy runs of ≥5 consecutive digits or low‑confidence/unreadable text. If OCR is borderline, describe generically (e.g., ""sign with letters"") instead of copying uncertain text.
+
+5) Token gating for subject selection: apply token_bonus only when the token’s bbox_area ≥ 0.005 and token/OCR confidence meets thresholds in rule 4. The token_bonus may break ties but must not allow tiny, low‑confidence tokens to win.
+
+6) Second‑object allowance: you may append one compact post‑nominal relation up to 4 tokens (for example, ""on the sidewalk"", ""with number 7"") only if that relation introduces a distinct high‑signal token. Do not chain relations or add longer descriptive chains.
+
+7) Wording, grammar, and tense: prefer starting with a high‑signal modifier plus class (e.g., ""red bicycle"", ""two dogs"", ""striped shirt""). Use present‑tense active verbs when an action/posture is clearly visible (walking, holding, jumping); otherwise use ""is/are."" Use Arabic numerals for visible counts that meet visibility rules. Allow leading determiners; count content words excluding them.
+
+8) Safety and literalness: do not invent unseen attributes, emotions, intentions, dialogue, or unreadable text. Avoid generic placeholders like ""object"" or a vague ""person"" when a more specific visible class, color, number, or logo is present.
+
+9) Simple failure checks: if the chosen subject bbox_area < 0.002 but another detection’s bbox_area > 1.5× larger, switch to the larger detection. Never assert a readable string unless OCR thresholds in rule 4 are met.
+
+10) Short guidance and examples (keep style concise):
+- Prefer concrete, visually discriminative tokens: colors, multiword classes, clothing/accessories, visible numerals, readable logos.
+- Good examples: ""red bicycle is parked on the sidewalk."" ""two dogs stand in shallow water.""
+- Bad examples to avoid: ""object on left."" ""man happy.""
+
+Final constraints: one sentence only, 8–12 words (prefer 9–11), literal description of visible content, include a required high‑signal token early (within first three content words), follow the OCR and usability thresholds above, and do not add extra commentary or multiple outputs.",Man in black Rolling Stones shirt holds food.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_3a61d8f645,23,19904,flickr30k_test_019904,images/flickr30k/flickr30k_test_019904.jpg,"[""The man in the tan jacket is taking large steps as he walks past the off white building."", ""A well-dressed, shaven-head young man strides through railings past a restaurant."", ""A man wearing a tan jacket walks into Le Mignon in the afternoon."", ""A man walking across a bridge near a steak restaurant."", ""A bald man walking on a bridge.""]",textgrad_3a61d8f645,TextGrad Step 19,"Generate exactly one short, literal, factual caption: one grammatically correct sentence describing only visibly present content. Output exactly one sentence and nothing else. Sentence length: 8–12 words (prefer 9–11). Follow these rules in order:
+
+1) Subject selection and salience: compute salience = area_fraction × detector_confidence × (1 + center_bonus) + token_bonus. center_bonus = 0.10 if the detection centroid lies inside the central 25% of the image area, otherwise 0. token_bonus = 0.0015 applied only when a candidate contains a robust high‑signal token (see rules 3–5). Select the detection with highest salience. If two candidates’ saliences are within 10%, prefer (in order) a person, then the larger bbox area, then the more centered bbox, then the token_bonus winner.
+
+2) Detection usability: treat a detection as usable only if salience ≥ 0.002. Allow smaller detections only when there is strong readable text or a clearly visible numeral: i.e., OCR_confidence ≥ 0.75 and OCR_bbox_area ≥ 0.002, or a numeral detection_confidence ≥ 0.80 and bbox_area ≥ 0.002.
+
+3) High‑signal tokens and placement: high‑signal tokens include visible colors or patterns, concrete multiword classes (e.g., ""stop sign"", ""double‑decker bus""), clear Arabic numerals, clothing/accessory names (e.g., ""baseball cap""), and short readable logos/text (1–3 tokens). Require at least one high‑signal token to appear within the first three content words of the sentence (leading articles ""a/an/the"" do not count as content words). If two distinct high‑signal tokens are visible, place the second no later than the fourth content word.
+
+4) OCR/text copying: copy short readable text/logos (1–3 tokens) only if (OCR_confidence ≥ 0.60 and OCR_bbox_area ≥ 0.005) OR (OCR_confidence ≥ 0.75 and OCR_bbox_area ≥ 0.002). Never copy runs of ≥5 consecutive digits or low‑confidence/unreadable text. If OCR is borderline, describe generically (e.g., ""sign with letters"") instead of copying uncertain text.
+
+5) Token gating for subject selection: apply token_bonus only when the token’s bbox_area ≥ 0.005 and token/OCR confidence meets thresholds in rule 4. The token_bonus may break ties but must not allow tiny, low‑confidence tokens to win.
+
+6) Second‑object allowance: you may append one compact post‑nominal relation up to 4 tokens (for example, ""on the sidewalk"", ""with number 7"") only if that relation introduces a distinct high‑signal token. Do not chain relations or add longer descriptive chains.
+
+7) Wording, grammar, and tense: prefer starting with a high‑signal modifier plus class (e.g., ""red bicycle"", ""two dogs"", ""striped shirt""). Use present‑tense active verbs when an action/posture is clearly visible (walking, holding, jumping); otherwise use ""is/are."" Use Arabic numerals for visible counts that meet visibility rules. Allow leading determiners; count content words excluding them.
+
+8) Safety and literalness: do not invent unseen attributes, emotions, intentions, dialogue, or unreadable text. Avoid generic placeholders like ""object"" or a vague ""person"" when a more specific visible class, color, number, or logo is present.
+
+9) Simple failure checks: if the chosen subject bbox_area < 0.002 but another detection’s bbox_area > 1.5× larger, switch to the larger detection. Never assert a readable string unless OCR thresholds in rule 4 are met.
+
+10) Short guidance and examples (keep style concise):
+- Prefer concrete, visually discriminative tokens: colors, multiword classes, clothing/accessories, visible numerals, readable logos.
+- Good examples: ""red bicycle is parked on the sidewalk."" ""two dogs stand in shallow water.""
+- Bad examples to avoid: ""object on left."" ""man happy.""
+
+Final constraints: one sentence only, 8–12 words (prefer 9–11), literal description of visible content, include a required high‑signal token early (within first three content words), follow the OCR and usability thresholds above, and do not add extra commentary or multiple outputs.",Man in tan jacket walks on metal bridge railing.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_3a61d8f645,27,22801,flickr30k_test_022801,images/flickr30k/flickr30k_test_022801.jpg,"[""People are walking down the street with vendors on the side on a beautiful, sunny day."", ""People are gathered at some kind of shop on the side of the street."", ""A boy with a yellow shirt and yellow do-rag walking through a town."", ""Multiple people are walking down a street at a street fair"", ""People walk down a street with shops along the way.""]",textgrad_3a61d8f645,TextGrad Step 19,"Generate exactly one short, literal, factual caption: one grammatically correct sentence describing only visibly present content. Output exactly one sentence and nothing else. Sentence length: 8–12 words (prefer 9–11). Follow these rules in order:
+
+1) Subject selection and salience: compute salience = area_fraction × detector_confidence × (1 + center_bonus) + token_bonus. center_bonus = 0.10 if the detection centroid lies inside the central 25% of the image area, otherwise 0. token_bonus = 0.0015 applied only when a candidate contains a robust high‑signal token (see rules 3–5). Select the detection with highest salience. If two candidates’ saliences are within 10%, prefer (in order) a person, then the larger bbox area, then the more centered bbox, then the token_bonus winner.
+
+2) Detection usability: treat a detection as usable only if salience ≥ 0.002. Allow smaller detections only when there is strong readable text or a clearly visible numeral: i.e., OCR_confidence ≥ 0.75 and OCR_bbox_area ≥ 0.002, or a numeral detection_confidence ≥ 0.80 and bbox_area ≥ 0.002.
+
+3) High‑signal tokens and placement: high‑signal tokens include visible colors or patterns, concrete multiword classes (e.g., ""stop sign"", ""double‑decker bus""), clear Arabic numerals, clothing/accessory names (e.g., ""baseball cap""), and short readable logos/text (1–3 tokens). Require at least one high‑signal token to appear within the first three content words of the sentence (leading articles ""a/an/the"" do not count as content words). If two distinct high‑signal tokens are visible, place the second no later than the fourth content word.
+
+4) OCR/text copying: copy short readable text/logos (1–3 tokens) only if (OCR_confidence ≥ 0.60 and OCR_bbox_area ≥ 0.005) OR (OCR_confidence ≥ 0.75 and OCR_bbox_area ≥ 0.002). Never copy runs of ≥5 consecutive digits or low‑confidence/unreadable text. If OCR is borderline, describe generically (e.g., ""sign with letters"") instead of copying uncertain text.
+
+5) Token gating for subject selection: apply token_bonus only when the token’s bbox_area ≥ 0.005 and token/OCR confidence meets thresholds in rule 4. The token_bonus may break ties but must not allow tiny, low‑confidence tokens to win.
+
+6) Second‑object allowance: you may append one compact post‑nominal relation up to 4 tokens (for example, ""on the sidewalk"", ""with number 7"") only if that relation introduces a distinct high‑signal token. Do not chain relations or add longer descriptive chains.
+
+7) Wording, grammar, and tense: prefer starting with a high‑signal modifier plus class (e.g., ""red bicycle"", ""two dogs"", ""striped shirt""). Use present‑tense active verbs when an action/posture is clearly visible (walking, holding, jumping); otherwise use ""is/are."" Use Arabic numerals for visible counts that meet visibility rules. Allow leading determiners; count content words excluding them.
+
+8) Safety and literalness: do not invent unseen attributes, emotions, intentions, dialogue, or unreadable text. Avoid generic placeholders like ""object"" or a vague ""person"" when a more specific visible class, color, number, or logo is present.
+
+9) Simple failure checks: if the chosen subject bbox_area < 0.002 but another detection’s bbox_area > 1.5× larger, switch to the larger detection. Never assert a readable string unless OCR thresholds in rule 4 are met.
+
+10) Short guidance and examples (keep style concise):
+- Prefer concrete, visually discriminative tokens: colors, multiword classes, clothing/accessories, visible numerals, readable logos.
+- Good examples: ""red bicycle is parked on the sidewalk."" ""two dogs stand in shallow water.""
+- Bad examples to avoid: ""object on left."" ""man happy.""
+
+Final constraints: one sentence only, 8–12 words (prefer 9–11), literal description of visible content, include a required high‑signal token early (within first three content words), follow the OCR and usability thresholds above, and do not add extra commentary or multiple outputs.",Yellow-shirted person walks on sidewalk near market stalls.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_3a61d8f645,30,23643,flickr30k_test_023643,images/flickr30k/flickr30k_test_023643.jpg,"[""A little girl in a red and white shirt stands next to some caricatures of celebrities at an art fair."", ""A little girl in a red print sundress walked through an outdoor artist display."", ""A little girl wearing red is standing in front of caricature"", ""A girls stands by a caricature artist's drawings."", ""Little girl posing for a caricature.""]",textgrad_3a61d8f645,TextGrad Step 19,"Generate exactly one short, literal, factual caption: one grammatically correct sentence describing only visibly present content. Output exactly one sentence and nothing else. Sentence length: 8–12 words (prefer 9–11). Follow these rules in order:
+
+1) Subject selection and salience: compute salience = area_fraction × detector_confidence × (1 + center_bonus) + token_bonus. center_bonus = 0.10 if the detection centroid lies inside the central 25% of the image area, otherwise 0. token_bonus = 0.0015 applied only when a candidate contains a robust high‑signal token (see rules 3–5). Select the detection with highest salience. If two candidates’ saliences are within 10%, prefer (in order) a person, then the larger bbox area, then the more centered bbox, then the token_bonus winner.
+
+2) Detection usability: treat a detection as usable only if salience ≥ 0.002. Allow smaller detections only when there is strong readable text or a clearly visible numeral: i.e., OCR_confidence ≥ 0.75 and OCR_bbox_area ≥ 0.002, or a numeral detection_confidence ≥ 0.80 and bbox_area ≥ 0.002.
+
+3) High‑signal tokens and placement: high‑signal tokens include visible colors or patterns, concrete multiword classes (e.g., ""stop sign"", ""double‑decker bus""), clear Arabic numerals, clothing/accessory names (e.g., ""baseball cap""), and short readable logos/text (1–3 tokens). Require at least one high‑signal token to appear within the first three content words of the sentence (leading articles ""a/an/the"" do not count as content words). If two distinct high‑signal tokens are visible, place the second no later than the fourth content word.
+
+4) OCR/text copying: copy short readable text/logos (1–3 tokens) only if (OCR_confidence ≥ 0.60 and OCR_bbox_area ≥ 0.005) OR (OCR_confidence ≥ 0.75 and OCR_bbox_area ≥ 0.002). Never copy runs of ≥5 consecutive digits or low‑confidence/unreadable text. If OCR is borderline, describe generically (e.g., ""sign with letters"") instead of copying uncertain text.
+
+5) Token gating for subject selection: apply token_bonus only when the token’s bbox_area ≥ 0.005 and token/OCR confidence meets thresholds in rule 4. The token_bonus may break ties but must not allow tiny, low‑confidence tokens to win.
+
+6) Second‑object allowance: you may append one compact post‑nominal relation up to 4 tokens (for example, ""on the sidewalk"", ""with number 7"") only if that relation introduces a distinct high‑signal token. Do not chain relations or add longer descriptive chains.
+
+7) Wording, grammar, and tense: prefer starting with a high‑signal modifier plus class (e.g., ""red bicycle"", ""two dogs"", ""striped shirt""). Use present‑tense active verbs when an action/posture is clearly visible (walking, holding, jumping); otherwise use ""is/are."" Use Arabic numerals for visible counts that meet visibility rules. Allow leading determiners; count content words excluding them.
+
+8) Safety and literalness: do not invent unseen attributes, emotions, intentions, dialogue, or unreadable text. Avoid generic placeholders like ""object"" or a vague ""person"" when a more specific visible class, color, number, or logo is present.
+
+9) Simple failure checks: if the chosen subject bbox_area < 0.002 but another detection’s bbox_area > 1.5× larger, switch to the larger detection. Never assert a readable string unless OCR thresholds in rule 4 are met.
+
+10) Short guidance and examples (keep style concise):
+- Prefer concrete, visually discriminative tokens: colors, multiword classes, clothing/accessories, visible numerals, readable logos.
+- Good examples: ""red bicycle is parked on the sidewalk."" ""two dogs stand in shallow water.""
+- Bad examples to avoid: ""object on left."" ""man happy.""
+
+Final constraints: one sentence only, 8–12 words (prefer 9–11), literal description of visible content, include a required high‑signal token early (within first three content words), follow the OCR and usability thresholds above, and do not add extra commentary or multiple outputs.",Young girl with pink headband smiles at camera under umbrella.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_3a61d8f645,37,10401,flickr30k_test_010401,images/flickr30k/flickr30k_test_010401.jpg,"[""A girl in a blue sweater with a white pattern is jumping into a pile of leaves."", ""A young girl is diving into a pile of brown leaves in the yard."", ""A girl in a sweater diving into a pile of leaves."", ""A girl is jumping into a pile of leaves."", ""A girl is jumping into a pile of leaves""]",textgrad_3a61d8f645,TextGrad Step 19,"Generate exactly one short, literal, factual caption: one grammatically correct sentence describing only visibly present content. Output exactly one sentence and nothing else. Sentence length: 8–12 words (prefer 9–11). Follow these rules in order:
+
+1) Subject selection and salience: compute salience = area_fraction × detector_confidence × (1 + center_bonus) + token_bonus. center_bonus = 0.10 if the detection centroid lies inside the central 25% of the image area, otherwise 0. token_bonus = 0.0015 applied only when a candidate contains a robust high‑signal token (see rules 3–5). Select the detection with highest salience. If two candidates’ saliences are within 10%, prefer (in order) a person, then the larger bbox area, then the more centered bbox, then the token_bonus winner.
+
+2) Detection usability: treat a detection as usable only if salience ≥ 0.002. Allow smaller detections only when there is strong readable text or a clearly visible numeral: i.e., OCR_confidence ≥ 0.75 and OCR_bbox_area ≥ 0.002, or a numeral detection_confidence ≥ 0.80 and bbox_area ≥ 0.002.
+
+3) High‑signal tokens and placement: high‑signal tokens include visible colors or patterns, concrete multiword classes (e.g., ""stop sign"", ""double‑decker bus""), clear Arabic numerals, clothing/accessory names (e.g., ""baseball cap""), and short readable logos/text (1–3 tokens). Require at least one high‑signal token to appear within the first three content words of the sentence (leading articles ""a/an/the"" do not count as content words). If two distinct high‑signal tokens are visible, place the second no later than the fourth content word.
+
+4) OCR/text copying: copy short readable text/logos (1–3 tokens) only if (OCR_confidence ≥ 0.60 and OCR_bbox_area ≥ 0.005) OR (OCR_confidence ≥ 0.75 and OCR_bbox_area ≥ 0.002). Never copy runs of ≥5 consecutive digits or low‑confidence/unreadable text. If OCR is borderline, describe generically (e.g., ""sign with letters"") instead of copying uncertain text.
+
+5) Token gating for subject selection: apply token_bonus only when the token’s bbox_area ≥ 0.005 and token/OCR confidence meets thresholds in rule 4. The token_bonus may break ties but must not allow tiny, low‑confidence tokens to win.
+
+6) Second‑object allowance: you may append one compact post‑nominal relation up to 4 tokens (for example, ""on the sidewalk"", ""with number 7"") only if that relation introduces a distinct high‑signal token. Do not chain relations or add longer descriptive chains.
+
+7) Wording, grammar, and tense: prefer starting with a high‑signal modifier plus class (e.g., ""red bicycle"", ""two dogs"", ""striped shirt""). Use present‑tense active verbs when an action/posture is clearly visible (walking, holding, jumping); otherwise use ""is/are."" Use Arabic numerals for visible counts that meet visibility rules. Allow leading determiners; count content words excluding them.
+
+8) Safety and literalness: do not invent unseen attributes, emotions, intentions, dialogue, or unreadable text. Avoid generic placeholders like ""object"" or a vague ""person"" when a more specific visible class, color, number, or logo is present.
+
+9) Simple failure checks: if the chosen subject bbox_area < 0.002 but another detection’s bbox_area > 1.5× larger, switch to the larger detection. Never assert a readable string unless OCR thresholds in rule 4 are met.
+
+10) Short guidance and examples (keep style concise):
+- Prefer concrete, visually discriminative tokens: colors, multiword classes, clothing/accessories, visible numerals, readable logos.
+- Good examples: ""red bicycle is parked on the sidewalk."" ""two dogs stand in shallow water.""
+- Bad examples to avoid: ""object on left."" ""man happy.""
+
+Final constraints: one sentence only, 8–12 words (prefer 9–11), literal description of visible content, include a required high‑signal token early (within first three content words), follow the OCR and usability thresholds above, and do not add extra commentary or multiple outputs.",Girl in blue sweater jumps toward pile of autumn leaves.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_3a61d8f645,42,17741,flickr30k_test_017741,images/flickr30k/flickr30k_test_017741.jpg,"[""Two people sit on a bench overlooking a vast amount of windows."", ""Two people sitting on a bench in front of a large window."", ""Two people sitting looking at a glass wall."", ""Two people are siting on a black bench."", ""Two women sitting on a bench.""]",textgrad_3a61d8f645,TextGrad Step 19,"Generate exactly one short, literal, factual caption: one grammatically correct sentence describing only visibly present content. Output exactly one sentence and nothing else. Sentence length: 8–12 words (prefer 9–11). Follow these rules in order:
+
+1) Subject selection and salience: compute salience = area_fraction × detector_confidence × (1 + center_bonus) + token_bonus. center_bonus = 0.10 if the detection centroid lies inside the central 25% of the image area, otherwise 0. token_bonus = 0.0015 applied only when a candidate contains a robust high‑signal token (see rules 3–5). Select the detection with highest salience. If two candidates’ saliences are within 10%, prefer (in order) a person, then the larger bbox area, then the more centered bbox, then the token_bonus winner.
+
+2) Detection usability: treat a detection as usable only if salience ≥ 0.002. Allow smaller detections only when there is strong readable text or a clearly visible numeral: i.e., OCR_confidence ≥ 0.75 and OCR_bbox_area ≥ 0.002, or a numeral detection_confidence ≥ 0.80 and bbox_area ≥ 0.002.
+
+3) High‑signal tokens and placement: high‑signal tokens include visible colors or patterns, concrete multiword classes (e.g., ""stop sign"", ""double‑decker bus""), clear Arabic numerals, clothing/accessory names (e.g., ""baseball cap""), and short readable logos/text (1–3 tokens). Require at least one high‑signal token to appear within the first three content words of the sentence (leading articles ""a/an/the"" do not count as content words). If two distinct high‑signal tokens are visible, place the second no later than the fourth content word.
+
+4) OCR/text copying: copy short readable text/logos (1–3 tokens) only if (OCR_confidence ≥ 0.60 and OCR_bbox_area ≥ 0.005) OR (OCR_confidence ≥ 0.75 and OCR_bbox_area ≥ 0.002). Never copy runs of ≥5 consecutive digits or low‑confidence/unreadable text. If OCR is borderline, describe generically (e.g., ""sign with letters"") instead of copying uncertain text.
+
+5) Token gating for subject selection: apply token_bonus only when the token’s bbox_area ≥ 0.005 and token/OCR confidence meets thresholds in rule 4. The token_bonus may break ties but must not allow tiny, low‑confidence tokens to win.
+
+6) Second‑object allowance: you may append one compact post‑nominal relation up to 4 tokens (for example, ""on the sidewalk"", ""with number 7"") only if that relation introduces a distinct high‑signal token. Do not chain relations or add longer descriptive chains.
+
+7) Wording, grammar, and tense: prefer starting with a high‑signal modifier plus class (e.g., ""red bicycle"", ""two dogs"", ""striped shirt""). Use present‑tense active verbs when an action/posture is clearly visible (walking, holding, jumping); otherwise use ""is/are."" Use Arabic numerals for visible counts that meet visibility rules. Allow leading determiners; count content words excluding them.
+
+8) Safety and literalness: do not invent unseen attributes, emotions, intentions, dialogue, or unreadable text. Avoid generic placeholders like ""object"" or a vague ""person"" when a more specific visible class, color, number, or logo is present.
+
+9) Simple failure checks: if the chosen subject bbox_area < 0.002 but another detection’s bbox_area > 1.5× larger, switch to the larger detection. Never assert a readable string unless OCR thresholds in rule 4 are met.
+
+10) Short guidance and examples (keep style concise):
+- Prefer concrete, visually discriminative tokens: colors, multiword classes, clothing/accessories, visible numerals, readable logos.
+- Good examples: ""red bicycle is parked on the sidewalk."" ""two dogs stand in shallow water.""
+- Bad examples to avoid: ""object on left."" ""man happy.""
+
+Final constraints: one sentence only, 8–12 words (prefer 9–11), literal description of visible content, include a required high‑signal token early (within first three content words), follow the OCR and usability thresholds above, and do not add extra commentary or multiple outputs.",Two people sit on bench near large glass windows.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_3a61d8f645,56,16246,flickr30k_test_016246,images/flickr30k/flickr30k_test_016246.jpg,"[""A child is holding a bunch of balloons in front of their face."", ""A child holding balloons that cover their face."", ""A little boy holds many inflated balloons."", ""Child carrying a bouquet of balloons."", ""A young child carrying many balloons.""]",textgrad_3a61d8f645,TextGrad Step 19,"Generate exactly one short, literal, factual caption: one grammatically correct sentence describing only visibly present content. Output exactly one sentence and nothing else. Sentence length: 8–12 words (prefer 9–11). Follow these rules in order:
+
+1) Subject selection and salience: compute salience = area_fraction × detector_confidence × (1 + center_bonus) + token_bonus. center_bonus = 0.10 if the detection centroid lies inside the central 25% of the image area, otherwise 0. token_bonus = 0.0015 applied only when a candidate contains a robust high‑signal token (see rules 3–5). Select the detection with highest salience. If two candidates’ saliences are within 10%, prefer (in order) a person, then the larger bbox area, then the more centered bbox, then the token_bonus winner.
+
+2) Detection usability: treat a detection as usable only if salience ≥ 0.002. Allow smaller detections only when there is strong readable text or a clearly visible numeral: i.e., OCR_confidence ≥ 0.75 and OCR_bbox_area ≥ 0.002, or a numeral detection_confidence ≥ 0.80 and bbox_area ≥ 0.002.
+
+3) High‑signal tokens and placement: high‑signal tokens include visible colors or patterns, concrete multiword classes (e.g., ""stop sign"", ""double‑decker bus""), clear Arabic numerals, clothing/accessory names (e.g., ""baseball cap""), and short readable logos/text (1–3 tokens). Require at least one high‑signal token to appear within the first three content words of the sentence (leading articles ""a/an/the"" do not count as content words). If two distinct high‑signal tokens are visible, place the second no later than the fourth content word.
+
+4) OCR/text copying: copy short readable text/logos (1–3 tokens) only if (OCR_confidence ≥ 0.60 and OCR_bbox_area ≥ 0.005) OR (OCR_confidence ≥ 0.75 and OCR_bbox_area ≥ 0.002). Never copy runs of ≥5 consecutive digits or low‑confidence/unreadable text. If OCR is borderline, describe generically (e.g., ""sign with letters"") instead of copying uncertain text.
+
+5) Token gating for subject selection: apply token_bonus only when the token’s bbox_area ≥ 0.005 and token/OCR confidence meets thresholds in rule 4. The token_bonus may break ties but must not allow tiny, low‑confidence tokens to win.
+
+6) Second‑object allowance: you may append one compact post‑nominal relation up to 4 tokens (for example, ""on the sidewalk"", ""with number 7"") only if that relation introduces a distinct high‑signal token. Do not chain relations or add longer descriptive chains.
+
+7) Wording, grammar, and tense: prefer starting with a high‑signal modifier plus class (e.g., ""red bicycle"", ""two dogs"", ""striped shirt""). Use present‑tense active verbs when an action/posture is clearly visible (walking, holding, jumping); otherwise use ""is/are."" Use Arabic numerals for visible counts that meet visibility rules. Allow leading determiners; count content words excluding them.
+
+8) Safety and literalness: do not invent unseen attributes, emotions, intentions, dialogue, or unreadable text. Avoid generic placeholders like ""object"" or a vague ""person"" when a more specific visible class, color, number, or logo is present.
+
+9) Simple failure checks: if the chosen subject bbox_area < 0.002 but another detection’s bbox_area > 1.5× larger, switch to the larger detection. Never assert a readable string unless OCR thresholds in rule 4 are met.
+
+10) Short guidance and examples (keep style concise):
+- Prefer concrete, visually discriminative tokens: colors, multiword classes, clothing/accessories, visible numerals, readable logos.
+- Good examples: ""red bicycle is parked on the sidewalk."" ""two dogs stand in shallow water.""
+- Bad examples to avoid: ""object on left."" ""man happy.""
+
+Final constraints: one sentence only, 8–12 words (prefer 9–11), literal description of visible content, include a required high‑signal token early (within first three content words), follow the OCR and usability thresholds above, and do not add extra commentary or multiple outputs.",Child in blue shorts walks holding colorful balloons.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_3a61d8f645,59,11327,flickr30k_test_011327,images/flickr30k/flickr30k_test_011327.jpg,"[""An elephant is carrying something in its trunk and is covered by some bright-colored fabric."", ""An elephant draped in red, blue and gold fabric walking on a stone path."", ""An elephant wearing a red and blue scarf walks along the brick road."", ""An elephant wearing a colorful drap carrying foliage in his trunk."", ""An elephant wearing red and blue fabric holds grass in his trunk.""]",textgrad_3a61d8f645,TextGrad Step 19,"Generate exactly one short, literal, factual caption: one grammatically correct sentence describing only visibly present content. Output exactly one sentence and nothing else. Sentence length: 8–12 words (prefer 9–11). Follow these rules in order:
+
+1) Subject selection and salience: compute salience = area_fraction × detector_confidence × (1 + center_bonus) + token_bonus. center_bonus = 0.10 if the detection centroid lies inside the central 25% of the image area, otherwise 0. token_bonus = 0.0015 applied only when a candidate contains a robust high‑signal token (see rules 3–5). Select the detection with highest salience. If two candidates’ saliences are within 10%, prefer (in order) a person, then the larger bbox area, then the more centered bbox, then the token_bonus winner.
+
+2) Detection usability: treat a detection as usable only if salience ≥ 0.002. Allow smaller detections only when there is strong readable text or a clearly visible numeral: i.e., OCR_confidence ≥ 0.75 and OCR_bbox_area ≥ 0.002, or a numeral detection_confidence ≥ 0.80 and bbox_area ≥ 0.002.
+
+3) High‑signal tokens and placement: high‑signal tokens include visible colors or patterns, concrete multiword classes (e.g., ""stop sign"", ""double‑decker bus""), clear Arabic numerals, clothing/accessory names (e.g., ""baseball cap""), and short readable logos/text (1–3 tokens). Require at least one high‑signal token to appear within the first three content words of the sentence (leading articles ""a/an/the"" do not count as content words). If two distinct high‑signal tokens are visible, place the second no later than the fourth content word.
+
+4) OCR/text copying: copy short readable text/logos (1–3 tokens) only if (OCR_confidence ≥ 0.60 and OCR_bbox_area ≥ 0.005) OR (OCR_confidence ≥ 0.75 and OCR_bbox_area ≥ 0.002). Never copy runs of ≥5 consecutive digits or low‑confidence/unreadable text. If OCR is borderline, describe generically (e.g., ""sign with letters"") instead of copying uncertain text.
+
+5) Token gating for subject selection: apply token_bonus only when the token’s bbox_area ≥ 0.005 and token/OCR confidence meets thresholds in rule 4. The token_bonus may break ties but must not allow tiny, low‑confidence tokens to win.
+
+6) Second‑object allowance: you may append one compact post‑nominal relation up to 4 tokens (for example, ""on the sidewalk"", ""with number 7"") only if that relation introduces a distinct high‑signal token. Do not chain relations or add longer descriptive chains.
+
+7) Wording, grammar, and tense: prefer starting with a high‑signal modifier plus class (e.g., ""red bicycle"", ""two dogs"", ""striped shirt""). Use present‑tense active verbs when an action/posture is clearly visible (walking, holding, jumping); otherwise use ""is/are."" Use Arabic numerals for visible counts that meet visibility rules. Allow leading determiners; count content words excluding them.
+
+8) Safety and literalness: do not invent unseen attributes, emotions, intentions, dialogue, or unreadable text. Avoid generic placeholders like ""object"" or a vague ""person"" when a more specific visible class, color, number, or logo is present.
+
+9) Simple failure checks: if the chosen subject bbox_area < 0.002 but another detection’s bbox_area > 1.5× larger, switch to the larger detection. Never assert a readable string unless OCR thresholds in rule 4 are met.
+
+10) Short guidance and examples (keep style concise):
+- Prefer concrete, visually discriminative tokens: colors, multiword classes, clothing/accessories, visible numerals, readable logos.
+- Good examples: ""red bicycle is parked on the sidewalk."" ""two dogs stand in shallow water.""
+- Bad examples to avoid: ""object on left."" ""man happy.""
+
+Final constraints: one sentence only, 8–12 words (prefer 9–11), literal description of visible content, include a required high‑signal token early (within first three content words), follow the OCR and usability thresholds above, and do not add extra commentary or multiple outputs.",Decorated elephant with red and blue cloth walks on brick path.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_3a61d8f645,64,15060,flickr30k_test_015060,images/flickr30k/flickr30k_test_015060.jpg,"[""A man in black with a helmet is water rafting in a green canoe."", ""A kayaker in a green boat paddles through the rapids."", ""One man in a green kayak paddling through the water."", ""This man is kayaking in whitewater."", ""A kayaker gets wet in the rapids.""]",textgrad_3a61d8f645,TextGrad Step 19,"Generate exactly one short, literal, factual caption: one grammatically correct sentence describing only visibly present content. Output exactly one sentence and nothing else. Sentence length: 8–12 words (prefer 9–11). Follow these rules in order:
+
+1) Subject selection and salience: compute salience = area_fraction × detector_confidence × (1 + center_bonus) + token_bonus. center_bonus = 0.10 if the detection centroid lies inside the central 25% of the image area, otherwise 0. token_bonus = 0.0015 applied only when a candidate contains a robust high‑signal token (see rules 3–5). Select the detection with highest salience. If two candidates’ saliences are within 10%, prefer (in order) a person, then the larger bbox area, then the more centered bbox, then the token_bonus winner.
+
+2) Detection usability: treat a detection as usable only if salience ≥ 0.002. Allow smaller detections only when there is strong readable text or a clearly visible numeral: i.e., OCR_confidence ≥ 0.75 and OCR_bbox_area ≥ 0.002, or a numeral detection_confidence ≥ 0.80 and bbox_area ≥ 0.002.
+
+3) High‑signal tokens and placement: high‑signal tokens include visible colors or patterns, concrete multiword classes (e.g., ""stop sign"", ""double‑decker bus""), clear Arabic numerals, clothing/accessory names (e.g., ""baseball cap""), and short readable logos/text (1–3 tokens). Require at least one high‑signal token to appear within the first three content words of the sentence (leading articles ""a/an/the"" do not count as content words). If two distinct high‑signal tokens are visible, place the second no later than the fourth content word.
+
+4) OCR/text copying: copy short readable text/logos (1–3 tokens) only if (OCR_confidence ≥ 0.60 and OCR_bbox_area ≥ 0.005) OR (OCR_confidence ≥ 0.75 and OCR_bbox_area ≥ 0.002). Never copy runs of ≥5 consecutive digits or low‑confidence/unreadable text. If OCR is borderline, describe generically (e.g., ""sign with letters"") instead of copying uncertain text.
+
+5) Token gating for subject selection: apply token_bonus only when the token’s bbox_area ≥ 0.005 and token/OCR confidence meets thresholds in rule 4. The token_bonus may break ties but must not allow tiny, low‑confidence tokens to win.
+
+6) Second‑object allowance: you may append one compact post‑nominal relation up to 4 tokens (for example, ""on the sidewalk"", ""with number 7"") only if that relation introduces a distinct high‑signal token. Do not chain relations or add longer descriptive chains.
+
+7) Wording, grammar, and tense: prefer starting with a high‑signal modifier plus class (e.g., ""red bicycle"", ""two dogs"", ""striped shirt""). Use present‑tense active verbs when an action/posture is clearly visible (walking, holding, jumping); otherwise use ""is/are."" Use Arabic numerals for visible counts that meet visibility rules. Allow leading determiners; count content words excluding them.
+
+8) Safety and literalness: do not invent unseen attributes, emotions, intentions, dialogue, or unreadable text. Avoid generic placeholders like ""object"" or a vague ""person"" when a more specific visible class, color, number, or logo is present.
+
+9) Simple failure checks: if the chosen subject bbox_area < 0.002 but another detection’s bbox_area > 1.5× larger, switch to the larger detection. Never assert a readable string unless OCR thresholds in rule 4 are met.
+
+10) Short guidance and examples (keep style concise):
+- Prefer concrete, visually discriminative tokens: colors, multiword classes, clothing/accessories, visible numerals, readable logos.
+- Good examples: ""red bicycle is parked on the sidewalk."" ""two dogs stand in shallow water.""
+- Bad examples to avoid: ""object on left."" ""man happy.""
+
+Final constraints: one sentence only, 8–12 words (prefer 9–11), literal description of visible content, include a required high‑signal token early (within first three content words), follow the OCR and usability thresholds above, and do not add extra commentary or multiple outputs.",Person in black helmet paddles green kayak through whitewater.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_3a61d8f645,73,21046,flickr30k_test_021046,images/flickr30k/flickr30k_test_021046.jpg,"[""A man and a woman are seated, holding reading materials, while he looks into the camera and she looks down into her partly rolled-up magazine."", ""A young man and woman sit beside each other on the subway train."", ""A man and a woman are reading while riding the subway."", ""A man and woman riding on a subway car."", ""Several people sit on the subway.""]",textgrad_3a61d8f645,TextGrad Step 19,"Generate exactly one short, literal, factual caption: one grammatically correct sentence describing only visibly present content. Output exactly one sentence and nothing else. Sentence length: 8–12 words (prefer 9–11). Follow these rules in order:
+
+1) Subject selection and salience: compute salience = area_fraction × detector_confidence × (1 + center_bonus) + token_bonus. center_bonus = 0.10 if the detection centroid lies inside the central 25% of the image area, otherwise 0. token_bonus = 0.0015 applied only when a candidate contains a robust high‑signal token (see rules 3–5). Select the detection with highest salience. If two candidates’ saliences are within 10%, prefer (in order) a person, then the larger bbox area, then the more centered bbox, then the token_bonus winner.
+
+2) Detection usability: treat a detection as usable only if salience ≥ 0.002. Allow smaller detections only when there is strong readable text or a clearly visible numeral: i.e., OCR_confidence ≥ 0.75 and OCR_bbox_area ≥ 0.002, or a numeral detection_confidence ≥ 0.80 and bbox_area ≥ 0.002.
+
+3) High‑signal tokens and placement: high‑signal tokens include visible colors or patterns, concrete multiword classes (e.g., ""stop sign"", ""double‑decker bus""), clear Arabic numerals, clothing/accessory names (e.g., ""baseball cap""), and short readable logos/text (1–3 tokens). Require at least one high‑signal token to appear within the first three content words of the sentence (leading articles ""a/an/the"" do not count as content words). If two distinct high‑signal tokens are visible, place the second no later than the fourth content word.
+
+4) OCR/text copying: copy short readable text/logos (1–3 tokens) only if (OCR_confidence ≥ 0.60 and OCR_bbox_area ≥ 0.005) OR (OCR_confidence ≥ 0.75 and OCR_bbox_area ≥ 0.002). Never copy runs of ≥5 consecutive digits or low‑confidence/unreadable text. If OCR is borderline, describe generically (e.g., ""sign with letters"") instead of copying uncertain text.
+
+5) Token gating for subject selection: apply token_bonus only when the token’s bbox_area ≥ 0.005 and token/OCR confidence meets thresholds in rule 4. The token_bonus may break ties but must not allow tiny, low‑confidence tokens to win.
+
+6) Second‑object allowance: you may append one compact post‑nominal relation up to 4 tokens (for example, ""on the sidewalk"", ""with number 7"") only if that relation introduces a distinct high‑signal token. Do not chain relations or add longer descriptive chains.
+
+7) Wording, grammar, and tense: prefer starting with a high‑signal modifier plus class (e.g., ""red bicycle"", ""two dogs"", ""striped shirt""). Use present‑tense active verbs when an action/posture is clearly visible (walking, holding, jumping); otherwise use ""is/are."" Use Arabic numerals for visible counts that meet visibility rules. Allow leading determiners; count content words excluding them.
+
+8) Safety and literalness: do not invent unseen attributes, emotions, intentions, dialogue, or unreadable text. Avoid generic placeholders like ""object"" or a vague ""person"" when a more specific visible class, color, number, or logo is present.
+
+9) Simple failure checks: if the chosen subject bbox_area < 0.002 but another detection’s bbox_area > 1.5× larger, switch to the larger detection. Never assert a readable string unless OCR thresholds in rule 4 are met.
+
+10) Short guidance and examples (keep style concise):
+- Prefer concrete, visually discriminative tokens: colors, multiword classes, clothing/accessories, visible numerals, readable logos.
+- Good examples: ""red bicycle is parked on the sidewalk."" ""two dogs stand in shallow water.""
+- Bad examples to avoid: ""object on left."" ""man happy.""
+
+Final constraints: one sentence only, 8–12 words (prefer 9–11), literal description of visible content, include a required high‑signal token early (within first three content words), follow the OCR and usability thresholds above, and do not add extra commentary or multiple outputs.",Man in dark suit holds paper while woman in yellow hoodie reads magazine.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_3a61d8f645,75,6091,flickr30k_test_006091,images/flickr30k/flickr30k_test_006091.jpg,"[""A little girl is sitting on the counter dangling one foot in the sink whilst holding a dish jet washer."", ""A young girl wearing red sunglasses sits near a sink and holds the faucet."", ""A little girl wearing sunglasses puts her feet into the kitchen sink."", ""A young, barefoot girl in red sunglasses plays in a sink."", ""A little girl plays with a faucet.""]",textgrad_3a61d8f645,TextGrad Step 19,"Generate exactly one short, literal, factual caption: one grammatically correct sentence describing only visibly present content. Output exactly one sentence and nothing else. Sentence length: 8–12 words (prefer 9–11). Follow these rules in order:
+
+1) Subject selection and salience: compute salience = area_fraction × detector_confidence × (1 + center_bonus) + token_bonus. center_bonus = 0.10 if the detection centroid lies inside the central 25% of the image area, otherwise 0. token_bonus = 0.0015 applied only when a candidate contains a robust high‑signal token (see rules 3–5). Select the detection with highest salience. If two candidates’ saliences are within 10%, prefer (in order) a person, then the larger bbox area, then the more centered bbox, then the token_bonus winner.
+
+2) Detection usability: treat a detection as usable only if salience ≥ 0.002. Allow smaller detections only when there is strong readable text or a clearly visible numeral: i.e., OCR_confidence ≥ 0.75 and OCR_bbox_area ≥ 0.002, or a numeral detection_confidence ≥ 0.80 and bbox_area ≥ 0.002.
+
+3) High‑signal tokens and placement: high‑signal tokens include visible colors or patterns, concrete multiword classes (e.g., ""stop sign"", ""double‑decker bus""), clear Arabic numerals, clothing/accessory names (e.g., ""baseball cap""), and short readable logos/text (1–3 tokens). Require at least one high‑signal token to appear within the first three content words of the sentence (leading articles ""a/an/the"" do not count as content words). If two distinct high‑signal tokens are visible, place the second no later than the fourth content word.
+
+4) OCR/text copying: copy short readable text/logos (1–3 tokens) only if (OCR_confidence ≥ 0.60 and OCR_bbox_area ≥ 0.005) OR (OCR_confidence ≥ 0.75 and OCR_bbox_area ≥ 0.002). Never copy runs of ≥5 consecutive digits or low‑confidence/unreadable text. If OCR is borderline, describe generically (e.g., ""sign with letters"") instead of copying uncertain text.
+
+5) Token gating for subject selection: apply token_bonus only when the token’s bbox_area ≥ 0.005 and token/OCR confidence meets thresholds in rule 4. The token_bonus may break ties but must not allow tiny, low‑confidence tokens to win.
+
+6) Second‑object allowance: you may append one compact post‑nominal relation up to 4 tokens (for example, ""on the sidewalk"", ""with number 7"") only if that relation introduces a distinct high‑signal token. Do not chain relations or add longer descriptive chains.
+
+7) Wording, grammar, and tense: prefer starting with a high‑signal modifier plus class (e.g., ""red bicycle"", ""two dogs"", ""striped shirt""). Use present‑tense active verbs when an action/posture is clearly visible (walking, holding, jumping); otherwise use ""is/are."" Use Arabic numerals for visible counts that meet visibility rules. Allow leading determiners; count content words excluding them.
+
+8) Safety and literalness: do not invent unseen attributes, emotions, intentions, dialogue, or unreadable text. Avoid generic placeholders like ""object"" or a vague ""person"" when a more specific visible class, color, number, or logo is present.
+
+9) Simple failure checks: if the chosen subject bbox_area < 0.002 but another detection’s bbox_area > 1.5× larger, switch to the larger detection. Never assert a readable string unless OCR thresholds in rule 4 are met.
+
+10) Short guidance and examples (keep style concise):
+- Prefer concrete, visually discriminative tokens: colors, multiword classes, clothing/accessories, visible numerals, readable logos.
+- Good examples: ""red bicycle is parked on the sidewalk."" ""two dogs stand in shallow water.""
+- Bad examples to avoid: ""object on left."" ""man happy.""
+
+Final constraints: one sentence only, 8–12 words (prefer 9–11), literal description of visible content, include a required high‑signal token early (within first three content words), follow the OCR and usability thresholds above, and do not add extra commentary or multiple outputs.",Child in pink shirt and blue cap plays with kitchen faucet.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_3a61d8f645,80,3961,flickr30k_test_003961,images/flickr30k/flickr30k_test_003961.jpg,"[""A woman, viewed through a window, sits at a restaurant table and puts down a red shopping bag."", ""A woman is sitting at a table and looking into her American Girl Place shopping bag."", ""A woman places her red shopping bag down as she sits down to a table."", ""An older woman in a white shirt holds a red bag behind some glass."", ""Woman seen through window at restaurant.""]",textgrad_3a61d8f645,TextGrad Step 19,"Generate exactly one short, literal, factual caption: one grammatically correct sentence describing only visibly present content. Output exactly one sentence and nothing else. Sentence length: 8–12 words (prefer 9–11). Follow these rules in order:
+
+1) Subject selection and salience: compute salience = area_fraction × detector_confidence × (1 + center_bonus) + token_bonus. center_bonus = 0.10 if the detection centroid lies inside the central 25% of the image area, otherwise 0. token_bonus = 0.0015 applied only when a candidate contains a robust high‑signal token (see rules 3–5). Select the detection with highest salience. If two candidates’ saliences are within 10%, prefer (in order) a person, then the larger bbox area, then the more centered bbox, then the token_bonus winner.
+
+2) Detection usability: treat a detection as usable only if salience ≥ 0.002. Allow smaller detections only when there is strong readable text or a clearly visible numeral: i.e., OCR_confidence ≥ 0.75 and OCR_bbox_area ≥ 0.002, or a numeral detection_confidence ≥ 0.80 and bbox_area ≥ 0.002.
+
+3) High‑signal tokens and placement: high‑signal tokens include visible colors or patterns, concrete multiword classes (e.g., ""stop sign"", ""double‑decker bus""), clear Arabic numerals, clothing/accessory names (e.g., ""baseball cap""), and short readable logos/text (1–3 tokens). Require at least one high‑signal token to appear within the first three content words of the sentence (leading articles ""a/an/the"" do not count as content words). If two distinct high‑signal tokens are visible, place the second no later than the fourth content word.
+
+4) OCR/text copying: copy short readable text/logos (1–3 tokens) only if (OCR_confidence ≥ 0.60 and OCR_bbox_area ≥ 0.005) OR (OCR_confidence ≥ 0.75 and OCR_bbox_area ≥ 0.002). Never copy runs of ≥5 consecutive digits or low‑confidence/unreadable text. If OCR is borderline, describe generically (e.g., ""sign with letters"") instead of copying uncertain text.
+
+5) Token gating for subject selection: apply token_bonus only when the token’s bbox_area ≥ 0.005 and token/OCR confidence meets thresholds in rule 4. The token_bonus may break ties but must not allow tiny, low‑confidence tokens to win.
+
+6) Second‑object allowance: you may append one compact post‑nominal relation up to 4 tokens (for example, ""on the sidewalk"", ""with number 7"") only if that relation introduces a distinct high‑signal token. Do not chain relations or add longer descriptive chains.
+
+7) Wording, grammar, and tense: prefer starting with a high‑signal modifier plus class (e.g., ""red bicycle"", ""two dogs"", ""striped shirt""). Use present‑tense active verbs when an action/posture is clearly visible (walking, holding, jumping); otherwise use ""is/are."" Use Arabic numerals for visible counts that meet visibility rules. Allow leading determiners; count content words excluding them.
+
+8) Safety and literalness: do not invent unseen attributes, emotions, intentions, dialogue, or unreadable text. Avoid generic placeholders like ""object"" or a vague ""person"" when a more specific visible class, color, number, or logo is present.
+
+9) Simple failure checks: if the chosen subject bbox_area < 0.002 but another detection’s bbox_area > 1.5× larger, switch to the larger detection. Never assert a readable string unless OCR thresholds in rule 4 are met.
+
+10) Short guidance and examples (keep style concise):
+- Prefer concrete, visually discriminative tokens: colors, multiword classes, clothing/accessories, visible numerals, readable logos.
+- Good examples: ""red bicycle is parked on the sidewalk."" ""two dogs stand in shallow water.""
+- Bad examples to avoid: ""object on left."" ""man happy.""
+
+Final constraints: one sentence only, 8–12 words (prefer 9–11), literal description of visible content, include a required high‑signal token early (within first three content words), follow the OCR and usability thresholds above, and do not add extra commentary or multiple outputs.",Woman holds red American Girl Place bag near window.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_3a61d8f645,88,16636,flickr30k_test_016636,images/flickr30k/flickr30k_test_016636.jpg,"[""A young girl in a blue skirt, walking down a stony path."", ""Little girl in blue skirt standing by big gray rock."", ""A little girl with blue dress comes home from school"", ""A small girl is going to the school."", ""A young child standing by rocks.""]",textgrad_3a61d8f645,TextGrad Step 19,"Generate exactly one short, literal, factual caption: one grammatically correct sentence describing only visibly present content. Output exactly one sentence and nothing else. Sentence length: 8–12 words (prefer 9–11). Follow these rules in order:
+
+1) Subject selection and salience: compute salience = area_fraction × detector_confidence × (1 + center_bonus) + token_bonus. center_bonus = 0.10 if the detection centroid lies inside the central 25% of the image area, otherwise 0. token_bonus = 0.0015 applied only when a candidate contains a robust high‑signal token (see rules 3–5). Select the detection with highest salience. If two candidates’ saliences are within 10%, prefer (in order) a person, then the larger bbox area, then the more centered bbox, then the token_bonus winner.
+
+2) Detection usability: treat a detection as usable only if salience ≥ 0.002. Allow smaller detections only when there is strong readable text or a clearly visible numeral: i.e., OCR_confidence ≥ 0.75 and OCR_bbox_area ≥ 0.002, or a numeral detection_confidence ≥ 0.80 and bbox_area ≥ 0.002.
+
+3) High‑signal tokens and placement: high‑signal tokens include visible colors or patterns, concrete multiword classes (e.g., ""stop sign"", ""double‑decker bus""), clear Arabic numerals, clothing/accessory names (e.g., ""baseball cap""), and short readable logos/text (1–3 tokens). Require at least one high‑signal token to appear within the first three content words of the sentence (leading articles ""a/an/the"" do not count as content words). If two distinct high‑signal tokens are visible, place the second no later than the fourth content word.
+
+4) OCR/text copying: copy short readable text/logos (1–3 tokens) only if (OCR_confidence ≥ 0.60 and OCR_bbox_area ≥ 0.005) OR (OCR_confidence ≥ 0.75 and OCR_bbox_area ≥ 0.002). Never copy runs of ≥5 consecutive digits or low‑confidence/unreadable text. If OCR is borderline, describe generically (e.g., ""sign with letters"") instead of copying uncertain text.
+
+5) Token gating for subject selection: apply token_bonus only when the token’s bbox_area ≥ 0.005 and token/OCR confidence meets thresholds in rule 4. The token_bonus may break ties but must not allow tiny, low‑confidence tokens to win.
+
+6) Second‑object allowance: you may append one compact post‑nominal relation up to 4 tokens (for example, ""on the sidewalk"", ""with number 7"") only if that relation introduces a distinct high‑signal token. Do not chain relations or add longer descriptive chains.
+
+7) Wording, grammar, and tense: prefer starting with a high‑signal modifier plus class (e.g., ""red bicycle"", ""two dogs"", ""striped shirt""). Use present‑tense active verbs when an action/posture is clearly visible (walking, holding, jumping); otherwise use ""is/are."" Use Arabic numerals for visible counts that meet visibility rules. Allow leading determiners; count content words excluding them.
+
+8) Safety and literalness: do not invent unseen attributes, emotions, intentions, dialogue, or unreadable text. Avoid generic placeholders like ""object"" or a vague ""person"" when a more specific visible class, color, number, or logo is present.
+
+9) Simple failure checks: if the chosen subject bbox_area < 0.002 but another detection’s bbox_area > 1.5× larger, switch to the larger detection. Never assert a readable string unless OCR thresholds in rule 4 are met.
+
+10) Short guidance and examples (keep style concise):
+- Prefer concrete, visually discriminative tokens: colors, multiword classes, clothing/accessories, visible numerals, readable logos.
+- Good examples: ""red bicycle is parked on the sidewalk."" ""two dogs stand in shallow water.""
+- Bad examples to avoid: ""object on left."" ""man happy.""
+
+Final constraints: one sentence only, 8–12 words (prefer 9–11), literal description of visible content, include a required high‑signal token early (within first three content words), follow the OCR and usability thresholds above, and do not add extra commentary or multiple outputs.",Young girl in pink sweater and blue skirt stands on rocky path.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_3a61d8f645,90,29824,flickr30k_test_029824,images/flickr30k/flickr30k_test_029824.jpg,"[""A woman stands behind a display table advertising the London 2012 Olympics in front of a sign reading, \""Bienvenus Welcome.\"""", ""A female worker is standing behind a table that says London 2012 above the Olympic rings."", ""A young woman is standing behind an information stall at the 2012 London Olympic Games."", ""Woman posing in her booth during the London 2012 olympics"", ""The olympic official is smiling for the camera""]",textgrad_3a61d8f645,TextGrad Step 19,"Generate exactly one short, literal, factual caption: one grammatically correct sentence describing only visibly present content. Output exactly one sentence and nothing else. Sentence length: 8–12 words (prefer 9–11). Follow these rules in order:
+
+1) Subject selection and salience: compute salience = area_fraction × detector_confidence × (1 + center_bonus) + token_bonus. center_bonus = 0.10 if the detection centroid lies inside the central 25% of the image area, otherwise 0. token_bonus = 0.0015 applied only when a candidate contains a robust high‑signal token (see rules 3–5). Select the detection with highest salience. If two candidates’ saliences are within 10%, prefer (in order) a person, then the larger bbox area, then the more centered bbox, then the token_bonus winner.
+
+2) Detection usability: treat a detection as usable only if salience ≥ 0.002. Allow smaller detections only when there is strong readable text or a clearly visible numeral: i.e., OCR_confidence ≥ 0.75 and OCR_bbox_area ≥ 0.002, or a numeral detection_confidence ≥ 0.80 and bbox_area ≥ 0.002.
+
+3) High‑signal tokens and placement: high‑signal tokens include visible colors or patterns, concrete multiword classes (e.g., ""stop sign"", ""double‑decker bus""), clear Arabic numerals, clothing/accessory names (e.g., ""baseball cap""), and short readable logos/text (1–3 tokens). Require at least one high‑signal token to appear within the first three content words of the sentence (leading articles ""a/an/the"" do not count as content words). If two distinct high‑signal tokens are visible, place the second no later than the fourth content word.
+
+4) OCR/text copying: copy short readable text/logos (1–3 tokens) only if (OCR_confidence ≥ 0.60 and OCR_bbox_area ≥ 0.005) OR (OCR_confidence ≥ 0.75 and OCR_bbox_area ≥ 0.002). Never copy runs of ≥5 consecutive digits or low‑confidence/unreadable text. If OCR is borderline, describe generically (e.g., ""sign with letters"") instead of copying uncertain text.
+
+5) Token gating for subject selection: apply token_bonus only when the token’s bbox_area ≥ 0.005 and token/OCR confidence meets thresholds in rule 4. The token_bonus may break ties but must not allow tiny, low‑confidence tokens to win.
+
+6) Second‑object allowance: you may append one compact post‑nominal relation up to 4 tokens (for example, ""on the sidewalk"", ""with number 7"") only if that relation introduces a distinct high‑signal token. Do not chain relations or add longer descriptive chains.
+
+7) Wording, grammar, and tense: prefer starting with a high‑signal modifier plus class (e.g., ""red bicycle"", ""two dogs"", ""striped shirt""). Use present‑tense active verbs when an action/posture is clearly visible (walking, holding, jumping); otherwise use ""is/are."" Use Arabic numerals for visible counts that meet visibility rules. Allow leading determiners; count content words excluding them.
+
+8) Safety and literalness: do not invent unseen attributes, emotions, intentions, dialogue, or unreadable text. Avoid generic placeholders like ""object"" or a vague ""person"" when a more specific visible class, color, number, or logo is present.
+
+9) Simple failure checks: if the chosen subject bbox_area < 0.002 but another detection’s bbox_area > 1.5× larger, switch to the larger detection. Never assert a readable string unless OCR thresholds in rule 4 are met.
+
+10) Short guidance and examples (keep style concise):
+- Prefer concrete, visually discriminative tokens: colors, multiword classes, clothing/accessories, visible numerals, readable logos.
+- Good examples: ""red bicycle is parked on the sidewalk."" ""two dogs stand in shallow water.""
+- Bad examples to avoid: ""object on left."" ""man happy.""
+
+Final constraints: one sentence only, 8–12 words (prefer 9–11), literal description of visible content, include a required high‑signal token early (within first three content words), follow the OCR and usability thresholds above, and do not add extra commentary or multiple outputs.",Smiling woman in purple shirt stands behind London 2012 Olympics welcome desk.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_3a61d8f645,94,9311,flickr30k_test_009311,images/flickr30k/flickr30k_test_009311.jpg,"[""A toddler plays in a water fountain with his mouth open and ready for a drink."", ""A baby sticking out his tonge while looking at a spraying water fountain."", ""A baby trying to catch water from a fountain in his mouth"", ""A small boy is playing at a water fountain"", ""A baby reaching into a water fountain.""]",textgrad_3a61d8f645,TextGrad Step 19,"Generate exactly one short, literal, factual caption: one grammatically correct sentence describing only visibly present content. Output exactly one sentence and nothing else. Sentence length: 8–12 words (prefer 9–11). Follow these rules in order:
+
+1) Subject selection and salience: compute salience = area_fraction × detector_confidence × (1 + center_bonus) + token_bonus. center_bonus = 0.10 if the detection centroid lies inside the central 25% of the image area, otherwise 0. token_bonus = 0.0015 applied only when a candidate contains a robust high‑signal token (see rules 3–5). Select the detection with highest salience. If two candidates’ saliences are within 10%, prefer (in order) a person, then the larger bbox area, then the more centered bbox, then the token_bonus winner.
+
+2) Detection usability: treat a detection as usable only if salience ≥ 0.002. Allow smaller detections only when there is strong readable text or a clearly visible numeral: i.e., OCR_confidence ≥ 0.75 and OCR_bbox_area ≥ 0.002, or a numeral detection_confidence ≥ 0.80 and bbox_area ≥ 0.002.
+
+3) High‑signal tokens and placement: high‑signal tokens include visible colors or patterns, concrete multiword classes (e.g., ""stop sign"", ""double‑decker bus""), clear Arabic numerals, clothing/accessory names (e.g., ""baseball cap""), and short readable logos/text (1–3 tokens). Require at least one high‑signal token to appear within the first three content words of the sentence (leading articles ""a/an/the"" do not count as content words). If two distinct high‑signal tokens are visible, place the second no later than the fourth content word.
+
+4) OCR/text copying: copy short readable text/logos (1–3 tokens) only if (OCR_confidence ≥ 0.60 and OCR_bbox_area ≥ 0.005) OR (OCR_confidence ≥ 0.75 and OCR_bbox_area ≥ 0.002). Never copy runs of ≥5 consecutive digits or low‑confidence/unreadable text. If OCR is borderline, describe generically (e.g., ""sign with letters"") instead of copying uncertain text.
+
+5) Token gating for subject selection: apply token_bonus only when the token’s bbox_area ≥ 0.005 and token/OCR confidence meets thresholds in rule 4. The token_bonus may break ties but must not allow tiny, low‑confidence tokens to win.
+
+6) Second‑object allowance: you may append one compact post‑nominal relation up to 4 tokens (for example, ""on the sidewalk"", ""with number 7"") only if that relation introduces a distinct high‑signal token. Do not chain relations or add longer descriptive chains.
+
+7) Wording, grammar, and tense: prefer starting with a high‑signal modifier plus class (e.g., ""red bicycle"", ""two dogs"", ""striped shirt""). Use present‑tense active verbs when an action/posture is clearly visible (walking, holding, jumping); otherwise use ""is/are."" Use Arabic numerals for visible counts that meet visibility rules. Allow leading determiners; count content words excluding them.
+
+8) Safety and literalness: do not invent unseen attributes, emotions, intentions, dialogue, or unreadable text. Avoid generic placeholders like ""object"" or a vague ""person"" when a more specific visible class, color, number, or logo is present.
+
+9) Simple failure checks: if the chosen subject bbox_area < 0.002 but another detection’s bbox_area > 1.5× larger, switch to the larger detection. Never assert a readable string unless OCR thresholds in rule 4 are met.
+
+10) Short guidance and examples (keep style concise):
+- Prefer concrete, visually discriminative tokens: colors, multiword classes, clothing/accessories, visible numerals, readable logos.
+- Good examples: ""red bicycle is parked on the sidewalk."" ""two dogs stand in shallow water.""
+- Bad examples to avoid: ""object on left."" ""man happy.""
+
+Final constraints: one sentence only, 8–12 words (prefer 9–11), literal description of visible content, include a required high‑signal token early (within first three content words), follow the OCR and usability thresholds above, and do not add extra commentary or multiple outputs.",Blond-haired child sticks tongue out near water fountain.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_3a61d8f645,96,28917,flickr30k_test_028917,images/flickr30k/flickr30k_test_028917.jpg,"[""Two basketball players one in black and red and one in blue and white playing a game with the ref and crowd in the background."", ""A basketball player wearing white dribbles the ball, while being guarded by another player in a black uniform."", ""Two male basketball players are playing a competitive game while the referee is standing behind watching."", ""Two men playing in a basketball game against each other."", ""A small image used to signify a broken web image link""]",textgrad_3a61d8f645,TextGrad Step 19,"Generate exactly one short, literal, factual caption: one grammatically correct sentence describing only visibly present content. Output exactly one sentence and nothing else. Sentence length: 8–12 words (prefer 9–11). Follow these rules in order:
+
+1) Subject selection and salience: compute salience = area_fraction × detector_confidence × (1 + center_bonus) + token_bonus. center_bonus = 0.10 if the detection centroid lies inside the central 25% of the image area, otherwise 0. token_bonus = 0.0015 applied only when a candidate contains a robust high‑signal token (see rules 3–5). Select the detection with highest salience. If two candidates’ saliences are within 10%, prefer (in order) a person, then the larger bbox area, then the more centered bbox, then the token_bonus winner.
+
+2) Detection usability: treat a detection as usable only if salience ≥ 0.002. Allow smaller detections only when there is strong readable text or a clearly visible numeral: i.e., OCR_confidence ≥ 0.75 and OCR_bbox_area ≥ 0.002, or a numeral detection_confidence ≥ 0.80 and bbox_area ≥ 0.002.
+
+3) High‑signal tokens and placement: high‑signal tokens include visible colors or patterns, concrete multiword classes (e.g., ""stop sign"", ""double‑decker bus""), clear Arabic numerals, clothing/accessory names (e.g., ""baseball cap""), and short readable logos/text (1–3 tokens). Require at least one high‑signal token to appear within the first three content words of the sentence (leading articles ""a/an/the"" do not count as content words). If two distinct high‑signal tokens are visible, place the second no later than the fourth content word.
+
+4) OCR/text copying: copy short readable text/logos (1–3 tokens) only if (OCR_confidence ≥ 0.60 and OCR_bbox_area ≥ 0.005) OR (OCR_confidence ≥ 0.75 and OCR_bbox_area ≥ 0.002). Never copy runs of ≥5 consecutive digits or low‑confidence/unreadable text. If OCR is borderline, describe generically (e.g., ""sign with letters"") instead of copying uncertain text.
+
+5) Token gating for subject selection: apply token_bonus only when the token’s bbox_area ≥ 0.005 and token/OCR confidence meets thresholds in rule 4. The token_bonus may break ties but must not allow tiny, low‑confidence tokens to win.
+
+6) Second‑object allowance: you may append one compact post‑nominal relation up to 4 tokens (for example, ""on the sidewalk"", ""with number 7"") only if that relation introduces a distinct high‑signal token. Do not chain relations or add longer descriptive chains.
+
+7) Wording, grammar, and tense: prefer starting with a high‑signal modifier plus class (e.g., ""red bicycle"", ""two dogs"", ""striped shirt""). Use present‑tense active verbs when an action/posture is clearly visible (walking, holding, jumping); otherwise use ""is/are."" Use Arabic numerals for visible counts that meet visibility rules. Allow leading determiners; count content words excluding them.
+
+8) Safety and literalness: do not invent unseen attributes, emotions, intentions, dialogue, or unreadable text. Avoid generic placeholders like ""object"" or a vague ""person"" when a more specific visible class, color, number, or logo is present.
+
+9) Simple failure checks: if the chosen subject bbox_area < 0.002 but another detection’s bbox_area > 1.5× larger, switch to the larger detection. Never assert a readable string unless OCR thresholds in rule 4 are met.
+
+10) Short guidance and examples (keep style concise):
+- Prefer concrete, visually discriminative tokens: colors, multiword classes, clothing/accessories, visible numerals, readable logos.
+- Good examples: ""red bicycle is parked on the sidewalk."" ""two dogs stand in shallow water.""
+- Bad examples to avoid: ""object on left."" ""man happy.""
+
+Final constraints: one sentence only, 8–12 words (prefer 9–11), literal description of visible content, include a required high‑signal token early (within first three content words), follow the OCR and usability thresholds above, and do not add extra commentary or multiple outputs.",Player in white with number 5 dribbles basketball while being guarded.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_3a61d8f645,105,15736,flickr30k_test_015736,images/flickr30k/flickr30k_test_015736.jpg,"[""A brown and white dog trots across shallow water with his mouth open."", ""A greyhound walks in the rain through a large puddle."", ""A white and brown dog is walking through the water."", ""A brown spotted dog walks in shallow water."", ""The dog walks through the water.""]",textgrad_3a61d8f645,TextGrad Step 19,"Generate exactly one short, literal, factual caption: one grammatically correct sentence describing only visibly present content. Output exactly one sentence and nothing else. Sentence length: 8–12 words (prefer 9–11). Follow these rules in order:
+
+1) Subject selection and salience: compute salience = area_fraction × detector_confidence × (1 + center_bonus) + token_bonus. center_bonus = 0.10 if the detection centroid lies inside the central 25% of the image area, otherwise 0. token_bonus = 0.0015 applied only when a candidate contains a robust high‑signal token (see rules 3–5). Select the detection with highest salience. If two candidates’ saliences are within 10%, prefer (in order) a person, then the larger bbox area, then the more centered bbox, then the token_bonus winner.
+
+2) Detection usability: treat a detection as usable only if salience ≥ 0.002. Allow smaller detections only when there is strong readable text or a clearly visible numeral: i.e., OCR_confidence ≥ 0.75 and OCR_bbox_area ≥ 0.002, or a numeral detection_confidence ≥ 0.80 and bbox_area ≥ 0.002.
+
+3) High‑signal tokens and placement: high‑signal tokens include visible colors or patterns, concrete multiword classes (e.g., ""stop sign"", ""double‑decker bus""), clear Arabic numerals, clothing/accessory names (e.g., ""baseball cap""), and short readable logos/text (1–3 tokens). Require at least one high‑signal token to appear within the first three content words of the sentence (leading articles ""a/an/the"" do not count as content words). If two distinct high‑signal tokens are visible, place the second no later than the fourth content word.
+
+4) OCR/text copying: copy short readable text/logos (1–3 tokens) only if (OCR_confidence ≥ 0.60 and OCR_bbox_area ≥ 0.005) OR (OCR_confidence ≥ 0.75 and OCR_bbox_area ≥ 0.002). Never copy runs of ≥5 consecutive digits or low‑confidence/unreadable text. If OCR is borderline, describe generically (e.g., ""sign with letters"") instead of copying uncertain text.
+
+5) Token gating for subject selection: apply token_bonus only when the token’s bbox_area ≥ 0.005 and token/OCR confidence meets thresholds in rule 4. The token_bonus may break ties but must not allow tiny, low‑confidence tokens to win.
+
+6) Second‑object allowance: you may append one compact post‑nominal relation up to 4 tokens (for example, ""on the sidewalk"", ""with number 7"") only if that relation introduces a distinct high‑signal token. Do not chain relations or add longer descriptive chains.
+
+7) Wording, grammar, and tense: prefer starting with a high‑signal modifier plus class (e.g., ""red bicycle"", ""two dogs"", ""striped shirt""). Use present‑tense active verbs when an action/posture is clearly visible (walking, holding, jumping); otherwise use ""is/are."" Use Arabic numerals for visible counts that meet visibility rules. Allow leading determiners; count content words excluding them.
+
+8) Safety and literalness: do not invent unseen attributes, emotions, intentions, dialogue, or unreadable text. Avoid generic placeholders like ""object"" or a vague ""person"" when a more specific visible class, color, number, or logo is present.
+
+9) Simple failure checks: if the chosen subject bbox_area < 0.002 but another detection’s bbox_area > 1.5× larger, switch to the larger detection. Never assert a readable string unless OCR thresholds in rule 4 are met.
+
+10) Short guidance and examples (keep style concise):
+- Prefer concrete, visually discriminative tokens: colors, multiword classes, clothing/accessories, visible numerals, readable logos.
+- Good examples: ""red bicycle is parked on the sidewalk."" ""two dogs stand in shallow water.""
+- Bad examples to avoid: ""object on left."" ""man happy.""
+
+Final constraints: one sentence only, 8–12 words (prefer 9–11), literal description of visible content, include a required high‑signal token early (within first three content words), follow the OCR and usability thresholds above, and do not add extra commentary or multiple outputs.",White and brown dog walks through shallow water.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_3a61d8f645,109,13247,flickr30k_test_013247,images/flickr30k/flickr30k_test_013247.jpg,"[""Several men walk in front of a building marked 'Bass Pro Shops Outdoor World'."", ""People are walking outside the entrance to Bass Pro Shops Outdoor World."", ""People walking in front of the Outdoor World store."", ""A white-haired man is walking out of a store."", ""People outside of an Outdoor World shop.""]",textgrad_3a61d8f645,TextGrad Step 19,"Generate exactly one short, literal, factual caption: one grammatically correct sentence describing only visibly present content. Output exactly one sentence and nothing else. Sentence length: 8–12 words (prefer 9–11). Follow these rules in order:
+
+1) Subject selection and salience: compute salience = area_fraction × detector_confidence × (1 + center_bonus) + token_bonus. center_bonus = 0.10 if the detection centroid lies inside the central 25% of the image area, otherwise 0. token_bonus = 0.0015 applied only when a candidate contains a robust high‑signal token (see rules 3–5). Select the detection with highest salience. If two candidates’ saliences are within 10%, prefer (in order) a person, then the larger bbox area, then the more centered bbox, then the token_bonus winner.
+
+2) Detection usability: treat a detection as usable only if salience ≥ 0.002. Allow smaller detections only when there is strong readable text or a clearly visible numeral: i.e., OCR_confidence ≥ 0.75 and OCR_bbox_area ≥ 0.002, or a numeral detection_confidence ≥ 0.80 and bbox_area ≥ 0.002.
+
+3) High‑signal tokens and placement: high‑signal tokens include visible colors or patterns, concrete multiword classes (e.g., ""stop sign"", ""double‑decker bus""), clear Arabic numerals, clothing/accessory names (e.g., ""baseball cap""), and short readable logos/text (1–3 tokens). Require at least one high‑signal token to appear within the first three content words of the sentence (leading articles ""a/an/the"" do not count as content words). If two distinct high‑signal tokens are visible, place the second no later than the fourth content word.
+
+4) OCR/text copying: copy short readable text/logos (1–3 tokens) only if (OCR_confidence ≥ 0.60 and OCR_bbox_area ≥ 0.005) OR (OCR_confidence ≥ 0.75 and OCR_bbox_area ≥ 0.002). Never copy runs of ≥5 consecutive digits or low‑confidence/unreadable text. If OCR is borderline, describe generically (e.g., ""sign with letters"") instead of copying uncertain text.
+
+5) Token gating for subject selection: apply token_bonus only when the token’s bbox_area ≥ 0.005 and token/OCR confidence meets thresholds in rule 4. The token_bonus may break ties but must not allow tiny, low‑confidence tokens to win.
+
+6) Second‑object allowance: you may append one compact post‑nominal relation up to 4 tokens (for example, ""on the sidewalk"", ""with number 7"") only if that relation introduces a distinct high‑signal token. Do not chain relations or add longer descriptive chains.
+
+7) Wording, grammar, and tense: prefer starting with a high‑signal modifier plus class (e.g., ""red bicycle"", ""two dogs"", ""striped shirt""). Use present‑tense active verbs when an action/posture is clearly visible (walking, holding, jumping); otherwise use ""is/are."" Use Arabic numerals for visible counts that meet visibility rules. Allow leading determiners; count content words excluding them.
+
+8) Safety and literalness: do not invent unseen attributes, emotions, intentions, dialogue, or unreadable text. Avoid generic placeholders like ""object"" or a vague ""person"" when a more specific visible class, color, number, or logo is present.
+
+9) Simple failure checks: if the chosen subject bbox_area < 0.002 but another detection’s bbox_area > 1.5× larger, switch to the larger detection. Never assert a readable string unless OCR thresholds in rule 4 are met.
+
+10) Short guidance and examples (keep style concise):
+- Prefer concrete, visually discriminative tokens: colors, multiword classes, clothing/accessories, visible numerals, readable logos.
+- Good examples: ""red bicycle is parked on the sidewalk."" ""two dogs stand in shallow water.""
+- Bad examples to avoid: ""object on left."" ""man happy.""
+
+Final constraints: one sentence only, 8–12 words (prefer 9–11), literal description of visible content, include a required high‑signal token early (within first three content words), follow the OCR and usability thresholds above, and do not add extra commentary or multiple outputs.",Outdoor World sign with Bass Pro Shops logo visible above entrance.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_3a61d8f645,112,5669,flickr30k_test_005669,images/flickr30k/flickr30k_test_005669.jpg,"[""Several young people adults sit around while a middle-eastern band prepares to play keyboard, drums, violin and a mandolin."", ""An audience listens to a band play as colorful lights light the scene."", ""A man playing an instrument while others sit at a table and watch."", ""A small band performing for people in a nightclub."", ""A group of people enjoying an intimate concert.""]",textgrad_3a61d8f645,TextGrad Step 19,"Generate exactly one short, literal, factual caption: one grammatically correct sentence describing only visibly present content. Output exactly one sentence and nothing else. Sentence length: 8–12 words (prefer 9–11). Follow these rules in order:
+
+1) Subject selection and salience: compute salience = area_fraction × detector_confidence × (1 + center_bonus) + token_bonus. center_bonus = 0.10 if the detection centroid lies inside the central 25% of the image area, otherwise 0. token_bonus = 0.0015 applied only when a candidate contains a robust high‑signal token (see rules 3–5). Select the detection with highest salience. If two candidates’ saliences are within 10%, prefer (in order) a person, then the larger bbox area, then the more centered bbox, then the token_bonus winner.
+
+2) Detection usability: treat a detection as usable only if salience ≥ 0.002. Allow smaller detections only when there is strong readable text or a clearly visible numeral: i.e., OCR_confidence ≥ 0.75 and OCR_bbox_area ≥ 0.002, or a numeral detection_confidence ≥ 0.80 and bbox_area ≥ 0.002.
+
+3) High‑signal tokens and placement: high‑signal tokens include visible colors or patterns, concrete multiword classes (e.g., ""stop sign"", ""double‑decker bus""), clear Arabic numerals, clothing/accessory names (e.g., ""baseball cap""), and short readable logos/text (1–3 tokens). Require at least one high‑signal token to appear within the first three content words of the sentence (leading articles ""a/an/the"" do not count as content words). If two distinct high‑signal tokens are visible, place the second no later than the fourth content word.
+
+4) OCR/text copying: copy short readable text/logos (1–3 tokens) only if (OCR_confidence ≥ 0.60 and OCR_bbox_area ≥ 0.005) OR (OCR_confidence ≥ 0.75 and OCR_bbox_area ≥ 0.002). Never copy runs of ≥5 consecutive digits or low‑confidence/unreadable text. If OCR is borderline, describe generically (e.g., ""sign with letters"") instead of copying uncertain text.
+
+5) Token gating for subject selection: apply token_bonus only when the token’s bbox_area ≥ 0.005 and token/OCR confidence meets thresholds in rule 4. The token_bonus may break ties but must not allow tiny, low‑confidence tokens to win.
+
+6) Second‑object allowance: you may append one compact post‑nominal relation up to 4 tokens (for example, ""on the sidewalk"", ""with number 7"") only if that relation introduces a distinct high‑signal token. Do not chain relations or add longer descriptive chains.
+
+7) Wording, grammar, and tense: prefer starting with a high‑signal modifier plus class (e.g., ""red bicycle"", ""two dogs"", ""striped shirt""). Use present‑tense active verbs when an action/posture is clearly visible (walking, holding, jumping); otherwise use ""is/are."" Use Arabic numerals for visible counts that meet visibility rules. Allow leading determiners; count content words excluding them.
+
+8) Safety and literalness: do not invent unseen attributes, emotions, intentions, dialogue, or unreadable text. Avoid generic placeholders like ""object"" or a vague ""person"" when a more specific visible class, color, number, or logo is present.
+
+9) Simple failure checks: if the chosen subject bbox_area < 0.002 but another detection’s bbox_area > 1.5× larger, switch to the larger detection. Never assert a readable string unless OCR thresholds in rule 4 are met.
+
+10) Short guidance and examples (keep style concise):
+- Prefer concrete, visually discriminative tokens: colors, multiword classes, clothing/accessories, visible numerals, readable logos.
+- Good examples: ""red bicycle is parked on the sidewalk."" ""two dogs stand in shallow water.""
+- Bad examples to avoid: ""object on left."" ""man happy.""
+
+Final constraints: one sentence only, 8–12 words (prefer 9–11), literal description of visible content, include a required high‑signal token early (within first three content words), follow the OCR and usability thresholds above, and do not add extra commentary or multiple outputs.",Red-haired woman sits among audience at live music performance.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_3a61d8f645,137,10109,flickr30k_test_010109,images/flickr30k/flickr30k_test_010109.jpg,"[""A group of Asians with baskets of produce are squatting in a vegetable market."", ""Several people are picking through crops at an urban market."", ""Two people cleaning greens in the sunset."", ""Women are on business selling vegetables."", ""Two Asians with green leafy vegetables.""]",textgrad_3a61d8f645,TextGrad Step 19,"Generate exactly one short, literal, factual caption: one grammatically correct sentence describing only visibly present content. Output exactly one sentence and nothing else. Sentence length: 8–12 words (prefer 9–11). Follow these rules in order:
+
+1) Subject selection and salience: compute salience = area_fraction × detector_confidence × (1 + center_bonus) + token_bonus. center_bonus = 0.10 if the detection centroid lies inside the central 25% of the image area, otherwise 0. token_bonus = 0.0015 applied only when a candidate contains a robust high‑signal token (see rules 3–5). Select the detection with highest salience. If two candidates’ saliences are within 10%, prefer (in order) a person, then the larger bbox area, then the more centered bbox, then the token_bonus winner.
+
+2) Detection usability: treat a detection as usable only if salience ≥ 0.002. Allow smaller detections only when there is strong readable text or a clearly visible numeral: i.e., OCR_confidence ≥ 0.75 and OCR_bbox_area ≥ 0.002, or a numeral detection_confidence ≥ 0.80 and bbox_area ≥ 0.002.
+
+3) High‑signal tokens and placement: high‑signal tokens include visible colors or patterns, concrete multiword classes (e.g., ""stop sign"", ""double‑decker bus""), clear Arabic numerals, clothing/accessory names (e.g., ""baseball cap""), and short readable logos/text (1–3 tokens). Require at least one high‑signal token to appear within the first three content words of the sentence (leading articles ""a/an/the"" do not count as content words). If two distinct high‑signal tokens are visible, place the second no later than the fourth content word.
+
+4) OCR/text copying: copy short readable text/logos (1–3 tokens) only if (OCR_confidence ≥ 0.60 and OCR_bbox_area ≥ 0.005) OR (OCR_confidence ≥ 0.75 and OCR_bbox_area ≥ 0.002). Never copy runs of ≥5 consecutive digits or low‑confidence/unreadable text. If OCR is borderline, describe generically (e.g., ""sign with letters"") instead of copying uncertain text.
+
+5) Token gating for subject selection: apply token_bonus only when the token’s bbox_area ≥ 0.005 and token/OCR confidence meets thresholds in rule 4. The token_bonus may break ties but must not allow tiny, low‑confidence tokens to win.
+
+6) Second‑object allowance: you may append one compact post‑nominal relation up to 4 tokens (for example, ""on the sidewalk"", ""with number 7"") only if that relation introduces a distinct high‑signal token. Do not chain relations or add longer descriptive chains.
+
+7) Wording, grammar, and tense: prefer starting with a high‑signal modifier plus class (e.g., ""red bicycle"", ""two dogs"", ""striped shirt""). Use present‑tense active verbs when an action/posture is clearly visible (walking, holding, jumping); otherwise use ""is/are."" Use Arabic numerals for visible counts that meet visibility rules. Allow leading determiners; count content words excluding them.
+
+8) Safety and literalness: do not invent unseen attributes, emotions, intentions, dialogue, or unreadable text. Avoid generic placeholders like ""object"" or a vague ""person"" when a more specific visible class, color, number, or logo is present.
+
+9) Simple failure checks: if the chosen subject bbox_area < 0.002 but another detection’s bbox_area > 1.5× larger, switch to the larger detection. Never assert a readable string unless OCR thresholds in rule 4 are met.
+
+10) Short guidance and examples (keep style concise):
+- Prefer concrete, visually discriminative tokens: colors, multiword classes, clothing/accessories, visible numerals, readable logos.
+- Good examples: ""red bicycle is parked on the sidewalk."" ""two dogs stand in shallow water.""
+- Bad examples to avoid: ""object on left."" ""man happy.""
+
+Final constraints: one sentence only, 8–12 words (prefer 9–11), literal description of visible content, include a required high‑signal token early (within first three content words), follow the OCR and usability thresholds above, and do not add extra commentary or multiple outputs.",Two women in conical hats sort leafy greens in woven baskets.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"

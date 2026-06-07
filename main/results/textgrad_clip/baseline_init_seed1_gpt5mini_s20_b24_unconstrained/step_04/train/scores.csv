@@ -1,0 +1,1373 @@
+split_id,method_id,run_id,order,dataset_index,image_id,image_relpath,reference_captions,prompt_id,prompt_name,prompt_text,caption,candidate_id,selected,model,temperature,top_p,max_new_tokens,generation_config,clip_score,siglip_score,caption_len,generic_flag
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_fc3d51810c,2,27768,flickr30k_test_027768,images/flickr30k/flickr30k_test_027768.jpg,"[""The redheaded girl giggles happily as she swings her pillow at her opponent during a recent pillow fight."", ""A lady in a red shirt with red-hair laugh while throwing a pillow over her left shoulder."", ""A woman with red-hair swings a pillow and laughs."", ""A young redheaded woman laughs at something."", ""A redhead girl in a pillow fight.""]",textgrad_fc3d51810c,TextGrad Step 4,"Output exactly two lines only.
+
+Line 1 (tags) — required format and rules:
+- Provide exactly 2–5 comma-separated tokens (no punctuation except commas). First token = main object (lower-case common noun), optionally with a visually certain count immediately after the noun (digit or word). Examples: ""child"", ""child 2"", ""person one"".
+- At least 2 tokens must be nouns (including the main noun). At most 1 token may be a visible attribute (color or size). Do NOT include verbs, proper nouns, brand names, inferred facts, emotions, events, or dates.
+- Use only lower-case common nouns and simple adjectives (dog, child, car, red, small). No articles in tags. No repeated words or near-synonyms — deduplicate and prefer the most specific single noun (e.g., choose ""child"" not ""person, child"").
+- Order tags by salience (most discriminative first). Prefer compact, high-information nouns over long exhaustive lists.
+
+Line 2 (caption) — required format and rules:
+- One factual short sentence in present simple or present progressive of 7–14 words, OR a valid 2–3 word fallback caption (main noun + short location, e.g., ""child sidewalk"") if a compliant 7–14 word caption would require guessing. If tags cannot be produced reliably, Line 2 must be exactly ""image unclear"".
+- Place the main noun within positions 1–3 of the sentence. If a visually certain numeric count is shown in Line 1, reflect it in the caption and use correct verb morphology: singular -> third-person singular verb (adds -s), plural -> base verb (e.g., ""1 child stands"", ""2 children stand"").
+- Include at most one clearly visible color or size in the caption and at most one simple spatial relation/preposition (on, in, near, by, in front of, behind). Use only concrete, directly visible facts. Do NOT add proper nouns, intentions, emotions, or invented facts.
+- No punctuation except an optional single period at the end.
+
+Harmonization and anti-hallucination:
+- Ensure lexical reinforcement: prefer at least two exact token overlaps between Line 1 and Line 2 (noun or attribute). If only one overlap is possible, ensure it is the main noun. Overlap strongly improves alignment.
+- Prefer omission over guessing: if a property (count, color, relation) is not clearly visible, omit it rather than invent it.
+- If you cannot produce a compliant caption without adding uncertain attributes, produce the 2–3 word fallback (main noun + location) or ""image unclear"" as specified above.
+
+Candidate generation and (required) reranking:
+- Internally generate N = 3 candidate compliant outputs (each candidate = Line1 tags + Line2 caption obeying rules). Score and select the best candidate before output.
+- If a CLIP scorer is available, use it to rerank candidates. If not available, use this proxy score:
+  proxy_score = 5*(main-noun overlap) + 3*(each additional exact overlap) + 2*(visible attribute overlap) - 2*(duplicates collapsed penalty) - 1*(each tag beyond 3).
+  Higher score wins. Break ties by preferring more overlaps, then shorter tag lists.
+
+Deterministic self-checks (must pass before returning output):
+1. Deduplicate tags; ensure 2–5 comma-separated tokens, all lower-case, nouns/adjectives only, ≤1 attribute.
+2. Ensure Line 2 length = 7–14 words OR valid 2–3 word fallback OR exactly ""image unclear"".
+3. Ensure at least one exact token overlap between tags and caption; prefer ≥2 overlaps.
+4. If Line 1 includes a numeric count, ensure caption verb morphology matches that count.
+5. No forbidden items (proper nouns, inferred facts); no punctuation except commas in Line 1 and optional final period in Line 2.
+If any check fails, replace Line 2 with ""image unclear"". If tags cannot be produced reliably, return only tags you can trust (2–5 tokens) and Line 2 = ""image unclear"".
+
+Practical guidance:
+- Keep tags compact and discriminative (2–4 nouns is ideal). A single clear color or size is allowed only when obvious.
+- Avoid listing many small objects; instead choose the most salient objects that distinguish the image.
+- When uncertain about count, color, or relation, omit them from both tags and caption.
+
+Positive examples (correct):
+- Example A:
+  Line1: child, blanket, red
+  Line2: child sits on blanket holding a red toy.
+  (main noun early; two overlaps: child, blanket; one visible attribute red)
+- Example B:
+  Line1: dog 2, ball
+  Line2: 2 dogs play near a ball on grass.
+  (numeric count reflected; correct plural verb form; overlaps: dog, ball)
+
+Negative examples (common errors and fixes):
+- Bad: ""person, person, person, car, red, red"" + ""person stands by car.""
+  Fix: deduplicate and reduce tags to ""person, car, red""; ensure 2–5 tokens.
+- Bad: Line1 ""child 2, dog"" + Line2 ""child stands near dog""
+  Fix: If Line1 uses ""child 2"", caption must read ""2 children stand near dog"" (plural verb and noun form).
+
+Implementation checklist to append inside the prompt:
+- Generate 3 candidates, apply proxy/CLIP rerank, run self-checks 1–5, output the top candidate if it passes; otherwise output tags you can trust and Line 2 = ""image unclear"". The VLM must follow the two-line output format exactly.","person, blanket, red
+person holds a blanket while wearing a red sweatshirt.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.2546728551387787,0.11560545861721039,12,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_fc3d51810c,5,2067,flickr30k_test_002067,images/flickr30k/flickr30k_test_002067.jpg,"[""People sitting at tables outside chatting while a musician gets ready to play bass."", ""A man holds a guitar on a busy street while people look on."", ""A little girl is watching a man play guitar on the street."", ""A girl on a city street is looking at a guitar player."", ""A street guitarist is outside a cafe""]",textgrad_fc3d51810c,TextGrad Step 4,"Output exactly two lines only.
+
+Line 1 (tags) — required format and rules:
+- Provide exactly 2–5 comma-separated tokens (no punctuation except commas). First token = main object (lower-case common noun), optionally with a visually certain count immediately after the noun (digit or word). Examples: ""child"", ""child 2"", ""person one"".
+- At least 2 tokens must be nouns (including the main noun). At most 1 token may be a visible attribute (color or size). Do NOT include verbs, proper nouns, brand names, inferred facts, emotions, events, or dates.
+- Use only lower-case common nouns and simple adjectives (dog, child, car, red, small). No articles in tags. No repeated words or near-synonyms — deduplicate and prefer the most specific single noun (e.g., choose ""child"" not ""person, child"").
+- Order tags by salience (most discriminative first). Prefer compact, high-information nouns over long exhaustive lists.
+
+Line 2 (caption) — required format and rules:
+- One factual short sentence in present simple or present progressive of 7–14 words, OR a valid 2–3 word fallback caption (main noun + short location, e.g., ""child sidewalk"") if a compliant 7–14 word caption would require guessing. If tags cannot be produced reliably, Line 2 must be exactly ""image unclear"".
+- Place the main noun within positions 1–3 of the sentence. If a visually certain numeric count is shown in Line 1, reflect it in the caption and use correct verb morphology: singular -> third-person singular verb (adds -s), plural -> base verb (e.g., ""1 child stands"", ""2 children stand"").
+- Include at most one clearly visible color or size in the caption and at most one simple spatial relation/preposition (on, in, near, by, in front of, behind). Use only concrete, directly visible facts. Do NOT add proper nouns, intentions, emotions, or invented facts.
+- No punctuation except an optional single period at the end.
+
+Harmonization and anti-hallucination:
+- Ensure lexical reinforcement: prefer at least two exact token overlaps between Line 1 and Line 2 (noun or attribute). If only one overlap is possible, ensure it is the main noun. Overlap strongly improves alignment.
+- Prefer omission over guessing: if a property (count, color, relation) is not clearly visible, omit it rather than invent it.
+- If you cannot produce a compliant caption without adding uncertain attributes, produce the 2–3 word fallback (main noun + location) or ""image unclear"" as specified above.
+
+Candidate generation and (required) reranking:
+- Internally generate N = 3 candidate compliant outputs (each candidate = Line1 tags + Line2 caption obeying rules). Score and select the best candidate before output.
+- If a CLIP scorer is available, use it to rerank candidates. If not available, use this proxy score:
+  proxy_score = 5*(main-noun overlap) + 3*(each additional exact overlap) + 2*(visible attribute overlap) - 2*(duplicates collapsed penalty) - 1*(each tag beyond 3).
+  Higher score wins. Break ties by preferring more overlaps, then shorter tag lists.
+
+Deterministic self-checks (must pass before returning output):
+1. Deduplicate tags; ensure 2–5 comma-separated tokens, all lower-case, nouns/adjectives only, ≤1 attribute.
+2. Ensure Line 2 length = 7–14 words OR valid 2–3 word fallback OR exactly ""image unclear"".
+3. Ensure at least one exact token overlap between tags and caption; prefer ≥2 overlaps.
+4. If Line 1 includes a numeric count, ensure caption verb morphology matches that count.
+5. No forbidden items (proper nouns, inferred facts); no punctuation except commas in Line 1 and optional final period in Line 2.
+If any check fails, replace Line 2 with ""image unclear"". If tags cannot be produced reliably, return only tags you can trust (2–5 tokens) and Line 2 = ""image unclear"".
+
+Practical guidance:
+- Keep tags compact and discriminative (2–4 nouns is ideal). A single clear color or size is allowed only when obvious.
+- Avoid listing many small objects; instead choose the most salient objects that distinguish the image.
+- When uncertain about count, color, or relation, omit them from both tags and caption.
+
+Positive examples (correct):
+- Example A:
+  Line1: child, blanket, red
+  Line2: child sits on blanket holding a red toy.
+  (main noun early; two overlaps: child, blanket; one visible attribute red)
+- Example B:
+  Line1: dog 2, ball
+  Line2: 2 dogs play near a ball on grass.
+  (numeric count reflected; correct plural verb form; overlaps: dog, ball)
+
+Negative examples (common errors and fixes):
+- Bad: ""person, person, person, car, red, red"" + ""person stands by car.""
+  Fix: deduplicate and reduce tags to ""person, car, red""; ensure 2–5 tokens.
+- Bad: Line1 ""child 2, dog"" + Line2 ""child stands near dog""
+  Fix: If Line1 uses ""child 2"", caption must read ""2 children stand near dog"" (plural verb and noun form).
+
+Implementation checklist to append inside the prompt:
+- Generate 3 candidates, apply proxy/CLIP rerank, run self-checks 1–5, output the top candidate if it passes; otherwise output tags you can trust and Line 2 = ""image unclear"". The VLM must follow the two-line output format exactly.","child, guitar, person, chair, sidewalk
+child stands on sidewalk near guitar and people sitting in chairs",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.3066612482070923,0.2551424503326416,16,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_fc3d51810c,11,15474,flickr30k_test_015474,images/flickr30k/flickr30k_test_015474.jpg,"[""Three Vietnamese women paddle their boats along the river market in the morning."", ""Three boaters paddle their produce to the market in a Vietnamese fishing village."", ""Villagers paddling their boats to their destination."", ""Canoes travel across the water along side buildings."", ""The people are delivering goods by boat""]",textgrad_fc3d51810c,TextGrad Step 4,"Output exactly two lines only.
+
+Line 1 (tags) — required format and rules:
+- Provide exactly 2–5 comma-separated tokens (no punctuation except commas). First token = main object (lower-case common noun), optionally with a visually certain count immediately after the noun (digit or word). Examples: ""child"", ""child 2"", ""person one"".
+- At least 2 tokens must be nouns (including the main noun). At most 1 token may be a visible attribute (color or size). Do NOT include verbs, proper nouns, brand names, inferred facts, emotions, events, or dates.
+- Use only lower-case common nouns and simple adjectives (dog, child, car, red, small). No articles in tags. No repeated words or near-synonyms — deduplicate and prefer the most specific single noun (e.g., choose ""child"" not ""person, child"").
+- Order tags by salience (most discriminative first). Prefer compact, high-information nouns over long exhaustive lists.
+
+Line 2 (caption) — required format and rules:
+- One factual short sentence in present simple or present progressive of 7–14 words, OR a valid 2–3 word fallback caption (main noun + short location, e.g., ""child sidewalk"") if a compliant 7–14 word caption would require guessing. If tags cannot be produced reliably, Line 2 must be exactly ""image unclear"".
+- Place the main noun within positions 1–3 of the sentence. If a visually certain numeric count is shown in Line 1, reflect it in the caption and use correct verb morphology: singular -> third-person singular verb (adds -s), plural -> base verb (e.g., ""1 child stands"", ""2 children stand"").
+- Include at most one clearly visible color or size in the caption and at most one simple spatial relation/preposition (on, in, near, by, in front of, behind). Use only concrete, directly visible facts. Do NOT add proper nouns, intentions, emotions, or invented facts.
+- No punctuation except an optional single period at the end.
+
+Harmonization and anti-hallucination:
+- Ensure lexical reinforcement: prefer at least two exact token overlaps between Line 1 and Line 2 (noun or attribute). If only one overlap is possible, ensure it is the main noun. Overlap strongly improves alignment.
+- Prefer omission over guessing: if a property (count, color, relation) is not clearly visible, omit it rather than invent it.
+- If you cannot produce a compliant caption without adding uncertain attributes, produce the 2–3 word fallback (main noun + location) or ""image unclear"" as specified above.
+
+Candidate generation and (required) reranking:
+- Internally generate N = 3 candidate compliant outputs (each candidate = Line1 tags + Line2 caption obeying rules). Score and select the best candidate before output.
+- If a CLIP scorer is available, use it to rerank candidates. If not available, use this proxy score:
+  proxy_score = 5*(main-noun overlap) + 3*(each additional exact overlap) + 2*(visible attribute overlap) - 2*(duplicates collapsed penalty) - 1*(each tag beyond 3).
+  Higher score wins. Break ties by preferring more overlaps, then shorter tag lists.
+
+Deterministic self-checks (must pass before returning output):
+1. Deduplicate tags; ensure 2–5 comma-separated tokens, all lower-case, nouns/adjectives only, ≤1 attribute.
+2. Ensure Line 2 length = 7–14 words OR valid 2–3 word fallback OR exactly ""image unclear"".
+3. Ensure at least one exact token overlap between tags and caption; prefer ≥2 overlaps.
+4. If Line 1 includes a numeric count, ensure caption verb morphology matches that count.
+5. No forbidden items (proper nouns, inferred facts); no punctuation except commas in Line 1 and optional final period in Line 2.
+If any check fails, replace Line 2 with ""image unclear"". If tags cannot be produced reliably, return only tags you can trust (2–5 tokens) and Line 2 = ""image unclear"".
+
+Practical guidance:
+- Keep tags compact and discriminative (2–4 nouns is ideal). A single clear color or size is allowed only when obvious.
+- Avoid listing many small objects; instead choose the most salient objects that distinguish the image.
+- When uncertain about count, color, or relation, omit them from both tags and caption.
+
+Positive examples (correct):
+- Example A:
+  Line1: child, blanket, red
+  Line2: child sits on blanket holding a red toy.
+  (main noun early; two overlaps: child, blanket; one visible attribute red)
+- Example B:
+  Line1: dog 2, ball
+  Line2: 2 dogs play near a ball on grass.
+  (numeric count reflected; correct plural verb form; overlaps: dog, ball)
+
+Negative examples (common errors and fixes):
+- Bad: ""person, person, person, car, red, red"" + ""person stands by car.""
+  Fix: deduplicate and reduce tags to ""person, car, red""; ensure 2–5 tokens.
+- Bad: Line1 ""child 2, dog"" + Line2 ""child stands near dog""
+  Fix: If Line1 uses ""child 2"", caption must read ""2 children stand near dog"" (plural verb and noun form).
+
+Implementation checklist to append inside the prompt:
+- Generate 3 candidates, apply proxy/CLIP rerank, run self-checks 1–5, output the top candidate if it passes; otherwise output tags you can trust and Line 2 = ""image unclear"". The VLM must follow the two-line output format exactly.","boat, person, water, building, paddle
+person rows boat in muddy water near wooden buildings",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.2949564456939697,0.13647998869419098,14,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_fc3d51810c,12,21351,flickr30k_test_021351,images/flickr30k/flickr30k_test_021351.jpg,"[""A woman dressed in all black standing in front of colorful picture playing a violin."", ""A woman dressed in black is playing the violin in front of some artwork."", ""A woman in black playing an instrument on the subway platform."", ""A woman on a bright street is playing the violin."", ""A lady performing in a underground train station""]",textgrad_fc3d51810c,TextGrad Step 4,"Output exactly two lines only.
+
+Line 1 (tags) — required format and rules:
+- Provide exactly 2–5 comma-separated tokens (no punctuation except commas). First token = main object (lower-case common noun), optionally with a visually certain count immediately after the noun (digit or word). Examples: ""child"", ""child 2"", ""person one"".
+- At least 2 tokens must be nouns (including the main noun). At most 1 token may be a visible attribute (color or size). Do NOT include verbs, proper nouns, brand names, inferred facts, emotions, events, or dates.
+- Use only lower-case common nouns and simple adjectives (dog, child, car, red, small). No articles in tags. No repeated words or near-synonyms — deduplicate and prefer the most specific single noun (e.g., choose ""child"" not ""person, child"").
+- Order tags by salience (most discriminative first). Prefer compact, high-information nouns over long exhaustive lists.
+
+Line 2 (caption) — required format and rules:
+- One factual short sentence in present simple or present progressive of 7–14 words, OR a valid 2–3 word fallback caption (main noun + short location, e.g., ""child sidewalk"") if a compliant 7–14 word caption would require guessing. If tags cannot be produced reliably, Line 2 must be exactly ""image unclear"".
+- Place the main noun within positions 1–3 of the sentence. If a visually certain numeric count is shown in Line 1, reflect it in the caption and use correct verb morphology: singular -> third-person singular verb (adds -s), plural -> base verb (e.g., ""1 child stands"", ""2 children stand"").
+- Include at most one clearly visible color or size in the caption and at most one simple spatial relation/preposition (on, in, near, by, in front of, behind). Use only concrete, directly visible facts. Do NOT add proper nouns, intentions, emotions, or invented facts.
+- No punctuation except an optional single period at the end.
+
+Harmonization and anti-hallucination:
+- Ensure lexical reinforcement: prefer at least two exact token overlaps between Line 1 and Line 2 (noun or attribute). If only one overlap is possible, ensure it is the main noun. Overlap strongly improves alignment.
+- Prefer omission over guessing: if a property (count, color, relation) is not clearly visible, omit it rather than invent it.
+- If you cannot produce a compliant caption without adding uncertain attributes, produce the 2–3 word fallback (main noun + location) or ""image unclear"" as specified above.
+
+Candidate generation and (required) reranking:
+- Internally generate N = 3 candidate compliant outputs (each candidate = Line1 tags + Line2 caption obeying rules). Score and select the best candidate before output.
+- If a CLIP scorer is available, use it to rerank candidates. If not available, use this proxy score:
+  proxy_score = 5*(main-noun overlap) + 3*(each additional exact overlap) + 2*(visible attribute overlap) - 2*(duplicates collapsed penalty) - 1*(each tag beyond 3).
+  Higher score wins. Break ties by preferring more overlaps, then shorter tag lists.
+
+Deterministic self-checks (must pass before returning output):
+1. Deduplicate tags; ensure 2–5 comma-separated tokens, all lower-case, nouns/adjectives only, ≤1 attribute.
+2. Ensure Line 2 length = 7–14 words OR valid 2–3 word fallback OR exactly ""image unclear"".
+3. Ensure at least one exact token overlap between tags and caption; prefer ≥2 overlaps.
+4. If Line 1 includes a numeric count, ensure caption verb morphology matches that count.
+5. No forbidden items (proper nouns, inferred facts); no punctuation except commas in Line 1 and optional final period in Line 2.
+If any check fails, replace Line 2 with ""image unclear"". If tags cannot be produced reliably, return only tags you can trust (2–5 tokens) and Line 2 = ""image unclear"".
+
+Practical guidance:
+- Keep tags compact and discriminative (2–4 nouns is ideal). A single clear color or size is allowed only when obvious.
+- Avoid listing many small objects; instead choose the most salient objects that distinguish the image.
+- When uncertain about count, color, or relation, omit them from both tags and caption.
+
+Positive examples (correct):
+- Example A:
+  Line1: child, blanket, red
+  Line2: child sits on blanket holding a red toy.
+  (main noun early; two overlaps: child, blanket; one visible attribute red)
+- Example B:
+  Line1: dog 2, ball
+  Line2: 2 dogs play near a ball on grass.
+  (numeric count reflected; correct plural verb form; overlaps: dog, ball)
+
+Negative examples (common errors and fixes):
+- Bad: ""person, person, person, car, red, red"" + ""person stands by car.""
+  Fix: deduplicate and reduce tags to ""person, car, red""; ensure 2–5 tokens.
+- Bad: Line1 ""child 2, dog"" + Line2 ""child stands near dog""
+  Fix: If Line1 uses ""child 2"", caption must read ""2 children stand near dog"" (plural verb and noun form).
+
+Implementation checklist to append inside the prompt:
+- Generate 3 candidates, apply proxy/CLIP rerank, run self-checks 1–5, output the top candidate if it passes; otherwise output tags you can trust and Line 2 = ""image unclear"". The VLM must follow the two-line output format exactly.","person, violin, painting, wall
+person plays violin in front of colorful paintings on wall",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.3281782269477844,0.18618768453598022,14,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_fc3d51810c,14,25844,flickr30k_test_025844,images/flickr30k/flickr30k_test_025844.jpg,"[""The two boys, one in orange the other in teal, wrestle in the sand."", ""Two boys are playing in the sand at a playground."", ""Two young boys are wrestling in a sandpit."", ""Two boys wrestle together in the sand."", ""Two boys tussle in the sand at a park.""]",textgrad_fc3d51810c,TextGrad Step 4,"Output exactly two lines only.
+
+Line 1 (tags) — required format and rules:
+- Provide exactly 2–5 comma-separated tokens (no punctuation except commas). First token = main object (lower-case common noun), optionally with a visually certain count immediately after the noun (digit or word). Examples: ""child"", ""child 2"", ""person one"".
+- At least 2 tokens must be nouns (including the main noun). At most 1 token may be a visible attribute (color or size). Do NOT include verbs, proper nouns, brand names, inferred facts, emotions, events, or dates.
+- Use only lower-case common nouns and simple adjectives (dog, child, car, red, small). No articles in tags. No repeated words or near-synonyms — deduplicate and prefer the most specific single noun (e.g., choose ""child"" not ""person, child"").
+- Order tags by salience (most discriminative first). Prefer compact, high-information nouns over long exhaustive lists.
+
+Line 2 (caption) — required format and rules:
+- One factual short sentence in present simple or present progressive of 7–14 words, OR a valid 2–3 word fallback caption (main noun + short location, e.g., ""child sidewalk"") if a compliant 7–14 word caption would require guessing. If tags cannot be produced reliably, Line 2 must be exactly ""image unclear"".
+- Place the main noun within positions 1–3 of the sentence. If a visually certain numeric count is shown in Line 1, reflect it in the caption and use correct verb morphology: singular -> third-person singular verb (adds -s), plural -> base verb (e.g., ""1 child stands"", ""2 children stand"").
+- Include at most one clearly visible color or size in the caption and at most one simple spatial relation/preposition (on, in, near, by, in front of, behind). Use only concrete, directly visible facts. Do NOT add proper nouns, intentions, emotions, or invented facts.
+- No punctuation except an optional single period at the end.
+
+Harmonization and anti-hallucination:
+- Ensure lexical reinforcement: prefer at least two exact token overlaps between Line 1 and Line 2 (noun or attribute). If only one overlap is possible, ensure it is the main noun. Overlap strongly improves alignment.
+- Prefer omission over guessing: if a property (count, color, relation) is not clearly visible, omit it rather than invent it.
+- If you cannot produce a compliant caption without adding uncertain attributes, produce the 2–3 word fallback (main noun + location) or ""image unclear"" as specified above.
+
+Candidate generation and (required) reranking:
+- Internally generate N = 3 candidate compliant outputs (each candidate = Line1 tags + Line2 caption obeying rules). Score and select the best candidate before output.
+- If a CLIP scorer is available, use it to rerank candidates. If not available, use this proxy score:
+  proxy_score = 5*(main-noun overlap) + 3*(each additional exact overlap) + 2*(visible attribute overlap) - 2*(duplicates collapsed penalty) - 1*(each tag beyond 3).
+  Higher score wins. Break ties by preferring more overlaps, then shorter tag lists.
+
+Deterministic self-checks (must pass before returning output):
+1. Deduplicate tags; ensure 2–5 comma-separated tokens, all lower-case, nouns/adjectives only, ≤1 attribute.
+2. Ensure Line 2 length = 7–14 words OR valid 2–3 word fallback OR exactly ""image unclear"".
+3. Ensure at least one exact token overlap between tags and caption; prefer ≥2 overlaps.
+4. If Line 1 includes a numeric count, ensure caption verb morphology matches that count.
+5. No forbidden items (proper nouns, inferred facts); no punctuation except commas in Line 1 and optional final period in Line 2.
+If any check fails, replace Line 2 with ""image unclear"". If tags cannot be produced reliably, return only tags you can trust (2–5 tokens) and Line 2 = ""image unclear"".
+
+Practical guidance:
+- Keep tags compact and discriminative (2–4 nouns is ideal). A single clear color or size is allowed only when obvious.
+- Avoid listing many small objects; instead choose the most salient objects that distinguish the image.
+- When uncertain about count, color, or relation, omit them from both tags and caption.
+
+Positive examples (correct):
+- Example A:
+  Line1: child, blanket, red
+  Line2: child sits on blanket holding a red toy.
+  (main noun early; two overlaps: child, blanket; one visible attribute red)
+- Example B:
+  Line1: dog 2, ball
+  Line2: 2 dogs play near a ball on grass.
+  (numeric count reflected; correct plural verb form; overlaps: dog, ball)
+
+Negative examples (common errors and fixes):
+- Bad: ""person, person, person, car, red, red"" + ""person stands by car.""
+  Fix: deduplicate and reduce tags to ""person, car, red""; ensure 2–5 tokens.
+- Bad: Line1 ""child 2, dog"" + Line2 ""child stands near dog""
+  Fix: If Line1 uses ""child 2"", caption must read ""2 children stand near dog"" (plural verb and noun form).
+
+Implementation checklist to append inside the prompt:
+- Generate 3 candidates, apply proxy/CLIP rerank, run self-checks 1–5, output the top candidate if it passes; otherwise output tags you can trust and Line 2 = ""image unclear"". The VLM must follow the two-line output format exactly.","child, child, sand, orange, camouflage
+two children hug on sand one wears orange shirt and camouflage shorts",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.29348212480545044,0.17729619145393372,17,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_fc3d51810c,18,928,flickr30k_test_000928,images/flickr30k/flickr30k_test_000928.jpg,"[""A woman with a red jacket and her companion eating snacks."", ""A young man and woman enjoy some ribs in the evening."", ""Two people are eating barbecue ribs at night."", ""A man and a woman about to eat."", ""These two people are eating.""]",textgrad_fc3d51810c,TextGrad Step 4,"Output exactly two lines only.
+
+Line 1 (tags) — required format and rules:
+- Provide exactly 2–5 comma-separated tokens (no punctuation except commas). First token = main object (lower-case common noun), optionally with a visually certain count immediately after the noun (digit or word). Examples: ""child"", ""child 2"", ""person one"".
+- At least 2 tokens must be nouns (including the main noun). At most 1 token may be a visible attribute (color or size). Do NOT include verbs, proper nouns, brand names, inferred facts, emotions, events, or dates.
+- Use only lower-case common nouns and simple adjectives (dog, child, car, red, small). No articles in tags. No repeated words or near-synonyms — deduplicate and prefer the most specific single noun (e.g., choose ""child"" not ""person, child"").
+- Order tags by salience (most discriminative first). Prefer compact, high-information nouns over long exhaustive lists.
+
+Line 2 (caption) — required format and rules:
+- One factual short sentence in present simple or present progressive of 7–14 words, OR a valid 2–3 word fallback caption (main noun + short location, e.g., ""child sidewalk"") if a compliant 7–14 word caption would require guessing. If tags cannot be produced reliably, Line 2 must be exactly ""image unclear"".
+- Place the main noun within positions 1–3 of the sentence. If a visually certain numeric count is shown in Line 1, reflect it in the caption and use correct verb morphology: singular -> third-person singular verb (adds -s), plural -> base verb (e.g., ""1 child stands"", ""2 children stand"").
+- Include at most one clearly visible color or size in the caption and at most one simple spatial relation/preposition (on, in, near, by, in front of, behind). Use only concrete, directly visible facts. Do NOT add proper nouns, intentions, emotions, or invented facts.
+- No punctuation except an optional single period at the end.
+
+Harmonization and anti-hallucination:
+- Ensure lexical reinforcement: prefer at least two exact token overlaps between Line 1 and Line 2 (noun or attribute). If only one overlap is possible, ensure it is the main noun. Overlap strongly improves alignment.
+- Prefer omission over guessing: if a property (count, color, relation) is not clearly visible, omit it rather than invent it.
+- If you cannot produce a compliant caption without adding uncertain attributes, produce the 2–3 word fallback (main noun + location) or ""image unclear"" as specified above.
+
+Candidate generation and (required) reranking:
+- Internally generate N = 3 candidate compliant outputs (each candidate = Line1 tags + Line2 caption obeying rules). Score and select the best candidate before output.
+- If a CLIP scorer is available, use it to rerank candidates. If not available, use this proxy score:
+  proxy_score = 5*(main-noun overlap) + 3*(each additional exact overlap) + 2*(visible attribute overlap) - 2*(duplicates collapsed penalty) - 1*(each tag beyond 3).
+  Higher score wins. Break ties by preferring more overlaps, then shorter tag lists.
+
+Deterministic self-checks (must pass before returning output):
+1. Deduplicate tags; ensure 2–5 comma-separated tokens, all lower-case, nouns/adjectives only, ≤1 attribute.
+2. Ensure Line 2 length = 7–14 words OR valid 2–3 word fallback OR exactly ""image unclear"".
+3. Ensure at least one exact token overlap between tags and caption; prefer ≥2 overlaps.
+4. If Line 1 includes a numeric count, ensure caption verb morphology matches that count.
+5. No forbidden items (proper nouns, inferred facts); no punctuation except commas in Line 1 and optional final period in Line 2.
+If any check fails, replace Line 2 with ""image unclear"". If tags cannot be produced reliably, return only tags you can trust (2–5 tokens) and Line 2 = ""image unclear"".
+
+Practical guidance:
+- Keep tags compact and discriminative (2–4 nouns is ideal). A single clear color or size is allowed only when obvious.
+- Avoid listing many small objects; instead choose the most salient objects that distinguish the image.
+- When uncertain about count, color, or relation, omit them from both tags and caption.
+
+Positive examples (correct):
+- Example A:
+  Line1: child, blanket, red
+  Line2: child sits on blanket holding a red toy.
+  (main noun early; two overlaps: child, blanket; one visible attribute red)
+- Example B:
+  Line1: dog 2, ball
+  Line2: 2 dogs play near a ball on grass.
+  (numeric count reflected; correct plural verb form; overlaps: dog, ball)
+
+Negative examples (common errors and fixes):
+- Bad: ""person, person, person, car, red, red"" + ""person stands by car.""
+  Fix: deduplicate and reduce tags to ""person, car, red""; ensure 2–5 tokens.
+- Bad: Line1 ""child 2, dog"" + Line2 ""child stands near dog""
+  Fix: If Line1 uses ""child 2"", caption must read ""2 children stand near dog"" (plural verb and noun form).
+
+Implementation checklist to append inside the prompt:
+- Generate 3 candidates, apply proxy/CLIP rerank, run self-checks 1–5, output the top candidate if it passes; otherwise output tags you can trust and Line 2 = ""image unclear"". The VLM must follow the two-line output format exactly.","person, food, jacket, red
+person holds food while another person in red jacket eats nearby.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.2663270831108093,0.12611185014247894,15,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_fc3d51810c,24,24978,flickr30k_test_024978,images/flickr30k/flickr30k_test_024978.jpg,"[""A man in a blue shirt and brown pants is sitting next to a parked blue car."", ""A man in a blue sweater is sitting outside in front of a blue car."", ""A man in a blue shirt is sitting beside a blue van"", ""An elderly man sits in a chair in an alleyway."", ""The man in the blue shirt looks very lonely.""]",textgrad_fc3d51810c,TextGrad Step 4,"Output exactly two lines only.
+
+Line 1 (tags) — required format and rules:
+- Provide exactly 2–5 comma-separated tokens (no punctuation except commas). First token = main object (lower-case common noun), optionally with a visually certain count immediately after the noun (digit or word). Examples: ""child"", ""child 2"", ""person one"".
+- At least 2 tokens must be nouns (including the main noun). At most 1 token may be a visible attribute (color or size). Do NOT include verbs, proper nouns, brand names, inferred facts, emotions, events, or dates.
+- Use only lower-case common nouns and simple adjectives (dog, child, car, red, small). No articles in tags. No repeated words or near-synonyms — deduplicate and prefer the most specific single noun (e.g., choose ""child"" not ""person, child"").
+- Order tags by salience (most discriminative first). Prefer compact, high-information nouns over long exhaustive lists.
+
+Line 2 (caption) — required format and rules:
+- One factual short sentence in present simple or present progressive of 7–14 words, OR a valid 2–3 word fallback caption (main noun + short location, e.g., ""child sidewalk"") if a compliant 7–14 word caption would require guessing. If tags cannot be produced reliably, Line 2 must be exactly ""image unclear"".
+- Place the main noun within positions 1–3 of the sentence. If a visually certain numeric count is shown in Line 1, reflect it in the caption and use correct verb morphology: singular -> third-person singular verb (adds -s), plural -> base verb (e.g., ""1 child stands"", ""2 children stand"").
+- Include at most one clearly visible color or size in the caption and at most one simple spatial relation/preposition (on, in, near, by, in front of, behind). Use only concrete, directly visible facts. Do NOT add proper nouns, intentions, emotions, or invented facts.
+- No punctuation except an optional single period at the end.
+
+Harmonization and anti-hallucination:
+- Ensure lexical reinforcement: prefer at least two exact token overlaps between Line 1 and Line 2 (noun or attribute). If only one overlap is possible, ensure it is the main noun. Overlap strongly improves alignment.
+- Prefer omission over guessing: if a property (count, color, relation) is not clearly visible, omit it rather than invent it.
+- If you cannot produce a compliant caption without adding uncertain attributes, produce the 2–3 word fallback (main noun + location) or ""image unclear"" as specified above.
+
+Candidate generation and (required) reranking:
+- Internally generate N = 3 candidate compliant outputs (each candidate = Line1 tags + Line2 caption obeying rules). Score and select the best candidate before output.
+- If a CLIP scorer is available, use it to rerank candidates. If not available, use this proxy score:
+  proxy_score = 5*(main-noun overlap) + 3*(each additional exact overlap) + 2*(visible attribute overlap) - 2*(duplicates collapsed penalty) - 1*(each tag beyond 3).
+  Higher score wins. Break ties by preferring more overlaps, then shorter tag lists.
+
+Deterministic self-checks (must pass before returning output):
+1. Deduplicate tags; ensure 2–5 comma-separated tokens, all lower-case, nouns/adjectives only, ≤1 attribute.
+2. Ensure Line 2 length = 7–14 words OR valid 2–3 word fallback OR exactly ""image unclear"".
+3. Ensure at least one exact token overlap between tags and caption; prefer ≥2 overlaps.
+4. If Line 1 includes a numeric count, ensure caption verb morphology matches that count.
+5. No forbidden items (proper nouns, inferred facts); no punctuation except commas in Line 1 and optional final period in Line 2.
+If any check fails, replace Line 2 with ""image unclear"". If tags cannot be produced reliably, return only tags you can trust (2–5 tokens) and Line 2 = ""image unclear"".
+
+Practical guidance:
+- Keep tags compact and discriminative (2–4 nouns is ideal). A single clear color or size is allowed only when obvious.
+- Avoid listing many small objects; instead choose the most salient objects that distinguish the image.
+- When uncertain about count, color, or relation, omit them from both tags and caption.
+
+Positive examples (correct):
+- Example A:
+  Line1: child, blanket, red
+  Line2: child sits on blanket holding a red toy.
+  (main noun early; two overlaps: child, blanket; one visible attribute red)
+- Example B:
+  Line1: dog 2, ball
+  Line2: 2 dogs play near a ball on grass.
+  (numeric count reflected; correct plural verb form; overlaps: dog, ball)
+
+Negative examples (common errors and fixes):
+- Bad: ""person, person, person, car, red, red"" + ""person stands by car.""
+  Fix: deduplicate and reduce tags to ""person, car, red""; ensure 2–5 tokens.
+- Bad: Line1 ""child 2, dog"" + Line2 ""child stands near dog""
+  Fix: If Line1 uses ""child 2"", caption must read ""2 children stand near dog"" (plural verb and noun form).
+
+Implementation checklist to append inside the prompt:
+- Generate 3 candidates, apply proxy/CLIP rerank, run self-checks 1–5, output the top candidate if it passes; otherwise output tags you can trust and Line 2 = ""image unclear"". The VLM must follow the two-line output format exactly.","person, car, bench, wall
+person sits on bench near blue car against weathered wall",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.30984413623809814,0.2516956925392151,14,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_fc3d51810c,25,25138,flickr30k_test_025138,images/flickr30k/flickr30k_test_025138.jpg,"[""A woman in a black stocking hat and black leather jacket, talking to a man with a beard in a black fleece jacket."", ""A girl in a black sock hat is talking to a man wearing a blue shirt."", ""A woman and man talking to each other in front of a scenic lake."", ""People talking to one another outside near a fountain."", ""A woman in a black beanie looks up at a bearded man.""]",textgrad_fc3d51810c,TextGrad Step 4,"Output exactly two lines only.
+
+Line 1 (tags) — required format and rules:
+- Provide exactly 2–5 comma-separated tokens (no punctuation except commas). First token = main object (lower-case common noun), optionally with a visually certain count immediately after the noun (digit or word). Examples: ""child"", ""child 2"", ""person one"".
+- At least 2 tokens must be nouns (including the main noun). At most 1 token may be a visible attribute (color or size). Do NOT include verbs, proper nouns, brand names, inferred facts, emotions, events, or dates.
+- Use only lower-case common nouns and simple adjectives (dog, child, car, red, small). No articles in tags. No repeated words or near-synonyms — deduplicate and prefer the most specific single noun (e.g., choose ""child"" not ""person, child"").
+- Order tags by salience (most discriminative first). Prefer compact, high-information nouns over long exhaustive lists.
+
+Line 2 (caption) — required format and rules:
+- One factual short sentence in present simple or present progressive of 7–14 words, OR a valid 2–3 word fallback caption (main noun + short location, e.g., ""child sidewalk"") if a compliant 7–14 word caption would require guessing. If tags cannot be produced reliably, Line 2 must be exactly ""image unclear"".
+- Place the main noun within positions 1–3 of the sentence. If a visually certain numeric count is shown in Line 1, reflect it in the caption and use correct verb morphology: singular -> third-person singular verb (adds -s), plural -> base verb (e.g., ""1 child stands"", ""2 children stand"").
+- Include at most one clearly visible color or size in the caption and at most one simple spatial relation/preposition (on, in, near, by, in front of, behind). Use only concrete, directly visible facts. Do NOT add proper nouns, intentions, emotions, or invented facts.
+- No punctuation except an optional single period at the end.
+
+Harmonization and anti-hallucination:
+- Ensure lexical reinforcement: prefer at least two exact token overlaps between Line 1 and Line 2 (noun or attribute). If only one overlap is possible, ensure it is the main noun. Overlap strongly improves alignment.
+- Prefer omission over guessing: if a property (count, color, relation) is not clearly visible, omit it rather than invent it.
+- If you cannot produce a compliant caption without adding uncertain attributes, produce the 2–3 word fallback (main noun + location) or ""image unclear"" as specified above.
+
+Candidate generation and (required) reranking:
+- Internally generate N = 3 candidate compliant outputs (each candidate = Line1 tags + Line2 caption obeying rules). Score and select the best candidate before output.
+- If a CLIP scorer is available, use it to rerank candidates. If not available, use this proxy score:
+  proxy_score = 5*(main-noun overlap) + 3*(each additional exact overlap) + 2*(visible attribute overlap) - 2*(duplicates collapsed penalty) - 1*(each tag beyond 3).
+  Higher score wins. Break ties by preferring more overlaps, then shorter tag lists.
+
+Deterministic self-checks (must pass before returning output):
+1. Deduplicate tags; ensure 2–5 comma-separated tokens, all lower-case, nouns/adjectives only, ≤1 attribute.
+2. Ensure Line 2 length = 7–14 words OR valid 2–3 word fallback OR exactly ""image unclear"".
+3. Ensure at least one exact token overlap between tags and caption; prefer ≥2 overlaps.
+4. If Line 1 includes a numeric count, ensure caption verb morphology matches that count.
+5. No forbidden items (proper nouns, inferred facts); no punctuation except commas in Line 1 and optional final period in Line 2.
+If any check fails, replace Line 2 with ""image unclear"". If tags cannot be produced reliably, return only tags you can trust (2–5 tokens) and Line 2 = ""image unclear"".
+
+Practical guidance:
+- Keep tags compact and discriminative (2–4 nouns is ideal). A single clear color or size is allowed only when obvious.
+- Avoid listing many small objects; instead choose the most salient objects that distinguish the image.
+- When uncertain about count, color, or relation, omit them from both tags and caption.
+
+Positive examples (correct):
+- Example A:
+  Line1: child, blanket, red
+  Line2: child sits on blanket holding a red toy.
+  (main noun early; two overlaps: child, blanket; one visible attribute red)
+- Example B:
+  Line1: dog 2, ball
+  Line2: 2 dogs play near a ball on grass.
+  (numeric count reflected; correct plural verb form; overlaps: dog, ball)
+
+Negative examples (common errors and fixes):
+- Bad: ""person, person, person, car, red, red"" + ""person stands by car.""
+  Fix: deduplicate and reduce tags to ""person, car, red""; ensure 2–5 tokens.
+- Bad: Line1 ""child 2, dog"" + Line2 ""child stands near dog""
+  Fix: If Line1 uses ""child 2"", caption must read ""2 children stand near dog"" (plural verb and noun form).
+
+Implementation checklist to append inside the prompt:
+- Generate 3 candidates, apply proxy/CLIP rerank, run self-checks 1–5, output the top candidate if it passes; otherwise output tags you can trust and Line 2 = ""image unclear"". The VLM must follow the two-line output format exactly.","person, person, person, person, beanie
+four people stand near a railing by water",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.27440857887268066,0.18831047415733337,13,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_fc3d51810c,26,69,flickr30k_test_000069,images/flickr30k/flickr30k_test_000069.jpg,"[""A man in a black coat walks past a red spaceship with a parking ticket stuck to its window."", ""A man is standing in front of a small red object that looks like a plane."", ""A man wearing a black jacket is walking towards the street."", ""A man in a black jacket is moving towards a street."", ""Man in black coat examining airplane nose.""]",textgrad_fc3d51810c,TextGrad Step 4,"Output exactly two lines only.
+
+Line 1 (tags) — required format and rules:
+- Provide exactly 2–5 comma-separated tokens (no punctuation except commas). First token = main object (lower-case common noun), optionally with a visually certain count immediately after the noun (digit or word). Examples: ""child"", ""child 2"", ""person one"".
+- At least 2 tokens must be nouns (including the main noun). At most 1 token may be a visible attribute (color or size). Do NOT include verbs, proper nouns, brand names, inferred facts, emotions, events, or dates.
+- Use only lower-case common nouns and simple adjectives (dog, child, car, red, small). No articles in tags. No repeated words or near-synonyms — deduplicate and prefer the most specific single noun (e.g., choose ""child"" not ""person, child"").
+- Order tags by salience (most discriminative first). Prefer compact, high-information nouns over long exhaustive lists.
+
+Line 2 (caption) — required format and rules:
+- One factual short sentence in present simple or present progressive of 7–14 words, OR a valid 2–3 word fallback caption (main noun + short location, e.g., ""child sidewalk"") if a compliant 7–14 word caption would require guessing. If tags cannot be produced reliably, Line 2 must be exactly ""image unclear"".
+- Place the main noun within positions 1–3 of the sentence. If a visually certain numeric count is shown in Line 1, reflect it in the caption and use correct verb morphology: singular -> third-person singular verb (adds -s), plural -> base verb (e.g., ""1 child stands"", ""2 children stand"").
+- Include at most one clearly visible color or size in the caption and at most one simple spatial relation/preposition (on, in, near, by, in front of, behind). Use only concrete, directly visible facts. Do NOT add proper nouns, intentions, emotions, or invented facts.
+- No punctuation except an optional single period at the end.
+
+Harmonization and anti-hallucination:
+- Ensure lexical reinforcement: prefer at least two exact token overlaps between Line 1 and Line 2 (noun or attribute). If only one overlap is possible, ensure it is the main noun. Overlap strongly improves alignment.
+- Prefer omission over guessing: if a property (count, color, relation) is not clearly visible, omit it rather than invent it.
+- If you cannot produce a compliant caption without adding uncertain attributes, produce the 2–3 word fallback (main noun + location) or ""image unclear"" as specified above.
+
+Candidate generation and (required) reranking:
+- Internally generate N = 3 candidate compliant outputs (each candidate = Line1 tags + Line2 caption obeying rules). Score and select the best candidate before output.
+- If a CLIP scorer is available, use it to rerank candidates. If not available, use this proxy score:
+  proxy_score = 5*(main-noun overlap) + 3*(each additional exact overlap) + 2*(visible attribute overlap) - 2*(duplicates collapsed penalty) - 1*(each tag beyond 3).
+  Higher score wins. Break ties by preferring more overlaps, then shorter tag lists.
+
+Deterministic self-checks (must pass before returning output):
+1. Deduplicate tags; ensure 2–5 comma-separated tokens, all lower-case, nouns/adjectives only, ≤1 attribute.
+2. Ensure Line 2 length = 7–14 words OR valid 2–3 word fallback OR exactly ""image unclear"".
+3. Ensure at least one exact token overlap between tags and caption; prefer ≥2 overlaps.
+4. If Line 1 includes a numeric count, ensure caption verb morphology matches that count.
+5. No forbidden items (proper nouns, inferred facts); no punctuation except commas in Line 1 and optional final period in Line 2.
+If any check fails, replace Line 2 with ""image unclear"". If tags cannot be produced reliably, return only tags you can trust (2–5 tokens) and Line 2 = ""image unclear"".
+
+Practical guidance:
+- Keep tags compact and discriminative (2–4 nouns is ideal). A single clear color or size is allowed only when obvious.
+- Avoid listing many small objects; instead choose the most salient objects that distinguish the image.
+- When uncertain about count, color, or relation, omit them from both tags and caption.
+
+Positive examples (correct):
+- Example A:
+  Line1: child, blanket, red
+  Line2: child sits on blanket holding a red toy.
+  (main noun early; two overlaps: child, blanket; one visible attribute red)
+- Example B:
+  Line1: dog 2, ball
+  Line2: 2 dogs play near a ball on grass.
+  (numeric count reflected; correct plural verb form; overlaps: dog, ball)
+
+Negative examples (common errors and fixes):
+- Bad: ""person, person, person, car, red, red"" + ""person stands by car.""
+  Fix: deduplicate and reduce tags to ""person, car, red""; ensure 2–5 tokens.
+- Bad: Line1 ""child 2, dog"" + Line2 ""child stands near dog""
+  Fix: If Line1 uses ""child 2"", caption must read ""2 children stand near dog"" (plural verb and noun form).
+
+Implementation checklist to append inside the prompt:
+- Generate 3 candidates, apply proxy/CLIP rerank, run self-checks 1–5, output the top candidate if it passes; otherwise output tags you can trust and Line 2 = ""image unclear"". The VLM must follow the two-line output format exactly.","car, person, red, light
+person stands near red car with glowing lights on sidewalk",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.30845004320144653,0.13359320163726807,14,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_fc3d51810c,34,30974,flickr30k_test_030974,images/flickr30k/flickr30k_test_030974.jpg,"[""Four construction workers, wearing neon vests, stand at a construction site along with some equipment."", ""Construction workers are standing around the back of a dump truck."", ""Men standing around a cement truck on a construction site."", ""Four construction workers standing by a concrete machine."", ""A group of men are gathered around a concrete truck.""]",textgrad_fc3d51810c,TextGrad Step 4,"Output exactly two lines only.
+
+Line 1 (tags) — required format and rules:
+- Provide exactly 2–5 comma-separated tokens (no punctuation except commas). First token = main object (lower-case common noun), optionally with a visually certain count immediately after the noun (digit or word). Examples: ""child"", ""child 2"", ""person one"".
+- At least 2 tokens must be nouns (including the main noun). At most 1 token may be a visible attribute (color or size). Do NOT include verbs, proper nouns, brand names, inferred facts, emotions, events, or dates.
+- Use only lower-case common nouns and simple adjectives (dog, child, car, red, small). No articles in tags. No repeated words or near-synonyms — deduplicate and prefer the most specific single noun (e.g., choose ""child"" not ""person, child"").
+- Order tags by salience (most discriminative first). Prefer compact, high-information nouns over long exhaustive lists.
+
+Line 2 (caption) — required format and rules:
+- One factual short sentence in present simple or present progressive of 7–14 words, OR a valid 2–3 word fallback caption (main noun + short location, e.g., ""child sidewalk"") if a compliant 7–14 word caption would require guessing. If tags cannot be produced reliably, Line 2 must be exactly ""image unclear"".
+- Place the main noun within positions 1–3 of the sentence. If a visually certain numeric count is shown in Line 1, reflect it in the caption and use correct verb morphology: singular -> third-person singular verb (adds -s), plural -> base verb (e.g., ""1 child stands"", ""2 children stand"").
+- Include at most one clearly visible color or size in the caption and at most one simple spatial relation/preposition (on, in, near, by, in front of, behind). Use only concrete, directly visible facts. Do NOT add proper nouns, intentions, emotions, or invented facts.
+- No punctuation except an optional single period at the end.
+
+Harmonization and anti-hallucination:
+- Ensure lexical reinforcement: prefer at least two exact token overlaps between Line 1 and Line 2 (noun or attribute). If only one overlap is possible, ensure it is the main noun. Overlap strongly improves alignment.
+- Prefer omission over guessing: if a property (count, color, relation) is not clearly visible, omit it rather than invent it.
+- If you cannot produce a compliant caption without adding uncertain attributes, produce the 2–3 word fallback (main noun + location) or ""image unclear"" as specified above.
+
+Candidate generation and (required) reranking:
+- Internally generate N = 3 candidate compliant outputs (each candidate = Line1 tags + Line2 caption obeying rules). Score and select the best candidate before output.
+- If a CLIP scorer is available, use it to rerank candidates. If not available, use this proxy score:
+  proxy_score = 5*(main-noun overlap) + 3*(each additional exact overlap) + 2*(visible attribute overlap) - 2*(duplicates collapsed penalty) - 1*(each tag beyond 3).
+  Higher score wins. Break ties by preferring more overlaps, then shorter tag lists.
+
+Deterministic self-checks (must pass before returning output):
+1. Deduplicate tags; ensure 2–5 comma-separated tokens, all lower-case, nouns/adjectives only, ≤1 attribute.
+2. Ensure Line 2 length = 7–14 words OR valid 2–3 word fallback OR exactly ""image unclear"".
+3. Ensure at least one exact token overlap between tags and caption; prefer ≥2 overlaps.
+4. If Line 1 includes a numeric count, ensure caption verb morphology matches that count.
+5. No forbidden items (proper nouns, inferred facts); no punctuation except commas in Line 1 and optional final period in Line 2.
+If any check fails, replace Line 2 with ""image unclear"". If tags cannot be produced reliably, return only tags you can trust (2–5 tokens) and Line 2 = ""image unclear"".
+
+Practical guidance:
+- Keep tags compact and discriminative (2–4 nouns is ideal). A single clear color or size is allowed only when obvious.
+- Avoid listing many small objects; instead choose the most salient objects that distinguish the image.
+- When uncertain about count, color, or relation, omit them from both tags and caption.
+
+Positive examples (correct):
+- Example A:
+  Line1: child, blanket, red
+  Line2: child sits on blanket holding a red toy.
+  (main noun early; two overlaps: child, blanket; one visible attribute red)
+- Example B:
+  Line1: dog 2, ball
+  Line2: 2 dogs play near a ball on grass.
+  (numeric count reflected; correct plural verb form; overlaps: dog, ball)
+
+Negative examples (common errors and fixes):
+- Bad: ""person, person, person, car, red, red"" + ""person stands by car.""
+  Fix: deduplicate and reduce tags to ""person, car, red""; ensure 2–5 tokens.
+- Bad: Line1 ""child 2, dog"" + Line2 ""child stands near dog""
+  Fix: If Line1 uses ""child 2"", caption must read ""2 children stand near dog"" (plural verb and noun form).
+
+Implementation checklist to append inside the prompt:
+- Generate 3 candidates, apply proxy/CLIP rerank, run self-checks 1–5, output the top candidate if it passes; otherwise output tags you can trust and Line 2 = ""image unclear"". The VLM must follow the two-line output format exactly.","worker, truck, cement, safety vest, hard hat
+workers stand near cement truck on construction site",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.2826407849788666,0.1661836802959442,15,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_fc3d51810c,35,3349,flickr30k_test_003349,images/flickr30k/flickr30k_test_003349.jpg,"[""A small child in a red coat watches the fireplace display through the storefront window of a purse store."", ""A small child in a red coat points to a handbag in a shop window."", ""A child wearing a red coat is pointing into a Loewe store window."", ""A little girl is looking at the window display of a store."", ""A child is window shopping for a brown purse.""]",textgrad_fc3d51810c,TextGrad Step 4,"Output exactly two lines only.
+
+Line 1 (tags) — required format and rules:
+- Provide exactly 2–5 comma-separated tokens (no punctuation except commas). First token = main object (lower-case common noun), optionally with a visually certain count immediately after the noun (digit or word). Examples: ""child"", ""child 2"", ""person one"".
+- At least 2 tokens must be nouns (including the main noun). At most 1 token may be a visible attribute (color or size). Do NOT include verbs, proper nouns, brand names, inferred facts, emotions, events, or dates.
+- Use only lower-case common nouns and simple adjectives (dog, child, car, red, small). No articles in tags. No repeated words or near-synonyms — deduplicate and prefer the most specific single noun (e.g., choose ""child"" not ""person, child"").
+- Order tags by salience (most discriminative first). Prefer compact, high-information nouns over long exhaustive lists.
+
+Line 2 (caption) — required format and rules:
+- One factual short sentence in present simple or present progressive of 7–14 words, OR a valid 2–3 word fallback caption (main noun + short location, e.g., ""child sidewalk"") if a compliant 7–14 word caption would require guessing. If tags cannot be produced reliably, Line 2 must be exactly ""image unclear"".
+- Place the main noun within positions 1–3 of the sentence. If a visually certain numeric count is shown in Line 1, reflect it in the caption and use correct verb morphology: singular -> third-person singular verb (adds -s), plural -> base verb (e.g., ""1 child stands"", ""2 children stand"").
+- Include at most one clearly visible color or size in the caption and at most one simple spatial relation/preposition (on, in, near, by, in front of, behind). Use only concrete, directly visible facts. Do NOT add proper nouns, intentions, emotions, or invented facts.
+- No punctuation except an optional single period at the end.
+
+Harmonization and anti-hallucination:
+- Ensure lexical reinforcement: prefer at least two exact token overlaps between Line 1 and Line 2 (noun or attribute). If only one overlap is possible, ensure it is the main noun. Overlap strongly improves alignment.
+- Prefer omission over guessing: if a property (count, color, relation) is not clearly visible, omit it rather than invent it.
+- If you cannot produce a compliant caption without adding uncertain attributes, produce the 2–3 word fallback (main noun + location) or ""image unclear"" as specified above.
+
+Candidate generation and (required) reranking:
+- Internally generate N = 3 candidate compliant outputs (each candidate = Line1 tags + Line2 caption obeying rules). Score and select the best candidate before output.
+- If a CLIP scorer is available, use it to rerank candidates. If not available, use this proxy score:
+  proxy_score = 5*(main-noun overlap) + 3*(each additional exact overlap) + 2*(visible attribute overlap) - 2*(duplicates collapsed penalty) - 1*(each tag beyond 3).
+  Higher score wins. Break ties by preferring more overlaps, then shorter tag lists.
+
+Deterministic self-checks (must pass before returning output):
+1. Deduplicate tags; ensure 2–5 comma-separated tokens, all lower-case, nouns/adjectives only, ≤1 attribute.
+2. Ensure Line 2 length = 7–14 words OR valid 2–3 word fallback OR exactly ""image unclear"".
+3. Ensure at least one exact token overlap between tags and caption; prefer ≥2 overlaps.
+4. If Line 1 includes a numeric count, ensure caption verb morphology matches that count.
+5. No forbidden items (proper nouns, inferred facts); no punctuation except commas in Line 1 and optional final period in Line 2.
+If any check fails, replace Line 2 with ""image unclear"". If tags cannot be produced reliably, return only tags you can trust (2–5 tokens) and Line 2 = ""image unclear"".
+
+Practical guidance:
+- Keep tags compact and discriminative (2–4 nouns is ideal). A single clear color or size is allowed only when obvious.
+- Avoid listing many small objects; instead choose the most salient objects that distinguish the image.
+- When uncertain about count, color, or relation, omit them from both tags and caption.
+
+Positive examples (correct):
+- Example A:
+  Line1: child, blanket, red
+  Line2: child sits on blanket holding a red toy.
+  (main noun early; two overlaps: child, blanket; one visible attribute red)
+- Example B:
+  Line1: dog 2, ball
+  Line2: 2 dogs play near a ball on grass.
+  (numeric count reflected; correct plural verb form; overlaps: dog, ball)
+
+Negative examples (common errors and fixes):
+- Bad: ""person, person, person, car, red, red"" + ""person stands by car.""
+  Fix: deduplicate and reduce tags to ""person, car, red""; ensure 2–5 tokens.
+- Bad: Line1 ""child 2, dog"" + Line2 ""child stands near dog""
+  Fix: If Line1 uses ""child 2"", caption must read ""2 children stand near dog"" (plural verb and noun form).
+
+Implementation checklist to append inside the prompt:
+- Generate 3 candidates, apply proxy/CLIP rerank, run self-checks 1–5, output the top candidate if it passes; otherwise output tags you can trust and Line 2 = ""image unclear"". The VLM must follow the two-line output format exactly.","child, bag, fire, store
+child stands near store window with fire display.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.36355656385421753,0.2778390049934387,12,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_fc3d51810c,60,7565,flickr30k_test_007565,images/flickr30k/flickr30k_test_007565.jpg,"[""An infant is crawling on a wood floor, with a water bottle laying nearby."", ""A young baby crawls across the wood floor towards the water bottle."", ""A baby crawls on hardwood floors towards a water bottle."", ""A baby crawls on a wood floor near a bottle of water."", ""A baby on a wood floor with a water bottle""]",textgrad_fc3d51810c,TextGrad Step 4,"Output exactly two lines only.
+
+Line 1 (tags) — required format and rules:
+- Provide exactly 2–5 comma-separated tokens (no punctuation except commas). First token = main object (lower-case common noun), optionally with a visually certain count immediately after the noun (digit or word). Examples: ""child"", ""child 2"", ""person one"".
+- At least 2 tokens must be nouns (including the main noun). At most 1 token may be a visible attribute (color or size). Do NOT include verbs, proper nouns, brand names, inferred facts, emotions, events, or dates.
+- Use only lower-case common nouns and simple adjectives (dog, child, car, red, small). No articles in tags. No repeated words or near-synonyms — deduplicate and prefer the most specific single noun (e.g., choose ""child"" not ""person, child"").
+- Order tags by salience (most discriminative first). Prefer compact, high-information nouns over long exhaustive lists.
+
+Line 2 (caption) — required format and rules:
+- One factual short sentence in present simple or present progressive of 7–14 words, OR a valid 2–3 word fallback caption (main noun + short location, e.g., ""child sidewalk"") if a compliant 7–14 word caption would require guessing. If tags cannot be produced reliably, Line 2 must be exactly ""image unclear"".
+- Place the main noun within positions 1–3 of the sentence. If a visually certain numeric count is shown in Line 1, reflect it in the caption and use correct verb morphology: singular -> third-person singular verb (adds -s), plural -> base verb (e.g., ""1 child stands"", ""2 children stand"").
+- Include at most one clearly visible color or size in the caption and at most one simple spatial relation/preposition (on, in, near, by, in front of, behind). Use only concrete, directly visible facts. Do NOT add proper nouns, intentions, emotions, or invented facts.
+- No punctuation except an optional single period at the end.
+
+Harmonization and anti-hallucination:
+- Ensure lexical reinforcement: prefer at least two exact token overlaps between Line 1 and Line 2 (noun or attribute). If only one overlap is possible, ensure it is the main noun. Overlap strongly improves alignment.
+- Prefer omission over guessing: if a property (count, color, relation) is not clearly visible, omit it rather than invent it.
+- If you cannot produce a compliant caption without adding uncertain attributes, produce the 2–3 word fallback (main noun + location) or ""image unclear"" as specified above.
+
+Candidate generation and (required) reranking:
+- Internally generate N = 3 candidate compliant outputs (each candidate = Line1 tags + Line2 caption obeying rules). Score and select the best candidate before output.
+- If a CLIP scorer is available, use it to rerank candidates. If not available, use this proxy score:
+  proxy_score = 5*(main-noun overlap) + 3*(each additional exact overlap) + 2*(visible attribute overlap) - 2*(duplicates collapsed penalty) - 1*(each tag beyond 3).
+  Higher score wins. Break ties by preferring more overlaps, then shorter tag lists.
+
+Deterministic self-checks (must pass before returning output):
+1. Deduplicate tags; ensure 2–5 comma-separated tokens, all lower-case, nouns/adjectives only, ≤1 attribute.
+2. Ensure Line 2 length = 7–14 words OR valid 2–3 word fallback OR exactly ""image unclear"".
+3. Ensure at least one exact token overlap between tags and caption; prefer ≥2 overlaps.
+4. If Line 1 includes a numeric count, ensure caption verb morphology matches that count.
+5. No forbidden items (proper nouns, inferred facts); no punctuation except commas in Line 1 and optional final period in Line 2.
+If any check fails, replace Line 2 with ""image unclear"". If tags cannot be produced reliably, return only tags you can trust (2–5 tokens) and Line 2 = ""image unclear"".
+
+Practical guidance:
+- Keep tags compact and discriminative (2–4 nouns is ideal). A single clear color or size is allowed only when obvious.
+- Avoid listing many small objects; instead choose the most salient objects that distinguish the image.
+- When uncertain about count, color, or relation, omit them from both tags and caption.
+
+Positive examples (correct):
+- Example A:
+  Line1: child, blanket, red
+  Line2: child sits on blanket holding a red toy.
+  (main noun early; two overlaps: child, blanket; one visible attribute red)
+- Example B:
+  Line1: dog 2, ball
+  Line2: 2 dogs play near a ball on grass.
+  (numeric count reflected; correct plural verb form; overlaps: dog, ball)
+
+Negative examples (common errors and fixes):
+- Bad: ""person, person, person, car, red, red"" + ""person stands by car.""
+  Fix: deduplicate and reduce tags to ""person, car, red""; ensure 2–5 tokens.
+- Bad: Line1 ""child 2, dog"" + Line2 ""child stands near dog""
+  Fix: If Line1 uses ""child 2"", caption must read ""2 children stand near dog"" (plural verb and noun form).
+
+Implementation checklist to append inside the prompt:
+- Generate 3 candidates, apply proxy/CLIP rerank, run self-checks 1–5, output the top candidate if it passes; otherwise output tags you can trust and Line 2 = ""image unclear"". The VLM must follow the two-line output format exactly.","child, bottle, floor
+child crawls on wooden floor near a plastic bottle.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.3619094491004944,0.19480042159557343,12,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_fc3d51810c,63,24934,flickr30k_test_024934,images/flickr30k/flickr30k_test_024934.jpg,"[""A man wearing a striped jacket tentatively looking down onto his hands while walking."", ""A man walks along a cobblestone path, next to a large blue wall."", ""A man walking down a brick path next to a blue wall."", ""A lone man walking along side a blue wall."", ""Solitary man walks past blue wall.""]",textgrad_fc3d51810c,TextGrad Step 4,"Output exactly two lines only.
+
+Line 1 (tags) — required format and rules:
+- Provide exactly 2–5 comma-separated tokens (no punctuation except commas). First token = main object (lower-case common noun), optionally with a visually certain count immediately after the noun (digit or word). Examples: ""child"", ""child 2"", ""person one"".
+- At least 2 tokens must be nouns (including the main noun). At most 1 token may be a visible attribute (color or size). Do NOT include verbs, proper nouns, brand names, inferred facts, emotions, events, or dates.
+- Use only lower-case common nouns and simple adjectives (dog, child, car, red, small). No articles in tags. No repeated words or near-synonyms — deduplicate and prefer the most specific single noun (e.g., choose ""child"" not ""person, child"").
+- Order tags by salience (most discriminative first). Prefer compact, high-information nouns over long exhaustive lists.
+
+Line 2 (caption) — required format and rules:
+- One factual short sentence in present simple or present progressive of 7–14 words, OR a valid 2–3 word fallback caption (main noun + short location, e.g., ""child sidewalk"") if a compliant 7–14 word caption would require guessing. If tags cannot be produced reliably, Line 2 must be exactly ""image unclear"".
+- Place the main noun within positions 1–3 of the sentence. If a visually certain numeric count is shown in Line 1, reflect it in the caption and use correct verb morphology: singular -> third-person singular verb (adds -s), plural -> base verb (e.g., ""1 child stands"", ""2 children stand"").
+- Include at most one clearly visible color or size in the caption and at most one simple spatial relation/preposition (on, in, near, by, in front of, behind). Use only concrete, directly visible facts. Do NOT add proper nouns, intentions, emotions, or invented facts.
+- No punctuation except an optional single period at the end.
+
+Harmonization and anti-hallucination:
+- Ensure lexical reinforcement: prefer at least two exact token overlaps between Line 1 and Line 2 (noun or attribute). If only one overlap is possible, ensure it is the main noun. Overlap strongly improves alignment.
+- Prefer omission over guessing: if a property (count, color, relation) is not clearly visible, omit it rather than invent it.
+- If you cannot produce a compliant caption without adding uncertain attributes, produce the 2–3 word fallback (main noun + location) or ""image unclear"" as specified above.
+
+Candidate generation and (required) reranking:
+- Internally generate N = 3 candidate compliant outputs (each candidate = Line1 tags + Line2 caption obeying rules). Score and select the best candidate before output.
+- If a CLIP scorer is available, use it to rerank candidates. If not available, use this proxy score:
+  proxy_score = 5*(main-noun overlap) + 3*(each additional exact overlap) + 2*(visible attribute overlap) - 2*(duplicates collapsed penalty) - 1*(each tag beyond 3).
+  Higher score wins. Break ties by preferring more overlaps, then shorter tag lists.
+
+Deterministic self-checks (must pass before returning output):
+1. Deduplicate tags; ensure 2–5 comma-separated tokens, all lower-case, nouns/adjectives only, ≤1 attribute.
+2. Ensure Line 2 length = 7–14 words OR valid 2–3 word fallback OR exactly ""image unclear"".
+3. Ensure at least one exact token overlap between tags and caption; prefer ≥2 overlaps.
+4. If Line 1 includes a numeric count, ensure caption verb morphology matches that count.
+5. No forbidden items (proper nouns, inferred facts); no punctuation except commas in Line 1 and optional final period in Line 2.
+If any check fails, replace Line 2 with ""image unclear"". If tags cannot be produced reliably, return only tags you can trust (2–5 tokens) and Line 2 = ""image unclear"".
+
+Practical guidance:
+- Keep tags compact and discriminative (2–4 nouns is ideal). A single clear color or size is allowed only when obvious.
+- Avoid listing many small objects; instead choose the most salient objects that distinguish the image.
+- When uncertain about count, color, or relation, omit them from both tags and caption.
+
+Positive examples (correct):
+- Example A:
+  Line1: child, blanket, red
+  Line2: child sits on blanket holding a red toy.
+  (main noun early; two overlaps: child, blanket; one visible attribute red)
+- Example B:
+  Line1: dog 2, ball
+  Line2: 2 dogs play near a ball on grass.
+  (numeric count reflected; correct plural verb form; overlaps: dog, ball)
+
+Negative examples (common errors and fixes):
+- Bad: ""person, person, person, car, red, red"" + ""person stands by car.""
+  Fix: deduplicate and reduce tags to ""person, car, red""; ensure 2–5 tokens.
+- Bad: Line1 ""child 2, dog"" + Line2 ""child stands near dog""
+  Fix: If Line1 uses ""child 2"", caption must read ""2 children stand near dog"" (plural verb and noun form).
+
+Implementation checklist to append inside the prompt:
+- Generate 3 candidates, apply proxy/CLIP rerank, run self-checks 1–5, output the top candidate if it passes; otherwise output tags you can trust and Line 2 = ""image unclear"". The VLM must follow the two-line output format exactly.","person, wall, sidewalk, blue
+person walks on sidewalk near blue wall.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.3148435354232788,0.20867586135864258,11,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_fc3d51810c,68,13637,flickr30k_test_013637,images/flickr30k/flickr30k_test_013637.jpg,"[""Person with a blue and black suit is surfing."", ""A surfer is being splashed by an ocean wave."", ""A man in a blue wetsuit surfs."", ""A surfer in blue rides a wave."", ""A surfer makes a big splash.""]",textgrad_fc3d51810c,TextGrad Step 4,"Output exactly two lines only.
+
+Line 1 (tags) — required format and rules:
+- Provide exactly 2–5 comma-separated tokens (no punctuation except commas). First token = main object (lower-case common noun), optionally with a visually certain count immediately after the noun (digit or word). Examples: ""child"", ""child 2"", ""person one"".
+- At least 2 tokens must be nouns (including the main noun). At most 1 token may be a visible attribute (color or size). Do NOT include verbs, proper nouns, brand names, inferred facts, emotions, events, or dates.
+- Use only lower-case common nouns and simple adjectives (dog, child, car, red, small). No articles in tags. No repeated words or near-synonyms — deduplicate and prefer the most specific single noun (e.g., choose ""child"" not ""person, child"").
+- Order tags by salience (most discriminative first). Prefer compact, high-information nouns over long exhaustive lists.
+
+Line 2 (caption) — required format and rules:
+- One factual short sentence in present simple or present progressive of 7–14 words, OR a valid 2–3 word fallback caption (main noun + short location, e.g., ""child sidewalk"") if a compliant 7–14 word caption would require guessing. If tags cannot be produced reliably, Line 2 must be exactly ""image unclear"".
+- Place the main noun within positions 1–3 of the sentence. If a visually certain numeric count is shown in Line 1, reflect it in the caption and use correct verb morphology: singular -> third-person singular verb (adds -s), plural -> base verb (e.g., ""1 child stands"", ""2 children stand"").
+- Include at most one clearly visible color or size in the caption and at most one simple spatial relation/preposition (on, in, near, by, in front of, behind). Use only concrete, directly visible facts. Do NOT add proper nouns, intentions, emotions, or invented facts.
+- No punctuation except an optional single period at the end.
+
+Harmonization and anti-hallucination:
+- Ensure lexical reinforcement: prefer at least two exact token overlaps between Line 1 and Line 2 (noun or attribute). If only one overlap is possible, ensure it is the main noun. Overlap strongly improves alignment.
+- Prefer omission over guessing: if a property (count, color, relation) is not clearly visible, omit it rather than invent it.
+- If you cannot produce a compliant caption without adding uncertain attributes, produce the 2–3 word fallback (main noun + location) or ""image unclear"" as specified above.
+
+Candidate generation and (required) reranking:
+- Internally generate N = 3 candidate compliant outputs (each candidate = Line1 tags + Line2 caption obeying rules). Score and select the best candidate before output.
+- If a CLIP scorer is available, use it to rerank candidates. If not available, use this proxy score:
+  proxy_score = 5*(main-noun overlap) + 3*(each additional exact overlap) + 2*(visible attribute overlap) - 2*(duplicates collapsed penalty) - 1*(each tag beyond 3).
+  Higher score wins. Break ties by preferring more overlaps, then shorter tag lists.
+
+Deterministic self-checks (must pass before returning output):
+1. Deduplicate tags; ensure 2–5 comma-separated tokens, all lower-case, nouns/adjectives only, ≤1 attribute.
+2. Ensure Line 2 length = 7–14 words OR valid 2–3 word fallback OR exactly ""image unclear"".
+3. Ensure at least one exact token overlap between tags and caption; prefer ≥2 overlaps.
+4. If Line 1 includes a numeric count, ensure caption verb morphology matches that count.
+5. No forbidden items (proper nouns, inferred facts); no punctuation except commas in Line 1 and optional final period in Line 2.
+If any check fails, replace Line 2 with ""image unclear"". If tags cannot be produced reliably, return only tags you can trust (2–5 tokens) and Line 2 = ""image unclear"".
+
+Practical guidance:
+- Keep tags compact and discriminative (2–4 nouns is ideal). A single clear color or size is allowed only when obvious.
+- Avoid listing many small objects; instead choose the most salient objects that distinguish the image.
+- When uncertain about count, color, or relation, omit them from both tags and caption.
+
+Positive examples (correct):
+- Example A:
+  Line1: child, blanket, red
+  Line2: child sits on blanket holding a red toy.
+  (main noun early; two overlaps: child, blanket; one visible attribute red)
+- Example B:
+  Line1: dog 2, ball
+  Line2: 2 dogs play near a ball on grass.
+  (numeric count reflected; correct plural verb form; overlaps: dog, ball)
+
+Negative examples (common errors and fixes):
+- Bad: ""person, person, person, car, red, red"" + ""person stands by car.""
+  Fix: deduplicate and reduce tags to ""person, car, red""; ensure 2–5 tokens.
+- Bad: Line1 ""child 2, dog"" + Line2 ""child stands near dog""
+  Fix: If Line1 uses ""child 2"", caption must read ""2 children stand near dog"" (plural verb and noun form).
+
+Implementation checklist to append inside the prompt:
+- Generate 3 candidates, apply proxy/CLIP rerank, run self-checks 1–5, output the top candidate if it passes; otherwise output tags you can trust and Line 2 = ""image unclear"". The VLM must follow the two-line output format exactly.","surfer, wave, board, blue
+
+surfer rides wave on blue board in ocean.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.2851234972476959,0.11115031689405441,12,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_fc3d51810c,78,28178,flickr30k_test_028178,images/flickr30k/flickr30k_test_028178.jpg,"[""A man in a black sweater with a red undershirt playing a trumpet in front of a lighted Christmas tree."", ""The man playing a trumpet in front of a christmas tree looks intense."", ""A man in a black sweater and red shirt plays the trumpet by a tree."", ""A guy with a beard wearing his glasses is blowing on a trumpet."", ""A musician playing some smooth music.""]",textgrad_fc3d51810c,TextGrad Step 4,"Output exactly two lines only.
+
+Line 1 (tags) — required format and rules:
+- Provide exactly 2–5 comma-separated tokens (no punctuation except commas). First token = main object (lower-case common noun), optionally with a visually certain count immediately after the noun (digit or word). Examples: ""child"", ""child 2"", ""person one"".
+- At least 2 tokens must be nouns (including the main noun). At most 1 token may be a visible attribute (color or size). Do NOT include verbs, proper nouns, brand names, inferred facts, emotions, events, or dates.
+- Use only lower-case common nouns and simple adjectives (dog, child, car, red, small). No articles in tags. No repeated words or near-synonyms — deduplicate and prefer the most specific single noun (e.g., choose ""child"" not ""person, child"").
+- Order tags by salience (most discriminative first). Prefer compact, high-information nouns over long exhaustive lists.
+
+Line 2 (caption) — required format and rules:
+- One factual short sentence in present simple or present progressive of 7–14 words, OR a valid 2–3 word fallback caption (main noun + short location, e.g., ""child sidewalk"") if a compliant 7–14 word caption would require guessing. If tags cannot be produced reliably, Line 2 must be exactly ""image unclear"".
+- Place the main noun within positions 1–3 of the sentence. If a visually certain numeric count is shown in Line 1, reflect it in the caption and use correct verb morphology: singular -> third-person singular verb (adds -s), plural -> base verb (e.g., ""1 child stands"", ""2 children stand"").
+- Include at most one clearly visible color or size in the caption and at most one simple spatial relation/preposition (on, in, near, by, in front of, behind). Use only concrete, directly visible facts. Do NOT add proper nouns, intentions, emotions, or invented facts.
+- No punctuation except an optional single period at the end.
+
+Harmonization and anti-hallucination:
+- Ensure lexical reinforcement: prefer at least two exact token overlaps between Line 1 and Line 2 (noun or attribute). If only one overlap is possible, ensure it is the main noun. Overlap strongly improves alignment.
+- Prefer omission over guessing: if a property (count, color, relation) is not clearly visible, omit it rather than invent it.
+- If you cannot produce a compliant caption without adding uncertain attributes, produce the 2–3 word fallback (main noun + location) or ""image unclear"" as specified above.
+
+Candidate generation and (required) reranking:
+- Internally generate N = 3 candidate compliant outputs (each candidate = Line1 tags + Line2 caption obeying rules). Score and select the best candidate before output.
+- If a CLIP scorer is available, use it to rerank candidates. If not available, use this proxy score:
+  proxy_score = 5*(main-noun overlap) + 3*(each additional exact overlap) + 2*(visible attribute overlap) - 2*(duplicates collapsed penalty) - 1*(each tag beyond 3).
+  Higher score wins. Break ties by preferring more overlaps, then shorter tag lists.
+
+Deterministic self-checks (must pass before returning output):
+1. Deduplicate tags; ensure 2–5 comma-separated tokens, all lower-case, nouns/adjectives only, ≤1 attribute.
+2. Ensure Line 2 length = 7–14 words OR valid 2–3 word fallback OR exactly ""image unclear"".
+3. Ensure at least one exact token overlap between tags and caption; prefer ≥2 overlaps.
+4. If Line 1 includes a numeric count, ensure caption verb morphology matches that count.
+5. No forbidden items (proper nouns, inferred facts); no punctuation except commas in Line 1 and optional final period in Line 2.
+If any check fails, replace Line 2 with ""image unclear"". If tags cannot be produced reliably, return only tags you can trust (2–5 tokens) and Line 2 = ""image unclear"".
+
+Practical guidance:
+- Keep tags compact and discriminative (2–4 nouns is ideal). A single clear color or size is allowed only when obvious.
+- Avoid listing many small objects; instead choose the most salient objects that distinguish the image.
+- When uncertain about count, color, or relation, omit them from both tags and caption.
+
+Positive examples (correct):
+- Example A:
+  Line1: child, blanket, red
+  Line2: child sits on blanket holding a red toy.
+  (main noun early; two overlaps: child, blanket; one visible attribute red)
+- Example B:
+  Line1: dog 2, ball
+  Line2: 2 dogs play near a ball on grass.
+  (numeric count reflected; correct plural verb form; overlaps: dog, ball)
+
+Negative examples (common errors and fixes):
+- Bad: ""person, person, person, car, red, red"" + ""person stands by car.""
+  Fix: deduplicate and reduce tags to ""person, car, red""; ensure 2–5 tokens.
+- Bad: Line1 ""child 2, dog"" + Line2 ""child stands near dog""
+  Fix: If Line1 uses ""child 2"", caption must read ""2 children stand near dog"" (plural verb and noun form).
+
+Implementation checklist to append inside the prompt:
+- Generate 3 candidates, apply proxy/CLIP rerank, run self-checks 1–5, output the top candidate if it passes; otherwise output tags you can trust and Line 2 = ""image unclear"". The VLM must follow the two-line output format exactly.","man, trumpet, tree, red
+man plays trumpet near tree with red attire.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.30198580026626587,0.16997355222702026,12,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_fc3d51810c,83,29346,flickr30k_test_029346,images/flickr30k/flickr30k_test_029346.jpg,"[""A surfer wearing a black and red wetsuit on a white surfboard, slices through the waves on a bright blue ocean."", ""A male surfboarder in a black wetsuit is riding a huge wave in beautiful blue water."", ""The man is skillfully surfing a violent wave in the blue ocean."", ""Two people are surfing on a large wave in the ocean."", ""Two people are surfing in the ocean.""]",textgrad_fc3d51810c,TextGrad Step 4,"Output exactly two lines only.
+
+Line 1 (tags) — required format and rules:
+- Provide exactly 2–5 comma-separated tokens (no punctuation except commas). First token = main object (lower-case common noun), optionally with a visually certain count immediately after the noun (digit or word). Examples: ""child"", ""child 2"", ""person one"".
+- At least 2 tokens must be nouns (including the main noun). At most 1 token may be a visible attribute (color or size). Do NOT include verbs, proper nouns, brand names, inferred facts, emotions, events, or dates.
+- Use only lower-case common nouns and simple adjectives (dog, child, car, red, small). No articles in tags. No repeated words or near-synonyms — deduplicate and prefer the most specific single noun (e.g., choose ""child"" not ""person, child"").
+- Order tags by salience (most discriminative first). Prefer compact, high-information nouns over long exhaustive lists.
+
+Line 2 (caption) — required format and rules:
+- One factual short sentence in present simple or present progressive of 7–14 words, OR a valid 2–3 word fallback caption (main noun + short location, e.g., ""child sidewalk"") if a compliant 7–14 word caption would require guessing. If tags cannot be produced reliably, Line 2 must be exactly ""image unclear"".
+- Place the main noun within positions 1–3 of the sentence. If a visually certain numeric count is shown in Line 1, reflect it in the caption and use correct verb morphology: singular -> third-person singular verb (adds -s), plural -> base verb (e.g., ""1 child stands"", ""2 children stand"").
+- Include at most one clearly visible color or size in the caption and at most one simple spatial relation/preposition (on, in, near, by, in front of, behind). Use only concrete, directly visible facts. Do NOT add proper nouns, intentions, emotions, or invented facts.
+- No punctuation except an optional single period at the end.
+
+Harmonization and anti-hallucination:
+- Ensure lexical reinforcement: prefer at least two exact token overlaps between Line 1 and Line 2 (noun or attribute). If only one overlap is possible, ensure it is the main noun. Overlap strongly improves alignment.
+- Prefer omission over guessing: if a property (count, color, relation) is not clearly visible, omit it rather than invent it.
+- If you cannot produce a compliant caption without adding uncertain attributes, produce the 2–3 word fallback (main noun + location) or ""image unclear"" as specified above.
+
+Candidate generation and (required) reranking:
+- Internally generate N = 3 candidate compliant outputs (each candidate = Line1 tags + Line2 caption obeying rules). Score and select the best candidate before output.
+- If a CLIP scorer is available, use it to rerank candidates. If not available, use this proxy score:
+  proxy_score = 5*(main-noun overlap) + 3*(each additional exact overlap) + 2*(visible attribute overlap) - 2*(duplicates collapsed penalty) - 1*(each tag beyond 3).
+  Higher score wins. Break ties by preferring more overlaps, then shorter tag lists.
+
+Deterministic self-checks (must pass before returning output):
+1. Deduplicate tags; ensure 2–5 comma-separated tokens, all lower-case, nouns/adjectives only, ≤1 attribute.
+2. Ensure Line 2 length = 7–14 words OR valid 2–3 word fallback OR exactly ""image unclear"".
+3. Ensure at least one exact token overlap between tags and caption; prefer ≥2 overlaps.
+4. If Line 1 includes a numeric count, ensure caption verb morphology matches that count.
+5. No forbidden items (proper nouns, inferred facts); no punctuation except commas in Line 1 and optional final period in Line 2.
+If any check fails, replace Line 2 with ""image unclear"". If tags cannot be produced reliably, return only tags you can trust (2–5 tokens) and Line 2 = ""image unclear"".
+
+Practical guidance:
+- Keep tags compact and discriminative (2–4 nouns is ideal). A single clear color or size is allowed only when obvious.
+- Avoid listing many small objects; instead choose the most salient objects that distinguish the image.
+- When uncertain about count, color, or relation, omit them from both tags and caption.
+
+Positive examples (correct):
+- Example A:
+  Line1: child, blanket, red
+  Line2: child sits on blanket holding a red toy.
+  (main noun early; two overlaps: child, blanket; one visible attribute red)
+- Example B:
+  Line1: dog 2, ball
+  Line2: 2 dogs play near a ball on grass.
+  (numeric count reflected; correct plural verb form; overlaps: dog, ball)
+
+Negative examples (common errors and fixes):
+- Bad: ""person, person, person, car, red, red"" + ""person stands by car.""
+  Fix: deduplicate and reduce tags to ""person, car, red""; ensure 2–5 tokens.
+- Bad: Line1 ""child 2, dog"" + Line2 ""child stands near dog""
+  Fix: If Line1 uses ""child 2"", caption must read ""2 children stand near dog"" (plural verb and noun form).
+
+Implementation checklist to append inside the prompt:
+- Generate 3 candidates, apply proxy/CLIP rerank, run self-checks 1–5, output the top candidate if it passes; otherwise output tags you can trust and Line 2 = ""image unclear"". The VLM must follow the two-line output format exactly.","surfer, wave, surfboard, blue
+
+surfer rides wave on surfboard in blue ocean.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.30129826068878174,0.13096725940704346,12,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_fc3d51810c,105,15736,flickr30k_test_015736,images/flickr30k/flickr30k_test_015736.jpg,"[""A brown and white dog trots across shallow water with his mouth open."", ""A greyhound walks in the rain through a large puddle."", ""A white and brown dog is walking through the water."", ""A brown spotted dog walks in shallow water."", ""The dog walks through the water.""]",textgrad_fc3d51810c,TextGrad Step 4,"Output exactly two lines only.
+
+Line 1 (tags) — required format and rules:
+- Provide exactly 2–5 comma-separated tokens (no punctuation except commas). First token = main object (lower-case common noun), optionally with a visually certain count immediately after the noun (digit or word). Examples: ""child"", ""child 2"", ""person one"".
+- At least 2 tokens must be nouns (including the main noun). At most 1 token may be a visible attribute (color or size). Do NOT include verbs, proper nouns, brand names, inferred facts, emotions, events, or dates.
+- Use only lower-case common nouns and simple adjectives (dog, child, car, red, small). No articles in tags. No repeated words or near-synonyms — deduplicate and prefer the most specific single noun (e.g., choose ""child"" not ""person, child"").
+- Order tags by salience (most discriminative first). Prefer compact, high-information nouns over long exhaustive lists.
+
+Line 2 (caption) — required format and rules:
+- One factual short sentence in present simple or present progressive of 7–14 words, OR a valid 2–3 word fallback caption (main noun + short location, e.g., ""child sidewalk"") if a compliant 7–14 word caption would require guessing. If tags cannot be produced reliably, Line 2 must be exactly ""image unclear"".
+- Place the main noun within positions 1–3 of the sentence. If a visually certain numeric count is shown in Line 1, reflect it in the caption and use correct verb morphology: singular -> third-person singular verb (adds -s), plural -> base verb (e.g., ""1 child stands"", ""2 children stand"").
+- Include at most one clearly visible color or size in the caption and at most one simple spatial relation/preposition (on, in, near, by, in front of, behind). Use only concrete, directly visible facts. Do NOT add proper nouns, intentions, emotions, or invented facts.
+- No punctuation except an optional single period at the end.
+
+Harmonization and anti-hallucination:
+- Ensure lexical reinforcement: prefer at least two exact token overlaps between Line 1 and Line 2 (noun or attribute). If only one overlap is possible, ensure it is the main noun. Overlap strongly improves alignment.
+- Prefer omission over guessing: if a property (count, color, relation) is not clearly visible, omit it rather than invent it.
+- If you cannot produce a compliant caption without adding uncertain attributes, produce the 2–3 word fallback (main noun + location) or ""image unclear"" as specified above.
+
+Candidate generation and (required) reranking:
+- Internally generate N = 3 candidate compliant outputs (each candidate = Line1 tags + Line2 caption obeying rules). Score and select the best candidate before output.
+- If a CLIP scorer is available, use it to rerank candidates. If not available, use this proxy score:
+  proxy_score = 5*(main-noun overlap) + 3*(each additional exact overlap) + 2*(visible attribute overlap) - 2*(duplicates collapsed penalty) - 1*(each tag beyond 3).
+  Higher score wins. Break ties by preferring more overlaps, then shorter tag lists.
+
+Deterministic self-checks (must pass before returning output):
+1. Deduplicate tags; ensure 2–5 comma-separated tokens, all lower-case, nouns/adjectives only, ≤1 attribute.
+2. Ensure Line 2 length = 7–14 words OR valid 2–3 word fallback OR exactly ""image unclear"".
+3. Ensure at least one exact token overlap between tags and caption; prefer ≥2 overlaps.
+4. If Line 1 includes a numeric count, ensure caption verb morphology matches that count.
+5. No forbidden items (proper nouns, inferred facts); no punctuation except commas in Line 1 and optional final period in Line 2.
+If any check fails, replace Line 2 with ""image unclear"". If tags cannot be produced reliably, return only tags you can trust (2–5 tokens) and Line 2 = ""image unclear"".
+
+Practical guidance:
+- Keep tags compact and discriminative (2–4 nouns is ideal). A single clear color or size is allowed only when obvious.
+- Avoid listing many small objects; instead choose the most salient objects that distinguish the image.
+- When uncertain about count, color, or relation, omit them from both tags and caption.
+
+Positive examples (correct):
+- Example A:
+  Line1: child, blanket, red
+  Line2: child sits on blanket holding a red toy.
+  (main noun early; two overlaps: child, blanket; one visible attribute red)
+- Example B:
+  Line1: dog 2, ball
+  Line2: 2 dogs play near a ball on grass.
+  (numeric count reflected; correct plural verb form; overlaps: dog, ball)
+
+Negative examples (common errors and fixes):
+- Bad: ""person, person, person, car, red, red"" + ""person stands by car.""
+  Fix: deduplicate and reduce tags to ""person, car, red""; ensure 2–5 tokens.
+- Bad: Line1 ""child 2, dog"" + Line2 ""child stands near dog""
+  Fix: If Line1 uses ""child 2"", caption must read ""2 children stand near dog"" (plural verb and noun form).
+
+Implementation checklist to append inside the prompt:
+- Generate 3 candidates, apply proxy/CLIP rerank, run self-checks 1–5, output the top candidate if it passes; otherwise output tags you can trust and Line 2 = ""image unclear"". The VLM must follow the two-line output format exactly.","dog, water, white, brown
+dog walks in shallow water reflecting on surface.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.2877599000930786,0.189198836684227,12,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_fc3d51810c,107,24370,flickr30k_test_024370,images/flickr30k/flickr30k_test_024370.jpg,"[""An aerial view of a large building with many windows, a terracotta roof, and a few pedestrians crossing a street."", ""People are crossing a tree lined street in front of a building."", ""Many people walking near tall building and crossing street"", ""A distant view of a building and the people around it."", ""A large building in the city in the sunlight.""]",textgrad_fc3d51810c,TextGrad Step 4,"Output exactly two lines only.
+
+Line 1 (tags) — required format and rules:
+- Provide exactly 2–5 comma-separated tokens (no punctuation except commas). First token = main object (lower-case common noun), optionally with a visually certain count immediately after the noun (digit or word). Examples: ""child"", ""child 2"", ""person one"".
+- At least 2 tokens must be nouns (including the main noun). At most 1 token may be a visible attribute (color or size). Do NOT include verbs, proper nouns, brand names, inferred facts, emotions, events, or dates.
+- Use only lower-case common nouns and simple adjectives (dog, child, car, red, small). No articles in tags. No repeated words or near-synonyms — deduplicate and prefer the most specific single noun (e.g., choose ""child"" not ""person, child"").
+- Order tags by salience (most discriminative first). Prefer compact, high-information nouns over long exhaustive lists.
+
+Line 2 (caption) — required format and rules:
+- One factual short sentence in present simple or present progressive of 7–14 words, OR a valid 2–3 word fallback caption (main noun + short location, e.g., ""child sidewalk"") if a compliant 7–14 word caption would require guessing. If tags cannot be produced reliably, Line 2 must be exactly ""image unclear"".
+- Place the main noun within positions 1–3 of the sentence. If a visually certain numeric count is shown in Line 1, reflect it in the caption and use correct verb morphology: singular -> third-person singular verb (adds -s), plural -> base verb (e.g., ""1 child stands"", ""2 children stand"").
+- Include at most one clearly visible color or size in the caption and at most one simple spatial relation/preposition (on, in, near, by, in front of, behind). Use only concrete, directly visible facts. Do NOT add proper nouns, intentions, emotions, or invented facts.
+- No punctuation except an optional single period at the end.
+
+Harmonization and anti-hallucination:
+- Ensure lexical reinforcement: prefer at least two exact token overlaps between Line 1 and Line 2 (noun or attribute). If only one overlap is possible, ensure it is the main noun. Overlap strongly improves alignment.
+- Prefer omission over guessing: if a property (count, color, relation) is not clearly visible, omit it rather than invent it.
+- If you cannot produce a compliant caption without adding uncertain attributes, produce the 2–3 word fallback (main noun + location) or ""image unclear"" as specified above.
+
+Candidate generation and (required) reranking:
+- Internally generate N = 3 candidate compliant outputs (each candidate = Line1 tags + Line2 caption obeying rules). Score and select the best candidate before output.
+- If a CLIP scorer is available, use it to rerank candidates. If not available, use this proxy score:
+  proxy_score = 5*(main-noun overlap) + 3*(each additional exact overlap) + 2*(visible attribute overlap) - 2*(duplicates collapsed penalty) - 1*(each tag beyond 3).
+  Higher score wins. Break ties by preferring more overlaps, then shorter tag lists.
+
+Deterministic self-checks (must pass before returning output):
+1. Deduplicate tags; ensure 2–5 comma-separated tokens, all lower-case, nouns/adjectives only, ≤1 attribute.
+2. Ensure Line 2 length = 7–14 words OR valid 2–3 word fallback OR exactly ""image unclear"".
+3. Ensure at least one exact token overlap between tags and caption; prefer ≥2 overlaps.
+4. If Line 1 includes a numeric count, ensure caption verb morphology matches that count.
+5. No forbidden items (proper nouns, inferred facts); no punctuation except commas in Line 1 and optional final period in Line 2.
+If any check fails, replace Line 2 with ""image unclear"". If tags cannot be produced reliably, return only tags you can trust (2–5 tokens) and Line 2 = ""image unclear"".
+
+Practical guidance:
+- Keep tags compact and discriminative (2–4 nouns is ideal). A single clear color or size is allowed only when obvious.
+- Avoid listing many small objects; instead choose the most salient objects that distinguish the image.
+- When uncertain about count, color, or relation, omit them from both tags and caption.
+
+Positive examples (correct):
+- Example A:
+  Line1: child, blanket, red
+  Line2: child sits on blanket holding a red toy.
+  (main noun early; two overlaps: child, blanket; one visible attribute red)
+- Example B:
+  Line1: dog 2, ball
+  Line2: 2 dogs play near a ball on grass.
+  (numeric count reflected; correct plural verb form; overlaps: dog, ball)
+
+Negative examples (common errors and fixes):
+- Bad: ""person, person, person, car, red, red"" + ""person stands by car.""
+  Fix: deduplicate and reduce tags to ""person, car, red""; ensure 2–5 tokens.
+- Bad: Line1 ""child 2, dog"" + Line2 ""child stands near dog""
+  Fix: If Line1 uses ""child 2"", caption must read ""2 children stand near dog"" (plural verb and noun form).
+
+Implementation checklist to append inside the prompt:
+- Generate 3 candidates, apply proxy/CLIP rerank, run self-checks 1–5, output the top candidate if it passes; otherwise output tags you can trust and Line 2 = ""image unclear"". The VLM must follow the two-line output format exactly.","building, tree, person, sidewalk
+
+building stands behind tree with people walking on sidewalk",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.25908127427101135,0.12668557465076447,13,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_fc3d51810c,113,12029,flickr30k_test_012029,images/flickr30k/flickr30k_test_012029.jpg,"[""Four ferry boats are docked at a visitor's center with passengers waiting to board."", ""People congregate on a platform in a river among decorated boats."", ""People are gathered on a platform in water for a ceremony."", ""A group of people waiting to ride boats."", ""People wait to board boats.""]",textgrad_fc3d51810c,TextGrad Step 4,"Output exactly two lines only.
+
+Line 1 (tags) — required format and rules:
+- Provide exactly 2–5 comma-separated tokens (no punctuation except commas). First token = main object (lower-case common noun), optionally with a visually certain count immediately after the noun (digit or word). Examples: ""child"", ""child 2"", ""person one"".
+- At least 2 tokens must be nouns (including the main noun). At most 1 token may be a visible attribute (color or size). Do NOT include verbs, proper nouns, brand names, inferred facts, emotions, events, or dates.
+- Use only lower-case common nouns and simple adjectives (dog, child, car, red, small). No articles in tags. No repeated words or near-synonyms — deduplicate and prefer the most specific single noun (e.g., choose ""child"" not ""person, child"").
+- Order tags by salience (most discriminative first). Prefer compact, high-information nouns over long exhaustive lists.
+
+Line 2 (caption) — required format and rules:
+- One factual short sentence in present simple or present progressive of 7–14 words, OR a valid 2–3 word fallback caption (main noun + short location, e.g., ""child sidewalk"") if a compliant 7–14 word caption would require guessing. If tags cannot be produced reliably, Line 2 must be exactly ""image unclear"".
+- Place the main noun within positions 1–3 of the sentence. If a visually certain numeric count is shown in Line 1, reflect it in the caption and use correct verb morphology: singular -> third-person singular verb (adds -s), plural -> base verb (e.g., ""1 child stands"", ""2 children stand"").
+- Include at most one clearly visible color or size in the caption and at most one simple spatial relation/preposition (on, in, near, by, in front of, behind). Use only concrete, directly visible facts. Do NOT add proper nouns, intentions, emotions, or invented facts.
+- No punctuation except an optional single period at the end.
+
+Harmonization and anti-hallucination:
+- Ensure lexical reinforcement: prefer at least two exact token overlaps between Line 1 and Line 2 (noun or attribute). If only one overlap is possible, ensure it is the main noun. Overlap strongly improves alignment.
+- Prefer omission over guessing: if a property (count, color, relation) is not clearly visible, omit it rather than invent it.
+- If you cannot produce a compliant caption without adding uncertain attributes, produce the 2–3 word fallback (main noun + location) or ""image unclear"" as specified above.
+
+Candidate generation and (required) reranking:
+- Internally generate N = 3 candidate compliant outputs (each candidate = Line1 tags + Line2 caption obeying rules). Score and select the best candidate before output.
+- If a CLIP scorer is available, use it to rerank candidates. If not available, use this proxy score:
+  proxy_score = 5*(main-noun overlap) + 3*(each additional exact overlap) + 2*(visible attribute overlap) - 2*(duplicates collapsed penalty) - 1*(each tag beyond 3).
+  Higher score wins. Break ties by preferring more overlaps, then shorter tag lists.
+
+Deterministic self-checks (must pass before returning output):
+1. Deduplicate tags; ensure 2–5 comma-separated tokens, all lower-case, nouns/adjectives only, ≤1 attribute.
+2. Ensure Line 2 length = 7–14 words OR valid 2–3 word fallback OR exactly ""image unclear"".
+3. Ensure at least one exact token overlap between tags and caption; prefer ≥2 overlaps.
+4. If Line 1 includes a numeric count, ensure caption verb morphology matches that count.
+5. No forbidden items (proper nouns, inferred facts); no punctuation except commas in Line 1 and optional final period in Line 2.
+If any check fails, replace Line 2 with ""image unclear"". If tags cannot be produced reliably, return only tags you can trust (2–5 tokens) and Line 2 = ""image unclear"".
+
+Practical guidance:
+- Keep tags compact and discriminative (2–4 nouns is ideal). A single clear color or size is allowed only when obvious.
+- Avoid listing many small objects; instead choose the most salient objects that distinguish the image.
+- When uncertain about count, color, or relation, omit them from both tags and caption.
+
+Positive examples (correct):
+- Example A:
+  Line1: child, blanket, red
+  Line2: child sits on blanket holding a red toy.
+  (main noun early; two overlaps: child, blanket; one visible attribute red)
+- Example B:
+  Line1: dog 2, ball
+  Line2: 2 dogs play near a ball on grass.
+  (numeric count reflected; correct plural verb form; overlaps: dog, ball)
+
+Negative examples (common errors and fixes):
+- Bad: ""person, person, person, car, red, red"" + ""person stands by car.""
+  Fix: deduplicate and reduce tags to ""person, car, red""; ensure 2–5 tokens.
+- Bad: Line1 ""child 2, dog"" + Line2 ""child stands near dog""
+  Fix: If Line1 uses ""child 2"", caption must read ""2 children stand near dog"" (plural verb and noun form).
+
+Implementation checklist to append inside the prompt:
+- Generate 3 candidates, apply proxy/CLIP rerank, run self-checks 1–5, output the top candidate if it passes; otherwise output tags you can trust and Line 2 = ""image unclear"". The VLM must follow the two-line output format exactly.","person, boat, temple, water
+people stand on boat near temple in water",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.31495851278305054,0.1384304016828537,12,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_fc3d51810c,123,21750,flickr30k_test_021750,images/flickr30k/flickr30k_test_021750.jpg,"[""Two women who just had lunch hugging and saying goodbye."", ""Two women holding takeout boxes hugging on the street."", ""Two women are embracing while holding to go packages."", ""Two women, holding food carryout containers, hug."", ""Two blond women are hugging one another.""]",textgrad_fc3d51810c,TextGrad Step 4,"Output exactly two lines only.
+
+Line 1 (tags) — required format and rules:
+- Provide exactly 2–5 comma-separated tokens (no punctuation except commas). First token = main object (lower-case common noun), optionally with a visually certain count immediately after the noun (digit or word). Examples: ""child"", ""child 2"", ""person one"".
+- At least 2 tokens must be nouns (including the main noun). At most 1 token may be a visible attribute (color or size). Do NOT include verbs, proper nouns, brand names, inferred facts, emotions, events, or dates.
+- Use only lower-case common nouns and simple adjectives (dog, child, car, red, small). No articles in tags. No repeated words or near-synonyms — deduplicate and prefer the most specific single noun (e.g., choose ""child"" not ""person, child"").
+- Order tags by salience (most discriminative first). Prefer compact, high-information nouns over long exhaustive lists.
+
+Line 2 (caption) — required format and rules:
+- One factual short sentence in present simple or present progressive of 7–14 words, OR a valid 2–3 word fallback caption (main noun + short location, e.g., ""child sidewalk"") if a compliant 7–14 word caption would require guessing. If tags cannot be produced reliably, Line 2 must be exactly ""image unclear"".
+- Place the main noun within positions 1–3 of the sentence. If a visually certain numeric count is shown in Line 1, reflect it in the caption and use correct verb morphology: singular -> third-person singular verb (adds -s), plural -> base verb (e.g., ""1 child stands"", ""2 children stand"").
+- Include at most one clearly visible color or size in the caption and at most one simple spatial relation/preposition (on, in, near, by, in front of, behind). Use only concrete, directly visible facts. Do NOT add proper nouns, intentions, emotions, or invented facts.
+- No punctuation except an optional single period at the end.
+
+Harmonization and anti-hallucination:
+- Ensure lexical reinforcement: prefer at least two exact token overlaps between Line 1 and Line 2 (noun or attribute). If only one overlap is possible, ensure it is the main noun. Overlap strongly improves alignment.
+- Prefer omission over guessing: if a property (count, color, relation) is not clearly visible, omit it rather than invent it.
+- If you cannot produce a compliant caption without adding uncertain attributes, produce the 2–3 word fallback (main noun + location) or ""image unclear"" as specified above.
+
+Candidate generation and (required) reranking:
+- Internally generate N = 3 candidate compliant outputs (each candidate = Line1 tags + Line2 caption obeying rules). Score and select the best candidate before output.
+- If a CLIP scorer is available, use it to rerank candidates. If not available, use this proxy score:
+  proxy_score = 5*(main-noun overlap) + 3*(each additional exact overlap) + 2*(visible attribute overlap) - 2*(duplicates collapsed penalty) - 1*(each tag beyond 3).
+  Higher score wins. Break ties by preferring more overlaps, then shorter tag lists.
+
+Deterministic self-checks (must pass before returning output):
+1. Deduplicate tags; ensure 2–5 comma-separated tokens, all lower-case, nouns/adjectives only, ≤1 attribute.
+2. Ensure Line 2 length = 7–14 words OR valid 2–3 word fallback OR exactly ""image unclear"".
+3. Ensure at least one exact token overlap between tags and caption; prefer ≥2 overlaps.
+4. If Line 1 includes a numeric count, ensure caption verb morphology matches that count.
+5. No forbidden items (proper nouns, inferred facts); no punctuation except commas in Line 1 and optional final period in Line 2.
+If any check fails, replace Line 2 with ""image unclear"". If tags cannot be produced reliably, return only tags you can trust (2–5 tokens) and Line 2 = ""image unclear"".
+
+Practical guidance:
+- Keep tags compact and discriminative (2–4 nouns is ideal). A single clear color or size is allowed only when obvious.
+- Avoid listing many small objects; instead choose the most salient objects that distinguish the image.
+- When uncertain about count, color, or relation, omit them from both tags and caption.
+
+Positive examples (correct):
+- Example A:
+  Line1: child, blanket, red
+  Line2: child sits on blanket holding a red toy.
+  (main noun early; two overlaps: child, blanket; one visible attribute red)
+- Example B:
+  Line1: dog 2, ball
+  Line2: 2 dogs play near a ball on grass.
+  (numeric count reflected; correct plural verb form; overlaps: dog, ball)
+
+Negative examples (common errors and fixes):
+- Bad: ""person, person, person, car, red, red"" + ""person stands by car.""
+  Fix: deduplicate and reduce tags to ""person, car, red""; ensure 2–5 tokens.
+- Bad: Line1 ""child 2, dog"" + Line2 ""child stands near dog""
+  Fix: If Line1 uses ""child 2"", caption must read ""2 children stand near dog"" (plural verb and noun form).
+
+Implementation checklist to append inside the prompt:
+- Generate 3 candidates, apply proxy/CLIP rerank, run self-checks 1–5, output the top candidate if it passes; otherwise output tags you can trust and Line 2 = ""image unclear"". The VLM must follow the two-line output format exactly.","person, person, bag, container, white
+two people hug while holding bags and white containers",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.2648239731788635,0.17010469734668732,14,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_fc3d51810c,124,16660,flickr30k_test_016660,images/flickr30k/flickr30k_test_016660.jpg,"[""A man in swimming trunks stands in front of the door of a house, looking at a swimming pool, out of which, directly in front of the diving board, a pair of feet are sticking up out of the splashed water."", ""An elderly man in black swim trunks watching someone dive into a pool."", ""A man outside his swimming pool while someone else dives in"", ""A man watching a person diving into a swimming pool."", ""A man watches a girl jump into a pool.""]",textgrad_fc3d51810c,TextGrad Step 4,"Output exactly two lines only.
+
+Line 1 (tags) — required format and rules:
+- Provide exactly 2–5 comma-separated tokens (no punctuation except commas). First token = main object (lower-case common noun), optionally with a visually certain count immediately after the noun (digit or word). Examples: ""child"", ""child 2"", ""person one"".
+- At least 2 tokens must be nouns (including the main noun). At most 1 token may be a visible attribute (color or size). Do NOT include verbs, proper nouns, brand names, inferred facts, emotions, events, or dates.
+- Use only lower-case common nouns and simple adjectives (dog, child, car, red, small). No articles in tags. No repeated words or near-synonyms — deduplicate and prefer the most specific single noun (e.g., choose ""child"" not ""person, child"").
+- Order tags by salience (most discriminative first). Prefer compact, high-information nouns over long exhaustive lists.
+
+Line 2 (caption) — required format and rules:
+- One factual short sentence in present simple or present progressive of 7–14 words, OR a valid 2–3 word fallback caption (main noun + short location, e.g., ""child sidewalk"") if a compliant 7–14 word caption would require guessing. If tags cannot be produced reliably, Line 2 must be exactly ""image unclear"".
+- Place the main noun within positions 1–3 of the sentence. If a visually certain numeric count is shown in Line 1, reflect it in the caption and use correct verb morphology: singular -> third-person singular verb (adds -s), plural -> base verb (e.g., ""1 child stands"", ""2 children stand"").
+- Include at most one clearly visible color or size in the caption and at most one simple spatial relation/preposition (on, in, near, by, in front of, behind). Use only concrete, directly visible facts. Do NOT add proper nouns, intentions, emotions, or invented facts.
+- No punctuation except an optional single period at the end.
+
+Harmonization and anti-hallucination:
+- Ensure lexical reinforcement: prefer at least two exact token overlaps between Line 1 and Line 2 (noun or attribute). If only one overlap is possible, ensure it is the main noun. Overlap strongly improves alignment.
+- Prefer omission over guessing: if a property (count, color, relation) is not clearly visible, omit it rather than invent it.
+- If you cannot produce a compliant caption without adding uncertain attributes, produce the 2–3 word fallback (main noun + location) or ""image unclear"" as specified above.
+
+Candidate generation and (required) reranking:
+- Internally generate N = 3 candidate compliant outputs (each candidate = Line1 tags + Line2 caption obeying rules). Score and select the best candidate before output.
+- If a CLIP scorer is available, use it to rerank candidates. If not available, use this proxy score:
+  proxy_score = 5*(main-noun overlap) + 3*(each additional exact overlap) + 2*(visible attribute overlap) - 2*(duplicates collapsed penalty) - 1*(each tag beyond 3).
+  Higher score wins. Break ties by preferring more overlaps, then shorter tag lists.
+
+Deterministic self-checks (must pass before returning output):
+1. Deduplicate tags; ensure 2–5 comma-separated tokens, all lower-case, nouns/adjectives only, ≤1 attribute.
+2. Ensure Line 2 length = 7–14 words OR valid 2–3 word fallback OR exactly ""image unclear"".
+3. Ensure at least one exact token overlap between tags and caption; prefer ≥2 overlaps.
+4. If Line 1 includes a numeric count, ensure caption verb morphology matches that count.
+5. No forbidden items (proper nouns, inferred facts); no punctuation except commas in Line 1 and optional final period in Line 2.
+If any check fails, replace Line 2 with ""image unclear"". If tags cannot be produced reliably, return only tags you can trust (2–5 tokens) and Line 2 = ""image unclear"".
+
+Practical guidance:
+- Keep tags compact and discriminative (2–4 nouns is ideal). A single clear color or size is allowed only when obvious.
+- Avoid listing many small objects; instead choose the most salient objects that distinguish the image.
+- When uncertain about count, color, or relation, omit them from both tags and caption.
+
+Positive examples (correct):
+- Example A:
+  Line1: child, blanket, red
+  Line2: child sits on blanket holding a red toy.
+  (main noun early; two overlaps: child, blanket; one visible attribute red)
+- Example B:
+  Line1: dog 2, ball
+  Line2: 2 dogs play near a ball on grass.
+  (numeric count reflected; correct plural verb form; overlaps: dog, ball)
+
+Negative examples (common errors and fixes):
+- Bad: ""person, person, person, car, red, red"" + ""person stands by car.""
+  Fix: deduplicate and reduce tags to ""person, car, red""; ensure 2–5 tokens.
+- Bad: Line1 ""child 2, dog"" + Line2 ""child stands near dog""
+  Fix: If Line1 uses ""child 2"", caption must read ""2 children stand near dog"" (plural verb and noun form).
+
+Implementation checklist to append inside the prompt:
+- Generate 3 candidates, apply proxy/CLIP rerank, run self-checks 1–5, output the top candidate if it passes; otherwise output tags you can trust and Line 2 = ""image unclear"". The VLM must follow the two-line output format exactly.","person, pool, splash, shorts
+person splashes in pool near man in shorts",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.3024176359176636,0.1721908003091812,12,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_fc3d51810c,128,17070,flickr30k_test_017070,images/flickr30k/flickr30k_test_017070.jpg,"[""A man with a hat and suspenders is walking through cornfields toward a silo in the background."", ""A man in a straw hat and suspenders walks away from the camera towards a field of corn."", ""The solitary man wearing the hat is walking in the field."", ""A man in a straw hat is walking in a cornfield."", ""Farmer walking in his fields.""]",textgrad_fc3d51810c,TextGrad Step 4,"Output exactly two lines only.
+
+Line 1 (tags) — required format and rules:
+- Provide exactly 2–5 comma-separated tokens (no punctuation except commas). First token = main object (lower-case common noun), optionally with a visually certain count immediately after the noun (digit or word). Examples: ""child"", ""child 2"", ""person one"".
+- At least 2 tokens must be nouns (including the main noun). At most 1 token may be a visible attribute (color or size). Do NOT include verbs, proper nouns, brand names, inferred facts, emotions, events, or dates.
+- Use only lower-case common nouns and simple adjectives (dog, child, car, red, small). No articles in tags. No repeated words or near-synonyms — deduplicate and prefer the most specific single noun (e.g., choose ""child"" not ""person, child"").
+- Order tags by salience (most discriminative first). Prefer compact, high-information nouns over long exhaustive lists.
+
+Line 2 (caption) — required format and rules:
+- One factual short sentence in present simple or present progressive of 7–14 words, OR a valid 2–3 word fallback caption (main noun + short location, e.g., ""child sidewalk"") if a compliant 7–14 word caption would require guessing. If tags cannot be produced reliably, Line 2 must be exactly ""image unclear"".
+- Place the main noun within positions 1–3 of the sentence. If a visually certain numeric count is shown in Line 1, reflect it in the caption and use correct verb morphology: singular -> third-person singular verb (adds -s), plural -> base verb (e.g., ""1 child stands"", ""2 children stand"").
+- Include at most one clearly visible color or size in the caption and at most one simple spatial relation/preposition (on, in, near, by, in front of, behind). Use only concrete, directly visible facts. Do NOT add proper nouns, intentions, emotions, or invented facts.
+- No punctuation except an optional single period at the end.
+
+Harmonization and anti-hallucination:
+- Ensure lexical reinforcement: prefer at least two exact token overlaps between Line 1 and Line 2 (noun or attribute). If only one overlap is possible, ensure it is the main noun. Overlap strongly improves alignment.
+- Prefer omission over guessing: if a property (count, color, relation) is not clearly visible, omit it rather than invent it.
+- If you cannot produce a compliant caption without adding uncertain attributes, produce the 2–3 word fallback (main noun + location) or ""image unclear"" as specified above.
+
+Candidate generation and (required) reranking:
+- Internally generate N = 3 candidate compliant outputs (each candidate = Line1 tags + Line2 caption obeying rules). Score and select the best candidate before output.
+- If a CLIP scorer is available, use it to rerank candidates. If not available, use this proxy score:
+  proxy_score = 5*(main-noun overlap) + 3*(each additional exact overlap) + 2*(visible attribute overlap) - 2*(duplicates collapsed penalty) - 1*(each tag beyond 3).
+  Higher score wins. Break ties by preferring more overlaps, then shorter tag lists.
+
+Deterministic self-checks (must pass before returning output):
+1. Deduplicate tags; ensure 2–5 comma-separated tokens, all lower-case, nouns/adjectives only, ≤1 attribute.
+2. Ensure Line 2 length = 7–14 words OR valid 2–3 word fallback OR exactly ""image unclear"".
+3. Ensure at least one exact token overlap between tags and caption; prefer ≥2 overlaps.
+4. If Line 1 includes a numeric count, ensure caption verb morphology matches that count.
+5. No forbidden items (proper nouns, inferred facts); no punctuation except commas in Line 1 and optional final period in Line 2.
+If any check fails, replace Line 2 with ""image unclear"". If tags cannot be produced reliably, return only tags you can trust (2–5 tokens) and Line 2 = ""image unclear"".
+
+Practical guidance:
+- Keep tags compact and discriminative (2–4 nouns is ideal). A single clear color or size is allowed only when obvious.
+- Avoid listing many small objects; instead choose the most salient objects that distinguish the image.
+- When uncertain about count, color, or relation, omit them from both tags and caption.
+
+Positive examples (correct):
+- Example A:
+  Line1: child, blanket, red
+  Line2: child sits on blanket holding a red toy.
+  (main noun early; two overlaps: child, blanket; one visible attribute red)
+- Example B:
+  Line1: dog 2, ball
+  Line2: 2 dogs play near a ball on grass.
+  (numeric count reflected; correct plural verb form; overlaps: dog, ball)
+
+Negative examples (common errors and fixes):
+- Bad: ""person, person, person, car, red, red"" + ""person stands by car.""
+  Fix: deduplicate and reduce tags to ""person, car, red""; ensure 2–5 tokens.
+- Bad: Line1 ""child 2, dog"" + Line2 ""child stands near dog""
+  Fix: If Line1 uses ""child 2"", caption must read ""2 children stand near dog"" (plural verb and noun form).
+
+Implementation checklist to append inside the prompt:
+- Generate 3 candidates, apply proxy/CLIP rerank, run self-checks 1–5, output the top candidate if it passes; otherwise output tags you can trust and Line 2 = ""image unclear"". The VLM must follow the two-line output format exactly.","person, field, farm, hat
+person walks in field near farm wearing a hat",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.34366872906684875,0.17546147108078003,13,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_fc3d51810c,130,12886,flickr30k_test_012886,images/flickr30k/flickr30k_test_012886.jpg,"[""Man with long dark hair, wearing a gray winter cap and sunglasses, hiking gear across his back, tracking in snow with two hiking poles."", ""A man in a ski outfit and gear standing in the snow, smiling and posing for a picture."", ""A woman hiking in the snow using ski poles."", ""A man is in the snow holding ski poles."", ""A man that is skiing with glasses on.""]",textgrad_fc3d51810c,TextGrad Step 4,"Output exactly two lines only.
+
+Line 1 (tags) — required format and rules:
+- Provide exactly 2–5 comma-separated tokens (no punctuation except commas). First token = main object (lower-case common noun), optionally with a visually certain count immediately after the noun (digit or word). Examples: ""child"", ""child 2"", ""person one"".
+- At least 2 tokens must be nouns (including the main noun). At most 1 token may be a visible attribute (color or size). Do NOT include verbs, proper nouns, brand names, inferred facts, emotions, events, or dates.
+- Use only lower-case common nouns and simple adjectives (dog, child, car, red, small). No articles in tags. No repeated words or near-synonyms — deduplicate and prefer the most specific single noun (e.g., choose ""child"" not ""person, child"").
+- Order tags by salience (most discriminative first). Prefer compact, high-information nouns over long exhaustive lists.
+
+Line 2 (caption) — required format and rules:
+- One factual short sentence in present simple or present progressive of 7–14 words, OR a valid 2–3 word fallback caption (main noun + short location, e.g., ""child sidewalk"") if a compliant 7–14 word caption would require guessing. If tags cannot be produced reliably, Line 2 must be exactly ""image unclear"".
+- Place the main noun within positions 1–3 of the sentence. If a visually certain numeric count is shown in Line 1, reflect it in the caption and use correct verb morphology: singular -> third-person singular verb (adds -s), plural -> base verb (e.g., ""1 child stands"", ""2 children stand"").
+- Include at most one clearly visible color or size in the caption and at most one simple spatial relation/preposition (on, in, near, by, in front of, behind). Use only concrete, directly visible facts. Do NOT add proper nouns, intentions, emotions, or invented facts.
+- No punctuation except an optional single period at the end.
+
+Harmonization and anti-hallucination:
+- Ensure lexical reinforcement: prefer at least two exact token overlaps between Line 1 and Line 2 (noun or attribute). If only one overlap is possible, ensure it is the main noun. Overlap strongly improves alignment.
+- Prefer omission over guessing: if a property (count, color, relation) is not clearly visible, omit it rather than invent it.
+- If you cannot produce a compliant caption without adding uncertain attributes, produce the 2–3 word fallback (main noun + location) or ""image unclear"" as specified above.
+
+Candidate generation and (required) reranking:
+- Internally generate N = 3 candidate compliant outputs (each candidate = Line1 tags + Line2 caption obeying rules). Score and select the best candidate before output.
+- If a CLIP scorer is available, use it to rerank candidates. If not available, use this proxy score:
+  proxy_score = 5*(main-noun overlap) + 3*(each additional exact overlap) + 2*(visible attribute overlap) - 2*(duplicates collapsed penalty) - 1*(each tag beyond 3).
+  Higher score wins. Break ties by preferring more overlaps, then shorter tag lists.
+
+Deterministic self-checks (must pass before returning output):
+1. Deduplicate tags; ensure 2–5 comma-separated tokens, all lower-case, nouns/adjectives only, ≤1 attribute.
+2. Ensure Line 2 length = 7–14 words OR valid 2–3 word fallback OR exactly ""image unclear"".
+3. Ensure at least one exact token overlap between tags and caption; prefer ≥2 overlaps.
+4. If Line 1 includes a numeric count, ensure caption verb morphology matches that count.
+5. No forbidden items (proper nouns, inferred facts); no punctuation except commas in Line 1 and optional final period in Line 2.
+If any check fails, replace Line 2 with ""image unclear"". If tags cannot be produced reliably, return only tags you can trust (2–5 tokens) and Line 2 = ""image unclear"".
+
+Practical guidance:
+- Keep tags compact and discriminative (2–4 nouns is ideal). A single clear color or size is allowed only when obvious.
+- Avoid listing many small objects; instead choose the most salient objects that distinguish the image.
+- When uncertain about count, color, or relation, omit them from both tags and caption.
+
+Positive examples (correct):
+- Example A:
+  Line1: child, blanket, red
+  Line2: child sits on blanket holding a red toy.
+  (main noun early; two overlaps: child, blanket; one visible attribute red)
+- Example B:
+  Line1: dog 2, ball
+  Line2: 2 dogs play near a ball on grass.
+  (numeric count reflected; correct plural verb form; overlaps: dog, ball)
+
+Negative examples (common errors and fixes):
+- Bad: ""person, person, person, car, red, red"" + ""person stands by car.""
+  Fix: deduplicate and reduce tags to ""person, car, red""; ensure 2–5 tokens.
+- Bad: Line1 ""child 2, dog"" + Line2 ""child stands near dog""
+  Fix: If Line1 uses ""child 2"", caption must read ""2 children stand near dog"" (plural verb and noun form).
+
+Implementation checklist to append inside the prompt:
+- Generate 3 candidates, apply proxy/CLIP rerank, run self-checks 1–5, output the top candidate if it passes; otherwise output tags you can trust and Line 2 = ""image unclear"". The VLM must follow the two-line output format exactly.","person, snow, backpack, pole, hat
+person hikes in snow with backpack and poles",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.29111361503601074,0.18518342077732086,13,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_fc3d51810c,133,24011,flickr30k_test_024011,images/flickr30k/flickr30k_test_024011.jpg,"[""Street performers with Santa Clause in the middle and ladies on the sides joining hands."", ""A man in a Santa suit stands amid a long row of dancers on a New York City street."", ""Santa and dancers outside of Radio City Music Hall in NYC."", ""Santa is in the line of dancers for the parade."", ""A dance in a city featuring Santa.""]",textgrad_fc3d51810c,TextGrad Step 4,"Output exactly two lines only.
+
+Line 1 (tags) — required format and rules:
+- Provide exactly 2–5 comma-separated tokens (no punctuation except commas). First token = main object (lower-case common noun), optionally with a visually certain count immediately after the noun (digit or word). Examples: ""child"", ""child 2"", ""person one"".
+- At least 2 tokens must be nouns (including the main noun). At most 1 token may be a visible attribute (color or size). Do NOT include verbs, proper nouns, brand names, inferred facts, emotions, events, or dates.
+- Use only lower-case common nouns and simple adjectives (dog, child, car, red, small). No articles in tags. No repeated words or near-synonyms — deduplicate and prefer the most specific single noun (e.g., choose ""child"" not ""person, child"").
+- Order tags by salience (most discriminative first). Prefer compact, high-information nouns over long exhaustive lists.
+
+Line 2 (caption) — required format and rules:
+- One factual short sentence in present simple or present progressive of 7–14 words, OR a valid 2–3 word fallback caption (main noun + short location, e.g., ""child sidewalk"") if a compliant 7–14 word caption would require guessing. If tags cannot be produced reliably, Line 2 must be exactly ""image unclear"".
+- Place the main noun within positions 1–3 of the sentence. If a visually certain numeric count is shown in Line 1, reflect it in the caption and use correct verb morphology: singular -> third-person singular verb (adds -s), plural -> base verb (e.g., ""1 child stands"", ""2 children stand"").
+- Include at most one clearly visible color or size in the caption and at most one simple spatial relation/preposition (on, in, near, by, in front of, behind). Use only concrete, directly visible facts. Do NOT add proper nouns, intentions, emotions, or invented facts.
+- No punctuation except an optional single period at the end.
+
+Harmonization and anti-hallucination:
+- Ensure lexical reinforcement: prefer at least two exact token overlaps between Line 1 and Line 2 (noun or attribute). If only one overlap is possible, ensure it is the main noun. Overlap strongly improves alignment.
+- Prefer omission over guessing: if a property (count, color, relation) is not clearly visible, omit it rather than invent it.
+- If you cannot produce a compliant caption without adding uncertain attributes, produce the 2–3 word fallback (main noun + location) or ""image unclear"" as specified above.
+
+Candidate generation and (required) reranking:
+- Internally generate N = 3 candidate compliant outputs (each candidate = Line1 tags + Line2 caption obeying rules). Score and select the best candidate before output.
+- If a CLIP scorer is available, use it to rerank candidates. If not available, use this proxy score:
+  proxy_score = 5*(main-noun overlap) + 3*(each additional exact overlap) + 2*(visible attribute overlap) - 2*(duplicates collapsed penalty) - 1*(each tag beyond 3).
+  Higher score wins. Break ties by preferring more overlaps, then shorter tag lists.
+
+Deterministic self-checks (must pass before returning output):
+1. Deduplicate tags; ensure 2–5 comma-separated tokens, all lower-case, nouns/adjectives only, ≤1 attribute.
+2. Ensure Line 2 length = 7–14 words OR valid 2–3 word fallback OR exactly ""image unclear"".
+3. Ensure at least one exact token overlap between tags and caption; prefer ≥2 overlaps.
+4. If Line 1 includes a numeric count, ensure caption verb morphology matches that count.
+5. No forbidden items (proper nouns, inferred facts); no punctuation except commas in Line 1 and optional final period in Line 2.
+If any check fails, replace Line 2 with ""image unclear"". If tags cannot be produced reliably, return only tags you can trust (2–5 tokens) and Line 2 = ""image unclear"".
+
+Practical guidance:
+- Keep tags compact and discriminative (2–4 nouns is ideal). A single clear color or size is allowed only when obvious.
+- Avoid listing many small objects; instead choose the most salient objects that distinguish the image.
+- When uncertain about count, color, or relation, omit them from both tags and caption.
+
+Positive examples (correct):
+- Example A:
+  Line1: child, blanket, red
+  Line2: child sits on blanket holding a red toy.
+  (main noun early; two overlaps: child, blanket; one visible attribute red)
+- Example B:
+  Line1: dog 2, ball
+  Line2: 2 dogs play near a ball on grass.
+  (numeric count reflected; correct plural verb form; overlaps: dog, ball)
+
+Negative examples (common errors and fixes):
+- Bad: ""person, person, person, car, red, red"" + ""person stands by car.""
+  Fix: deduplicate and reduce tags to ""person, car, red""; ensure 2–5 tokens.
+- Bad: Line1 ""child 2, dog"" + Line2 ""child stands near dog""
+  Fix: If Line1 uses ""child 2"", caption must read ""2 children stand near dog"" (plural verb and noun form).
+
+Implementation checklist to append inside the prompt:
+- Generate 3 candidates, apply proxy/CLIP rerank, run self-checks 1–5, output the top candidate if it passes; otherwise output tags you can trust and Line 2 = ""image unclear"". The VLM must follow the two-line output format exactly.","dancer, person, car, red
+
+dancers perform on street near car with red accents.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.244353249669075,0.11241268366575241,13,False

@@ -1,0 +1,142 @@
+{
+  "prompt": "Output exactly one concise, information‑dense caption: a single grammatical sentence composed of comma‑separated short phrases. Produce only that single sentence and nothing else.\n\nFollow these strict, deterministic rules when forming the caption. Treat every numeric threshold below as a hard gate: emit a token only when its gate evaluates TRUE; if the gate fails, emit the specified safe fallback token/structure for that slot (never invent text or unsupported attributes). Never invent brands, celebrity names, ages, emotions, intentions, or unsupported attributes. Avoid hedging words like “probably.” Aim for 10–14 words; hard cap 18 words (allow up to 20 words only when an exact quoted text string is emitted or two VERIFIED fine classes are present).\n\n1) Assembly pipeline (execute in order and front‑load)\n- Build the caption in this order and place the first subject group + any VERIFIED discriminative prop(s) within the first 6–8 words:  \n  A) 0–3 verified subject groups + VERIFIED discriminative props (must appear first). If no subject group verification → emit a single plural fallback noun (people/dogs/vehicles).  \n  B) exactly one VERIFIED micro‑action phrase if contact/motion gate TRUE; else emit a conservative near‑phrase fallback.  \n  C) VERIFIED fine class token if gate TRUE; else use dataset lexicon fallback (storefront, painted metal shutter, two‑wheeled vehicle, woven basket, cart, minivan, marquee).  \n  D) clothing/clear pose/orientation (only if VERIFIED).  \n  E) up to 2 verified nearby anchors/signage (only if VERIFIED; otherwise omit or use compact positional descriptor).  \n  F) cropping/foreground token (only if depth gate TRUE).  \n- If any slot has no VERIFIED token, immediately substitute the explicit fallback and continue to the next slot.\n\n2) Count verification (hard gate)\n- Emit a digit only when Count_verified == TRUE, defined as EITHER: (a) each instance visible_fraction ≥ 0.45 AND pairwise centroid_distance ≥ 0.10 × image_width AND pairwise IoU < 0.10; OR (b) clear repeating/patterned structure with visually separable instances.  \n- If Count_verified == FALSE → use plural noun fallback (people/dogs/vehicles/group of people).\n\n3) Contact / micro‑action verification (hard gate & exact template)\n- Emit a micro‑action ONLY when Contact_verified == TRUE, defined as overlap_area / min(bbox_area) ≥ 0.10 AND contiguous boundary evidence (≈6+ adjacent overlap pixels), OR contact_classifier_confidence ≥ 0.55.  \n- When Contact_verified == TRUE → emit exactly one micro‑action using this template: \"left|right [hand|foot|part] [strong‑verb] [object]\" (example: \"right hand holding woven basket\"). Motion verbs are allowed only with verified contact or motion_classifier_confidence ≥ 0.60.  \n- When Contact_verified == FALSE → emit the conservative fallback template: \"[part] near [object]\" (example: \"right hand near woven basket\").\n\n4) Depth / foreground verification (hard gate)\n- Include \"foreground\"/\"background\" ONLY when Depth_verified == TRUE, defined as EITHER (a) subject_bbox_area ≥ 1.5 × any overlapping bbox_area AND pairwise IoU < 0.20 AND subject centroid is lower, OR (b) segmentation mask shows >60% unoccluded area.  \n- If Depth_verified == FALSE → omit depth tokens.\n\n5) Fine class & cue‑pair verification (hard gate)\n- Emit a fine class (bicycle, motorbike/scooter, vendor/produce stand, ladder, performer, etc.) ONLY when FineClass_verified == TRUE, defined as classifier_confidence ≥ 0.60 OR a prescribed cue‑pair spatially satisfied within 12% image width (e.g., spokes+pedals ⇒ bicycle, engine+exhaust ⇒ motorbike, baskets+scale ⇒ vendor, rungs+rails ⇒ ladder, stage+audience or mic+facing_audience ⇒ performer).  \n- If FineClass_verified == FALSE → emit a dataset‑aware fallback token from the lexicon (storefront, painted metal shutter, two‑wheeled vehicle, woven basket, cart, marquee).\n\n6) OCR / signage quoting (absolute policy)\n- Quote exact text ONLY when OCR_quote_verified == TRUE, defined as OCR_confidence ≥ 0.65 AND text_bbox_area ≥ 0.003 × image_area AND contrast_ratio ≥ 1.5 (exception for short uppercase centered marquee ≤3 words when OCR_confidence ≥ 0.60 and text_bbox_area ≥ 0.004 × image_area).  \n- If OCR_quote_verified == FALSE → NEVER quote characters; instead emit a compact positional descriptor such as \"marquee behind\", \"storefront behind\", or \"three red rectangular signs at upper right\" as the fallback.\n\n7) Priority of descriptors and deterministic pruning\n- Preserve VERIFIED tokens in priority order (high → low): (A) VERIFIED discriminative props or quoted text, (B) VERIFIED part‑relations/micro‑actions, (C) VERIFIED fine class, (D) clothing & clear pose/orientation, (E) color & costume patterns, (F) object state/material, (G) viewpoint/orientation, (H) lighting/reflection, (I) background.  \n- Pruning algorithm (executable): if caption exceeds target/hard cap, iteratively remove tokens from categories in this exact order: H → F → I. NEVER remove VERIFIED tokens from categories A–C or any VERIFIED micro‑action. When multiple candidates equal priority, drop longest token first, then lexicographic tie‑break. Continue until within hard cap.\n\n8) High‑value prop/anchor checklist (attempt detection in priority order)\n- Always attempt to VERIFY and emit these high‑value anchors when present (thresholds above): amp/guitar case, small boats/canopies/awnings, pontoon/pavilion/shrine, corrugated metal shutter, marquee/storefront, bridge rails/diagonal rail, trash can/bin, red rectangular signs, flagpole, guitar/amp case, visible rippling reflections. If verification fails for a listed anchor → use the lexicon fallback token (e.g., \"storefront behind\", \"marquee behind\", \"painted metal shutter\").\n\n9) Cropping and occlusion\n- If subject_bbox_intersection_area / subject_bbox_area < 0.95 and verified as cropped → append compact phrase \"partially cropped at [top|bottom|left|right]\" indicating clipped side(s). Only emit when verified.\n\n10) Anti‑hallucination rules (absolute)\n- Never invent characters in text, partial quoted text, guessed words on signs, brands, ages, emotions, intentions, or unsupported attributes. Do not output probabilistic hedges (\"probably\", \"maybe\") in the final caption. If uncertain, use the prescribed lexicon fallback tokens.\n\n11) Saliency bias\n- When multiple VERIFIED tokens compete, prefer the token(s) that localize to higher visual saliency (strong edges, high contrast text, faces, large color patches). Use saliency to break ties between similarly verified candidates.\n\n12) Micro‑template bank (preferred shapes)\n- Favor captions that match these shapes exactly:  \n  - \"1 woman center foreground, right hand holding woven basket of oranges, storefront behind.\"  \n  - \"two dogs left foreground, small white dog jumping at car passenger window, woman leaning out.\"  \n  - \"1 person right foreground, standing by two‑wheeled vehicle with visible pedals and chain, metal shutter behind.\"  \n  - \"many dancers center foreground, line of red/gold sequined costumes, marquee behind.\"  \n- Negative examples (forbidden hallucinations):  \n  - do NOT output quoted text unless OCR_quote_verified == TRUE (e.g., do NOT output \"LE MIGNON\" unless verified).  \n  - do NOT use vague fallbacks like \"platform\" when a specific verified anchor exists (use \"pontoon pavilion\" if verified).  \n  - do NOT invent brands, celebrity names, ages, or emotions.\n\nFinal emission rule: apply the verification gates and the assembly pipeline deterministically, prune per the pruning algorithm if needed, assemble a single comma‑separated grammatical sentence that is concise and information‑dense, and output exactly that one caption sentence and nothing else.",
+  "prompt_id": "textgrad_c362762aad",
+  "split_csv": "data/splits/flickr30k_main_seed1_train.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal/step_15/train/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal/step_15/train/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal/step_15/train/scores.csv",
+  "data_root": "data",
+  "summary": {
+    "n": 24,
+    "mean_clip": 0.31121052863697213,
+    "mean_siglip": 0.1943115436782439,
+    "mean_caption_len": 17.875,
+    "generic_rate": 0.0,
+    "mean_delta_clip": -0.007235898946722344,
+    "mean_delta_siglip": 0.014104944653809072,
+    "clip_win_rate": 0.375,
+    "siglip_win_rate": 0.6666666666666666
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_013247",
+      "image_relpath": "images/flickr30k/flickr30k_test_013247.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_013247.jpg",
+      "caption": "people walking in front of Outdoor World storefront, flagpole with American flag, cloudy sky overhead",
+      "clip_score": 0.2368852943181991,
+      "siglip_score": 0.1481727659702301,
+      "delta_clip": -0.10248430073261261,
+      "delta_siglip": -0.0030177682638168057
+    },
+    {
+      "image_id": "flickr30k_test_022494",
+      "image_relpath": "images/flickr30k/flickr30k_test_022494.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_022494.jpg",
+      "caption": "man holding orange ladder, wearing orange shirt and gray pants, standing near brick wall, white cloth draped object nearby, wooden walkway foreground",
+      "clip_score": 0.3109802007675171,
+      "siglip_score": 0.2276565730571746,
+      "delta_clip": -0.05013790726661682,
+      "delta_siglip": 0.011951699852943393
+    },
+    {
+      "image_id": "flickr30k_test_027523",
+      "image_relpath": "images/flickr30k/flickr30k_test_027523.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_027523.jpg",
+      "caption": "man wearing blue cap and apron, right hand holding chisel, wood sculptures nearby, wooden bench background, partially cropped at bottom.",
+      "clip_score": 0.3001799583435058,
+      "siglip_score": 0.1898539066314697,
+      "delta_clip": -0.04155761003494268,
+      "delta_siglip": -0.013626277446746798
+    },
+    {
+      "image_id": "flickr30k_test_026274",
+      "image_relpath": "images/flickr30k/flickr30k_test_026274.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_026274.jpg",
+      "caption": "man on horse rearing with lasso, rider in cowboy hat, spectators behind fence, red umbrellas, \"PAY\" banner visible",
+      "clip_score": 0.2692586183547973,
+      "siglip_score": 0.1343216598033905,
+      "delta_clip": -0.040485858917236384,
+      "delta_siglip": 0.03723131865262991
+    },
+    {
+      "image_id": "flickr30k_test_019253",
+      "image_relpath": "images/flickr30k/flickr30k_test_019253.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_019253.jpg",
+      "caption": "woman foreground, curly hair, yellow knitted scarf, purple jacket, looking down, partial view of blue canopy behind",
+      "clip_score": 0.3422543108463287,
+      "siglip_score": 0.252715528011322,
+      "delta_clip": -0.0299463570117951,
+      "delta_siglip": -0.02206254005432129
+    },
+    {
+      "image_id": "flickr30k_test_008358",
+      "image_relpath": "images/flickr30k/flickr30k_test_008358.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_008358.jpg",
+      "caption": "goalkeeper in red jersey with number one, diving horizontally, black shorts, gloves, grass field, trees behind",
+      "clip_score": 0.3327655494213104,
+      "siglip_score": 0.2056493312120437,
+      "delta_clip": -0.025347799062728882,
+      "delta_siglip": 0.004137501120567294
+    },
+    {
+      "image_id": "flickr30k_test_029824",
+      "image_relpath": "images/flickr30k/flickr30k_test_029824.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_029824.jpg",
+      "caption": "woman center foreground, standing behind London 2012 Olympic welcome desk, wearing lanyard, smiling",
+      "clip_score": 0.3728133738040924,
+      "siglip_score": 0.2476244568824768,
+      "delta_clip": -0.018841922283172607,
+      "delta_siglip": 0.001617997884750394
+    },
+    {
+      "image_id": "flickr30k_test_011327",
+      "image_relpath": "images/flickr30k/flickr30k_test_011327.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_011327.jpg",
+      "caption": "elephant center foreground, trunk holding green leaves, red-blue cloth draped, people near behind.",
+      "clip_score": 0.2942897379398346,
+      "siglip_score": 0.1483332067728042,
+      "delta_clip": -0.018788069486617986,
+      "delta_siglip": -0.013637319207191495
+    },
+    {
+      "image_id": "flickr30k_test_025508",
+      "image_relpath": "images/flickr30k/flickr30k_test_025508.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_025508.jpg",
+      "caption": "person mid-air performing backflip above sand dune, arms extended, shorts and t-shirt, clear blue sky background",
+      "clip_score": 0.3505834341049194,
+      "siglip_score": 0.196736603975296,
+      "delta_clip": -0.01509547233581543,
+      "delta_siglip": 0.002253621816635104
+    },
+    {
+      "image_id": "flickr30k_test_023643",
+      "image_relpath": "images/flickr30k/flickr30k_test_023643.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_023643.jpg",
+      "caption": "girl foreground, smiling, caricature drawings nearby, vendor stand with umbrella, people browsing",
+      "clip_score": 0.3154885172843933,
+      "siglip_score": 0.2947314381599426,
+      "delta_clip": -0.01142352819442749,
+      "delta_siglip": 0.01880645751953125
+    },
+    {
+      "image_id": "flickr30k_test_018116",
+      "image_relpath": "images/flickr30k/flickr30k_test_018116.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_018116.jpg",
+      "caption": "elder craftsman, right hand shaping gold leaf, seated on floor, tools and newspaper spread nearby",
+      "clip_score": 0.3214356601238251,
+      "siglip_score": 0.1962853074073791,
+      "delta_clip": -0.0066078901290893,
+      "delta_siglip": 0.0424408614635467
+    },
+    {
+      "image_id": "flickr30k_test_016410",
+      "image_relpath": "images/flickr30k/flickr30k_test_016410.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_016410.jpg",
+      "caption": "shirtless man, blue jeans, right hand gripping handlebar, two‑wheeled vehicle, performing stunt, grassy terrain, background trees",
+      "clip_score": 0.3161061704158783,
+      "siglip_score": 0.0779662430286407,
+      "delta_clip": -0.00545772910118103,
+      "delta_siglip": -0.06454315781593319
+    }
+  ]
+}

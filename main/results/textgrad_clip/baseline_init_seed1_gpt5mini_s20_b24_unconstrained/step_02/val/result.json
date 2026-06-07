@@ -1,0 +1,117 @@
+{
+  "prompt": "Output exactly two lines only.\n\nLine 1 (tags) — required format and rules:\n- Provide a comma-separated list of up to 8 tokens (no punctuation except commas).\n- First token must contain the main object as a lower-case common noun; it may optionally include a count (digit or word) after the noun (examples: \"child 2\", \"child\", \"person one\"). If a count is included, place it immediately after the noun in that first token.\n- After the first token, list 2–4 salient visible objects and up to 1–2 clearly visible attributes (color or size). Order by salience (most important first) but free ordering is allowed.\n- Use only lower-case common nouns and basic adjectives (person, child, dog, car, red, small). Do NOT use proper nouns, brand names, inferred facts, emotions, events, or dates.\n- Include colors/sizes only when clearly visible; if uncertain, omit them.\n- No repeated synonyms, no articles, and no verbs in tags.\n\nLine 2 (caption) — required format and rules:\n- One factual short sentence (7–14 words) in present simple or present progressive; main object must appear early in the sentence.\n- If a numeric count is visually certain, include it (digit or spelled-out number allowed). If uncertain, omit the count rather than guess.\n- Verb morphology: for a singular main-object count use third-person singular verb (-s); for plural use base verb (e.g., \"1 child stands\", \"2 children stand\").\n- You may include at most one clearly visible color or size in the caption and one simple spatial relation/preposition (on, in, near, by, in front of, behind).\n- Use only concrete, directly visible facts. Do NOT add proper nouns, inferred intentions, emotions, or invented facts.\n- No punctuation except an optional single period at the end.\n\nHarmonization and anti-hallucination:\n- Ensure the caption contains at least one exact token (noun or visible attribute) from Line 1 so tags and caption reinforce the same salient visual terms.\n- Prefer omission over guessing: if a property (count, color, relation) is not clearly visible, leave it out.\n- If you cannot produce a compliant 7–14 word caption without adding uncertain attributes, produce a concise fallback caption of 2–3 words in the form \"<main noun> <location>\" (e.g., \"child sidewalk\") or \"image unclear\". In this fallback case Line 1 may still list visible tags.\n- If you cannot produce even tags reliably, Line 2 must be \"image unclear\".\n\nSelf-checks (must be applied before returning output):\n1. Exactly 2 lines in the output.\n2. Line 1: ≤8 comma-separated tokens; first token = main noun (optionally with count); all lower-case; no forbidden items.\n3. Line 2: either 7–14 words (preferred) or valid 2–3 word fallback; main object early; correct verb form when a count is present.\n4. No proper nouns, inferences, or invented facts.\n5. No punctuation except commas in Line 1 and an optional final period on Line 2.\nIf any check fails, replace Line 2 with the fallback \"image unclear\" (or, if tags cannot be produced, ensure Line 2 is \"image unclear\").\n\nImplementation note for the pipeline (meta instruction, not required in the two-line output):\n- When possible in the calling system, generate 3 short caption variants and use an external CLIP-based reranker to select the best-scoring caption. This often improves image-text alignment. The VLM itself should still follow the two-line output rules above.",
+  "prompt_id": "textgrad_5acfb3d6db",
+  "split_csv": "data/splits/flickr30k_main_seed1_val.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24/step_02/val/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24/step_02/val/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24/step_02/val/scores.csv",
+  "summary": {
+    "n": 150,
+    "mean_clip": 0.2945254276196162,
+    "mean_siglip": 0.16692592444519203,
+    "mean_caption_len": 17.506666666666668,
+    "generic_rate": 0.0,
+    "mean_delta_clip": -0.0300400206943353,
+    "mean_delta_siglip": -0.03191462124387423,
+    "clip_win_rate": 0.14333333333333334,
+    "siglip_win_rate": 0.2
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_011250",
+      "caption": "child 2, boy, girl, grass, yellow tape, brown shirt, red shirt, denim pants\ntwo children stand near yellow tape on grass",
+      "clip_score": 0.2883593738079071,
+      "siglip_score": 0.2047842144966125,
+      "delta_clip": -0.1242344081401825,
+      "delta_siglip": -0.015731409192085294
+    },
+    {
+      "image_id": "flickr30k_test_007385",
+      "caption": "person, baton, blue, colorful, group, street, store, sky\nperson throws baton in front of store",
+      "clip_score": 0.2552216947078705,
+      "siglip_score": 0.1564684510231018,
+      "delta_clip": -0.11363515257835383,
+      "delta_siglip": -0.018459975719451904
+    },
+    {
+      "image_id": "flickr30k_test_003587",
+      "caption": "person\ncap, glasses, jacket, red, black\n\nperson wearing cap and glasses sits in front of blurred background",
+      "clip_score": 0.2549026310443878,
+      "siglip_score": 0.1591996401548385,
+      "delta_clip": -0.11038431525230408,
+      "delta_siglip": -0.10510443150997167
+    },
+    {
+      "image_id": "flickr30k_test_026513",
+      "caption": "person one, camera, tripod, umbrella, yellow jacket, blue jacket, potted plant, rain\nperson one operates camera on tripod near umbrella",
+      "clip_score": 0.2942986488342285,
+      "siglip_score": 0.2268752157688141,
+      "delta_clip": -0.10837537050247187,
+      "delta_siglip": -0.033143460750579834
+    },
+    {
+      "image_id": "flickr30k_test_023317",
+      "caption": "person, hat, jacket, blue, pink, bag, free sign, trash can\nwoman stands near guest services counter wearing pink jacket and hat",
+      "clip_score": 0.2878852486610412,
+      "siglip_score": 0.2189975678920745,
+      "delta_clip": -0.1032626628875733,
+      "delta_siglip": 0.0006090104579924982
+    },
+    {
+      "image_id": "flickr30k_test_002727",
+      "caption": "person\nshirt, neon sign, table, chair, green, red, large\n\nperson sits in front of neon sign near table",
+      "clip_score": 0.2370645999908447,
+      "siglip_score": 0.1274453252553939,
+      "delta_clip": -0.09878215193748471,
+      "delta_siglip": -0.1467366963624955
+    },
+    {
+      "image_id": "flickr30k_test_006548",
+      "caption": "person one, bench, sign, scaffolding, orange, green, metal, large\n\nperson one stands near bench under green sign",
+      "clip_score": 0.2571325302124023,
+      "siglip_score": 0.091917410492897,
+      "delta_clip": -0.0932827889919281,
+      "delta_siglip": -0.08975750207900998
+    },
+    {
+      "image_id": "flickr30k_test_006548",
+      "caption": "person one, bench, sign, scaffolding, orange, green, metal, large\n\nperson one stands near bench under green sign",
+      "clip_score": 0.2571325302124023,
+      "siglip_score": 0.091917410492897,
+      "delta_clip": -0.09071463346481329,
+      "delta_siglip": -0.1254610419273376
+    },
+    {
+      "image_id": "flickr30k_test_014144",
+      "caption": "person one,grinder,spark,locker,blue,white,glasses,black\nperson one grinds metal near locker with bright spark",
+      "clip_score": 0.2715180516242981,
+      "siglip_score": 0.2210477739572525,
+      "delta_clip": -0.09008538722991938,
+      "delta_siglip": -0.009781375527381897
+    },
+    {
+      "image_id": "flickr30k_test_016590",
+      "caption": "person, umbrella blue, child, bag, water bottle, stone steps, market stall\nperson stands near market stall with blue umbrella and water bottle",
+      "clip_score": 0.2745899558067322,
+      "siglip_score": 0.2019838988780975,
+      "delta_clip": -0.08999538421630854,
+      "delta_siglip": -0.024214878678321783
+    },
+    {
+      "image_id": "flickr30k_test_023900",
+      "caption": "person one, sign, sticks, red, yellow, smiling, dark shirt, behind\nperson one stands behind a yellow sign with red text",
+      "clip_score": 0.2718380987644195,
+      "siglip_score": 0.1309545189142227,
+      "delta_clip": -0.08996853232383728,
+      "delta_siglip": -0.1598611027002335
+    },
+    {
+      "image_id": "flickr30k_test_009512",
+      "caption": "person five, red, black, shorts, bikini top, tattoo\nfive people stand in front of tent on artificial grass",
+      "clip_score": 0.2919300198554992,
+      "siglip_score": 0.1548365205526352,
+      "delta_clip": -0.08726173639297491,
+      "delta_siglip": -0.033554151654243414
+    }
+  ]
+}

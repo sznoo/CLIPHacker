@@ -1,0 +1,117 @@
+{
+  "prompt": "Output exactly two lines only.\n\nLine 1 (tags) — required format and hard rules:\n- Provide 2–5 comma-separated tokens (lower-case). Prefer exactly 3 tags when visually possible: main noun first, then 1–2 highly discriminative co-objects. No punctuation except commas.\n- Tokens must be common nouns or single-word simple adjectives used only as visible attributes (dog, child, car, red, small). Multiword object phrases that are visually fused are allowed as a single token (e.g., \"wine bottle\", \"traffic light\").\n- At least 2 tokens must be nouns (including the main noun). At most 1 token may be a visible attribute (color/size). No verbs, proper nouns, brand names, inferred facts, emotions, events, or dates.\n- Deduplicate tags; do not use near-synonyms. Order tags by salience (most discriminative first). Prefer compact, high-information nouns (2–4 tokens ideal).\n- Attribute inclusion rule: only add a color/size attribute to tags if detector/segmenter confidence for that attribute exceeds 75% (pixel coverage or top detection confidence). If attribute confidence <75%, omit the attribute from tags. If detectors are unavailable, default to conservative omission.\n\nLine 2 (caption) — required format and hard rules:\n- Either (A) one factual short sentence in present simple/progressive of 7–14 words, OR (B) a 2–3 word fallback caption (main noun + visible location) when a compliant 7–14 word caption would require guessing. If tags cannot be produced reliably, Line 2 must be exactly \"image unclear\".\n- The main noun from Line 1 must appear verbatim in token positions 1–3 of Line 2 (hard requirement).\n- Require at least two exact token overlaps between Line 1 and Line 2 for any non-fallback caption; one overlap must be the main noun. All nouns appearing in the caption (other than allowed prepositions/articles) must appear verbatim in Line 1. The only allowed additional words not in tags are prepositions, determiners, and an optional single period at sentence-end.\n- If Line 1 contains a numeric count, reflect it correctly in the caption with correct morphology (e.g., \"1 child stands\", \"2 children stand\").\n- Include at most one clearly visible color/size and at most one simple spatial relation/preposition (on, in, near, by, in front of, behind). Never introduce an attribute in the caption that is not present in tags.\n- No punctuation except commas in Line 1 and an optional single period at the end of Line 2.\n\nLexical anchoring and anti-hallucination (HARD CONSTRAINTS):\n- No substantive noun may appear in the caption unless it appears verbatim in Line 1 tags. Location nouns are considered substantive; they must be present in tags or supported by a high-confidence detector output before use.\n- If an attribute appears in tags, it must appear verbatim in the caption. Conversely, a caption must not introduce any attribute token not in tags.\n- If two reliable overlaps (including main noun) cannot be produced without guessing, produce the 2–3 word fallback (main noun + visible location) or, if tags cannot be trusted, output \"image unclear\".\n- Forbidden: proper nouns, inferred facts, emotions, dates, brand names.\n\nCandidate generation and templates (required):\n- Internally generate N = 12 diverse compliant candidates before returning output.\n- Force at least two exact overlaps when constructing each non-fallback candidate. If a candidate cannot meet overlap requirements without guessing, make it the fallback variant instead.\n- Use these deterministic templates (prefer detector-proposed nouns when available). Always try forced-adjacency templates first:\n  1) Forced adjacency: \"[main noun] [co-object]\" adjacency phrase -> \"[main noun] [verb] [preposition] [co-object]\" (ensure noun phrase adjacency appears in caption).\n  2) Main+co-object: \"[main noun] with [co-object] on/in [location]\" (only if location noun is in tags).\n  3) Attribute-aware: \"[main noun] [verb] [attribute] [co-object]\" (only if attribute in tags and confidence ≥75%).\n  4) Spatial variant: \"[main noun] [verb] [preposition] [object]\" (object must be in tags).\n  5) Count-aware: \"[count] [main-noun plural] [verb] [preposition] [object]\" (if numeric count in tags).\n  6) Compact fallback: \"[main noun] [location]\" (2–3 word fallback).\n  7) Detector compound: use detector-proposed compound noun adjacent to main noun (e.g., \"girl skateboard\" -> \"girl on skateboard\") if both tokens are in tags.\n- When building candidates, ensure at least two exact overlaps per non-fallback candidate; prefer adjacency of two tag tokens as an exact phrase.\n\nProxy scoring, adjacency bonus, and reranking:\n- If CLIP scorer is available: normalize CLIP scores across candidates and compute final_score = 0.95 * normalized_CLIP + 0.05 * normalized_proxy. Use CLIP as primary signal.\n- If CLIP unavailable: compute proxy_score to heavily favor exact overlaps, adjacency, and main noun position:\n  proxy_score = 12*(main-noun overlap: 1 if present) \n               +10*(each additional exact overlap)\n               +6*(attribute overlap present)\n               +6*(adjacency bonus: +6 if any two tag tokens appear adjacent as exact phrase)\n               +4*(positional_bonus: +4 if main noun at position 1, +1 if at position 2–3)\n               -5*(generic-noun penalty if tag ∈ {person, people, man, woman} used when a more specific detector proposal is available)\n               -2*(duplicates-collapsed penalty)\n               -2*(each tag beyond 3)\n               -1*(each caption word beyond 12)\n- Normalize proxy_score across candidates before use. Break ties by: more exact overlaps, fewer tags, main noun at position 1.\n\nScoring adjustments and heuristics:\n- Reduce the penalty for tags >3 to allow one extra discriminative noun when detector confidence is high (penalty = -2 per tag beyond 3).\n- Soften the generic-person penalty to -5 (still discourage generic nouns but allow specific detector-driven replacements).\n- Strongly prefer candidates with adjacent phrase overlap and main noun at position 1 (adjacency and position bonuses above).\n- If CLIP is available, prefer increasing CLIP weight up to 0.98 for stability in retraining runs; otherwise rely on the proxy formula above.\n\nDeterministic final self-check pipeline (must pass before returning output):\nA) Tags format check: 2–5 comma-separated lower-case tokens, ≤1 attribute token, deduplicated.\nB) Caption validity: 7–14 words OR valid 2–3 word fallback OR exactly \"image unclear\".\nC) Overlap check: ≥2 exact token overlaps between Line 1 and Line 2; one must be main noun.\nD) Noun containment: all nouns in caption ∈ tags (except allowed prepositions/determiners).\nE) Attribute mirroring & confidence: any attribute in tags appears verbatim in caption; attributes were only added to tags if detector confidence ≥75%.\nF) Forbidden content check: no proper nouns, inferred facts, emotions, dates, brand names; no punctuation except allowed.\n- If any test fails, reject the candidate. If no candidate passes after reranking, return the most reliable tags possible (2–5 tokens) on Line 1 and Line 2 = \"image unclear\".\n\nFallback and conservatism:\n- Prefer \"image unclear\" over inventing low-confidence specifics. If fewer than 2 high-confidence nouns are available, use the compact 2–3 word fallback (main noun + visible location) or output \"image unclear\".\n- When tags contain an attribute with confidence <75% or attribute is unsure, do not include the attribute in tags nor in captions.\n\nOperational recommendations:\n- Seed Line 1 tags from top-3 detector outputs by confidence when available, filtering for discriminative nouns (prefer \"trumpet\" over \"person\" when confident). If detector subclass confidence is low, keep the safe concrete tag (\"person\") but mark for fallback.\n- Log examples with large negative delta_clip for later analysis and adaptive threshold tuning (raise attribute threshold or relax tag-length penalties when necessary).\n- Maintain deterministic behavior: always follow the candidate templates and the final self-check pipeline exactly.\n\nOutput requirement reminder:\n- The VLM must output exactly two lines: Line 1 = tags (2–5 comma-separated tokens, prefer 3). Line 2 = caption (7–14 words) OR 2–3 word fallback OR \"image unclear\". No extra lines or commentary.",
+  "prompt_id": "textgrad_ed8ca79cb9",
+  "split_csv": "data/splits/flickr30k_main_seed1_train.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24/step_07/train/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24/step_07/train/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24/step_07/train/scores.csv",
+  "summary": {
+    "n": 24,
+    "mean_clip": 0.2806045990437269,
+    "mean_siglip": 0.15764417561391986,
+    "mean_caption_len": 9.5,
+    "generic_rate": 0.0,
+    "mean_delta_clip": -0.03669332899153233,
+    "mean_delta_siglip": -0.03373007600506147,
+    "clip_win_rate": 0.125,
+    "siglip_win_rate": 0.25
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_021284",
+      "caption": "people, hat, flag\npeople with hat stand near flag",
+      "clip_score": 0.2413173764944076,
+      "siglip_score": 0.1277161538600921,
+      "delta_clip": -0.08094902336597448,
+      "delta_siglip": -0.10814283788204199
+    },
+    {
+      "image_id": "flickr30k_test_024189",
+      "caption": "person, bag, tree\nperson bends over bag near tree",
+      "clip_score": 0.2523502111434936,
+      "siglip_score": 0.1554341912269592,
+      "delta_clip": -0.07426413893699652,
+      "delta_siglip": -0.08198179304599759
+    },
+    {
+      "image_id": "flickr30k_test_007496",
+      "caption": "car, man, accordion\nman plays accordion on street near car",
+      "clip_score": 0.2447774559259414,
+      "siglip_score": 0.1392387747764587,
+      "delta_clip": -0.06792424619197851,
+      "delta_siglip": -0.06759884953498838
+    },
+    {
+      "image_id": "flickr30k_test_013247",
+      "caption": "outdoor world building, people, flag\npeople walk in front of outdoor world building",
+      "clip_score": 0.2747698724269867,
+      "siglip_score": 0.1713536977767944,
+      "delta_clip": -0.06459972262382502,
+      "delta_siglip": 0.020163163542747498
+    },
+    {
+      "image_id": "flickr30k_test_012278",
+      "caption": "people, dog, rooftop\npeople sit on rooftop with dog nearby",
+      "clip_score": 0.2393436282873153,
+      "siglip_score": 0.1573917269706726,
+      "delta_clip": -0.05859296023845678,
+      "delta_siglip": -0.04955601692199699
+    },
+    {
+      "image_id": "flickr30k_test_023641",
+      "caption": "people, tree, pavement\npeople walk on tree-lined pavement",
+      "clip_score": 0.2797597050666809,
+      "siglip_score": 0.1781602501869201,
+      "delta_clip": -0.0584833025932312,
+      "delta_siglip": -0.001477882266044589
+    },
+    {
+      "image_id": "flickr30k_test_015474",
+      "caption": "boat, person, water\nperson rows boat in water",
+      "clip_score": 0.271805465221405,
+      "siglip_score": 0.1140165477991104,
+      "delta_clip": -0.05697795748710632,
+      "delta_siglip": -0.05674405395984651
+    },
+    {
+      "image_id": "flickr30k_test_012491",
+      "caption": "person, bicycle, train car\nperson rides bicycle on train car",
+      "clip_score": 0.2957555651664734,
+      "siglip_score": 0.1596119552850723,
+      "delta_clip": -0.0552780926227569,
+      "delta_siglip": -0.05161586403846741
+    },
+    {
+      "image_id": "flickr30k_test_030024",
+      "caption": "man, table, wine bottle\nman sits at table with wine bottle",
+      "clip_score": 0.2507364451885223,
+      "siglip_score": 0.1477762162685394,
+      "delta_clip": -0.05173501372337341,
+      "delta_siglip": -0.036439076066017095
+    },
+    {
+      "image_id": "flickr30k_test_023304",
+      "caption": "woman shopping bags\nwoman walks with shopping bags on sidewalk",
+      "clip_score": 0.2543731331825256,
+      "siglip_score": 0.1379463821649551,
+      "delta_clip": -0.05164805054664612,
+      "delta_siglip": -0.08205600082874298
+    },
+    {
+      "image_id": "flickr30k_test_017289",
+      "caption": "man, mop, floor\nman mops floor with mop",
+      "clip_score": 0.2856127619743347,
+      "siglip_score": 0.1405012160539627,
+      "delta_clip": -0.04844987392425537,
+      "delta_siglip": -0.01683565974235529
+    },
+    {
+      "image_id": "flickr30k_test_010109",
+      "caption": "woman, basket, leaf\nwoman sorts leafy greens in basket",
+      "clip_score": 0.2935100495815277,
+      "siglip_score": 0.1322310119867324,
+      "delta_clip": -0.04327711462974548,
+      "delta_siglip": -0.0868333578109742
+    }
+  ]
+}

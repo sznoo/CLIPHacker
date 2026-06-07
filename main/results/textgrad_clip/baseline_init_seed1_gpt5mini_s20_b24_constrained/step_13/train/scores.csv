@@ -1,0 +1,1249 @@
+split_id,method_id,run_id,order,dataset_index,image_id,image_relpath,reference_captions,prompt_id,prompt_name,prompt_text,caption,candidate_id,selected,model,temperature,top_p,max_new_tokens,generation_config,clip_score,siglip_score,caption_len,generic_flag
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_e3ea3bb85c,8,16234,flickr30k_test_016234,images/flickr30k/flickr30k_test_016234.jpg,"[""The young child is yelling into the microphone, while other children watch."", ""A young boy vocalizes in to a microphone held by a blond woman in black."", ""A young child is in front of a microphone as other people are watching."", ""Little kid is taking a bit of something from a puppet."", ""A boy yells into a microphone held by a woman.""]",textgrad_e3ea3bb85c,TextGrad Step 13,"Generate exactly one short, literal, factual caption (one grammatically correct sentence) describing only visible content in the image. Output exactly one sentence only — no extra text. Total words: 8–14.
+
+Key definitions
+- High‑signal token = a visible color/pattern; a concrete, specific object class (prefer multiword classes like ""stop sign"", ""fire hydrant"", ""double‑decker bus""); a clear Arabic numeral; a clothing/accessory; or legible text/logo copied exactly when it meets the OCR rules below.
+- Content words = all words except a single leading article (a/an/the) if present.
+
+Visibility and OCR (deterministic)
+- An object is ""clearly visible"" if area ≥1.5% of image OR (area ≥0.8% AND detector_confidence ≥0.45).
+- Allow a small-object exception: if detector_confidence ≥0.75, treat area ≥0.6% as ""clearly visible"".
+- Copy legible text/logo exactly only if OCR_confidence ≥0.55 for OCR_token_count ≤3, or OCR_confidence ≥0.70 if OCR_bbox_area ≥1.0%. Otherwise require OCR_confidence ≥0.60 and OCR_bbox_area ≥1.5%. Always forbid copying phone numbers or runs of ≥5 consecutive digits and avoid long digit sequences. When allowed, prefer inserting the token directly (e.g., shirt NIKE); if a wrapper is needed for grammar use the shortest wrapper (e.g., shirt ""NIKE"").
+- Treat counts/digits as visible only if digits meet the OCR/visibility rules above. Use Arabic numerals.
+
+Salience and subject selection
+- Salience = 0.5*(area_norm) + 0.3*(detector_confidence) + 0.15*(center_score) + 0.05*(local_contrast). If area >40% of image, multiply area_norm by 0.8 before computing Salience. Allow a large-area candidate to remain competitive when detector_confidence ≥0.60 or local_contrast is substantially higher.
+- Choose the subject with highest salience. If two candidates are within 5% salience, prefer the candidate that yields more distinct high‑signal tokens early. If still tied and a person/human is present with comparable detector_confidence (within ±0.05), prefer the person.
+
+Placement and high‑signal token rules
+- Require at least one high‑signal token within the first two content words. Allow exactly one deterministic exception only if grammaticality would otherwise break; if an exception is used, the high‑signal token must appear within the first four content words.
+- If two distinct high‑signal tokens are clearly visible, require both within the first 3 content words unless that makes the sentence ungrammatical; if grammar prevents this, allow placement within the first 4 content words.
+- Do not precede the first high‑signal token with verbs or extraneous function words. Omit or keep a leading article only if it does not delay high‑signal tokens beyond the first two content words.
+- When a visible numeral/count meets visibility rules, use an Arabic numeral and place it early (within the first 2–4 content words).
+
+Class, wording and modifier constraints
+- Start with a concise noun phrase; prefer the pattern [Color/Number/Multiword‑class] + [class]. Favor multiword concrete classes when available.
+- Allow up to two pre‑nominal high‑signal modifiers (e.g., color + accessory or number + color) to increase early concrete content (e.g., ""3 yellow school buses"").
+- Use present‑tense, concise S V (+ O) sentences and common collocations (""X holds Y"", ""X sits on Y"", ""X walks past Y"").
+- Limit modifiers overall: at most two pre‑nominal modifiers and at most one short post‑nominal prepositional phrase OR one compact participial phrase. Permit one additional compact descriptor total when concise (e.g., ""man in red shirt holding trumpet"").
+- Avoid subordinate clauses and stacked prepositional phrases. Aim for noun‑dense captions with concrete tokens early; minimize function words that delay concrete tokens.
+
+OCR/token formatting notes
+- Prefer direct inclusion of short OCR tokens (e.g., shirt NIKE, sign STOP) when OCR rules are met. If quotes are required for clarity, keep them minimal; avoid verbose wrappers like ""sign reading"" unless necessary for grammar.
+- Do not copy phone numbers or long digit runs.
+
+Templates and micro‑patterns (use these as patterns, not literal fill)
+- [Color] [multiword_class] [verb] [object] → ""Red double‑decker bus passes street.""
+- [Numeral] [multiword_class] [verb] [modifier] → ""3 yellow school buses stop at corner.""
+- [multiword_class] [OCR_TEXT] [verb] [object] → ""Shirt NIKE worn by man.""
+- Allow natural article use when it preserves fluency and early high‑signal tokens: ""A young woman in red coat holds black umbrella.""
+
+Examples (follow these styles; do not output these examples)
+- Good: ""Young woman in red coat holds black umbrella.""
+- Good: ""White stop sign beside brick building.""
+- Good (OCR): ""Shirt NIKE worn by man.""
+- Bad: ""There is a group of people sitting at a table while others stand and talk."" (too generic/long)
+- Bad: ""Man leans on sign with 212‑625‑9212 printed."" (do not copy phone numbers / long digit runs)
+
+Deterministic tie‑breakers and limits
+- When subjects tie, prefer the subject that yields more distinct high‑signal tokens early; prefer people in close ties as noted above.
+- Limit caption length to 8–14 total words. Aim for ~9–12 content words when possible.
+- Enforce the visibility/OCR thresholds as specified. Do not invent unseen attributes or guess unreadable text.
+
+Final output rule reminder: produce exactly one one‑sentence caption, no extra text, within 8–14 words, following the visibility, OCR, salience, placement, and syntax rules above.",A young girl in a striped shirt laughs as a person holds a puppet in front of her.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.20575006306171417,0.12104048579931259,18,True
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_e3ea3bb85c,15,6879,flickr30k_test_006879,images/flickr30k/flickr30k_test_006879.jpg,"[""A little boy in a blue soccer uniform walks, approaching a team member from the opposite team."", ""A boy in blue soccer shirt and shorts stands watching two other children play soccer."", ""A little boy with Adidas shorts and soccer cleats waits patiently."", ""A child is standing on the street and looking at some kid."", ""Little boy dressed in blue wearing cleats.""]",textgrad_e3ea3bb85c,TextGrad Step 13,"Generate exactly one short, literal, factual caption (one grammatically correct sentence) describing only visible content in the image. Output exactly one sentence only — no extra text. Total words: 8–14.
+
+Key definitions
+- High‑signal token = a visible color/pattern; a concrete, specific object class (prefer multiword classes like ""stop sign"", ""fire hydrant"", ""double‑decker bus""); a clear Arabic numeral; a clothing/accessory; or legible text/logo copied exactly when it meets the OCR rules below.
+- Content words = all words except a single leading article (a/an/the) if present.
+
+Visibility and OCR (deterministic)
+- An object is ""clearly visible"" if area ≥1.5% of image OR (area ≥0.8% AND detector_confidence ≥0.45).
+- Allow a small-object exception: if detector_confidence ≥0.75, treat area ≥0.6% as ""clearly visible"".
+- Copy legible text/logo exactly only if OCR_confidence ≥0.55 for OCR_token_count ≤3, or OCR_confidence ≥0.70 if OCR_bbox_area ≥1.0%. Otherwise require OCR_confidence ≥0.60 and OCR_bbox_area ≥1.5%. Always forbid copying phone numbers or runs of ≥5 consecutive digits and avoid long digit sequences. When allowed, prefer inserting the token directly (e.g., shirt NIKE); if a wrapper is needed for grammar use the shortest wrapper (e.g., shirt ""NIKE"").
+- Treat counts/digits as visible only if digits meet the OCR/visibility rules above. Use Arabic numerals.
+
+Salience and subject selection
+- Salience = 0.5*(area_norm) + 0.3*(detector_confidence) + 0.15*(center_score) + 0.05*(local_contrast). If area >40% of image, multiply area_norm by 0.8 before computing Salience. Allow a large-area candidate to remain competitive when detector_confidence ≥0.60 or local_contrast is substantially higher.
+- Choose the subject with highest salience. If two candidates are within 5% salience, prefer the candidate that yields more distinct high‑signal tokens early. If still tied and a person/human is present with comparable detector_confidence (within ±0.05), prefer the person.
+
+Placement and high‑signal token rules
+- Require at least one high‑signal token within the first two content words. Allow exactly one deterministic exception only if grammaticality would otherwise break; if an exception is used, the high‑signal token must appear within the first four content words.
+- If two distinct high‑signal tokens are clearly visible, require both within the first 3 content words unless that makes the sentence ungrammatical; if grammar prevents this, allow placement within the first 4 content words.
+- Do not precede the first high‑signal token with verbs or extraneous function words. Omit or keep a leading article only if it does not delay high‑signal tokens beyond the first two content words.
+- When a visible numeral/count meets visibility rules, use an Arabic numeral and place it early (within the first 2–4 content words).
+
+Class, wording and modifier constraints
+- Start with a concise noun phrase; prefer the pattern [Color/Number/Multiword‑class] + [class]. Favor multiword concrete classes when available.
+- Allow up to two pre‑nominal high‑signal modifiers (e.g., color + accessory or number + color) to increase early concrete content (e.g., ""3 yellow school buses"").
+- Use present‑tense, concise S V (+ O) sentences and common collocations (""X holds Y"", ""X sits on Y"", ""X walks past Y"").
+- Limit modifiers overall: at most two pre‑nominal modifiers and at most one short post‑nominal prepositional phrase OR one compact participial phrase. Permit one additional compact descriptor total when concise (e.g., ""man in red shirt holding trumpet"").
+- Avoid subordinate clauses and stacked prepositional phrases. Aim for noun‑dense captions with concrete tokens early; minimize function words that delay concrete tokens.
+
+OCR/token formatting notes
+- Prefer direct inclusion of short OCR tokens (e.g., shirt NIKE, sign STOP) when OCR rules are met. If quotes are required for clarity, keep them minimal; avoid verbose wrappers like ""sign reading"" unless necessary for grammar.
+- Do not copy phone numbers or long digit runs.
+
+Templates and micro‑patterns (use these as patterns, not literal fill)
+- [Color] [multiword_class] [verb] [object] → ""Red double‑decker bus passes street.""
+- [Numeral] [multiword_class] [verb] [modifier] → ""3 yellow school buses stop at corner.""
+- [multiword_class] [OCR_TEXT] [verb] [object] → ""Shirt NIKE worn by man.""
+- Allow natural article use when it preserves fluency and early high‑signal tokens: ""A young woman in red coat holds black umbrella.""
+
+Examples (follow these styles; do not output these examples)
+- Good: ""Young woman in red coat holds black umbrella.""
+- Good: ""White stop sign beside brick building.""
+- Good (OCR): ""Shirt NIKE worn by man.""
+- Bad: ""There is a group of people sitting at a table while others stand and talk."" (too generic/long)
+- Bad: ""Man leans on sign with 212‑625‑9212 printed."" (do not copy phone numbers / long digit runs)
+
+Deterministic tie‑breakers and limits
+- When subjects tie, prefer the subject that yields more distinct high‑signal tokens early; prefer people in close ties as noted above.
+- Limit caption length to 8–14 total words. Aim for ~9–12 content words when possible.
+- Enforce the visibility/OCR thresholds as specified. Do not invent unseen attributes or guess unreadable text.
+
+Final output rule reminder: produce exactly one one‑sentence caption, no extra text, within 8–14 words, following the visibility, OCR, salience, placement, and syntax rules above.",Blue soccer uniformed boy stands on gravel near tree.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.31424182653427124,0.18497902154922485,9,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_e3ea3bb85c,17,15986,flickr30k_test_015986,images/flickr30k/flickr30k_test_015986.jpg,"[""A black and brown dog is jumping on blocks of concrete in the water."", ""Black dog looking at his reflection in the water."", ""A black dog carefully crosses over some water."", ""Black dog near a dock looks into murky water"", ""The black dog jumps on a cinderblock.""]",textgrad_e3ea3bb85c,TextGrad Step 13,"Generate exactly one short, literal, factual caption (one grammatically correct sentence) describing only visible content in the image. Output exactly one sentence only — no extra text. Total words: 8–14.
+
+Key definitions
+- High‑signal token = a visible color/pattern; a concrete, specific object class (prefer multiword classes like ""stop sign"", ""fire hydrant"", ""double‑decker bus""); a clear Arabic numeral; a clothing/accessory; or legible text/logo copied exactly when it meets the OCR rules below.
+- Content words = all words except a single leading article (a/an/the) if present.
+
+Visibility and OCR (deterministic)
+- An object is ""clearly visible"" if area ≥1.5% of image OR (area ≥0.8% AND detector_confidence ≥0.45).
+- Allow a small-object exception: if detector_confidence ≥0.75, treat area ≥0.6% as ""clearly visible"".
+- Copy legible text/logo exactly only if OCR_confidence ≥0.55 for OCR_token_count ≤3, or OCR_confidence ≥0.70 if OCR_bbox_area ≥1.0%. Otherwise require OCR_confidence ≥0.60 and OCR_bbox_area ≥1.5%. Always forbid copying phone numbers or runs of ≥5 consecutive digits and avoid long digit sequences. When allowed, prefer inserting the token directly (e.g., shirt NIKE); if a wrapper is needed for grammar use the shortest wrapper (e.g., shirt ""NIKE"").
+- Treat counts/digits as visible only if digits meet the OCR/visibility rules above. Use Arabic numerals.
+
+Salience and subject selection
+- Salience = 0.5*(area_norm) + 0.3*(detector_confidence) + 0.15*(center_score) + 0.05*(local_contrast). If area >40% of image, multiply area_norm by 0.8 before computing Salience. Allow a large-area candidate to remain competitive when detector_confidence ≥0.60 or local_contrast is substantially higher.
+- Choose the subject with highest salience. If two candidates are within 5% salience, prefer the candidate that yields more distinct high‑signal tokens early. If still tied and a person/human is present with comparable detector_confidence (within ±0.05), prefer the person.
+
+Placement and high‑signal token rules
+- Require at least one high‑signal token within the first two content words. Allow exactly one deterministic exception only if grammaticality would otherwise break; if an exception is used, the high‑signal token must appear within the first four content words.
+- If two distinct high‑signal tokens are clearly visible, require both within the first 3 content words unless that makes the sentence ungrammatical; if grammar prevents this, allow placement within the first 4 content words.
+- Do not precede the first high‑signal token with verbs or extraneous function words. Omit or keep a leading article only if it does not delay high‑signal tokens beyond the first two content words.
+- When a visible numeral/count meets visibility rules, use an Arabic numeral and place it early (within the first 2–4 content words).
+
+Class, wording and modifier constraints
+- Start with a concise noun phrase; prefer the pattern [Color/Number/Multiword‑class] + [class]. Favor multiword concrete classes when available.
+- Allow up to two pre‑nominal high‑signal modifiers (e.g., color + accessory or number + color) to increase early concrete content (e.g., ""3 yellow school buses"").
+- Use present‑tense, concise S V (+ O) sentences and common collocations (""X holds Y"", ""X sits on Y"", ""X walks past Y"").
+- Limit modifiers overall: at most two pre‑nominal modifiers and at most one short post‑nominal prepositional phrase OR one compact participial phrase. Permit one additional compact descriptor total when concise (e.g., ""man in red shirt holding trumpet"").
+- Avoid subordinate clauses and stacked prepositional phrases. Aim for noun‑dense captions with concrete tokens early; minimize function words that delay concrete tokens.
+
+OCR/token formatting notes
+- Prefer direct inclusion of short OCR tokens (e.g., shirt NIKE, sign STOP) when OCR rules are met. If quotes are required for clarity, keep them minimal; avoid verbose wrappers like ""sign reading"" unless necessary for grammar.
+- Do not copy phone numbers or long digit runs.
+
+Templates and micro‑patterns (use these as patterns, not literal fill)
+- [Color] [multiword_class] [verb] [object] → ""Red double‑decker bus passes street.""
+- [Numeral] [multiword_class] [verb] [modifier] → ""3 yellow school buses stop at corner.""
+- [multiword_class] [OCR_TEXT] [verb] [object] → ""Shirt NIKE worn by man.""
+- Allow natural article use when it preserves fluency and early high‑signal tokens: ""A young woman in red coat holds black umbrella.""
+
+Examples (follow these styles; do not output these examples)
+- Good: ""Young woman in red coat holds black umbrella.""
+- Good: ""White stop sign beside brick building.""
+- Good (OCR): ""Shirt NIKE worn by man.""
+- Bad: ""There is a group of people sitting at a table while others stand and talk."" (too generic/long)
+- Bad: ""Man leans on sign with 212‑625‑9212 printed."" (do not copy phone numbers / long digit runs)
+
+Deterministic tie‑breakers and limits
+- When subjects tie, prefer the subject that yields more distinct high‑signal tokens early; prefer people in close ties as noted above.
+- Limit caption length to 8–14 total words. Aim for ~9–12 content words when possible.
+- Enforce the visibility/OCR thresholds as specified. Do not invent unseen attributes or guess unreadable text.
+
+Final output rule reminder: produce exactly one one‑sentence caption, no extra text, within 8–14 words, following the visibility, OCR, salience, placement, and syntax rules above.",Black dog stands on concrete block at wooden dock edge.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.3300356864929199,0.19477614760398865,10,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_e3ea3bb85c,21,12773,flickr30k_test_012773,images/flickr30k/flickr30k_test_012773.jpg,"[""A man in blue jeans is sitting on the shoulders of another person as he interacts with a woman performer on stage at a concert."", ""A woman with a microphone on a stage points the microphone at a man who is standing in the audience in front of her"", ""A fan sitting on someone's shoulders is waving to a woman on a stage that says Amnesty International."", ""Woman on stage at Amnesty International event exchanges gestures with man offstage."", ""A woman on stage points to a man holding up his hand""]",textgrad_e3ea3bb85c,TextGrad Step 13,"Generate exactly one short, literal, factual caption (one grammatically correct sentence) describing only visible content in the image. Output exactly one sentence only — no extra text. Total words: 8–14.
+
+Key definitions
+- High‑signal token = a visible color/pattern; a concrete, specific object class (prefer multiword classes like ""stop sign"", ""fire hydrant"", ""double‑decker bus""); a clear Arabic numeral; a clothing/accessory; or legible text/logo copied exactly when it meets the OCR rules below.
+- Content words = all words except a single leading article (a/an/the) if present.
+
+Visibility and OCR (deterministic)
+- An object is ""clearly visible"" if area ≥1.5% of image OR (area ≥0.8% AND detector_confidence ≥0.45).
+- Allow a small-object exception: if detector_confidence ≥0.75, treat area ≥0.6% as ""clearly visible"".
+- Copy legible text/logo exactly only if OCR_confidence ≥0.55 for OCR_token_count ≤3, or OCR_confidence ≥0.70 if OCR_bbox_area ≥1.0%. Otherwise require OCR_confidence ≥0.60 and OCR_bbox_area ≥1.5%. Always forbid copying phone numbers or runs of ≥5 consecutive digits and avoid long digit sequences. When allowed, prefer inserting the token directly (e.g., shirt NIKE); if a wrapper is needed for grammar use the shortest wrapper (e.g., shirt ""NIKE"").
+- Treat counts/digits as visible only if digits meet the OCR/visibility rules above. Use Arabic numerals.
+
+Salience and subject selection
+- Salience = 0.5*(area_norm) + 0.3*(detector_confidence) + 0.15*(center_score) + 0.05*(local_contrast). If area >40% of image, multiply area_norm by 0.8 before computing Salience. Allow a large-area candidate to remain competitive when detector_confidence ≥0.60 or local_contrast is substantially higher.
+- Choose the subject with highest salience. If two candidates are within 5% salience, prefer the candidate that yields more distinct high‑signal tokens early. If still tied and a person/human is present with comparable detector_confidence (within ±0.05), prefer the person.
+
+Placement and high‑signal token rules
+- Require at least one high‑signal token within the first two content words. Allow exactly one deterministic exception only if grammaticality would otherwise break; if an exception is used, the high‑signal token must appear within the first four content words.
+- If two distinct high‑signal tokens are clearly visible, require both within the first 3 content words unless that makes the sentence ungrammatical; if grammar prevents this, allow placement within the first 4 content words.
+- Do not precede the first high‑signal token with verbs or extraneous function words. Omit or keep a leading article only if it does not delay high‑signal tokens beyond the first two content words.
+- When a visible numeral/count meets visibility rules, use an Arabic numeral and place it early (within the first 2–4 content words).
+
+Class, wording and modifier constraints
+- Start with a concise noun phrase; prefer the pattern [Color/Number/Multiword‑class] + [class]. Favor multiword concrete classes when available.
+- Allow up to two pre‑nominal high‑signal modifiers (e.g., color + accessory or number + color) to increase early concrete content (e.g., ""3 yellow school buses"").
+- Use present‑tense, concise S V (+ O) sentences and common collocations (""X holds Y"", ""X sits on Y"", ""X walks past Y"").
+- Limit modifiers overall: at most two pre‑nominal modifiers and at most one short post‑nominal prepositional phrase OR one compact participial phrase. Permit one additional compact descriptor total when concise (e.g., ""man in red shirt holding trumpet"").
+- Avoid subordinate clauses and stacked prepositional phrases. Aim for noun‑dense captions with concrete tokens early; minimize function words that delay concrete tokens.
+
+OCR/token formatting notes
+- Prefer direct inclusion of short OCR tokens (e.g., shirt NIKE, sign STOP) when OCR rules are met. If quotes are required for clarity, keep them minimal; avoid verbose wrappers like ""sign reading"" unless necessary for grammar.
+- Do not copy phone numbers or long digit runs.
+
+Templates and micro‑patterns (use these as patterns, not literal fill)
+- [Color] [multiword_class] [verb] [object] → ""Red double‑decker bus passes street.""
+- [Numeral] [multiword_class] [verb] [modifier] → ""3 yellow school buses stop at corner.""
+- [multiword_class] [OCR_TEXT] [verb] [object] → ""Shirt NIKE worn by man.""
+- Allow natural article use when it preserves fluency and early high‑signal tokens: ""A young woman in red coat holds black umbrella.""
+
+Examples (follow these styles; do not output these examples)
+- Good: ""Young woman in red coat holds black umbrella.""
+- Good: ""White stop sign beside brick building.""
+- Good (OCR): ""Shirt NIKE worn by man.""
+- Bad: ""There is a group of people sitting at a table while others stand and talk."" (too generic/long)
+- Bad: ""Man leans on sign with 212‑625‑9212 printed."" (do not copy phone numbers / long digit runs)
+
+Deterministic tie‑breakers and limits
+- When subjects tie, prefer the subject that yields more distinct high‑signal tokens early; prefer people in close ties as noted above.
+- Limit caption length to 8–14 total words. Aim for ~9–12 content words when possible.
+- Enforce the visibility/OCR thresholds as specified. Do not invent unseen attributes or guess unreadable text.
+
+Final output rule reminder: produce exactly one one‑sentence caption, no extra text, within 8–14 words, following the visibility, OCR, salience, placement, and syntax rules above.",Man in gray shirt raises hand toward singer on Amnesty International stage.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.3243178427219391,0.2291170358657837,12,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_e3ea3bb85c,30,23643,flickr30k_test_023643,images/flickr30k/flickr30k_test_023643.jpg,"[""A little girl in a red and white shirt stands next to some caricatures of celebrities at an art fair."", ""A little girl in a red print sundress walked through an outdoor artist display."", ""A little girl wearing red is standing in front of caricature"", ""A girls stands by a caricature artist's drawings."", ""Little girl posing for a caricature.""]",textgrad_e3ea3bb85c,TextGrad Step 13,"Generate exactly one short, literal, factual caption (one grammatically correct sentence) describing only visible content in the image. Output exactly one sentence only — no extra text. Total words: 8–14.
+
+Key definitions
+- High‑signal token = a visible color/pattern; a concrete, specific object class (prefer multiword classes like ""stop sign"", ""fire hydrant"", ""double‑decker bus""); a clear Arabic numeral; a clothing/accessory; or legible text/logo copied exactly when it meets the OCR rules below.
+- Content words = all words except a single leading article (a/an/the) if present.
+
+Visibility and OCR (deterministic)
+- An object is ""clearly visible"" if area ≥1.5% of image OR (area ≥0.8% AND detector_confidence ≥0.45).
+- Allow a small-object exception: if detector_confidence ≥0.75, treat area ≥0.6% as ""clearly visible"".
+- Copy legible text/logo exactly only if OCR_confidence ≥0.55 for OCR_token_count ≤3, or OCR_confidence ≥0.70 if OCR_bbox_area ≥1.0%. Otherwise require OCR_confidence ≥0.60 and OCR_bbox_area ≥1.5%. Always forbid copying phone numbers or runs of ≥5 consecutive digits and avoid long digit sequences. When allowed, prefer inserting the token directly (e.g., shirt NIKE); if a wrapper is needed for grammar use the shortest wrapper (e.g., shirt ""NIKE"").
+- Treat counts/digits as visible only if digits meet the OCR/visibility rules above. Use Arabic numerals.
+
+Salience and subject selection
+- Salience = 0.5*(area_norm) + 0.3*(detector_confidence) + 0.15*(center_score) + 0.05*(local_contrast). If area >40% of image, multiply area_norm by 0.8 before computing Salience. Allow a large-area candidate to remain competitive when detector_confidence ≥0.60 or local_contrast is substantially higher.
+- Choose the subject with highest salience. If two candidates are within 5% salience, prefer the candidate that yields more distinct high‑signal tokens early. If still tied and a person/human is present with comparable detector_confidence (within ±0.05), prefer the person.
+
+Placement and high‑signal token rules
+- Require at least one high‑signal token within the first two content words. Allow exactly one deterministic exception only if grammaticality would otherwise break; if an exception is used, the high‑signal token must appear within the first four content words.
+- If two distinct high‑signal tokens are clearly visible, require both within the first 3 content words unless that makes the sentence ungrammatical; if grammar prevents this, allow placement within the first 4 content words.
+- Do not precede the first high‑signal token with verbs or extraneous function words. Omit or keep a leading article only if it does not delay high‑signal tokens beyond the first two content words.
+- When a visible numeral/count meets visibility rules, use an Arabic numeral and place it early (within the first 2–4 content words).
+
+Class, wording and modifier constraints
+- Start with a concise noun phrase; prefer the pattern [Color/Number/Multiword‑class] + [class]. Favor multiword concrete classes when available.
+- Allow up to two pre‑nominal high‑signal modifiers (e.g., color + accessory or number + color) to increase early concrete content (e.g., ""3 yellow school buses"").
+- Use present‑tense, concise S V (+ O) sentences and common collocations (""X holds Y"", ""X sits on Y"", ""X walks past Y"").
+- Limit modifiers overall: at most two pre‑nominal modifiers and at most one short post‑nominal prepositional phrase OR one compact participial phrase. Permit one additional compact descriptor total when concise (e.g., ""man in red shirt holding trumpet"").
+- Avoid subordinate clauses and stacked prepositional phrases. Aim for noun‑dense captions with concrete tokens early; minimize function words that delay concrete tokens.
+
+OCR/token formatting notes
+- Prefer direct inclusion of short OCR tokens (e.g., shirt NIKE, sign STOP) when OCR rules are met. If quotes are required for clarity, keep them minimal; avoid verbose wrappers like ""sign reading"" unless necessary for grammar.
+- Do not copy phone numbers or long digit runs.
+
+Templates and micro‑patterns (use these as patterns, not literal fill)
+- [Color] [multiword_class] [verb] [object] → ""Red double‑decker bus passes street.""
+- [Numeral] [multiword_class] [verb] [modifier] → ""3 yellow school buses stop at corner.""
+- [multiword_class] [OCR_TEXT] [verb] [object] → ""Shirt NIKE worn by man.""
+- Allow natural article use when it preserves fluency and early high‑signal tokens: ""A young woman in red coat holds black umbrella.""
+
+Examples (follow these styles; do not output these examples)
+- Good: ""Young woman in red coat holds black umbrella.""
+- Good: ""White stop sign beside brick building.""
+- Good (OCR): ""Shirt NIKE worn by man.""
+- Bad: ""There is a group of people sitting at a table while others stand and talk."" (too generic/long)
+- Bad: ""Man leans on sign with 212‑625‑9212 printed."" (do not copy phone numbers / long digit runs)
+
+Deterministic tie‑breakers and limits
+- When subjects tie, prefer the subject that yields more distinct high‑signal tokens early; prefer people in close ties as noted above.
+- Limit caption length to 8–14 total words. Aim for ~9–12 content words when possible.
+- Enforce the visibility/OCR thresholds as specified. Do not invent unseen attributes or guess unreadable text.
+
+Final output rule reminder: produce exactly one one‑sentence caption, no extra text, within 8–14 words, following the visibility, OCR, salience, placement, and syntax rules above.",Young girl in red dress sits under black umbrella at outdoor market.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.2937861979007721,0.19854457676410675,12,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_e3ea3bb85c,33,19370,flickr30k_test_019370,images/flickr30k/flickr30k_test_019370.jpg,"[""A bicyclist waiting for traffic to pass so he can cross the street."", ""A man in a white polo shirt walks his red bike across a crosswalk."", ""A man with a beard is walking his bike across the street."", ""A man with a bicycle walks by a street crossing."", ""A man is riding a bicycle in the street.""]",textgrad_e3ea3bb85c,TextGrad Step 13,"Generate exactly one short, literal, factual caption (one grammatically correct sentence) describing only visible content in the image. Output exactly one sentence only — no extra text. Total words: 8–14.
+
+Key definitions
+- High‑signal token = a visible color/pattern; a concrete, specific object class (prefer multiword classes like ""stop sign"", ""fire hydrant"", ""double‑decker bus""); a clear Arabic numeral; a clothing/accessory; or legible text/logo copied exactly when it meets the OCR rules below.
+- Content words = all words except a single leading article (a/an/the) if present.
+
+Visibility and OCR (deterministic)
+- An object is ""clearly visible"" if area ≥1.5% of image OR (area ≥0.8% AND detector_confidence ≥0.45).
+- Allow a small-object exception: if detector_confidence ≥0.75, treat area ≥0.6% as ""clearly visible"".
+- Copy legible text/logo exactly only if OCR_confidence ≥0.55 for OCR_token_count ≤3, or OCR_confidence ≥0.70 if OCR_bbox_area ≥1.0%. Otherwise require OCR_confidence ≥0.60 and OCR_bbox_area ≥1.5%. Always forbid copying phone numbers or runs of ≥5 consecutive digits and avoid long digit sequences. When allowed, prefer inserting the token directly (e.g., shirt NIKE); if a wrapper is needed for grammar use the shortest wrapper (e.g., shirt ""NIKE"").
+- Treat counts/digits as visible only if digits meet the OCR/visibility rules above. Use Arabic numerals.
+
+Salience and subject selection
+- Salience = 0.5*(area_norm) + 0.3*(detector_confidence) + 0.15*(center_score) + 0.05*(local_contrast). If area >40% of image, multiply area_norm by 0.8 before computing Salience. Allow a large-area candidate to remain competitive when detector_confidence ≥0.60 or local_contrast is substantially higher.
+- Choose the subject with highest salience. If two candidates are within 5% salience, prefer the candidate that yields more distinct high‑signal tokens early. If still tied and a person/human is present with comparable detector_confidence (within ±0.05), prefer the person.
+
+Placement and high‑signal token rules
+- Require at least one high‑signal token within the first two content words. Allow exactly one deterministic exception only if grammaticality would otherwise break; if an exception is used, the high‑signal token must appear within the first four content words.
+- If two distinct high‑signal tokens are clearly visible, require both within the first 3 content words unless that makes the sentence ungrammatical; if grammar prevents this, allow placement within the first 4 content words.
+- Do not precede the first high‑signal token with verbs or extraneous function words. Omit or keep a leading article only if it does not delay high‑signal tokens beyond the first two content words.
+- When a visible numeral/count meets visibility rules, use an Arabic numeral and place it early (within the first 2–4 content words).
+
+Class, wording and modifier constraints
+- Start with a concise noun phrase; prefer the pattern [Color/Number/Multiword‑class] + [class]. Favor multiword concrete classes when available.
+- Allow up to two pre‑nominal high‑signal modifiers (e.g., color + accessory or number + color) to increase early concrete content (e.g., ""3 yellow school buses"").
+- Use present‑tense, concise S V (+ O) sentences and common collocations (""X holds Y"", ""X sits on Y"", ""X walks past Y"").
+- Limit modifiers overall: at most two pre‑nominal modifiers and at most one short post‑nominal prepositional phrase OR one compact participial phrase. Permit one additional compact descriptor total when concise (e.g., ""man in red shirt holding trumpet"").
+- Avoid subordinate clauses and stacked prepositional phrases. Aim for noun‑dense captions with concrete tokens early; minimize function words that delay concrete tokens.
+
+OCR/token formatting notes
+- Prefer direct inclusion of short OCR tokens (e.g., shirt NIKE, sign STOP) when OCR rules are met. If quotes are required for clarity, keep them minimal; avoid verbose wrappers like ""sign reading"" unless necessary for grammar.
+- Do not copy phone numbers or long digit runs.
+
+Templates and micro‑patterns (use these as patterns, not literal fill)
+- [Color] [multiword_class] [verb] [object] → ""Red double‑decker bus passes street.""
+- [Numeral] [multiword_class] [verb] [modifier] → ""3 yellow school buses stop at corner.""
+- [multiword_class] [OCR_TEXT] [verb] [object] → ""Shirt NIKE worn by man.""
+- Allow natural article use when it preserves fluency and early high‑signal tokens: ""A young woman in red coat holds black umbrella.""
+
+Examples (follow these styles; do not output these examples)
+- Good: ""Young woman in red coat holds black umbrella.""
+- Good: ""White stop sign beside brick building.""
+- Good (OCR): ""Shirt NIKE worn by man.""
+- Bad: ""There is a group of people sitting at a table while others stand and talk."" (too generic/long)
+- Bad: ""Man leans on sign with 212‑625‑9212 printed."" (do not copy phone numbers / long digit runs)
+
+Deterministic tie‑breakers and limits
+- When subjects tie, prefer the subject that yields more distinct high‑signal tokens early; prefer people in close ties as noted above.
+- Limit caption length to 8–14 total words. Aim for ~9–12 content words when possible.
+- Enforce the visibility/OCR thresholds as specified. Do not invent unseen attributes or guess unreadable text.
+
+Final output rule reminder: produce exactly one one‑sentence caption, no extra text, within 8–14 words, following the visibility, OCR, salience, placement, and syntax rules above.",Man in white shirt pushes bicycle across crosswalk.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.331476092338562,0.19303672015666962,8,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_e3ea3bb85c,44,30774,flickr30k_test_030774,images/flickr30k/flickr30k_test_030774.jpg,"[""A little boy underwater in a pool, holding a plastic dinosaur."", ""A little boy swimming underwater with a toy in his hand."", ""A boy is swimming underwater holding a toy in his hand."", ""Child swimming underwater with a toy in his hand."", ""A little boy swims underwater.""]",textgrad_e3ea3bb85c,TextGrad Step 13,"Generate exactly one short, literal, factual caption (one grammatically correct sentence) describing only visible content in the image. Output exactly one sentence only — no extra text. Total words: 8–14.
+
+Key definitions
+- High‑signal token = a visible color/pattern; a concrete, specific object class (prefer multiword classes like ""stop sign"", ""fire hydrant"", ""double‑decker bus""); a clear Arabic numeral; a clothing/accessory; or legible text/logo copied exactly when it meets the OCR rules below.
+- Content words = all words except a single leading article (a/an/the) if present.
+
+Visibility and OCR (deterministic)
+- An object is ""clearly visible"" if area ≥1.5% of image OR (area ≥0.8% AND detector_confidence ≥0.45).
+- Allow a small-object exception: if detector_confidence ≥0.75, treat area ≥0.6% as ""clearly visible"".
+- Copy legible text/logo exactly only if OCR_confidence ≥0.55 for OCR_token_count ≤3, or OCR_confidence ≥0.70 if OCR_bbox_area ≥1.0%. Otherwise require OCR_confidence ≥0.60 and OCR_bbox_area ≥1.5%. Always forbid copying phone numbers or runs of ≥5 consecutive digits and avoid long digit sequences. When allowed, prefer inserting the token directly (e.g., shirt NIKE); if a wrapper is needed for grammar use the shortest wrapper (e.g., shirt ""NIKE"").
+- Treat counts/digits as visible only if digits meet the OCR/visibility rules above. Use Arabic numerals.
+
+Salience and subject selection
+- Salience = 0.5*(area_norm) + 0.3*(detector_confidence) + 0.15*(center_score) + 0.05*(local_contrast). If area >40% of image, multiply area_norm by 0.8 before computing Salience. Allow a large-area candidate to remain competitive when detector_confidence ≥0.60 or local_contrast is substantially higher.
+- Choose the subject with highest salience. If two candidates are within 5% salience, prefer the candidate that yields more distinct high‑signal tokens early. If still tied and a person/human is present with comparable detector_confidence (within ±0.05), prefer the person.
+
+Placement and high‑signal token rules
+- Require at least one high‑signal token within the first two content words. Allow exactly one deterministic exception only if grammaticality would otherwise break; if an exception is used, the high‑signal token must appear within the first four content words.
+- If two distinct high‑signal tokens are clearly visible, require both within the first 3 content words unless that makes the sentence ungrammatical; if grammar prevents this, allow placement within the first 4 content words.
+- Do not precede the first high‑signal token with verbs or extraneous function words. Omit or keep a leading article only if it does not delay high‑signal tokens beyond the first two content words.
+- When a visible numeral/count meets visibility rules, use an Arabic numeral and place it early (within the first 2–4 content words).
+
+Class, wording and modifier constraints
+- Start with a concise noun phrase; prefer the pattern [Color/Number/Multiword‑class] + [class]. Favor multiword concrete classes when available.
+- Allow up to two pre‑nominal high‑signal modifiers (e.g., color + accessory or number + color) to increase early concrete content (e.g., ""3 yellow school buses"").
+- Use present‑tense, concise S V (+ O) sentences and common collocations (""X holds Y"", ""X sits on Y"", ""X walks past Y"").
+- Limit modifiers overall: at most two pre‑nominal modifiers and at most one short post‑nominal prepositional phrase OR one compact participial phrase. Permit one additional compact descriptor total when concise (e.g., ""man in red shirt holding trumpet"").
+- Avoid subordinate clauses and stacked prepositional phrases. Aim for noun‑dense captions with concrete tokens early; minimize function words that delay concrete tokens.
+
+OCR/token formatting notes
+- Prefer direct inclusion of short OCR tokens (e.g., shirt NIKE, sign STOP) when OCR rules are met. If quotes are required for clarity, keep them minimal; avoid verbose wrappers like ""sign reading"" unless necessary for grammar.
+- Do not copy phone numbers or long digit runs.
+
+Templates and micro‑patterns (use these as patterns, not literal fill)
+- [Color] [multiword_class] [verb] [object] → ""Red double‑decker bus passes street.""
+- [Numeral] [multiword_class] [verb] [modifier] → ""3 yellow school buses stop at corner.""
+- [multiword_class] [OCR_TEXT] [verb] [object] → ""Shirt NIKE worn by man.""
+- Allow natural article use when it preserves fluency and early high‑signal tokens: ""A young woman in red coat holds black umbrella.""
+
+Examples (follow these styles; do not output these examples)
+- Good: ""Young woman in red coat holds black umbrella.""
+- Good: ""White stop sign beside brick building.""
+- Good (OCR): ""Shirt NIKE worn by man.""
+- Bad: ""There is a group of people sitting at a table while others stand and talk."" (too generic/long)
+- Bad: ""Man leans on sign with 212‑625‑9212 printed."" (do not copy phone numbers / long digit runs)
+
+Deterministic tie‑breakers and limits
+- When subjects tie, prefer the subject that yields more distinct high‑signal tokens early; prefer people in close ties as noted above.
+- Limit caption length to 8–14 total words. Aim for ~9–12 content words when possible.
+- Enforce the visibility/OCR thresholds as specified. Do not invent unseen attributes or guess unreadable text.
+
+Final output rule reminder: produce exactly one one‑sentence caption, no extra text, within 8–14 words, following the visibility, OCR, salience, placement, and syntax rules above.",Child swims underwater with bubbles rising around them.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.3386251926422119,0.17056360840797424,8,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_e3ea3bb85c,46,12491,flickr30k_test_012491,images/flickr30k/flickr30k_test_012491.jpg,"[""A person is in the air while riding his bicycle on top of the train on a clear blue sky day."", ""A person is jumping over a train car while on their bicycle."", ""A person on a bicycle moving across the top of a train."", ""A man on a bmx bike jumps over a train"", ""A man jumps train cars with his bike.""]",textgrad_e3ea3bb85c,TextGrad Step 13,"Generate exactly one short, literal, factual caption (one grammatically correct sentence) describing only visible content in the image. Output exactly one sentence only — no extra text. Total words: 8–14.
+
+Key definitions
+- High‑signal token = a visible color/pattern; a concrete, specific object class (prefer multiword classes like ""stop sign"", ""fire hydrant"", ""double‑decker bus""); a clear Arabic numeral; a clothing/accessory; or legible text/logo copied exactly when it meets the OCR rules below.
+- Content words = all words except a single leading article (a/an/the) if present.
+
+Visibility and OCR (deterministic)
+- An object is ""clearly visible"" if area ≥1.5% of image OR (area ≥0.8% AND detector_confidence ≥0.45).
+- Allow a small-object exception: if detector_confidence ≥0.75, treat area ≥0.6% as ""clearly visible"".
+- Copy legible text/logo exactly only if OCR_confidence ≥0.55 for OCR_token_count ≤3, or OCR_confidence ≥0.70 if OCR_bbox_area ≥1.0%. Otherwise require OCR_confidence ≥0.60 and OCR_bbox_area ≥1.5%. Always forbid copying phone numbers or runs of ≥5 consecutive digits and avoid long digit sequences. When allowed, prefer inserting the token directly (e.g., shirt NIKE); if a wrapper is needed for grammar use the shortest wrapper (e.g., shirt ""NIKE"").
+- Treat counts/digits as visible only if digits meet the OCR/visibility rules above. Use Arabic numerals.
+
+Salience and subject selection
+- Salience = 0.5*(area_norm) + 0.3*(detector_confidence) + 0.15*(center_score) + 0.05*(local_contrast). If area >40% of image, multiply area_norm by 0.8 before computing Salience. Allow a large-area candidate to remain competitive when detector_confidence ≥0.60 or local_contrast is substantially higher.
+- Choose the subject with highest salience. If two candidates are within 5% salience, prefer the candidate that yields more distinct high‑signal tokens early. If still tied and a person/human is present with comparable detector_confidence (within ±0.05), prefer the person.
+
+Placement and high‑signal token rules
+- Require at least one high‑signal token within the first two content words. Allow exactly one deterministic exception only if grammaticality would otherwise break; if an exception is used, the high‑signal token must appear within the first four content words.
+- If two distinct high‑signal tokens are clearly visible, require both within the first 3 content words unless that makes the sentence ungrammatical; if grammar prevents this, allow placement within the first 4 content words.
+- Do not precede the first high‑signal token with verbs or extraneous function words. Omit or keep a leading article only if it does not delay high‑signal tokens beyond the first two content words.
+- When a visible numeral/count meets visibility rules, use an Arabic numeral and place it early (within the first 2–4 content words).
+
+Class, wording and modifier constraints
+- Start with a concise noun phrase; prefer the pattern [Color/Number/Multiword‑class] + [class]. Favor multiword concrete classes when available.
+- Allow up to two pre‑nominal high‑signal modifiers (e.g., color + accessory or number + color) to increase early concrete content (e.g., ""3 yellow school buses"").
+- Use present‑tense, concise S V (+ O) sentences and common collocations (""X holds Y"", ""X sits on Y"", ""X walks past Y"").
+- Limit modifiers overall: at most two pre‑nominal modifiers and at most one short post‑nominal prepositional phrase OR one compact participial phrase. Permit one additional compact descriptor total when concise (e.g., ""man in red shirt holding trumpet"").
+- Avoid subordinate clauses and stacked prepositional phrases. Aim for noun‑dense captions with concrete tokens early; minimize function words that delay concrete tokens.
+
+OCR/token formatting notes
+- Prefer direct inclusion of short OCR tokens (e.g., shirt NIKE, sign STOP) when OCR rules are met. If quotes are required for clarity, keep them minimal; avoid verbose wrappers like ""sign reading"" unless necessary for grammar.
+- Do not copy phone numbers or long digit runs.
+
+Templates and micro‑patterns (use these as patterns, not literal fill)
+- [Color] [multiword_class] [verb] [object] → ""Red double‑decker bus passes street.""
+- [Numeral] [multiword_class] [verb] [modifier] → ""3 yellow school buses stop at corner.""
+- [multiword_class] [OCR_TEXT] [verb] [object] → ""Shirt NIKE worn by man.""
+- Allow natural article use when it preserves fluency and early high‑signal tokens: ""A young woman in red coat holds black umbrella.""
+
+Examples (follow these styles; do not output these examples)
+- Good: ""Young woman in red coat holds black umbrella.""
+- Good: ""White stop sign beside brick building.""
+- Good (OCR): ""Shirt NIKE worn by man.""
+- Bad: ""There is a group of people sitting at a table while others stand and talk."" (too generic/long)
+- Bad: ""Man leans on sign with 212‑625‑9212 printed."" (do not copy phone numbers / long digit runs)
+
+Deterministic tie‑breakers and limits
+- When subjects tie, prefer the subject that yields more distinct high‑signal tokens early; prefer people in close ties as noted above.
+- Limit caption length to 8–14 total words. Aim for ~9–12 content words when possible.
+- Enforce the visibility/OCR thresholds as specified. Do not invent unseen attributes or guess unreadable text.
+
+Final output rule reminder: produce exactly one one‑sentence caption, no extra text, within 8–14 words, following the visibility, OCR, salience, placement, and syntax rules above.",A person on a bicycle rides atop a brown freight train car.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.36160704493522644,0.18376924097537994,12,True
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_e3ea3bb85c,55,14348,flickr30k_test_014348,images/flickr30k/flickr30k_test_014348.jpg,"[""A baseball player in a red shirt and white pants is swinging the bat towards a yellow ball whilst three people look on."", ""A baseball player recoils from an action involving a bat while opposing team members look on."", ""A woman swings at a softball on a playing field while other players look on."", ""A girl in a red and white uniform is swinging a bat."", ""A girl swings a bat during a softball game.""]",textgrad_e3ea3bb85c,TextGrad Step 13,"Generate exactly one short, literal, factual caption (one grammatically correct sentence) describing only visible content in the image. Output exactly one sentence only — no extra text. Total words: 8–14.
+
+Key definitions
+- High‑signal token = a visible color/pattern; a concrete, specific object class (prefer multiword classes like ""stop sign"", ""fire hydrant"", ""double‑decker bus""); a clear Arabic numeral; a clothing/accessory; or legible text/logo copied exactly when it meets the OCR rules below.
+- Content words = all words except a single leading article (a/an/the) if present.
+
+Visibility and OCR (deterministic)
+- An object is ""clearly visible"" if area ≥1.5% of image OR (area ≥0.8% AND detector_confidence ≥0.45).
+- Allow a small-object exception: if detector_confidence ≥0.75, treat area ≥0.6% as ""clearly visible"".
+- Copy legible text/logo exactly only if OCR_confidence ≥0.55 for OCR_token_count ≤3, or OCR_confidence ≥0.70 if OCR_bbox_area ≥1.0%. Otherwise require OCR_confidence ≥0.60 and OCR_bbox_area ≥1.5%. Always forbid copying phone numbers or runs of ≥5 consecutive digits and avoid long digit sequences. When allowed, prefer inserting the token directly (e.g., shirt NIKE); if a wrapper is needed for grammar use the shortest wrapper (e.g., shirt ""NIKE"").
+- Treat counts/digits as visible only if digits meet the OCR/visibility rules above. Use Arabic numerals.
+
+Salience and subject selection
+- Salience = 0.5*(area_norm) + 0.3*(detector_confidence) + 0.15*(center_score) + 0.05*(local_contrast). If area >40% of image, multiply area_norm by 0.8 before computing Salience. Allow a large-area candidate to remain competitive when detector_confidence ≥0.60 or local_contrast is substantially higher.
+- Choose the subject with highest salience. If two candidates are within 5% salience, prefer the candidate that yields more distinct high‑signal tokens early. If still tied and a person/human is present with comparable detector_confidence (within ±0.05), prefer the person.
+
+Placement and high‑signal token rules
+- Require at least one high‑signal token within the first two content words. Allow exactly one deterministic exception only if grammaticality would otherwise break; if an exception is used, the high‑signal token must appear within the first four content words.
+- If two distinct high‑signal tokens are clearly visible, require both within the first 3 content words unless that makes the sentence ungrammatical; if grammar prevents this, allow placement within the first 4 content words.
+- Do not precede the first high‑signal token with verbs or extraneous function words. Omit or keep a leading article only if it does not delay high‑signal tokens beyond the first two content words.
+- When a visible numeral/count meets visibility rules, use an Arabic numeral and place it early (within the first 2–4 content words).
+
+Class, wording and modifier constraints
+- Start with a concise noun phrase; prefer the pattern [Color/Number/Multiword‑class] + [class]. Favor multiword concrete classes when available.
+- Allow up to two pre‑nominal high‑signal modifiers (e.g., color + accessory or number + color) to increase early concrete content (e.g., ""3 yellow school buses"").
+- Use present‑tense, concise S V (+ O) sentences and common collocations (""X holds Y"", ""X sits on Y"", ""X walks past Y"").
+- Limit modifiers overall: at most two pre‑nominal modifiers and at most one short post‑nominal prepositional phrase OR one compact participial phrase. Permit one additional compact descriptor total when concise (e.g., ""man in red shirt holding trumpet"").
+- Avoid subordinate clauses and stacked prepositional phrases. Aim for noun‑dense captions with concrete tokens early; minimize function words that delay concrete tokens.
+
+OCR/token formatting notes
+- Prefer direct inclusion of short OCR tokens (e.g., shirt NIKE, sign STOP) when OCR rules are met. If quotes are required for clarity, keep them minimal; avoid verbose wrappers like ""sign reading"" unless necessary for grammar.
+- Do not copy phone numbers or long digit runs.
+
+Templates and micro‑patterns (use these as patterns, not literal fill)
+- [Color] [multiword_class] [verb] [object] → ""Red double‑decker bus passes street.""
+- [Numeral] [multiword_class] [verb] [modifier] → ""3 yellow school buses stop at corner.""
+- [multiword_class] [OCR_TEXT] [verb] [object] → ""Shirt NIKE worn by man.""
+- Allow natural article use when it preserves fluency and early high‑signal tokens: ""A young woman in red coat holds black umbrella.""
+
+Examples (follow these styles; do not output these examples)
+- Good: ""Young woman in red coat holds black umbrella.""
+- Good: ""White stop sign beside brick building.""
+- Good (OCR): ""Shirt NIKE worn by man.""
+- Bad: ""There is a group of people sitting at a table while others stand and talk."" (too generic/long)
+- Bad: ""Man leans on sign with 212‑625‑9212 printed."" (do not copy phone numbers / long digit runs)
+
+Deterministic tie‑breakers and limits
+- When subjects tie, prefer the subject that yields more distinct high‑signal tokens early; prefer people in close ties as noted above.
+- Limit caption length to 8–14 total words. Aim for ~9–12 content words when possible.
+- Enforce the visibility/OCR thresholds as specified. Do not invent unseen attributes or guess unreadable text.
+
+Final output rule reminder: produce exactly one one‑sentence caption, no extra text, within 8–14 words, following the visibility, OCR, salience, placement, and syntax rules above.",A girl in red jersey number 10 swings bat at softball.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.2652428150177002,0.16869300603866577,11,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_e3ea3bb85c,64,15060,flickr30k_test_015060,images/flickr30k/flickr30k_test_015060.jpg,"[""A man in black with a helmet is water rafting in a green canoe."", ""A kayaker in a green boat paddles through the rapids."", ""One man in a green kayak paddling through the water."", ""This man is kayaking in whitewater."", ""A kayaker gets wet in the rapids.""]",textgrad_e3ea3bb85c,TextGrad Step 13,"Generate exactly one short, literal, factual caption (one grammatically correct sentence) describing only visible content in the image. Output exactly one sentence only — no extra text. Total words: 8–14.
+
+Key definitions
+- High‑signal token = a visible color/pattern; a concrete, specific object class (prefer multiword classes like ""stop sign"", ""fire hydrant"", ""double‑decker bus""); a clear Arabic numeral; a clothing/accessory; or legible text/logo copied exactly when it meets the OCR rules below.
+- Content words = all words except a single leading article (a/an/the) if present.
+
+Visibility and OCR (deterministic)
+- An object is ""clearly visible"" if area ≥1.5% of image OR (area ≥0.8% AND detector_confidence ≥0.45).
+- Allow a small-object exception: if detector_confidence ≥0.75, treat area ≥0.6% as ""clearly visible"".
+- Copy legible text/logo exactly only if OCR_confidence ≥0.55 for OCR_token_count ≤3, or OCR_confidence ≥0.70 if OCR_bbox_area ≥1.0%. Otherwise require OCR_confidence ≥0.60 and OCR_bbox_area ≥1.5%. Always forbid copying phone numbers or runs of ≥5 consecutive digits and avoid long digit sequences. When allowed, prefer inserting the token directly (e.g., shirt NIKE); if a wrapper is needed for grammar use the shortest wrapper (e.g., shirt ""NIKE"").
+- Treat counts/digits as visible only if digits meet the OCR/visibility rules above. Use Arabic numerals.
+
+Salience and subject selection
+- Salience = 0.5*(area_norm) + 0.3*(detector_confidence) + 0.15*(center_score) + 0.05*(local_contrast). If area >40% of image, multiply area_norm by 0.8 before computing Salience. Allow a large-area candidate to remain competitive when detector_confidence ≥0.60 or local_contrast is substantially higher.
+- Choose the subject with highest salience. If two candidates are within 5% salience, prefer the candidate that yields more distinct high‑signal tokens early. If still tied and a person/human is present with comparable detector_confidence (within ±0.05), prefer the person.
+
+Placement and high‑signal token rules
+- Require at least one high‑signal token within the first two content words. Allow exactly one deterministic exception only if grammaticality would otherwise break; if an exception is used, the high‑signal token must appear within the first four content words.
+- If two distinct high‑signal tokens are clearly visible, require both within the first 3 content words unless that makes the sentence ungrammatical; if grammar prevents this, allow placement within the first 4 content words.
+- Do not precede the first high‑signal token with verbs or extraneous function words. Omit or keep a leading article only if it does not delay high‑signal tokens beyond the first two content words.
+- When a visible numeral/count meets visibility rules, use an Arabic numeral and place it early (within the first 2–4 content words).
+
+Class, wording and modifier constraints
+- Start with a concise noun phrase; prefer the pattern [Color/Number/Multiword‑class] + [class]. Favor multiword concrete classes when available.
+- Allow up to two pre‑nominal high‑signal modifiers (e.g., color + accessory or number + color) to increase early concrete content (e.g., ""3 yellow school buses"").
+- Use present‑tense, concise S V (+ O) sentences and common collocations (""X holds Y"", ""X sits on Y"", ""X walks past Y"").
+- Limit modifiers overall: at most two pre‑nominal modifiers and at most one short post‑nominal prepositional phrase OR one compact participial phrase. Permit one additional compact descriptor total when concise (e.g., ""man in red shirt holding trumpet"").
+- Avoid subordinate clauses and stacked prepositional phrases. Aim for noun‑dense captions with concrete tokens early; minimize function words that delay concrete tokens.
+
+OCR/token formatting notes
+- Prefer direct inclusion of short OCR tokens (e.g., shirt NIKE, sign STOP) when OCR rules are met. If quotes are required for clarity, keep them minimal; avoid verbose wrappers like ""sign reading"" unless necessary for grammar.
+- Do not copy phone numbers or long digit runs.
+
+Templates and micro‑patterns (use these as patterns, not literal fill)
+- [Color] [multiword_class] [verb] [object] → ""Red double‑decker bus passes street.""
+- [Numeral] [multiword_class] [verb] [modifier] → ""3 yellow school buses stop at corner.""
+- [multiword_class] [OCR_TEXT] [verb] [object] → ""Shirt NIKE worn by man.""
+- Allow natural article use when it preserves fluency and early high‑signal tokens: ""A young woman in red coat holds black umbrella.""
+
+Examples (follow these styles; do not output these examples)
+- Good: ""Young woman in red coat holds black umbrella.""
+- Good: ""White stop sign beside brick building.""
+- Good (OCR): ""Shirt NIKE worn by man.""
+- Bad: ""There is a group of people sitting at a table while others stand and talk."" (too generic/long)
+- Bad: ""Man leans on sign with 212‑625‑9212 printed."" (do not copy phone numbers / long digit runs)
+
+Deterministic tie‑breakers and limits
+- When subjects tie, prefer the subject that yields more distinct high‑signal tokens early; prefer people in close ties as noted above.
+- Limit caption length to 8–14 total words. Aim for ~9–12 content words when possible.
+- Enforce the visibility/OCR thresholds as specified. Do not invent unseen attributes or guess unreadable text.
+
+Final output rule reminder: produce exactly one one‑sentence caption, no extra text, within 8–14 words, following the visibility, OCR, salience, placement, and syntax rules above.",Man in black helmet paddles green kayak through whitewater.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.33000731468200684,0.1867387294769287,9,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_e3ea3bb85c,78,28178,flickr30k_test_028178,images/flickr30k/flickr30k_test_028178.jpg,"[""A man in a black sweater with a red undershirt playing a trumpet in front of a lighted Christmas tree."", ""The man playing a trumpet in front of a christmas tree looks intense."", ""A man in a black sweater and red shirt plays the trumpet by a tree."", ""A guy with a beard wearing his glasses is blowing on a trumpet."", ""A musician playing some smooth music.""]",textgrad_e3ea3bb85c,TextGrad Step 13,"Generate exactly one short, literal, factual caption (one grammatically correct sentence) describing only visible content in the image. Output exactly one sentence only — no extra text. Total words: 8–14.
+
+Key definitions
+- High‑signal token = a visible color/pattern; a concrete, specific object class (prefer multiword classes like ""stop sign"", ""fire hydrant"", ""double‑decker bus""); a clear Arabic numeral; a clothing/accessory; or legible text/logo copied exactly when it meets the OCR rules below.
+- Content words = all words except a single leading article (a/an/the) if present.
+
+Visibility and OCR (deterministic)
+- An object is ""clearly visible"" if area ≥1.5% of image OR (area ≥0.8% AND detector_confidence ≥0.45).
+- Allow a small-object exception: if detector_confidence ≥0.75, treat area ≥0.6% as ""clearly visible"".
+- Copy legible text/logo exactly only if OCR_confidence ≥0.55 for OCR_token_count ≤3, or OCR_confidence ≥0.70 if OCR_bbox_area ≥1.0%. Otherwise require OCR_confidence ≥0.60 and OCR_bbox_area ≥1.5%. Always forbid copying phone numbers or runs of ≥5 consecutive digits and avoid long digit sequences. When allowed, prefer inserting the token directly (e.g., shirt NIKE); if a wrapper is needed for grammar use the shortest wrapper (e.g., shirt ""NIKE"").
+- Treat counts/digits as visible only if digits meet the OCR/visibility rules above. Use Arabic numerals.
+
+Salience and subject selection
+- Salience = 0.5*(area_norm) + 0.3*(detector_confidence) + 0.15*(center_score) + 0.05*(local_contrast). If area >40% of image, multiply area_norm by 0.8 before computing Salience. Allow a large-area candidate to remain competitive when detector_confidence ≥0.60 or local_contrast is substantially higher.
+- Choose the subject with highest salience. If two candidates are within 5% salience, prefer the candidate that yields more distinct high‑signal tokens early. If still tied and a person/human is present with comparable detector_confidence (within ±0.05), prefer the person.
+
+Placement and high‑signal token rules
+- Require at least one high‑signal token within the first two content words. Allow exactly one deterministic exception only if grammaticality would otherwise break; if an exception is used, the high‑signal token must appear within the first four content words.
+- If two distinct high‑signal tokens are clearly visible, require both within the first 3 content words unless that makes the sentence ungrammatical; if grammar prevents this, allow placement within the first 4 content words.
+- Do not precede the first high‑signal token with verbs or extraneous function words. Omit or keep a leading article only if it does not delay high‑signal tokens beyond the first two content words.
+- When a visible numeral/count meets visibility rules, use an Arabic numeral and place it early (within the first 2–4 content words).
+
+Class, wording and modifier constraints
+- Start with a concise noun phrase; prefer the pattern [Color/Number/Multiword‑class] + [class]. Favor multiword concrete classes when available.
+- Allow up to two pre‑nominal high‑signal modifiers (e.g., color + accessory or number + color) to increase early concrete content (e.g., ""3 yellow school buses"").
+- Use present‑tense, concise S V (+ O) sentences and common collocations (""X holds Y"", ""X sits on Y"", ""X walks past Y"").
+- Limit modifiers overall: at most two pre‑nominal modifiers and at most one short post‑nominal prepositional phrase OR one compact participial phrase. Permit one additional compact descriptor total when concise (e.g., ""man in red shirt holding trumpet"").
+- Avoid subordinate clauses and stacked prepositional phrases. Aim for noun‑dense captions with concrete tokens early; minimize function words that delay concrete tokens.
+
+OCR/token formatting notes
+- Prefer direct inclusion of short OCR tokens (e.g., shirt NIKE, sign STOP) when OCR rules are met. If quotes are required for clarity, keep them minimal; avoid verbose wrappers like ""sign reading"" unless necessary for grammar.
+- Do not copy phone numbers or long digit runs.
+
+Templates and micro‑patterns (use these as patterns, not literal fill)
+- [Color] [multiword_class] [verb] [object] → ""Red double‑decker bus passes street.""
+- [Numeral] [multiword_class] [verb] [modifier] → ""3 yellow school buses stop at corner.""
+- [multiword_class] [OCR_TEXT] [verb] [object] → ""Shirt NIKE worn by man.""
+- Allow natural article use when it preserves fluency and early high‑signal tokens: ""A young woman in red coat holds black umbrella.""
+
+Examples (follow these styles; do not output these examples)
+- Good: ""Young woman in red coat holds black umbrella.""
+- Good: ""White stop sign beside brick building.""
+- Good (OCR): ""Shirt NIKE worn by man.""
+- Bad: ""There is a group of people sitting at a table while others stand and talk."" (too generic/long)
+- Bad: ""Man leans on sign with 212‑625‑9212 printed."" (do not copy phone numbers / long digit runs)
+
+Deterministic tie‑breakers and limits
+- When subjects tie, prefer the subject that yields more distinct high‑signal tokens early; prefer people in close ties as noted above.
+- Limit caption length to 8–14 total words. Aim for ~9–12 content words when possible.
+- Enforce the visibility/OCR thresholds as specified. Do not invent unseen attributes or guess unreadable text.
+
+Final output rule reminder: produce exactly one one‑sentence caption, no extra text, within 8–14 words, following the visibility, OCR, salience, placement, and syntax rules above.",Man in red shirt holds trumpet near lit tree.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.328870564699173,0.22288131713867188,9,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_e3ea3bb85c,87,30685,flickr30k_test_030685,images/flickr30k/flickr30k_test_030685.jpg,"[""A man who looks like Andy Dick is talking to a man in a hall with a man with a splotch of primary-color red on his hair."", ""A guy with a golden hair is chatting with a guy with a red-hair on top of his head."", ""Two male college students at a social networking event."", ""Two boys in dark clothing talk to each other."", ""Two men are talking in a hallway.""]",textgrad_e3ea3bb85c,TextGrad Step 13,"Generate exactly one short, literal, factual caption (one grammatically correct sentence) describing only visible content in the image. Output exactly one sentence only — no extra text. Total words: 8–14.
+
+Key definitions
+- High‑signal token = a visible color/pattern; a concrete, specific object class (prefer multiword classes like ""stop sign"", ""fire hydrant"", ""double‑decker bus""); a clear Arabic numeral; a clothing/accessory; or legible text/logo copied exactly when it meets the OCR rules below.
+- Content words = all words except a single leading article (a/an/the) if present.
+
+Visibility and OCR (deterministic)
+- An object is ""clearly visible"" if area ≥1.5% of image OR (area ≥0.8% AND detector_confidence ≥0.45).
+- Allow a small-object exception: if detector_confidence ≥0.75, treat area ≥0.6% as ""clearly visible"".
+- Copy legible text/logo exactly only if OCR_confidence ≥0.55 for OCR_token_count ≤3, or OCR_confidence ≥0.70 if OCR_bbox_area ≥1.0%. Otherwise require OCR_confidence ≥0.60 and OCR_bbox_area ≥1.5%. Always forbid copying phone numbers or runs of ≥5 consecutive digits and avoid long digit sequences. When allowed, prefer inserting the token directly (e.g., shirt NIKE); if a wrapper is needed for grammar use the shortest wrapper (e.g., shirt ""NIKE"").
+- Treat counts/digits as visible only if digits meet the OCR/visibility rules above. Use Arabic numerals.
+
+Salience and subject selection
+- Salience = 0.5*(area_norm) + 0.3*(detector_confidence) + 0.15*(center_score) + 0.05*(local_contrast). If area >40% of image, multiply area_norm by 0.8 before computing Salience. Allow a large-area candidate to remain competitive when detector_confidence ≥0.60 or local_contrast is substantially higher.
+- Choose the subject with highest salience. If two candidates are within 5% salience, prefer the candidate that yields more distinct high‑signal tokens early. If still tied and a person/human is present with comparable detector_confidence (within ±0.05), prefer the person.
+
+Placement and high‑signal token rules
+- Require at least one high‑signal token within the first two content words. Allow exactly one deterministic exception only if grammaticality would otherwise break; if an exception is used, the high‑signal token must appear within the first four content words.
+- If two distinct high‑signal tokens are clearly visible, require both within the first 3 content words unless that makes the sentence ungrammatical; if grammar prevents this, allow placement within the first 4 content words.
+- Do not precede the first high‑signal token with verbs or extraneous function words. Omit or keep a leading article only if it does not delay high‑signal tokens beyond the first two content words.
+- When a visible numeral/count meets visibility rules, use an Arabic numeral and place it early (within the first 2–4 content words).
+
+Class, wording and modifier constraints
+- Start with a concise noun phrase; prefer the pattern [Color/Number/Multiword‑class] + [class]. Favor multiword concrete classes when available.
+- Allow up to two pre‑nominal high‑signal modifiers (e.g., color + accessory or number + color) to increase early concrete content (e.g., ""3 yellow school buses"").
+- Use present‑tense, concise S V (+ O) sentences and common collocations (""X holds Y"", ""X sits on Y"", ""X walks past Y"").
+- Limit modifiers overall: at most two pre‑nominal modifiers and at most one short post‑nominal prepositional phrase OR one compact participial phrase. Permit one additional compact descriptor total when concise (e.g., ""man in red shirt holding trumpet"").
+- Avoid subordinate clauses and stacked prepositional phrases. Aim for noun‑dense captions with concrete tokens early; minimize function words that delay concrete tokens.
+
+OCR/token formatting notes
+- Prefer direct inclusion of short OCR tokens (e.g., shirt NIKE, sign STOP) when OCR rules are met. If quotes are required for clarity, keep them minimal; avoid verbose wrappers like ""sign reading"" unless necessary for grammar.
+- Do not copy phone numbers or long digit runs.
+
+Templates and micro‑patterns (use these as patterns, not literal fill)
+- [Color] [multiword_class] [verb] [object] → ""Red double‑decker bus passes street.""
+- [Numeral] [multiword_class] [verb] [modifier] → ""3 yellow school buses stop at corner.""
+- [multiword_class] [OCR_TEXT] [verb] [object] → ""Shirt NIKE worn by man.""
+- Allow natural article use when it preserves fluency and early high‑signal tokens: ""A young woman in red coat holds black umbrella.""
+
+Examples (follow these styles; do not output these examples)
+- Good: ""Young woman in red coat holds black umbrella.""
+- Good: ""White stop sign beside brick building.""
+- Good (OCR): ""Shirt NIKE worn by man.""
+- Bad: ""There is a group of people sitting at a table while others stand and talk."" (too generic/long)
+- Bad: ""Man leans on sign with 212‑625‑9212 printed."" (do not copy phone numbers / long digit runs)
+
+Deterministic tie‑breakers and limits
+- When subjects tie, prefer the subject that yields more distinct high‑signal tokens early; prefer people in close ties as noted above.
+- Limit caption length to 8–14 total words. Aim for ~9–12 content words when possible.
+- Enforce the visibility/OCR thresholds as specified. Do not invent unseen attributes or guess unreadable text.
+
+Final output rule reminder: produce exactly one one‑sentence caption, no extra text, within 8–14 words, following the visibility, OCR, salience, placement, and syntax rules above.",Man in black shirt holds red cup while talking to another man.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.31634512543678284,0.19604003429412842,12,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_e3ea3bb85c,90,29824,flickr30k_test_029824,images/flickr30k/flickr30k_test_029824.jpg,"[""A woman stands behind a display table advertising the London 2012 Olympics in front of a sign reading, \""Bienvenus Welcome.\"""", ""A female worker is standing behind a table that says London 2012 above the Olympic rings."", ""A young woman is standing behind an information stall at the 2012 London Olympic Games."", ""Woman posing in her booth during the London 2012 olympics"", ""The olympic official is smiling for the camera""]",textgrad_e3ea3bb85c,TextGrad Step 13,"Generate exactly one short, literal, factual caption (one grammatically correct sentence) describing only visible content in the image. Output exactly one sentence only — no extra text. Total words: 8–14.
+
+Key definitions
+- High‑signal token = a visible color/pattern; a concrete, specific object class (prefer multiword classes like ""stop sign"", ""fire hydrant"", ""double‑decker bus""); a clear Arabic numeral; a clothing/accessory; or legible text/logo copied exactly when it meets the OCR rules below.
+- Content words = all words except a single leading article (a/an/the) if present.
+
+Visibility and OCR (deterministic)
+- An object is ""clearly visible"" if area ≥1.5% of image OR (area ≥0.8% AND detector_confidence ≥0.45).
+- Allow a small-object exception: if detector_confidence ≥0.75, treat area ≥0.6% as ""clearly visible"".
+- Copy legible text/logo exactly only if OCR_confidence ≥0.55 for OCR_token_count ≤3, or OCR_confidence ≥0.70 if OCR_bbox_area ≥1.0%. Otherwise require OCR_confidence ≥0.60 and OCR_bbox_area ≥1.5%. Always forbid copying phone numbers or runs of ≥5 consecutive digits and avoid long digit sequences. When allowed, prefer inserting the token directly (e.g., shirt NIKE); if a wrapper is needed for grammar use the shortest wrapper (e.g., shirt ""NIKE"").
+- Treat counts/digits as visible only if digits meet the OCR/visibility rules above. Use Arabic numerals.
+
+Salience and subject selection
+- Salience = 0.5*(area_norm) + 0.3*(detector_confidence) + 0.15*(center_score) + 0.05*(local_contrast). If area >40% of image, multiply area_norm by 0.8 before computing Salience. Allow a large-area candidate to remain competitive when detector_confidence ≥0.60 or local_contrast is substantially higher.
+- Choose the subject with highest salience. If two candidates are within 5% salience, prefer the candidate that yields more distinct high‑signal tokens early. If still tied and a person/human is present with comparable detector_confidence (within ±0.05), prefer the person.
+
+Placement and high‑signal token rules
+- Require at least one high‑signal token within the first two content words. Allow exactly one deterministic exception only if grammaticality would otherwise break; if an exception is used, the high‑signal token must appear within the first four content words.
+- If two distinct high‑signal tokens are clearly visible, require both within the first 3 content words unless that makes the sentence ungrammatical; if grammar prevents this, allow placement within the first 4 content words.
+- Do not precede the first high‑signal token with verbs or extraneous function words. Omit or keep a leading article only if it does not delay high‑signal tokens beyond the first two content words.
+- When a visible numeral/count meets visibility rules, use an Arabic numeral and place it early (within the first 2–4 content words).
+
+Class, wording and modifier constraints
+- Start with a concise noun phrase; prefer the pattern [Color/Number/Multiword‑class] + [class]. Favor multiword concrete classes when available.
+- Allow up to two pre‑nominal high‑signal modifiers (e.g., color + accessory or number + color) to increase early concrete content (e.g., ""3 yellow school buses"").
+- Use present‑tense, concise S V (+ O) sentences and common collocations (""X holds Y"", ""X sits on Y"", ""X walks past Y"").
+- Limit modifiers overall: at most two pre‑nominal modifiers and at most one short post‑nominal prepositional phrase OR one compact participial phrase. Permit one additional compact descriptor total when concise (e.g., ""man in red shirt holding trumpet"").
+- Avoid subordinate clauses and stacked prepositional phrases. Aim for noun‑dense captions with concrete tokens early; minimize function words that delay concrete tokens.
+
+OCR/token formatting notes
+- Prefer direct inclusion of short OCR tokens (e.g., shirt NIKE, sign STOP) when OCR rules are met. If quotes are required for clarity, keep them minimal; avoid verbose wrappers like ""sign reading"" unless necessary for grammar.
+- Do not copy phone numbers or long digit runs.
+
+Templates and micro‑patterns (use these as patterns, not literal fill)
+- [Color] [multiword_class] [verb] [object] → ""Red double‑decker bus passes street.""
+- [Numeral] [multiword_class] [verb] [modifier] → ""3 yellow school buses stop at corner.""
+- [multiword_class] [OCR_TEXT] [verb] [object] → ""Shirt NIKE worn by man.""
+- Allow natural article use when it preserves fluency and early high‑signal tokens: ""A young woman in red coat holds black umbrella.""
+
+Examples (follow these styles; do not output these examples)
+- Good: ""Young woman in red coat holds black umbrella.""
+- Good: ""White stop sign beside brick building.""
+- Good (OCR): ""Shirt NIKE worn by man.""
+- Bad: ""There is a group of people sitting at a table while others stand and talk."" (too generic/long)
+- Bad: ""Man leans on sign with 212‑625‑9212 printed."" (do not copy phone numbers / long digit runs)
+
+Deterministic tie‑breakers and limits
+- When subjects tie, prefer the subject that yields more distinct high‑signal tokens early; prefer people in close ties as noted above.
+- Limit caption length to 8–14 total words. Aim for ~9–12 content words when possible.
+- Enforce the visibility/OCR thresholds as specified. Do not invent unseen attributes or guess unreadable text.
+
+Final output rule reminder: produce exactly one one‑sentence caption, no extra text, within 8–14 words, following the visibility, OCR, salience, placement, and syntax rules above.",Woman in purple shirt stands behind London 2012 Olympics welcome desk.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.3790765702724457,0.25416257977485657,11,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_e3ea3bb85c,91,21964,flickr30k_test_021964,images/flickr30k/flickr30k_test_021964.jpg,"[""A man and a woman seated at a table, having drinks and deep in conversation."", ""A couple talking together having drinks in a quiet booth."", ""A man and a woman are sitting at a table with drinks."", ""Two people are sitting and enjoying some beverages."", ""Couple having cocktails at a club.""]",textgrad_e3ea3bb85c,TextGrad Step 13,"Generate exactly one short, literal, factual caption (one grammatically correct sentence) describing only visible content in the image. Output exactly one sentence only — no extra text. Total words: 8–14.
+
+Key definitions
+- High‑signal token = a visible color/pattern; a concrete, specific object class (prefer multiword classes like ""stop sign"", ""fire hydrant"", ""double‑decker bus""); a clear Arabic numeral; a clothing/accessory; or legible text/logo copied exactly when it meets the OCR rules below.
+- Content words = all words except a single leading article (a/an/the) if present.
+
+Visibility and OCR (deterministic)
+- An object is ""clearly visible"" if area ≥1.5% of image OR (area ≥0.8% AND detector_confidence ≥0.45).
+- Allow a small-object exception: if detector_confidence ≥0.75, treat area ≥0.6% as ""clearly visible"".
+- Copy legible text/logo exactly only if OCR_confidence ≥0.55 for OCR_token_count ≤3, or OCR_confidence ≥0.70 if OCR_bbox_area ≥1.0%. Otherwise require OCR_confidence ≥0.60 and OCR_bbox_area ≥1.5%. Always forbid copying phone numbers or runs of ≥5 consecutive digits and avoid long digit sequences. When allowed, prefer inserting the token directly (e.g., shirt NIKE); if a wrapper is needed for grammar use the shortest wrapper (e.g., shirt ""NIKE"").
+- Treat counts/digits as visible only if digits meet the OCR/visibility rules above. Use Arabic numerals.
+
+Salience and subject selection
+- Salience = 0.5*(area_norm) + 0.3*(detector_confidence) + 0.15*(center_score) + 0.05*(local_contrast). If area >40% of image, multiply area_norm by 0.8 before computing Salience. Allow a large-area candidate to remain competitive when detector_confidence ≥0.60 or local_contrast is substantially higher.
+- Choose the subject with highest salience. If two candidates are within 5% salience, prefer the candidate that yields more distinct high‑signal tokens early. If still tied and a person/human is present with comparable detector_confidence (within ±0.05), prefer the person.
+
+Placement and high‑signal token rules
+- Require at least one high‑signal token within the first two content words. Allow exactly one deterministic exception only if grammaticality would otherwise break; if an exception is used, the high‑signal token must appear within the first four content words.
+- If two distinct high‑signal tokens are clearly visible, require both within the first 3 content words unless that makes the sentence ungrammatical; if grammar prevents this, allow placement within the first 4 content words.
+- Do not precede the first high‑signal token with verbs or extraneous function words. Omit or keep a leading article only if it does not delay high‑signal tokens beyond the first two content words.
+- When a visible numeral/count meets visibility rules, use an Arabic numeral and place it early (within the first 2–4 content words).
+
+Class, wording and modifier constraints
+- Start with a concise noun phrase; prefer the pattern [Color/Number/Multiword‑class] + [class]. Favor multiword concrete classes when available.
+- Allow up to two pre‑nominal high‑signal modifiers (e.g., color + accessory or number + color) to increase early concrete content (e.g., ""3 yellow school buses"").
+- Use present‑tense, concise S V (+ O) sentences and common collocations (""X holds Y"", ""X sits on Y"", ""X walks past Y"").
+- Limit modifiers overall: at most two pre‑nominal modifiers and at most one short post‑nominal prepositional phrase OR one compact participial phrase. Permit one additional compact descriptor total when concise (e.g., ""man in red shirt holding trumpet"").
+- Avoid subordinate clauses and stacked prepositional phrases. Aim for noun‑dense captions with concrete tokens early; minimize function words that delay concrete tokens.
+
+OCR/token formatting notes
+- Prefer direct inclusion of short OCR tokens (e.g., shirt NIKE, sign STOP) when OCR rules are met. If quotes are required for clarity, keep them minimal; avoid verbose wrappers like ""sign reading"" unless necessary for grammar.
+- Do not copy phone numbers or long digit runs.
+
+Templates and micro‑patterns (use these as patterns, not literal fill)
+- [Color] [multiword_class] [verb] [object] → ""Red double‑decker bus passes street.""
+- [Numeral] [multiword_class] [verb] [modifier] → ""3 yellow school buses stop at corner.""
+- [multiword_class] [OCR_TEXT] [verb] [object] → ""Shirt NIKE worn by man.""
+- Allow natural article use when it preserves fluency and early high‑signal tokens: ""A young woman in red coat holds black umbrella.""
+
+Examples (follow these styles; do not output these examples)
+- Good: ""Young woman in red coat holds black umbrella.""
+- Good: ""White stop sign beside brick building.""
+- Good (OCR): ""Shirt NIKE worn by man.""
+- Bad: ""There is a group of people sitting at a table while others stand and talk."" (too generic/long)
+- Bad: ""Man leans on sign with 212‑625‑9212 printed."" (do not copy phone numbers / long digit runs)
+
+Deterministic tie‑breakers and limits
+- When subjects tie, prefer the subject that yields more distinct high‑signal tokens early; prefer people in close ties as noted above.
+- Limit caption length to 8–14 total words. Aim for ~9–12 content words when possible.
+- Enforce the visibility/OCR thresholds as specified. Do not invent unseen attributes or guess unreadable text.
+
+Final output rule reminder: produce exactly one one‑sentence caption, no extra text, within 8–14 words, following the visibility, OCR, salience, placement, and syntax rules above.",A man and woman sit at a table in a dimly lit bar.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.3352895975112915,0.19065958261489868,13,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_e3ea3bb85c,101,12889,flickr30k_test_012889,images/flickr30k/flickr30k_test_012889.jpg,"[""A cyclist is performing a jumping stunt in front of a city skyline."", ""A person doing a bicycle jump, a skyline in the background."", ""A boy wearing a white helmet jumping on his bike."", ""A biker gets high in the air against a skyline."", ""A man is in the air on his bicycle.""]",textgrad_e3ea3bb85c,TextGrad Step 13,"Generate exactly one short, literal, factual caption (one grammatically correct sentence) describing only visible content in the image. Output exactly one sentence only — no extra text. Total words: 8–14.
+
+Key definitions
+- High‑signal token = a visible color/pattern; a concrete, specific object class (prefer multiword classes like ""stop sign"", ""fire hydrant"", ""double‑decker bus""); a clear Arabic numeral; a clothing/accessory; or legible text/logo copied exactly when it meets the OCR rules below.
+- Content words = all words except a single leading article (a/an/the) if present.
+
+Visibility and OCR (deterministic)
+- An object is ""clearly visible"" if area ≥1.5% of image OR (area ≥0.8% AND detector_confidence ≥0.45).
+- Allow a small-object exception: if detector_confidence ≥0.75, treat area ≥0.6% as ""clearly visible"".
+- Copy legible text/logo exactly only if OCR_confidence ≥0.55 for OCR_token_count ≤3, or OCR_confidence ≥0.70 if OCR_bbox_area ≥1.0%. Otherwise require OCR_confidence ≥0.60 and OCR_bbox_area ≥1.5%. Always forbid copying phone numbers or runs of ≥5 consecutive digits and avoid long digit sequences. When allowed, prefer inserting the token directly (e.g., shirt NIKE); if a wrapper is needed for grammar use the shortest wrapper (e.g., shirt ""NIKE"").
+- Treat counts/digits as visible only if digits meet the OCR/visibility rules above. Use Arabic numerals.
+
+Salience and subject selection
+- Salience = 0.5*(area_norm) + 0.3*(detector_confidence) + 0.15*(center_score) + 0.05*(local_contrast). If area >40% of image, multiply area_norm by 0.8 before computing Salience. Allow a large-area candidate to remain competitive when detector_confidence ≥0.60 or local_contrast is substantially higher.
+- Choose the subject with highest salience. If two candidates are within 5% salience, prefer the candidate that yields more distinct high‑signal tokens early. If still tied and a person/human is present with comparable detector_confidence (within ±0.05), prefer the person.
+
+Placement and high‑signal token rules
+- Require at least one high‑signal token within the first two content words. Allow exactly one deterministic exception only if grammaticality would otherwise break; if an exception is used, the high‑signal token must appear within the first four content words.
+- If two distinct high‑signal tokens are clearly visible, require both within the first 3 content words unless that makes the sentence ungrammatical; if grammar prevents this, allow placement within the first 4 content words.
+- Do not precede the first high‑signal token with verbs or extraneous function words. Omit or keep a leading article only if it does not delay high‑signal tokens beyond the first two content words.
+- When a visible numeral/count meets visibility rules, use an Arabic numeral and place it early (within the first 2–4 content words).
+
+Class, wording and modifier constraints
+- Start with a concise noun phrase; prefer the pattern [Color/Number/Multiword‑class] + [class]. Favor multiword concrete classes when available.
+- Allow up to two pre‑nominal high‑signal modifiers (e.g., color + accessory or number + color) to increase early concrete content (e.g., ""3 yellow school buses"").
+- Use present‑tense, concise S V (+ O) sentences and common collocations (""X holds Y"", ""X sits on Y"", ""X walks past Y"").
+- Limit modifiers overall: at most two pre‑nominal modifiers and at most one short post‑nominal prepositional phrase OR one compact participial phrase. Permit one additional compact descriptor total when concise (e.g., ""man in red shirt holding trumpet"").
+- Avoid subordinate clauses and stacked prepositional phrases. Aim for noun‑dense captions with concrete tokens early; minimize function words that delay concrete tokens.
+
+OCR/token formatting notes
+- Prefer direct inclusion of short OCR tokens (e.g., shirt NIKE, sign STOP) when OCR rules are met. If quotes are required for clarity, keep them minimal; avoid verbose wrappers like ""sign reading"" unless necessary for grammar.
+- Do not copy phone numbers or long digit runs.
+
+Templates and micro‑patterns (use these as patterns, not literal fill)
+- [Color] [multiword_class] [verb] [object] → ""Red double‑decker bus passes street.""
+- [Numeral] [multiword_class] [verb] [modifier] → ""3 yellow school buses stop at corner.""
+- [multiword_class] [OCR_TEXT] [verb] [object] → ""Shirt NIKE worn by man.""
+- Allow natural article use when it preserves fluency and early high‑signal tokens: ""A young woman in red coat holds black umbrella.""
+
+Examples (follow these styles; do not output these examples)
+- Good: ""Young woman in red coat holds black umbrella.""
+- Good: ""White stop sign beside brick building.""
+- Good (OCR): ""Shirt NIKE worn by man.""
+- Bad: ""There is a group of people sitting at a table while others stand and talk."" (too generic/long)
+- Bad: ""Man leans on sign with 212‑625‑9212 printed."" (do not copy phone numbers / long digit runs)
+
+Deterministic tie‑breakers and limits
+- When subjects tie, prefer the subject that yields more distinct high‑signal tokens early; prefer people in close ties as noted above.
+- Limit caption length to 8–14 total words. Aim for ~9–12 content words when possible.
+- Enforce the visibility/OCR thresholds as specified. Do not invent unseen attributes or guess unreadable text.
+
+Final output rule reminder: produce exactly one one‑sentence caption, no extra text, within 8–14 words, following the visibility, OCR, salience, placement, and syntax rules above.",A cyclist in white helmet and shirt performs a wheelie over water near city buildings.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.30041414499282837,0.13400229811668396,15,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_e3ea3bb85c,104,1131,flickr30k_test_001131,images/flickr30k/flickr30k_test_001131.jpg,"[""A middle-aged gentleman is sitting in a small booth with a table full of different types and sizes of fish."", ""A gut wearing a plaid shirt with a mustache selling fish at a market."", ""Fisherman with his daily catch on display, his product is fresh."", ""A man displaying different varieties of fish in an older building"", ""A man with a mustache sells various types of whole fish.""]",textgrad_e3ea3bb85c,TextGrad Step 13,"Generate exactly one short, literal, factual caption (one grammatically correct sentence) describing only visible content in the image. Output exactly one sentence only — no extra text. Total words: 8–14.
+
+Key definitions
+- High‑signal token = a visible color/pattern; a concrete, specific object class (prefer multiword classes like ""stop sign"", ""fire hydrant"", ""double‑decker bus""); a clear Arabic numeral; a clothing/accessory; or legible text/logo copied exactly when it meets the OCR rules below.
+- Content words = all words except a single leading article (a/an/the) if present.
+
+Visibility and OCR (deterministic)
+- An object is ""clearly visible"" if area ≥1.5% of image OR (area ≥0.8% AND detector_confidence ≥0.45).
+- Allow a small-object exception: if detector_confidence ≥0.75, treat area ≥0.6% as ""clearly visible"".
+- Copy legible text/logo exactly only if OCR_confidence ≥0.55 for OCR_token_count ≤3, or OCR_confidence ≥0.70 if OCR_bbox_area ≥1.0%. Otherwise require OCR_confidence ≥0.60 and OCR_bbox_area ≥1.5%. Always forbid copying phone numbers or runs of ≥5 consecutive digits and avoid long digit sequences. When allowed, prefer inserting the token directly (e.g., shirt NIKE); if a wrapper is needed for grammar use the shortest wrapper (e.g., shirt ""NIKE"").
+- Treat counts/digits as visible only if digits meet the OCR/visibility rules above. Use Arabic numerals.
+
+Salience and subject selection
+- Salience = 0.5*(area_norm) + 0.3*(detector_confidence) + 0.15*(center_score) + 0.05*(local_contrast). If area >40% of image, multiply area_norm by 0.8 before computing Salience. Allow a large-area candidate to remain competitive when detector_confidence ≥0.60 or local_contrast is substantially higher.
+- Choose the subject with highest salience. If two candidates are within 5% salience, prefer the candidate that yields more distinct high‑signal tokens early. If still tied and a person/human is present with comparable detector_confidence (within ±0.05), prefer the person.
+
+Placement and high‑signal token rules
+- Require at least one high‑signal token within the first two content words. Allow exactly one deterministic exception only if grammaticality would otherwise break; if an exception is used, the high‑signal token must appear within the first four content words.
+- If two distinct high‑signal tokens are clearly visible, require both within the first 3 content words unless that makes the sentence ungrammatical; if grammar prevents this, allow placement within the first 4 content words.
+- Do not precede the first high‑signal token with verbs or extraneous function words. Omit or keep a leading article only if it does not delay high‑signal tokens beyond the first two content words.
+- When a visible numeral/count meets visibility rules, use an Arabic numeral and place it early (within the first 2–4 content words).
+
+Class, wording and modifier constraints
+- Start with a concise noun phrase; prefer the pattern [Color/Number/Multiword‑class] + [class]. Favor multiword concrete classes when available.
+- Allow up to two pre‑nominal high‑signal modifiers (e.g., color + accessory or number + color) to increase early concrete content (e.g., ""3 yellow school buses"").
+- Use present‑tense, concise S V (+ O) sentences and common collocations (""X holds Y"", ""X sits on Y"", ""X walks past Y"").
+- Limit modifiers overall: at most two pre‑nominal modifiers and at most one short post‑nominal prepositional phrase OR one compact participial phrase. Permit one additional compact descriptor total when concise (e.g., ""man in red shirt holding trumpet"").
+- Avoid subordinate clauses and stacked prepositional phrases. Aim for noun‑dense captions with concrete tokens early; minimize function words that delay concrete tokens.
+
+OCR/token formatting notes
+- Prefer direct inclusion of short OCR tokens (e.g., shirt NIKE, sign STOP) when OCR rules are met. If quotes are required for clarity, keep them minimal; avoid verbose wrappers like ""sign reading"" unless necessary for grammar.
+- Do not copy phone numbers or long digit runs.
+
+Templates and micro‑patterns (use these as patterns, not literal fill)
+- [Color] [multiword_class] [verb] [object] → ""Red double‑decker bus passes street.""
+- [Numeral] [multiword_class] [verb] [modifier] → ""3 yellow school buses stop at corner.""
+- [multiword_class] [OCR_TEXT] [verb] [object] → ""Shirt NIKE worn by man.""
+- Allow natural article use when it preserves fluency and early high‑signal tokens: ""A young woman in red coat holds black umbrella.""
+
+Examples (follow these styles; do not output these examples)
+- Good: ""Young woman in red coat holds black umbrella.""
+- Good: ""White stop sign beside brick building.""
+- Good (OCR): ""Shirt NIKE worn by man.""
+- Bad: ""There is a group of people sitting at a table while others stand and talk."" (too generic/long)
+- Bad: ""Man leans on sign with 212‑625‑9212 printed."" (do not copy phone numbers / long digit runs)
+
+Deterministic tie‑breakers and limits
+- When subjects tie, prefer the subject that yields more distinct high‑signal tokens early; prefer people in close ties as noted above.
+- Limit caption length to 8–14 total words. Aim for ~9–12 content words when possible.
+- Enforce the visibility/OCR thresholds as specified. Do not invent unseen attributes or guess unreadable text.
+
+Final output rule reminder: produce exactly one one‑sentence caption, no extra text, within 8–14 words, following the visibility, OCR, salience, placement, and syntax rules above.",Man in plaid shirt sits behind large tray of fresh fish.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.29878726601600647,0.19880688190460205,11,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_e3ea3bb85c,112,5669,flickr30k_test_005669,images/flickr30k/flickr30k_test_005669.jpg,"[""Several young people adults sit around while a middle-eastern band prepares to play keyboard, drums, violin and a mandolin."", ""An audience listens to a band play as colorful lights light the scene."", ""A man playing an instrument while others sit at a table and watch."", ""A small band performing for people in a nightclub."", ""A group of people enjoying an intimate concert.""]",textgrad_e3ea3bb85c,TextGrad Step 13,"Generate exactly one short, literal, factual caption (one grammatically correct sentence) describing only visible content in the image. Output exactly one sentence only — no extra text. Total words: 8–14.
+
+Key definitions
+- High‑signal token = a visible color/pattern; a concrete, specific object class (prefer multiword classes like ""stop sign"", ""fire hydrant"", ""double‑decker bus""); a clear Arabic numeral; a clothing/accessory; or legible text/logo copied exactly when it meets the OCR rules below.
+- Content words = all words except a single leading article (a/an/the) if present.
+
+Visibility and OCR (deterministic)
+- An object is ""clearly visible"" if area ≥1.5% of image OR (area ≥0.8% AND detector_confidence ≥0.45).
+- Allow a small-object exception: if detector_confidence ≥0.75, treat area ≥0.6% as ""clearly visible"".
+- Copy legible text/logo exactly only if OCR_confidence ≥0.55 for OCR_token_count ≤3, or OCR_confidence ≥0.70 if OCR_bbox_area ≥1.0%. Otherwise require OCR_confidence ≥0.60 and OCR_bbox_area ≥1.5%. Always forbid copying phone numbers or runs of ≥5 consecutive digits and avoid long digit sequences. When allowed, prefer inserting the token directly (e.g., shirt NIKE); if a wrapper is needed for grammar use the shortest wrapper (e.g., shirt ""NIKE"").
+- Treat counts/digits as visible only if digits meet the OCR/visibility rules above. Use Arabic numerals.
+
+Salience and subject selection
+- Salience = 0.5*(area_norm) + 0.3*(detector_confidence) + 0.15*(center_score) + 0.05*(local_contrast). If area >40% of image, multiply area_norm by 0.8 before computing Salience. Allow a large-area candidate to remain competitive when detector_confidence ≥0.60 or local_contrast is substantially higher.
+- Choose the subject with highest salience. If two candidates are within 5% salience, prefer the candidate that yields more distinct high‑signal tokens early. If still tied and a person/human is present with comparable detector_confidence (within ±0.05), prefer the person.
+
+Placement and high‑signal token rules
+- Require at least one high‑signal token within the first two content words. Allow exactly one deterministic exception only if grammaticality would otherwise break; if an exception is used, the high‑signal token must appear within the first four content words.
+- If two distinct high‑signal tokens are clearly visible, require both within the first 3 content words unless that makes the sentence ungrammatical; if grammar prevents this, allow placement within the first 4 content words.
+- Do not precede the first high‑signal token with verbs or extraneous function words. Omit or keep a leading article only if it does not delay high‑signal tokens beyond the first two content words.
+- When a visible numeral/count meets visibility rules, use an Arabic numeral and place it early (within the first 2–4 content words).
+
+Class, wording and modifier constraints
+- Start with a concise noun phrase; prefer the pattern [Color/Number/Multiword‑class] + [class]. Favor multiword concrete classes when available.
+- Allow up to two pre‑nominal high‑signal modifiers (e.g., color + accessory or number + color) to increase early concrete content (e.g., ""3 yellow school buses"").
+- Use present‑tense, concise S V (+ O) sentences and common collocations (""X holds Y"", ""X sits on Y"", ""X walks past Y"").
+- Limit modifiers overall: at most two pre‑nominal modifiers and at most one short post‑nominal prepositional phrase OR one compact participial phrase. Permit one additional compact descriptor total when concise (e.g., ""man in red shirt holding trumpet"").
+- Avoid subordinate clauses and stacked prepositional phrases. Aim for noun‑dense captions with concrete tokens early; minimize function words that delay concrete tokens.
+
+OCR/token formatting notes
+- Prefer direct inclusion of short OCR tokens (e.g., shirt NIKE, sign STOP) when OCR rules are met. If quotes are required for clarity, keep them minimal; avoid verbose wrappers like ""sign reading"" unless necessary for grammar.
+- Do not copy phone numbers or long digit runs.
+
+Templates and micro‑patterns (use these as patterns, not literal fill)
+- [Color] [multiword_class] [verb] [object] → ""Red double‑decker bus passes street.""
+- [Numeral] [multiword_class] [verb] [modifier] → ""3 yellow school buses stop at corner.""
+- [multiword_class] [OCR_TEXT] [verb] [object] → ""Shirt NIKE worn by man.""
+- Allow natural article use when it preserves fluency and early high‑signal tokens: ""A young woman in red coat holds black umbrella.""
+
+Examples (follow these styles; do not output these examples)
+- Good: ""Young woman in red coat holds black umbrella.""
+- Good: ""White stop sign beside brick building.""
+- Good (OCR): ""Shirt NIKE worn by man.""
+- Bad: ""There is a group of people sitting at a table while others stand and talk."" (too generic/long)
+- Bad: ""Man leans on sign with 212‑625‑9212 printed."" (do not copy phone numbers / long digit runs)
+
+Deterministic tie‑breakers and limits
+- When subjects tie, prefer the subject that yields more distinct high‑signal tokens early; prefer people in close ties as noted above.
+- Limit caption length to 8–14 total words. Aim for ~9–12 content words when possible.
+- Enforce the visibility/OCR thresholds as specified. Do not invent unseen attributes or guess unreadable text.
+
+Final output rule reminder: produce exactly one one‑sentence caption, no extra text, within 8–14 words, following the visibility, OCR, salience, placement, and syntax rules above.",Audience members sit in front of musicians performing on stage.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.2948436737060547,0.16015805304050446,10,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_e3ea3bb85c,114,17983,flickr30k_test_017983,images/flickr30k/flickr30k_test_017983.jpg,"[""A man and woman perform a martial arts demonstration with practice katanas in front of an audience in an outside park like environment."", ""A man in a black costume wielding a wooden stick attacks a woman in yellow garb outdoors, under green trees, for a crowd."", ""A young lady and man dressed in warriors costume wielding sticks with a group of people in the background."", ""A man in a black costume and a woman in an orange costume are dueling in front of a crowd of spectators."", ""Battling between the sexes, who will win.""]",textgrad_e3ea3bb85c,TextGrad Step 13,"Generate exactly one short, literal, factual caption (one grammatically correct sentence) describing only visible content in the image. Output exactly one sentence only — no extra text. Total words: 8–14.
+
+Key definitions
+- High‑signal token = a visible color/pattern; a concrete, specific object class (prefer multiword classes like ""stop sign"", ""fire hydrant"", ""double‑decker bus""); a clear Arabic numeral; a clothing/accessory; or legible text/logo copied exactly when it meets the OCR rules below.
+- Content words = all words except a single leading article (a/an/the) if present.
+
+Visibility and OCR (deterministic)
+- An object is ""clearly visible"" if area ≥1.5% of image OR (area ≥0.8% AND detector_confidence ≥0.45).
+- Allow a small-object exception: if detector_confidence ≥0.75, treat area ≥0.6% as ""clearly visible"".
+- Copy legible text/logo exactly only if OCR_confidence ≥0.55 for OCR_token_count ≤3, or OCR_confidence ≥0.70 if OCR_bbox_area ≥1.0%. Otherwise require OCR_confidence ≥0.60 and OCR_bbox_area ≥1.5%. Always forbid copying phone numbers or runs of ≥5 consecutive digits and avoid long digit sequences. When allowed, prefer inserting the token directly (e.g., shirt NIKE); if a wrapper is needed for grammar use the shortest wrapper (e.g., shirt ""NIKE"").
+- Treat counts/digits as visible only if digits meet the OCR/visibility rules above. Use Arabic numerals.
+
+Salience and subject selection
+- Salience = 0.5*(area_norm) + 0.3*(detector_confidence) + 0.15*(center_score) + 0.05*(local_contrast). If area >40% of image, multiply area_norm by 0.8 before computing Salience. Allow a large-area candidate to remain competitive when detector_confidence ≥0.60 or local_contrast is substantially higher.
+- Choose the subject with highest salience. If two candidates are within 5% salience, prefer the candidate that yields more distinct high‑signal tokens early. If still tied and a person/human is present with comparable detector_confidence (within ±0.05), prefer the person.
+
+Placement and high‑signal token rules
+- Require at least one high‑signal token within the first two content words. Allow exactly one deterministic exception only if grammaticality would otherwise break; if an exception is used, the high‑signal token must appear within the first four content words.
+- If two distinct high‑signal tokens are clearly visible, require both within the first 3 content words unless that makes the sentence ungrammatical; if grammar prevents this, allow placement within the first 4 content words.
+- Do not precede the first high‑signal token with verbs or extraneous function words. Omit or keep a leading article only if it does not delay high‑signal tokens beyond the first two content words.
+- When a visible numeral/count meets visibility rules, use an Arabic numeral and place it early (within the first 2–4 content words).
+
+Class, wording and modifier constraints
+- Start with a concise noun phrase; prefer the pattern [Color/Number/Multiword‑class] + [class]. Favor multiword concrete classes when available.
+- Allow up to two pre‑nominal high‑signal modifiers (e.g., color + accessory or number + color) to increase early concrete content (e.g., ""3 yellow school buses"").
+- Use present‑tense, concise S V (+ O) sentences and common collocations (""X holds Y"", ""X sits on Y"", ""X walks past Y"").
+- Limit modifiers overall: at most two pre‑nominal modifiers and at most one short post‑nominal prepositional phrase OR one compact participial phrase. Permit one additional compact descriptor total when concise (e.g., ""man in red shirt holding trumpet"").
+- Avoid subordinate clauses and stacked prepositional phrases. Aim for noun‑dense captions with concrete tokens early; minimize function words that delay concrete tokens.
+
+OCR/token formatting notes
+- Prefer direct inclusion of short OCR tokens (e.g., shirt NIKE, sign STOP) when OCR rules are met. If quotes are required for clarity, keep them minimal; avoid verbose wrappers like ""sign reading"" unless necessary for grammar.
+- Do not copy phone numbers or long digit runs.
+
+Templates and micro‑patterns (use these as patterns, not literal fill)
+- [Color] [multiword_class] [verb] [object] → ""Red double‑decker bus passes street.""
+- [Numeral] [multiword_class] [verb] [modifier] → ""3 yellow school buses stop at corner.""
+- [multiword_class] [OCR_TEXT] [verb] [object] → ""Shirt NIKE worn by man.""
+- Allow natural article use when it preserves fluency and early high‑signal tokens: ""A young woman in red coat holds black umbrella.""
+
+Examples (follow these styles; do not output these examples)
+- Good: ""Young woman in red coat holds black umbrella.""
+- Good: ""White stop sign beside brick building.""
+- Good (OCR): ""Shirt NIKE worn by man.""
+- Bad: ""There is a group of people sitting at a table while others stand and talk."" (too generic/long)
+- Bad: ""Man leans on sign with 212‑625‑9212 printed."" (do not copy phone numbers / long digit runs)
+
+Deterministic tie‑breakers and limits
+- When subjects tie, prefer the subject that yields more distinct high‑signal tokens early; prefer people in close ties as noted above.
+- Limit caption length to 8–14 total words. Aim for ~9–12 content words when possible.
+- Enforce the visibility/OCR thresholds as specified. Do not invent unseen attributes or guess unreadable text.
+
+Final output rule reminder: produce exactly one one‑sentence caption, no extra text, within 8–14 words, following the visibility, OCR, salience, placement, and syntax rules above.",Man in black gi swings wooden sword at woman in yellow kimono.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.35706543922424316,0.21991398930549622,12,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_e3ea3bb85c,123,21750,flickr30k_test_021750,images/flickr30k/flickr30k_test_021750.jpg,"[""Two women who just had lunch hugging and saying goodbye."", ""Two women holding takeout boxes hugging on the street."", ""Two women are embracing while holding to go packages."", ""Two women, holding food carryout containers, hug."", ""Two blond women are hugging one another.""]",textgrad_e3ea3bb85c,TextGrad Step 13,"Generate exactly one short, literal, factual caption (one grammatically correct sentence) describing only visible content in the image. Output exactly one sentence only — no extra text. Total words: 8–14.
+
+Key definitions
+- High‑signal token = a visible color/pattern; a concrete, specific object class (prefer multiword classes like ""stop sign"", ""fire hydrant"", ""double‑decker bus""); a clear Arabic numeral; a clothing/accessory; or legible text/logo copied exactly when it meets the OCR rules below.
+- Content words = all words except a single leading article (a/an/the) if present.
+
+Visibility and OCR (deterministic)
+- An object is ""clearly visible"" if area ≥1.5% of image OR (area ≥0.8% AND detector_confidence ≥0.45).
+- Allow a small-object exception: if detector_confidence ≥0.75, treat area ≥0.6% as ""clearly visible"".
+- Copy legible text/logo exactly only if OCR_confidence ≥0.55 for OCR_token_count ≤3, or OCR_confidence ≥0.70 if OCR_bbox_area ≥1.0%. Otherwise require OCR_confidence ≥0.60 and OCR_bbox_area ≥1.5%. Always forbid copying phone numbers or runs of ≥5 consecutive digits and avoid long digit sequences. When allowed, prefer inserting the token directly (e.g., shirt NIKE); if a wrapper is needed for grammar use the shortest wrapper (e.g., shirt ""NIKE"").
+- Treat counts/digits as visible only if digits meet the OCR/visibility rules above. Use Arabic numerals.
+
+Salience and subject selection
+- Salience = 0.5*(area_norm) + 0.3*(detector_confidence) + 0.15*(center_score) + 0.05*(local_contrast). If area >40% of image, multiply area_norm by 0.8 before computing Salience. Allow a large-area candidate to remain competitive when detector_confidence ≥0.60 or local_contrast is substantially higher.
+- Choose the subject with highest salience. If two candidates are within 5% salience, prefer the candidate that yields more distinct high‑signal tokens early. If still tied and a person/human is present with comparable detector_confidence (within ±0.05), prefer the person.
+
+Placement and high‑signal token rules
+- Require at least one high‑signal token within the first two content words. Allow exactly one deterministic exception only if grammaticality would otherwise break; if an exception is used, the high‑signal token must appear within the first four content words.
+- If two distinct high‑signal tokens are clearly visible, require both within the first 3 content words unless that makes the sentence ungrammatical; if grammar prevents this, allow placement within the first 4 content words.
+- Do not precede the first high‑signal token with verbs or extraneous function words. Omit or keep a leading article only if it does not delay high‑signal tokens beyond the first two content words.
+- When a visible numeral/count meets visibility rules, use an Arabic numeral and place it early (within the first 2–4 content words).
+
+Class, wording and modifier constraints
+- Start with a concise noun phrase; prefer the pattern [Color/Number/Multiword‑class] + [class]. Favor multiword concrete classes when available.
+- Allow up to two pre‑nominal high‑signal modifiers (e.g., color + accessory or number + color) to increase early concrete content (e.g., ""3 yellow school buses"").
+- Use present‑tense, concise S V (+ O) sentences and common collocations (""X holds Y"", ""X sits on Y"", ""X walks past Y"").
+- Limit modifiers overall: at most two pre‑nominal modifiers and at most one short post‑nominal prepositional phrase OR one compact participial phrase. Permit one additional compact descriptor total when concise (e.g., ""man in red shirt holding trumpet"").
+- Avoid subordinate clauses and stacked prepositional phrases. Aim for noun‑dense captions with concrete tokens early; minimize function words that delay concrete tokens.
+
+OCR/token formatting notes
+- Prefer direct inclusion of short OCR tokens (e.g., shirt NIKE, sign STOP) when OCR rules are met. If quotes are required for clarity, keep them minimal; avoid verbose wrappers like ""sign reading"" unless necessary for grammar.
+- Do not copy phone numbers or long digit runs.
+
+Templates and micro‑patterns (use these as patterns, not literal fill)
+- [Color] [multiword_class] [verb] [object] → ""Red double‑decker bus passes street.""
+- [Numeral] [multiword_class] [verb] [modifier] → ""3 yellow school buses stop at corner.""
+- [multiword_class] [OCR_TEXT] [verb] [object] → ""Shirt NIKE worn by man.""
+- Allow natural article use when it preserves fluency and early high‑signal tokens: ""A young woman in red coat holds black umbrella.""
+
+Examples (follow these styles; do not output these examples)
+- Good: ""Young woman in red coat holds black umbrella.""
+- Good: ""White stop sign beside brick building.""
+- Good (OCR): ""Shirt NIKE worn by man.""
+- Bad: ""There is a group of people sitting at a table while others stand and talk."" (too generic/long)
+- Bad: ""Man leans on sign with 212‑625‑9212 printed."" (do not copy phone numbers / long digit runs)
+
+Deterministic tie‑breakers and limits
+- When subjects tie, prefer the subject that yields more distinct high‑signal tokens early; prefer people in close ties as noted above.
+- Limit caption length to 8–14 total words. Aim for ~9–12 content words when possible.
+- Enforce the visibility/OCR thresholds as specified. Do not invent unseen attributes or guess unreadable text.
+
+Final output rule reminder: produce exactly one one‑sentence caption, no extra text, within 8–14 words, following the visibility, OCR, salience, placement, and syntax rules above.",Two women embrace while holding takeout containers and bags.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.2985503077507019,0.218451589345932,9,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_e3ea3bb85c,127,5364,flickr30k_test_005364,images/flickr30k/flickr30k_test_005364.jpg,"[""A man is sitting in front of a Buddist monument."", ""A man stands in front of a statue."", ""Monk praying before buddha statue."", ""A person prays at a shrine."", ""A buddist worships buddha.""]",textgrad_e3ea3bb85c,TextGrad Step 13,"Generate exactly one short, literal, factual caption (one grammatically correct sentence) describing only visible content in the image. Output exactly one sentence only — no extra text. Total words: 8–14.
+
+Key definitions
+- High‑signal token = a visible color/pattern; a concrete, specific object class (prefer multiword classes like ""stop sign"", ""fire hydrant"", ""double‑decker bus""); a clear Arabic numeral; a clothing/accessory; or legible text/logo copied exactly when it meets the OCR rules below.
+- Content words = all words except a single leading article (a/an/the) if present.
+
+Visibility and OCR (deterministic)
+- An object is ""clearly visible"" if area ≥1.5% of image OR (area ≥0.8% AND detector_confidence ≥0.45).
+- Allow a small-object exception: if detector_confidence ≥0.75, treat area ≥0.6% as ""clearly visible"".
+- Copy legible text/logo exactly only if OCR_confidence ≥0.55 for OCR_token_count ≤3, or OCR_confidence ≥0.70 if OCR_bbox_area ≥1.0%. Otherwise require OCR_confidence ≥0.60 and OCR_bbox_area ≥1.5%. Always forbid copying phone numbers or runs of ≥5 consecutive digits and avoid long digit sequences. When allowed, prefer inserting the token directly (e.g., shirt NIKE); if a wrapper is needed for grammar use the shortest wrapper (e.g., shirt ""NIKE"").
+- Treat counts/digits as visible only if digits meet the OCR/visibility rules above. Use Arabic numerals.
+
+Salience and subject selection
+- Salience = 0.5*(area_norm) + 0.3*(detector_confidence) + 0.15*(center_score) + 0.05*(local_contrast). If area >40% of image, multiply area_norm by 0.8 before computing Salience. Allow a large-area candidate to remain competitive when detector_confidence ≥0.60 or local_contrast is substantially higher.
+- Choose the subject with highest salience. If two candidates are within 5% salience, prefer the candidate that yields more distinct high‑signal tokens early. If still tied and a person/human is present with comparable detector_confidence (within ±0.05), prefer the person.
+
+Placement and high‑signal token rules
+- Require at least one high‑signal token within the first two content words. Allow exactly one deterministic exception only if grammaticality would otherwise break; if an exception is used, the high‑signal token must appear within the first four content words.
+- If two distinct high‑signal tokens are clearly visible, require both within the first 3 content words unless that makes the sentence ungrammatical; if grammar prevents this, allow placement within the first 4 content words.
+- Do not precede the first high‑signal token with verbs or extraneous function words. Omit or keep a leading article only if it does not delay high‑signal tokens beyond the first two content words.
+- When a visible numeral/count meets visibility rules, use an Arabic numeral and place it early (within the first 2–4 content words).
+
+Class, wording and modifier constraints
+- Start with a concise noun phrase; prefer the pattern [Color/Number/Multiword‑class] + [class]. Favor multiword concrete classes when available.
+- Allow up to two pre‑nominal high‑signal modifiers (e.g., color + accessory or number + color) to increase early concrete content (e.g., ""3 yellow school buses"").
+- Use present‑tense, concise S V (+ O) sentences and common collocations (""X holds Y"", ""X sits on Y"", ""X walks past Y"").
+- Limit modifiers overall: at most two pre‑nominal modifiers and at most one short post‑nominal prepositional phrase OR one compact participial phrase. Permit one additional compact descriptor total when concise (e.g., ""man in red shirt holding trumpet"").
+- Avoid subordinate clauses and stacked prepositional phrases. Aim for noun‑dense captions with concrete tokens early; minimize function words that delay concrete tokens.
+
+OCR/token formatting notes
+- Prefer direct inclusion of short OCR tokens (e.g., shirt NIKE, sign STOP) when OCR rules are met. If quotes are required for clarity, keep them minimal; avoid verbose wrappers like ""sign reading"" unless necessary for grammar.
+- Do not copy phone numbers or long digit runs.
+
+Templates and micro‑patterns (use these as patterns, not literal fill)
+- [Color] [multiword_class] [verb] [object] → ""Red double‑decker bus passes street.""
+- [Numeral] [multiword_class] [verb] [modifier] → ""3 yellow school buses stop at corner.""
+- [multiword_class] [OCR_TEXT] [verb] [object] → ""Shirt NIKE worn by man.""
+- Allow natural article use when it preserves fluency and early high‑signal tokens: ""A young woman in red coat holds black umbrella.""
+
+Examples (follow these styles; do not output these examples)
+- Good: ""Young woman in red coat holds black umbrella.""
+- Good: ""White stop sign beside brick building.""
+- Good (OCR): ""Shirt NIKE worn by man.""
+- Bad: ""There is a group of people sitting at a table while others stand and talk."" (too generic/long)
+- Bad: ""Man leans on sign with 212‑625‑9212 printed."" (do not copy phone numbers / long digit runs)
+
+Deterministic tie‑breakers and limits
+- When subjects tie, prefer the subject that yields more distinct high‑signal tokens early; prefer people in close ties as noted above.
+- Limit caption length to 8–14 total words. Aim for ~9–12 content words when possible.
+- Enforce the visibility/OCR thresholds as specified. Do not invent unseen attributes or guess unreadable text.
+
+Final output rule reminder: produce exactly one one‑sentence caption, no extra text, within 8–14 words, following the visibility, OCR, salience, placement, and syntax rules above.",A monk kneels before a Buddha statue under a decorative canopy.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.34257999062538147,0.18806231021881104,11,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_e3ea3bb85c,130,12886,flickr30k_test_012886,images/flickr30k/flickr30k_test_012886.jpg,"[""Man with long dark hair, wearing a gray winter cap and sunglasses, hiking gear across his back, tracking in snow with two hiking poles."", ""A man in a ski outfit and gear standing in the snow, smiling and posing for a picture."", ""A woman hiking in the snow using ski poles."", ""A man is in the snow holding ski poles."", ""A man that is skiing with glasses on.""]",textgrad_e3ea3bb85c,TextGrad Step 13,"Generate exactly one short, literal, factual caption (one grammatically correct sentence) describing only visible content in the image. Output exactly one sentence only — no extra text. Total words: 8–14.
+
+Key definitions
+- High‑signal token = a visible color/pattern; a concrete, specific object class (prefer multiword classes like ""stop sign"", ""fire hydrant"", ""double‑decker bus""); a clear Arabic numeral; a clothing/accessory; or legible text/logo copied exactly when it meets the OCR rules below.
+- Content words = all words except a single leading article (a/an/the) if present.
+
+Visibility and OCR (deterministic)
+- An object is ""clearly visible"" if area ≥1.5% of image OR (area ≥0.8% AND detector_confidence ≥0.45).
+- Allow a small-object exception: if detector_confidence ≥0.75, treat area ≥0.6% as ""clearly visible"".
+- Copy legible text/logo exactly only if OCR_confidence ≥0.55 for OCR_token_count ≤3, or OCR_confidence ≥0.70 if OCR_bbox_area ≥1.0%. Otherwise require OCR_confidence ≥0.60 and OCR_bbox_area ≥1.5%. Always forbid copying phone numbers or runs of ≥5 consecutive digits and avoid long digit sequences. When allowed, prefer inserting the token directly (e.g., shirt NIKE); if a wrapper is needed for grammar use the shortest wrapper (e.g., shirt ""NIKE"").
+- Treat counts/digits as visible only if digits meet the OCR/visibility rules above. Use Arabic numerals.
+
+Salience and subject selection
+- Salience = 0.5*(area_norm) + 0.3*(detector_confidence) + 0.15*(center_score) + 0.05*(local_contrast). If area >40% of image, multiply area_norm by 0.8 before computing Salience. Allow a large-area candidate to remain competitive when detector_confidence ≥0.60 or local_contrast is substantially higher.
+- Choose the subject with highest salience. If two candidates are within 5% salience, prefer the candidate that yields more distinct high‑signal tokens early. If still tied and a person/human is present with comparable detector_confidence (within ±0.05), prefer the person.
+
+Placement and high‑signal token rules
+- Require at least one high‑signal token within the first two content words. Allow exactly one deterministic exception only if grammaticality would otherwise break; if an exception is used, the high‑signal token must appear within the first four content words.
+- If two distinct high‑signal tokens are clearly visible, require both within the first 3 content words unless that makes the sentence ungrammatical; if grammar prevents this, allow placement within the first 4 content words.
+- Do not precede the first high‑signal token with verbs or extraneous function words. Omit or keep a leading article only if it does not delay high‑signal tokens beyond the first two content words.
+- When a visible numeral/count meets visibility rules, use an Arabic numeral and place it early (within the first 2–4 content words).
+
+Class, wording and modifier constraints
+- Start with a concise noun phrase; prefer the pattern [Color/Number/Multiword‑class] + [class]. Favor multiword concrete classes when available.
+- Allow up to two pre‑nominal high‑signal modifiers (e.g., color + accessory or number + color) to increase early concrete content (e.g., ""3 yellow school buses"").
+- Use present‑tense, concise S V (+ O) sentences and common collocations (""X holds Y"", ""X sits on Y"", ""X walks past Y"").
+- Limit modifiers overall: at most two pre‑nominal modifiers and at most one short post‑nominal prepositional phrase OR one compact participial phrase. Permit one additional compact descriptor total when concise (e.g., ""man in red shirt holding trumpet"").
+- Avoid subordinate clauses and stacked prepositional phrases. Aim for noun‑dense captions with concrete tokens early; minimize function words that delay concrete tokens.
+
+OCR/token formatting notes
+- Prefer direct inclusion of short OCR tokens (e.g., shirt NIKE, sign STOP) when OCR rules are met. If quotes are required for clarity, keep them minimal; avoid verbose wrappers like ""sign reading"" unless necessary for grammar.
+- Do not copy phone numbers or long digit runs.
+
+Templates and micro‑patterns (use these as patterns, not literal fill)
+- [Color] [multiword_class] [verb] [object] → ""Red double‑decker bus passes street.""
+- [Numeral] [multiword_class] [verb] [modifier] → ""3 yellow school buses stop at corner.""
+- [multiword_class] [OCR_TEXT] [verb] [object] → ""Shirt NIKE worn by man.""
+- Allow natural article use when it preserves fluency and early high‑signal tokens: ""A young woman in red coat holds black umbrella.""
+
+Examples (follow these styles; do not output these examples)
+- Good: ""Young woman in red coat holds black umbrella.""
+- Good: ""White stop sign beside brick building.""
+- Good (OCR): ""Shirt NIKE worn by man.""
+- Bad: ""There is a group of people sitting at a table while others stand and talk."" (too generic/long)
+- Bad: ""Man leans on sign with 212‑625‑9212 printed."" (do not copy phone numbers / long digit runs)
+
+Deterministic tie‑breakers and limits
+- When subjects tie, prefer the subject that yields more distinct high‑signal tokens early; prefer people in close ties as noted above.
+- Limit caption length to 8–14 total words. Aim for ~9–12 content words when possible.
+- Enforce the visibility/OCR thresholds as specified. Do not invent unseen attributes or guess unreadable text.
+
+Final output rule reminder: produce exactly one one‑sentence caption, no extra text, within 8–14 words, following the visibility, OCR, salience, placement, and syntax rules above.",Man in yellow vest hikes with poles through snowy woods.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.26348230242729187,0.1593155860900879,10,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_e3ea3bb85c,133,24011,flickr30k_test_024011,images/flickr30k/flickr30k_test_024011.jpg,"[""Street performers with Santa Clause in the middle and ladies on the sides joining hands."", ""A man in a Santa suit stands amid a long row of dancers on a New York City street."", ""Santa and dancers outside of Radio City Music Hall in NYC."", ""Santa is in the line of dancers for the parade."", ""A dance in a city featuring Santa.""]",textgrad_e3ea3bb85c,TextGrad Step 13,"Generate exactly one short, literal, factual caption (one grammatically correct sentence) describing only visible content in the image. Output exactly one sentence only — no extra text. Total words: 8–14.
+
+Key definitions
+- High‑signal token = a visible color/pattern; a concrete, specific object class (prefer multiword classes like ""stop sign"", ""fire hydrant"", ""double‑decker bus""); a clear Arabic numeral; a clothing/accessory; or legible text/logo copied exactly when it meets the OCR rules below.
+- Content words = all words except a single leading article (a/an/the) if present.
+
+Visibility and OCR (deterministic)
+- An object is ""clearly visible"" if area ≥1.5% of image OR (area ≥0.8% AND detector_confidence ≥0.45).
+- Allow a small-object exception: if detector_confidence ≥0.75, treat area ≥0.6% as ""clearly visible"".
+- Copy legible text/logo exactly only if OCR_confidence ≥0.55 for OCR_token_count ≤3, or OCR_confidence ≥0.70 if OCR_bbox_area ≥1.0%. Otherwise require OCR_confidence ≥0.60 and OCR_bbox_area ≥1.5%. Always forbid copying phone numbers or runs of ≥5 consecutive digits and avoid long digit sequences. When allowed, prefer inserting the token directly (e.g., shirt NIKE); if a wrapper is needed for grammar use the shortest wrapper (e.g., shirt ""NIKE"").
+- Treat counts/digits as visible only if digits meet the OCR/visibility rules above. Use Arabic numerals.
+
+Salience and subject selection
+- Salience = 0.5*(area_norm) + 0.3*(detector_confidence) + 0.15*(center_score) + 0.05*(local_contrast). If area >40% of image, multiply area_norm by 0.8 before computing Salience. Allow a large-area candidate to remain competitive when detector_confidence ≥0.60 or local_contrast is substantially higher.
+- Choose the subject with highest salience. If two candidates are within 5% salience, prefer the candidate that yields more distinct high‑signal tokens early. If still tied and a person/human is present with comparable detector_confidence (within ±0.05), prefer the person.
+
+Placement and high‑signal token rules
+- Require at least one high‑signal token within the first two content words. Allow exactly one deterministic exception only if grammaticality would otherwise break; if an exception is used, the high‑signal token must appear within the first four content words.
+- If two distinct high‑signal tokens are clearly visible, require both within the first 3 content words unless that makes the sentence ungrammatical; if grammar prevents this, allow placement within the first 4 content words.
+- Do not precede the first high‑signal token with verbs or extraneous function words. Omit or keep a leading article only if it does not delay high‑signal tokens beyond the first two content words.
+- When a visible numeral/count meets visibility rules, use an Arabic numeral and place it early (within the first 2–4 content words).
+
+Class, wording and modifier constraints
+- Start with a concise noun phrase; prefer the pattern [Color/Number/Multiword‑class] + [class]. Favor multiword concrete classes when available.
+- Allow up to two pre‑nominal high‑signal modifiers (e.g., color + accessory or number + color) to increase early concrete content (e.g., ""3 yellow school buses"").
+- Use present‑tense, concise S V (+ O) sentences and common collocations (""X holds Y"", ""X sits on Y"", ""X walks past Y"").
+- Limit modifiers overall: at most two pre‑nominal modifiers and at most one short post‑nominal prepositional phrase OR one compact participial phrase. Permit one additional compact descriptor total when concise (e.g., ""man in red shirt holding trumpet"").
+- Avoid subordinate clauses and stacked prepositional phrases. Aim for noun‑dense captions with concrete tokens early; minimize function words that delay concrete tokens.
+
+OCR/token formatting notes
+- Prefer direct inclusion of short OCR tokens (e.g., shirt NIKE, sign STOP) when OCR rules are met. If quotes are required for clarity, keep them minimal; avoid verbose wrappers like ""sign reading"" unless necessary for grammar.
+- Do not copy phone numbers or long digit runs.
+
+Templates and micro‑patterns (use these as patterns, not literal fill)
+- [Color] [multiword_class] [verb] [object] → ""Red double‑decker bus passes street.""
+- [Numeral] [multiword_class] [verb] [modifier] → ""3 yellow school buses stop at corner.""
+- [multiword_class] [OCR_TEXT] [verb] [object] → ""Shirt NIKE worn by man.""
+- Allow natural article use when it preserves fluency and early high‑signal tokens: ""A young woman in red coat holds black umbrella.""
+
+Examples (follow these styles; do not output these examples)
+- Good: ""Young woman in red coat holds black umbrella.""
+- Good: ""White stop sign beside brick building.""
+- Good (OCR): ""Shirt NIKE worn by man.""
+- Bad: ""There is a group of people sitting at a table while others stand and talk."" (too generic/long)
+- Bad: ""Man leans on sign with 212‑625‑9212 printed."" (do not copy phone numbers / long digit runs)
+
+Deterministic tie‑breakers and limits
+- When subjects tie, prefer the subject that yields more distinct high‑signal tokens early; prefer people in close ties as noted above.
+- Limit caption length to 8–14 total words. Aim for ~9–12 content words when possible.
+- Enforce the visibility/OCR thresholds as specified. Do not invent unseen attributes or guess unreadable text.
+
+Final output rule reminder: produce exactly one one‑sentence caption, no extra text, within 8–14 words, following the visibility, OCR, salience, placement, and syntax rules above.",Dancers in red-and-white costumes march past Radio City Music Hall.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.3037736415863037,0.16325722634792328,10,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_e3ea3bb85c,135,15378,flickr30k_test_015378,images/flickr30k/flickr30k_test_015378.jpg,"[""The man in the red shirt and the woman with the white bag are conversing."", ""A man in a red shirt is interacting with a woman holding a shopping bag."", ""A woman is purchasing items from the man in the red shirt's yard sale."", ""An older man in a black hat and red shirt is talking with a woman."", ""A woman in a black shirt is holding a plastic bag.""]",textgrad_e3ea3bb85c,TextGrad Step 13,"Generate exactly one short, literal, factual caption (one grammatically correct sentence) describing only visible content in the image. Output exactly one sentence only — no extra text. Total words: 8–14.
+
+Key definitions
+- High‑signal token = a visible color/pattern; a concrete, specific object class (prefer multiword classes like ""stop sign"", ""fire hydrant"", ""double‑decker bus""); a clear Arabic numeral; a clothing/accessory; or legible text/logo copied exactly when it meets the OCR rules below.
+- Content words = all words except a single leading article (a/an/the) if present.
+
+Visibility and OCR (deterministic)
+- An object is ""clearly visible"" if area ≥1.5% of image OR (area ≥0.8% AND detector_confidence ≥0.45).
+- Allow a small-object exception: if detector_confidence ≥0.75, treat area ≥0.6% as ""clearly visible"".
+- Copy legible text/logo exactly only if OCR_confidence ≥0.55 for OCR_token_count ≤3, or OCR_confidence ≥0.70 if OCR_bbox_area ≥1.0%. Otherwise require OCR_confidence ≥0.60 and OCR_bbox_area ≥1.5%. Always forbid copying phone numbers or runs of ≥5 consecutive digits and avoid long digit sequences. When allowed, prefer inserting the token directly (e.g., shirt NIKE); if a wrapper is needed for grammar use the shortest wrapper (e.g., shirt ""NIKE"").
+- Treat counts/digits as visible only if digits meet the OCR/visibility rules above. Use Arabic numerals.
+
+Salience and subject selection
+- Salience = 0.5*(area_norm) + 0.3*(detector_confidence) + 0.15*(center_score) + 0.05*(local_contrast). If area >40% of image, multiply area_norm by 0.8 before computing Salience. Allow a large-area candidate to remain competitive when detector_confidence ≥0.60 or local_contrast is substantially higher.
+- Choose the subject with highest salience. If two candidates are within 5% salience, prefer the candidate that yields more distinct high‑signal tokens early. If still tied and a person/human is present with comparable detector_confidence (within ±0.05), prefer the person.
+
+Placement and high‑signal token rules
+- Require at least one high‑signal token within the first two content words. Allow exactly one deterministic exception only if grammaticality would otherwise break; if an exception is used, the high‑signal token must appear within the first four content words.
+- If two distinct high‑signal tokens are clearly visible, require both within the first 3 content words unless that makes the sentence ungrammatical; if grammar prevents this, allow placement within the first 4 content words.
+- Do not precede the first high‑signal token with verbs or extraneous function words. Omit or keep a leading article only if it does not delay high‑signal tokens beyond the first two content words.
+- When a visible numeral/count meets visibility rules, use an Arabic numeral and place it early (within the first 2–4 content words).
+
+Class, wording and modifier constraints
+- Start with a concise noun phrase; prefer the pattern [Color/Number/Multiword‑class] + [class]. Favor multiword concrete classes when available.
+- Allow up to two pre‑nominal high‑signal modifiers (e.g., color + accessory or number + color) to increase early concrete content (e.g., ""3 yellow school buses"").
+- Use present‑tense, concise S V (+ O) sentences and common collocations (""X holds Y"", ""X sits on Y"", ""X walks past Y"").
+- Limit modifiers overall: at most two pre‑nominal modifiers and at most one short post‑nominal prepositional phrase OR one compact participial phrase. Permit one additional compact descriptor total when concise (e.g., ""man in red shirt holding trumpet"").
+- Avoid subordinate clauses and stacked prepositional phrases. Aim for noun‑dense captions with concrete tokens early; minimize function words that delay concrete tokens.
+
+OCR/token formatting notes
+- Prefer direct inclusion of short OCR tokens (e.g., shirt NIKE, sign STOP) when OCR rules are met. If quotes are required for clarity, keep them minimal; avoid verbose wrappers like ""sign reading"" unless necessary for grammar.
+- Do not copy phone numbers or long digit runs.
+
+Templates and micro‑patterns (use these as patterns, not literal fill)
+- [Color] [multiword_class] [verb] [object] → ""Red double‑decker bus passes street.""
+- [Numeral] [multiword_class] [verb] [modifier] → ""3 yellow school buses stop at corner.""
+- [multiword_class] [OCR_TEXT] [verb] [object] → ""Shirt NIKE worn by man.""
+- Allow natural article use when it preserves fluency and early high‑signal tokens: ""A young woman in red coat holds black umbrella.""
+
+Examples (follow these styles; do not output these examples)
+- Good: ""Young woman in red coat holds black umbrella.""
+- Good: ""White stop sign beside brick building.""
+- Good (OCR): ""Shirt NIKE worn by man.""
+- Bad: ""There is a group of people sitting at a table while others stand and talk."" (too generic/long)
+- Bad: ""Man leans on sign with 212‑625‑9212 printed."" (do not copy phone numbers / long digit runs)
+
+Deterministic tie‑breakers and limits
+- When subjects tie, prefer the subject that yields more distinct high‑signal tokens early; prefer people in close ties as noted above.
+- Limit caption length to 8–14 total words. Aim for ~9–12 content words when possible.
+- Enforce the visibility/OCR thresholds as specified. Do not invent unseen attributes or guess unreadable text.
+
+Final output rule reminder: produce exactly one one‑sentence caption, no extra text, within 8–14 words, following the visibility, OCR, salience, placement, and syntax rules above.",Man in red shirt and black hat holds bag while woman stands nearby.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.2826691269874573,0.21695420145988464,13,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_e3ea3bb85c,138,23048,flickr30k_test_023048,images/flickr30k/flickr30k_test_023048.jpg,"[""A man in an orange shirt and floppy white hat smugly regards the camera next to a female mannequin in a warehouse setting."", ""A man in an orange jacket and white hat is standing next to a mannequin and a pile of clothes hangers."", ""A man in an orange shirt and jacket is standing next to a mannequin wrapped in plastic."", ""A man in a hat and an orange jacket stands beside a plastic wrapped female mannequin."", ""A man in an orange shirt standing next to a mannequin wrapped in plastic.""]",textgrad_e3ea3bb85c,TextGrad Step 13,"Generate exactly one short, literal, factual caption (one grammatically correct sentence) describing only visible content in the image. Output exactly one sentence only — no extra text. Total words: 8–14.
+
+Key definitions
+- High‑signal token = a visible color/pattern; a concrete, specific object class (prefer multiword classes like ""stop sign"", ""fire hydrant"", ""double‑decker bus""); a clear Arabic numeral; a clothing/accessory; or legible text/logo copied exactly when it meets the OCR rules below.
+- Content words = all words except a single leading article (a/an/the) if present.
+
+Visibility and OCR (deterministic)
+- An object is ""clearly visible"" if area ≥1.5% of image OR (area ≥0.8% AND detector_confidence ≥0.45).
+- Allow a small-object exception: if detector_confidence ≥0.75, treat area ≥0.6% as ""clearly visible"".
+- Copy legible text/logo exactly only if OCR_confidence ≥0.55 for OCR_token_count ≤3, or OCR_confidence ≥0.70 if OCR_bbox_area ≥1.0%. Otherwise require OCR_confidence ≥0.60 and OCR_bbox_area ≥1.5%. Always forbid copying phone numbers or runs of ≥5 consecutive digits and avoid long digit sequences. When allowed, prefer inserting the token directly (e.g., shirt NIKE); if a wrapper is needed for grammar use the shortest wrapper (e.g., shirt ""NIKE"").
+- Treat counts/digits as visible only if digits meet the OCR/visibility rules above. Use Arabic numerals.
+
+Salience and subject selection
+- Salience = 0.5*(area_norm) + 0.3*(detector_confidence) + 0.15*(center_score) + 0.05*(local_contrast). If area >40% of image, multiply area_norm by 0.8 before computing Salience. Allow a large-area candidate to remain competitive when detector_confidence ≥0.60 or local_contrast is substantially higher.
+- Choose the subject with highest salience. If two candidates are within 5% salience, prefer the candidate that yields more distinct high‑signal tokens early. If still tied and a person/human is present with comparable detector_confidence (within ±0.05), prefer the person.
+
+Placement and high‑signal token rules
+- Require at least one high‑signal token within the first two content words. Allow exactly one deterministic exception only if grammaticality would otherwise break; if an exception is used, the high‑signal token must appear within the first four content words.
+- If two distinct high‑signal tokens are clearly visible, require both within the first 3 content words unless that makes the sentence ungrammatical; if grammar prevents this, allow placement within the first 4 content words.
+- Do not precede the first high‑signal token with verbs or extraneous function words. Omit or keep a leading article only if it does not delay high‑signal tokens beyond the first two content words.
+- When a visible numeral/count meets visibility rules, use an Arabic numeral and place it early (within the first 2–4 content words).
+
+Class, wording and modifier constraints
+- Start with a concise noun phrase; prefer the pattern [Color/Number/Multiword‑class] + [class]. Favor multiword concrete classes when available.
+- Allow up to two pre‑nominal high‑signal modifiers (e.g., color + accessory or number + color) to increase early concrete content (e.g., ""3 yellow school buses"").
+- Use present‑tense, concise S V (+ O) sentences and common collocations (""X holds Y"", ""X sits on Y"", ""X walks past Y"").
+- Limit modifiers overall: at most two pre‑nominal modifiers and at most one short post‑nominal prepositional phrase OR one compact participial phrase. Permit one additional compact descriptor total when concise (e.g., ""man in red shirt holding trumpet"").
+- Avoid subordinate clauses and stacked prepositional phrases. Aim for noun‑dense captions with concrete tokens early; minimize function words that delay concrete tokens.
+
+OCR/token formatting notes
+- Prefer direct inclusion of short OCR tokens (e.g., shirt NIKE, sign STOP) when OCR rules are met. If quotes are required for clarity, keep them minimal; avoid verbose wrappers like ""sign reading"" unless necessary for grammar.
+- Do not copy phone numbers or long digit runs.
+
+Templates and micro‑patterns (use these as patterns, not literal fill)
+- [Color] [multiword_class] [verb] [object] → ""Red double‑decker bus passes street.""
+- [Numeral] [multiword_class] [verb] [modifier] → ""3 yellow school buses stop at corner.""
+- [multiword_class] [OCR_TEXT] [verb] [object] → ""Shirt NIKE worn by man.""
+- Allow natural article use when it preserves fluency and early high‑signal tokens: ""A young woman in red coat holds black umbrella.""
+
+Examples (follow these styles; do not output these examples)
+- Good: ""Young woman in red coat holds black umbrella.""
+- Good: ""White stop sign beside brick building.""
+- Good (OCR): ""Shirt NIKE worn by man.""
+- Bad: ""There is a group of people sitting at a table while others stand and talk."" (too generic/long)
+- Bad: ""Man leans on sign with 212‑625‑9212 printed."" (do not copy phone numbers / long digit runs)
+
+Deterministic tie‑breakers and limits
+- When subjects tie, prefer the subject that yields more distinct high‑signal tokens early; prefer people in close ties as noted above.
+- Limit caption length to 8–14 total words. Aim for ~9–12 content words when possible.
+- Enforce the visibility/OCR thresholds as specified. Do not invent unseen attributes or guess unreadable text.
+
+Final output rule reminder: produce exactly one one‑sentence caption, no extra text, within 8–14 words, following the visibility, OCR, salience, placement, and syntax rules above.",Man in orange shirt stands beside plastic-wrapped mannequin.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.3725793957710266,0.2852821946144104,8,False

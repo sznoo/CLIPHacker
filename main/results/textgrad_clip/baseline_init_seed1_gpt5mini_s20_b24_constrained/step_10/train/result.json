@@ -1,0 +1,117 @@
+{
+  "prompt": "Generate exactly one short, literal, factual caption (one sentence) describing only visible content in the image. Output exactly one sentence only—no extra text. Total words: 8–20.\n\nDefinitions\n- High‑signal tokens = a visible color or pattern; a concrete, specific object class (prefer multiword classes like \"stop sign\", \"fire hydrant\", \"rolling metal door\"); a clear Arabic numeral count; a clothing/accessory; or legible text/logo copied exactly (only when prominent as defined below).\n- \"Content words\" = all words except a single leading article (a/an/the) if present.\n\nVisibility and prominence thresholds (use these deterministically)\n- Consider an object proposal \"clearly visible\" if it occupies ≥0.8% of the image area and detector/confidence ≥0.35.\n- Copy legible text/logo exactly only if OCR confidence ≥0.60 and its bounding box area ≥1.5% of the image; otherwise do not include small/unclear text.\n- Treat counts/numerals as visible only if digits are clearly legible or clearly present on an object.\n\nCore rules (follow unless doing so breaks grammar or yields an unnatural sentence)\n1. Early high‑signal placement: require at least one high‑signal token within the first four content words. If two distinct high‑signal tokens are clearly visible (per thresholds), require both to appear within the first five content words. Ignore a single leading article when counting content words.\n2. Subject selection by salience: choose the primary subject using a salience preference that favors large, high‑confidence foreground objects: area (strongest) > detector confidence > closeness to center > local contrast. If two candidates score within 5%, pick the one that allows more distinct high‑signal tokens early.\n3. Specific class preference: use the most specific available concrete class (prefer multiword classes). Fall back to a specific single‑word class only if no more specific label is visible.\n4. Legible text/logo rule: copy visible text or logos exactly only when they meet the prominence thresholds above; place such text early if it is prominent and central to the subject, integrating it grammatically (e.g., \"sign reading 'OPEN'\" or \"shirt with 'NYC'\").\n5. Color and pattern: prefer color or pattern adjectives directly before their noun (e.g., \"red bicycle\"), but allow \"noun with [color]\" when necessary to keep a high‑signal token early or to preserve grammar.\n6. Numerals and counts: always use Arabic numerals and place them early when they are clearly visible and prominent.\n7. Syntax and fluency: prefer a short present‑tense subject + verb sentence using common collocations (e.g., \"X sits on Y\", \"X holds Y\", \"X leans against Y\"). A bare noun phrase is allowed only if any verb would push required high‑signal tokens past their allowed positions. Always prioritize grammatical, natural phrasing over rigid placement.\n8. Openings: avoid generic openings (\"There is\", \"A group of\", \"Some people\") unless no confident specific subject can be identified or a generic opening yields a more natural, grammatical caption.\n9. Compact second descriptor allowed: you may include a brief second descriptor or prepositional phrase (e.g., \"Red truck by garage\", \"Woman in blue jacket, holding a phone\") if it adds a distinct high‑signal token and keeps total words ≤20.\n10. Tie resolution: when multiple reasonable captions tie, prefer the caption containing the greater number of distinct high‑signal tokens within the early content window.\n\nWord‑choice guidance\n- Prefer common color and class words (e.g., red, blue, black, bicycle, truck, dog) over rare synonyms.\n- Aim for about 9–14 content words but remain within the 8–20 total word limit.\n\nOutput exactly one sentence only—no extra text.",
+  "prompt_id": "textgrad_122bd83e60",
+  "split_csv": "data/splits/flickr30k_main_seed1_train.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_10/train/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_10/train/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_10/train/scores.csv",
+  "summary": {
+    "n": 24,
+    "mean_clip": 0.3283825491865476,
+    "mean_siglip": 0.18916737815986073,
+    "mean_caption_len": 13.75,
+    "generic_rate": 0.041666666666666664,
+    "mean_delta_clip": 0.0020610696325699535,
+    "mean_delta_siglip": -0.005666090796391167,
+    "clip_win_rate": 0.625,
+    "siglip_win_rate": 0.4583333333333333
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_018651",
+      "caption": "Man in straw hat holds oranges near bicycle with red seat.",
+      "clip_score": 0.3253712058067322,
+      "siglip_score": 0.1760320663452148,
+      "delta_clip": -0.0768524706363678,
+      "delta_siglip": -0.020511612296104403
+    },
+    {
+      "image_id": "flickr30k_test_021782",
+      "caption": "Man leans against a yellow sign with phone number (212)625-9212.",
+      "clip_score": 0.2937502562999725,
+      "siglip_score": 0.1110808476805687,
+      "delta_clip": -0.04569783806800842,
+      "delta_siglip": -0.08994439989328382
+    },
+    {
+      "image_id": "flickr30k_test_016046",
+      "caption": "Two women stand at a table with a yellow basin, while a group of people sit nearby under trees.",
+      "clip_score": 0.3122937977313995,
+      "siglip_score": 0.1917280554771423,
+      "delta_clip": -0.025197178125381525,
+      "delta_siglip": 0.03273451328277591
+    },
+    {
+      "image_id": "flickr30k_test_029272",
+      "caption": "Man in black shirt and gray pants jumps on stage while children watch.",
+      "clip_score": 0.3162670135498047,
+      "siglip_score": 0.1734861135482788,
+      "delta_clip": -0.022655248641967718,
+      "delta_siglip": -0.011005222797393799
+    },
+    {
+      "image_id": "flickr30k_test_019300",
+      "caption": "A man in a white shirt and blue shorts climbs a wooden roof frame under a clear blue sky.",
+      "clip_score": 0.3170686364173889,
+      "siglip_score": 0.1633673757314682,
+      "delta_clip": -0.014493286609649658,
+      "delta_siglip": 0.0524372979998589
+    },
+    {
+      "image_id": "flickr30k_test_001002",
+      "caption": "Person in traditional hat and scarf sits on colorful blankets, holding a sword.",
+      "clip_score": 0.3456014394760132,
+      "siglip_score": 0.1554428189992904,
+      "delta_clip": -0.013309478759765625,
+      "delta_siglip": -0.0767379850149155
+    },
+    {
+      "image_id": "flickr30k_test_000704",
+      "caption": "Man in white shirt sings into microphone while another man sits beside a drum.",
+      "clip_score": 0.2653465867042541,
+      "siglip_score": 0.1533651202917099,
+      "delta_clip": -0.011529982089996393,
+      "delta_siglip": -0.006648153066635104
+    },
+    {
+      "image_id": "flickr30k_test_013831",
+      "caption": "Black-and-white dog leaps over red agility hurdle on grass field.",
+      "clip_score": 0.3465490341186523,
+      "siglip_score": 0.1428218930959701,
+      "delta_clip": -0.009997338056564387,
+      "delta_siglip": 0.009274318814277593
+    },
+    {
+      "image_id": "flickr30k_test_030218",
+      "caption": "Man with long white hair plays a flute while standing on a sidewalk near a building.",
+      "clip_score": 0.3461060225963592,
+      "siglip_score": 0.2291973233222961,
+      "delta_clip": -0.007989376783371027,
+      "delta_siglip": 0.006591200828552191
+    },
+    {
+      "image_id": "flickr30k_test_014348",
+      "caption": "A girl in a red jersey with the number 10 swings a bat at a softball.",
+      "clip_score": 0.2924221158027649,
+      "siglip_score": 0.160354197025299,
+      "delta_clip": 0.00026607513427739926,
+      "delta_siglip": 0.004850625991821289
+    },
+    {
+      "image_id": "flickr30k_test_025508",
+      "caption": "A person performs a backflip above a sand dune under a clear blue sky.",
+      "clip_score": 0.3666228055953979,
+      "siglip_score": 0.2110371738672256,
+      "delta_clip": 0.0009438991546630859,
+      "delta_siglip": 0.016554191708564703
+    },
+    {
+      "image_id": "flickr30k_test_030359",
+      "caption": "Goalkeeper in red dives as players in yellow and white compete for the ball near the goal.",
+      "clip_score": 0.2963808178901672,
+      "siglip_score": 0.1461477130651474,
+      "delta_clip": 0.0041473507881164,
+      "delta_siglip": -0.007665619254112188
+    }
+  ]
+}

@@ -1,0 +1,117 @@
+{
+  "prompt": "Output exactly two lines only.\n\nLine 1 (tags) — required format and hard rules:\n- Provide 2–5 comma-separated tokens (lower-case). Prefer exactly 3 tags when visually possible: main noun first, then 1–2 highly discriminative co-objects. No punctuation except commas.\n- Tokens must be common nouns or single-word simple adjectives used only as visible attributes (dog, child, car, red, small). Multiword object phrases that are visually fused are allowed as a single token (e.g., \"wine bottle\", \"traffic light\").\n- At least 2 tokens must be nouns (including the main noun). At most 1 token may be a visible attribute (color/size). No verbs, proper nouns, brand names, inferred facts, emotions, events, or dates.\n- Deduplicate tags; do not use near-synonyms. Order tags by salience (most discriminative first). Prefer compact, high-information nouns (2–4 tokens ideal).\n- Attribute inclusion rule: only add a color/size attribute to tags if detector/segmenter confidence for that attribute exceeds 75% (pixel coverage or top detection confidence). If attribute confidence <75%, omit the attribute from tags. If detectors are unavailable, default to conservative omission.\n\nLine 2 (caption) — required format and hard rules:\n- Either (A) one factual short sentence in present simple/progressive of 7–14 words, OR (B) a 2–3 word fallback caption (main noun + visible location) when a compliant 7–14 word caption would require guessing. If tags cannot be produced reliably, Line 2 must be exactly \"image unclear\".\n- The main noun from Line 1 must appear verbatim in token positions 1–3 of Line 2 (hard requirement).\n- Require at least two exact token overlaps between Line 1 and Line 2 for any non-fallback caption; one overlap must be the main noun. All nouns appearing in the caption (other than allowed prepositions/articles) must appear verbatim in Line 1. The only allowed additional words not in tags are prepositions, determiners, and an optional single period at sentence-end.\n- If Line 1 contains a numeric count, reflect it correctly in the caption with correct morphology (e.g., \"1 child stands\", \"2 children stand\").\n- Include at most one clearly visible color/size and at most one simple spatial relation/preposition (on, in, near, by, in front of, behind). Never introduce an attribute in the caption that is not present in tags.\n- No punctuation except commas in Line 1 and an optional single period at the end of Line 2.\n\nLexical anchoring and anti-hallucination (HARD CONSTRAINTS):\n- No substantive noun may appear in the caption unless it appears verbatim in Line 1 tags. Location nouns are considered substantive; they must be present in tags or supported by a high-confidence detector output before use.\n- If an attribute appears in tags, it must appear verbatim in the caption. Conversely, a caption must not introduce any attribute token not in tags.\n- If two reliable overlaps (including main noun) cannot be produced without guessing, produce the 2–3 word fallback (main noun + visible location) or, if tags cannot be trusted, output \"image unclear\".\n- Forbidden: proper nouns, inferred facts, emotions, dates, brand names.\n\nCandidate generation and templates (required):\n- Internally generate N = 12 diverse compliant candidates before returning output.\n- Force at least two exact overlaps when constructing each non-fallback candidate. If a candidate cannot meet overlap requirements without guessing, make it the fallback variant instead.\n- Use these deterministic templates (prefer detector-proposed nouns when available). Always try forced-adjacency templates first:\n  1) Forced adjacency: \"[main noun] [co-object]\" adjacency phrase -> \"[main noun] [verb] [preposition] [co-object]\" (ensure noun phrase adjacency appears in caption).\n  2) Main+co-object: \"[main noun] with [co-object] on/in [location]\" (only if location noun is in tags).\n  3) Attribute-aware: \"[main noun] [verb] [attribute] [co-object]\" (only if attribute in tags and confidence ≥75%).\n  4) Spatial variant: \"[main noun] [verb] [preposition] [object]\" (object must be in tags).\n  5) Count-aware: \"[count] [main-noun plural] [verb] [preposition] [object]\" (if numeric count in tags).\n  6) Compact fallback: \"[main noun] [location]\" (2–3 word fallback).\n  7) Detector compound: use detector-proposed compound noun adjacent to main noun (e.g., \"girl skateboard\" -> \"girl on skateboard\") if both tokens are in tags.\n- When building candidates, ensure at least two exact overlaps per non-fallback candidate; prefer adjacency of two tag tokens as an exact phrase.\n\nProxy scoring, adjacency bonus, and reranking:\n- If CLIP scorer is available: normalize CLIP scores across candidates and compute final_score = 0.95 * normalized_CLIP + 0.05 * normalized_proxy. Use CLIP as primary signal.\n- If CLIP unavailable: compute proxy_score to heavily favor exact overlaps, adjacency, and main noun position:\n  proxy_score = 12*(main-noun overlap: 1 if present) \n               +10*(each additional exact overlap)\n               +6*(attribute overlap present)\n               +6*(adjacency bonus: +6 if any two tag tokens appear adjacent as exact phrase)\n               +4*(positional_bonus: +4 if main noun at position 1, +1 if at position 2–3)\n               -5*(generic-noun penalty if tag ∈ {person, people, man, woman} used when a more specific detector proposal is available)\n               -2*(duplicates-collapsed penalty)\n               -2*(each tag beyond 3)\n               -1*(each caption word beyond 12)\n- Normalize proxy_score across candidates before use. Break ties by: more exact overlaps, fewer tags, main noun at position 1.\n\nScoring adjustments and heuristics:\n- Reduce the penalty for tags >3 to allow one extra discriminative noun when detector confidence is high (penalty = -2 per tag beyond 3).\n- Soften the generic-person penalty to -5 (still discourage generic nouns but allow specific detector-driven replacements).\n- Strongly prefer candidates with adjacent phrase overlap and main noun at position 1 (adjacency and position bonuses above).\n- If CLIP is available, prefer increasing CLIP weight up to 0.98 for stability in retraining runs; otherwise rely on the proxy formula above.\n\nDeterministic final self-check pipeline (must pass before returning output):\nA) Tags format check: 2–5 comma-separated lower-case tokens, ≤1 attribute token, deduplicated.\nB) Caption validity: 7–14 words OR valid 2–3 word fallback OR exactly \"image unclear\".\nC) Overlap check: ≥2 exact token overlaps between Line 1 and Line 2; one must be main noun.\nD) Noun containment: all nouns in caption ∈ tags (except allowed prepositions/determiners).\nE) Attribute mirroring & confidence: any attribute in tags appears verbatim in caption; attributes were only added to tags if detector confidence ≥75%.\nF) Forbidden content check: no proper nouns, inferred facts, emotions, dates, brand names; no punctuation except allowed.\n- If any test fails, reject the candidate. If no candidate passes after reranking, return the most reliable tags possible (2–5 tokens) on Line 1 and Line 2 = \"image unclear\".\n\nFallback and conservatism:\n- Prefer \"image unclear\" over inventing low-confidence specifics. If fewer than 2 high-confidence nouns are available, use the compact 2–3 word fallback (main noun + visible location) or output \"image unclear\".\n- When tags contain an attribute with confidence <75% or attribute is unsure, do not include the attribute in tags nor in captions.\n\nOperational recommendations:\n- Seed Line 1 tags from top-3 detector outputs by confidence when available, filtering for discriminative nouns (prefer \"trumpet\" over \"person\" when confident). If detector subclass confidence is low, keep the safe concrete tag (\"person\") but mark for fallback.\n- Log examples with large negative delta_clip for later analysis and adaptive threshold tuning (raise attribute threshold or relax tag-length penalties when necessary).\n- Maintain deterministic behavior: always follow the candidate templates and the final self-check pipeline exactly.\n\nOutput requirement reminder:\n- The VLM must output exactly two lines: Line 1 = tags (2–5 comma-separated tokens, prefer 3). Line 2 = caption (7–14 words) OR 2–3 word fallback OR \"image unclear\". No extra lines or commentary.",
+  "prompt_id": "textgrad_ed8ca79cb9",
+  "split_csv": "data/splits/flickr30k_main_seed1_val.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24/step_06/val/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24/step_06/val/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24/step_06/val/scores.csv",
+  "summary": {
+    "n": 150,
+    "mean_clip": 0.28412053803602855,
+    "mean_siglip": 0.15198928525050479,
+    "mean_caption_len": 9.906666666666666,
+    "generic_rate": 0.0,
+    "mean_delta_clip": -0.04044491027792295,
+    "mean_delta_siglip": -0.04685126043856144,
+    "clip_win_rate": 0.12,
+    "siglip_win_rate": 0.12333333333333334
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_023900",
+      "caption": "utiah, skewer, vendor\nutiah vendor holds skewer in front of stall",
+      "clip_score": 0.2121698558330536,
+      "siglip_score": 0.2696994543075561,
+      "delta_clip": -0.1496367752552032,
+      "delta_siglip": -0.02111616730690008
+    },
+    {
+      "image_id": "flickr30k_test_011250",
+      "caption": "child, boy, grass\ntwo children stand near yellow tape on grass",
+      "clip_score": 0.2684069573879242,
+      "siglip_score": 0.1945170760154724,
+      "delta_clip": -0.1441868245601654,
+      "delta_siglip": -0.025998547673225375
+    },
+    {
+      "image_id": "flickr30k_test_020669",
+      "caption": "person, tree, grass\nperson sits on grass near tree",
+      "clip_score": 0.2371590435504913,
+      "siglip_score": 0.1331132650375366,
+      "delta_clip": -0.11921462416648868,
+      "delta_siglip": -0.0685256868600845
+    },
+    {
+      "image_id": "flickr30k_test_000051",
+      "caption": "person, wooden board, mat\nperson kneels on mat holding wooden board",
+      "clip_score": 0.2513934373855591,
+      "siglip_score": 0.1246862262487411,
+      "delta_clip": -0.1172182559967041,
+      "delta_siglip": -0.06148731708526611
+    },
+    {
+      "image_id": "flickr30k_test_003587",
+      "caption": "man, jacket, cap\nman in jacket and cap sits",
+      "clip_score": 0.2501108646392822,
+      "siglip_score": 0.0970969051122665,
+      "delta_clip": -0.11517608165740967,
+      "delta_siglip": -0.1672071665525437
+    },
+    {
+      "image_id": "flickr30k_test_000585",
+      "caption": "crane workers construction\ncrane workers stand near building",
+      "clip_score": 0.2235152274370193,
+      "siglip_score": 0.0926084145903587,
+      "delta_clip": -0.1134865432977677,
+      "delta_siglip": -0.11532644182443619
+    },
+    {
+      "image_id": "flickr30k_test_010850",
+      "caption": "man, person, coat\nman in coat stands near person",
+      "clip_score": 0.2018864005804062,
+      "siglip_score": 0.0994199812412262,
+      "delta_clip": -0.10989190638065333,
+      "delta_siglip": -0.12156406044960019
+    },
+    {
+      "image_id": "flickr30k_test_023900",
+      "caption": "utiah, skewer, vendor\nutiah vendor holds skewer in front of stall",
+      "clip_score": 0.2121698558330536,
+      "siglip_score": 0.2696994543075561,
+      "delta_clip": -0.10779139399528503,
+      "delta_siglip": 0.05220252275466919
+    },
+    {
+      "image_id": "flickr30k_test_028189",
+      "caption": "man, insulation, grass\nman walks near insulation in grass",
+      "clip_score": 0.2445826828479766,
+      "siglip_score": 0.1818700283765792,
+      "delta_clip": -0.1061598360538483,
+      "delta_siglip": -0.07996572554111489
+    },
+    {
+      "image_id": "flickr30k_test_011250",
+      "caption": "child, boy, grass\ntwo children stand near yellow tape on grass",
+      "clip_score": 0.2684069573879242,
+      "siglip_score": 0.1945170760154724,
+      "delta_clip": -0.1042158305644989,
+      "delta_siglip": -0.053823709487914984
+    },
+    {
+      "image_id": "flickr30k_test_000585",
+      "caption": "crane workers construction\ncrane workers stand near building",
+      "clip_score": 0.2235152274370193,
+      "siglip_score": 0.0926084145903587,
+      "delta_clip": -0.10250227153301239,
+      "delta_siglip": -0.059999860823154394
+    },
+    {
+      "image_id": "flickr30k_test_009512",
+      "caption": "girl, outfit, tent\ngirls in red outfit stand near tent",
+      "clip_score": 0.2769151926040649,
+      "siglip_score": 0.1039841845631599,
+      "delta_clip": -0.10227656364440924,
+      "delta_siglip": -0.0844064876437187
+    }
+  ]
+}

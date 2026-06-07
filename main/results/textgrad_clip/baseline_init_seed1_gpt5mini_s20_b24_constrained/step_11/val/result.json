@@ -1,0 +1,117 @@
+{
+  "prompt": "Generate exactly one short, literal, factual caption (one grammatically correct sentence) describing only visible content in the image. Output exactly one sentence only—no extra text. Total words: 8–14.\n\nKey definitions\n- High‑signal token = a visible color/pattern; a concrete, specific object class (prefer multiword classes like \"stop sign\", \"fire hydrant\", \"rolling metal door\"); a clear Arabic numeral; a clothing/accessory; or legible text/logo copied exactly when it meets the OCR rules below.\n- Content words = all words except a single leading article (a/an/the) if present.\n\nVisibility and OCR (deterministic)\n- An object is \"clearly visible\" if area ≥1.5% of image OR (area ≥0.8% AND detector_confidence ≥0.45).\n- Copy legible text/logo exactly only if OCR_confidence ≥0.60 AND OCR_bbox_area ≥1.5% AND OCR_token_count ≤6 AND the text contains no run of ≥5 consecutive digits and does not match phone‑number patterns. When allowed, prefer copying the text/logo token directly (no wrapper) and place it early; if a wrapper is required for grammar, use the shortest form (e.g., shirt NIKE or shirt \"NIKE\").\n- Treat counts/digits as visible only if digits meet the OCR/visibility rules above. Use Arabic numerals.\n\nSalience and subject selection (deterministic)\n- Salience = 0.5*(area_norm) + 0.3*(detector_confidence) + 0.15*(center_score) + 0.05*(local_contrast). If area >40% of image, multiply its area_norm by 0.8 (not 0.5) before computing Salience; if a large-area candidate has detector_confidence ≥0.60 or substantially higher local_contrast, allow it to remain competitive (foreground rescue).\n- Choose the subject with highest salience. If two candidates are within 5% salience, prefer the one that yields more distinct high‑signal tokens early (color, multiword class, accessory, number, or short OCR token).\n\nPlacement and high‑signal token rules (deterministic)\n- First content token must be a high‑signal token (color/multiword class/number/text) unless impossible. Require at least one high‑signal token within the first 2 content words. Allow exactly one deterministic exception only if grammaticality is impossible; in that case the token must be within the first 4 content words.\n- If two distinct high‑signal tokens are clearly visible, require both within the first 4 content words unless that makes the sentence ungrammatical; otherwise place one before the verb and the other immediately after it.\n- Do not precede the first high‑signal token with verbs or extraneous function words (omit or drop the leading article if it delays high‑signal tokens).\n- When a visible numeral/count meets visibility rules, use an Arabic numeral and place it early (within first 2–4 content words).\n\nClass, wording and modifier constraints\n- Start with a concise noun phrase: prefer [Color/Number/Multword‑class] + [class]. Prefer multiword concrete classes when available.\n- Use present‑tense, concise S + V (+ O) sentences and common collocations (\"X holds Y\", \"X sits on Y\", \"X leans against Y\").\n- Limit modifiers: at most one pre‑nominal adjective (color/pattern/accessory) and at most one short post‑nominal prepositional phrase or one compact participial phrase. Allow one compact extra descriptor overall. Avoid subordinate clauses and stacked prepositional phrases.\n- Aim for noun‑dense captions with concrete tokens early; minimize function words that delay concrete tokens.\n\nOCR/token formatting notes\n- Prefer direct inclusion of short OCR tokens (e.g., shirt NIKE, sign STOP) without extra wrapper words when OCR rules are met. If quotes are required for clarity, keep them minimal; avoid verbose wrappers like \"sign reading\" unless necessary for grammar. Do not copy phone numbers or long digit sequences.\n\nTemplates and micro‑patterns (use these as patterns, not literal fill)\n- [Color] [multiword_class] [verb] [object] → \"Red double-decker bus passes street.\"\n- [Numeral] [multiword_class] [verb] [modifier] → \"3 yellow school buses stop at corner.\"\n- [multiword_class] [OCR_TEXT] [verb] [object] → \"Shirt NIKE worn by young man.\"\n\nExamples (follow these styles; do not output these examples)\n- Good: \"Young woman in red coat holds black umbrella.\"\n- Good: \"White stop sign beside brick building.\"\n- Good (OCR): \"Shirt NIKE worn by man.\"\n- Bad: \"There is a group of people sitting at a table while others stand and talk.\" (too generic/long)\n- Bad: \"Man leans on sign with 212-625-9212 printed.\" (do not copy phone numbers / low‑confidence OCR)\n\nDeterministic tie‑breakers and limits\n- When subjects tie, prefer the subject that yields more distinct high‑signal tokens early.\n- Limit caption length to 8–14 total words. Aim for ~9–12 content words when possible.\n- Enforce the visibility/OCR thresholds strictly. Do not invent unseen attributes or guess unreadable text.\n\nFinal output rule reminder: produce exactly one one‑sentence caption, no extra text, within 8–14 words, following the deterministic visibility, OCR, salience, placement, and syntax rules above.",
+  "prompt_id": "textgrad_8617f977b2",
+  "split_csv": "data/splits/flickr30k_main_seed1_val.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_11/val/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_11/val/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_11/val/scores.csv",
+  "summary": {
+    "n": 150,
+    "mean_clip": 0.3119945080081622,
+    "mean_siglip": 0.18450300432741643,
+    "mean_caption_len": 10.393333333333333,
+    "generic_rate": 0.0,
+    "mean_delta_clip": -0.012570940305789311,
+    "mean_delta_siglip": -0.01433754136164983,
+    "clip_win_rate": 0.35,
+    "siglip_win_rate": 0.36333333333333334
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_011250",
+      "caption": "Two boys stand in grass near yellow caution tape.",
+      "clip_score": 0.3028560280799866,
+      "siglip_score": 0.2088349163532257,
+      "delta_clip": -0.10973775386810303,
+      "delta_siglip": -0.01168070733547208
+    },
+    {
+      "image_id": "flickr30k_test_003587",
+      "caption": "Man in black jacket with number 3 cap leans forward.",
+      "clip_score": 0.2644639909267425,
+      "siglip_score": 0.2336145788431167,
+      "delta_clip": -0.1008229553699494,
+      "delta_siglip": -0.030689492821693476
+    },
+    {
+      "image_id": "flickr30k_test_023900",
+      "caption": "Man in dark shirt holds skewers at utiāh food stall.",
+      "clip_score": 0.2758245170116424,
+      "siglip_score": 0.1479742527008056,
+      "delta_clip": -0.08598211407661438,
+      "delta_siglip": -0.14284136891365057
+    },
+    {
+      "image_id": "flickr30k_test_005806",
+      "caption": "Woman in beige sweater packs clothes into open black suitcase.",
+      "clip_score": 0.2900846004486084,
+      "siglip_score": 0.1332746744155883,
+      "delta_clip": -0.08410942554473871,
+      "delta_siglip": -0.0776493847370148
+    },
+    {
+      "image_id": "flickr30k_test_026753",
+      "caption": "Man in black shirt with \"LOVE\" text grinds rail on inline skates.",
+      "clip_score": 0.248860627412796,
+      "siglip_score": 0.1859456598758697,
+      "delta_clip": -0.08273062109947202,
+      "delta_siglip": 0.028404653072357205
+    },
+    {
+      "image_id": "flickr30k_test_011286",
+      "caption": "Three people in orange shorts walk along rocky riverbank.",
+      "clip_score": 0.2790911793708801,
+      "siglip_score": 0.1892420947551727,
+      "delta_clip": -0.07866442203521729,
+      "delta_siglip": -0.03584381937980649
+    },
+    {
+      "image_id": "flickr30k_test_017698",
+      "caption": "Woman in black jacket holds clipboard near soldiers in camouflage uniforms.",
+      "clip_score": 0.2740916311740875,
+      "siglip_score": 0.1823735237121582,
+      "delta_clip": -0.07739463448524475,
+      "delta_siglip": -0.07766634225845337
+    },
+    {
+      "image_id": "flickr30k_test_026753",
+      "caption": "Man in black shirt with \"LOVE\" text grinds rail on inline skates.",
+      "clip_score": 0.248860627412796,
+      "siglip_score": 0.1859456598758697,
+      "delta_clip": -0.0749353468418121,
+      "delta_siglip": -0.034994378685951205
+    },
+    {
+      "image_id": "flickr30k_test_011250",
+      "caption": "Two boys stand in grass near yellow caution tape.",
+      "clip_score": 0.3028560280799866,
+      "siglip_score": 0.2088349163532257,
+      "delta_clip": -0.06976675987243652,
+      "delta_siglip": -0.03950586915016169
+    },
+    {
+      "image_id": "flickr30k_test_006161",
+      "caption": "Woman in green vest sweeps street as crowd lines sidewalk.",
+      "clip_score": 0.2707264721393585,
+      "siglip_score": 0.2080001980066299,
+      "delta_clip": -0.06725543737411499,
+      "delta_siglip": -0.03633956611156461
+    },
+    {
+      "image_id": "flickr30k_test_023317",
+      "caption": "Woman in pink jacket and white hat stands near guest services booth.",
+      "clip_score": 0.325378954410553,
+      "siglip_score": 0.2424737364053726,
+      "delta_clip": -0.06576895713806152,
+      "delta_siglip": 0.02408517897129059
+    },
+    {
+      "image_id": "flickr30k_test_017281",
+      "caption": "Man in beige jacket sits on folding chair near paint cans.",
+      "clip_score": 0.297800064086914,
+      "siglip_score": 0.2091286778450012,
+      "delta_clip": -0.06467652320861822,
+      "delta_siglip": -0.067724883556366
+    }
+  ]
+}

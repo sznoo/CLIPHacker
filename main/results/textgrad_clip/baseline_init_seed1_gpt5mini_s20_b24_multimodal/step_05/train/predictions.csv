@@ -1,0 +1,1417 @@
+split_id,method_id,run_id,order,dataset_index,image_id,image_relpath,reference_captions,prompt_id,prompt_name,prompt_text,caption,candidate_id,selected,model,temperature,top_p,max_new_tokens,generation_config
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_53a1516f54,1,18651,flickr30k_test_018651,images/flickr30k/flickr30k_test_018651.jpg,"[""A man in light brown hat, gray coat and a blue vest with a scooter built with baskets full of oranges"", ""A farmer is taking his oranges to the market to sell."", ""A man is standing with vegetables in barrels."", ""An old foreign man selling oranges."", ""Mexican man peddling fresh fruit.""]",textgrad_53a1516f54,TextGrad Step 5,"Output exactly one concise, information‑dense caption: a single grammatical sentence of comma‑separated short phrases. Use digits for counts; do not infer, hedge, paraphrase, or add anything not visually present. Output nothing else.
+
+Required phrase ordering (include an item only if visually verifiable; omit unverifiable items). Aim for ≤30 words; allow up to +10% length only to include a fully legible quoted text string or one necessary part‑level relation/background anchor.
+
+1) Start with: [digit] + subject noun(s) + spatial anchor.
+   - Deterministic spatial rule: compute subject centroid x; if x < 0.33 → ""left""; if 0.33 ≤ x ≤ 0.66 → ""center""; if x > 0.66 → ""right"".
+   - If subject width >60% image width, emit ""center"" regardless of centroid.
+   - If >5% of subject area lies outside image, append ""partially cropped at [top|bottom|left|right]"".
+   - Add depth token [foreground|midground|background] only if clear from overlap/relative scale; otherwise omit.
+
+2) Immediately after, include exactly one visible micro‑action/part phrase if any of these verifiable cues is present: visible limb‑object contact, object held in hand, visible deformation/pressure, object midair/off ground, clear gaze at a visible object, or motion blur on a limb. Use one of these templates only:
+   - ""[hand] [verb] [object]"" (e.g., ""right hand holding pole"")
+   - ""holding [object] with [hand]"" (e.g., ""holding violin with chin and right hand"")
+   - ""[body_part] [verb] [structure/object]"" (e.g., ""left foot on pedal"")
+   If none apply, include exactly ""no-action-visible"".
+
+3) Then include up to 1–3 high‑signal descriptor(s) chosen by strict priority (pick highest‑ranked verifiable candidates, break ties lexicographically):
+   A) Legible text — transcribe exact string only if every character is clearly readable; include it in quotes and localize (e.g., ""'LOEWE' on lower sill at left"").
+   B) Reflection/surface condition (e.g., ""wet pavement with reflections"", ""glass reflections"").
+   C) Material/texture (e.g., ""rusted metal"", ""woven straw"").
+   D) Distinctive accessory (e.g., ""white hard hat"", ""red pennant"").
+   E) Color (e.g., ""red sweatshirt"").
+   - Enforce ≤3 descriptors; if none verifiable, omit descriptors.
+
+4) If a person/object clearly interacts with another object/structure, include exactly one concise part‑level relation phrase using the template: ""[part] [verb] [object/structure]"" (e.g., ""right hand holding pole"", ""rear wheel off ground""). Include this only if contact/displacement is visually evident.
+
+5) Optionally include exactly one viewpoint token when obvious: {close-up, medium, wide, high-angle, low-angle}.
+
+6) Optionally include exactly one lighting token when obvious: {backlit, front-lit, rim-lit, long-shadow-left, long-shadow-right}.
+
+7) If a clear background anchor is visible, append one concise background noun phrase (single phrase, e.g., ""storefront window"", ""stone embankment"", ""Radio City marquee""). Omit if no clear anchor.
+
+Reflections vs. behind‑glass rule
+- If an element appears doubled, reversed, or overlayed on the glass plane without 3D occlusion → label as ""reflections"".
+- If objects clearly sit on the far side of the glass (shelf, mannequin, handbags) → label as ""on display behind glass"" or ""behind glass"".
+- If uncertain, omit both.
+
+Two‑pass verification (must run before emitting):
+a) Transcribe quoted text only if every character is readable; otherwise drop text token.
+b) Include a digit count only if each instance is clearly visible and ≥50% unobstructed; otherwise omit count.
+c) Include depth only if overlap/relative scale is unambiguous.
+d) Include ""partially cropped"" only if >5% of subject area is outside image.
+e) Drop any token failing verification and recheck sentence for grammaticality.
+
+Brevity & prioritization
+- If length limits force removal, prioritize tokens in this order: legible text → part‑level relation → background anchor → descriptors → viewpoint → lighting.
+- Use compact, active, factual phrasing and concrete nouns. Do not infer ages, emotions, roles, intent, or unseen attributes. Do not use vague quantifiers (""several"",""many"") — use digits only when clear.
+
+Style constraints
+- Single sentence, comma‑separated short phrases, no tags, no lists, no extra lines.
+- Use canonical labels (e.g., ""storefront window"", ""center""), consistent punctuation for quoted text.
+
+Canonical good examples (follow exact output format):
+- ""1 child left foreground, reaching toward storefront window, right hand touching glass, 'LOEWE' on lower sill at left, glass reflections, storefront window behind.""
+- ""1 woman center foreground, holding violin with chin and right hand, open instrument case on ground, medium, tiled underground passage behind.""
+- ""1 surfer center midground, crouching on surfboard, sharp turn with spray arc behind, sunlit green wave face, low-angle, ocean behind.""
+- ""5 dancers center foreground, standing in long line across crosswalk, red and white striped costumes, Radio City marquee above, street behind.""
+
+Follow these rules exactly to produce one precise caption.","1 man center foreground, right hand holding bicycle handlebar, wearing straw hat, gray jacket, blue shirt, oranges in woven baskets, red bicycle midground, ""COIFFURE ET BARBIER"" on glass behind, long-shadow-right, brick wall behind.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_53a1516f54,12,21351,flickr30k_test_021351,images/flickr30k/flickr30k_test_021351.jpg,"[""A woman dressed in all black standing in front of colorful picture playing a violin."", ""A woman dressed in black is playing the violin in front of some artwork."", ""A woman in black playing an instrument on the subway platform."", ""A woman on a bright street is playing the violin."", ""A lady performing in a underground train station""]",textgrad_53a1516f54,TextGrad Step 5,"Output exactly one concise, information‑dense caption: a single grammatical sentence of comma‑separated short phrases. Use digits for counts; do not infer, hedge, paraphrase, or add anything not visually present. Output nothing else.
+
+Required phrase ordering (include an item only if visually verifiable; omit unverifiable items). Aim for ≤30 words; allow up to +10% length only to include a fully legible quoted text string or one necessary part‑level relation/background anchor.
+
+1) Start with: [digit] + subject noun(s) + spatial anchor.
+   - Deterministic spatial rule: compute subject centroid x; if x < 0.33 → ""left""; if 0.33 ≤ x ≤ 0.66 → ""center""; if x > 0.66 → ""right"".
+   - If subject width >60% image width, emit ""center"" regardless of centroid.
+   - If >5% of subject area lies outside image, append ""partially cropped at [top|bottom|left|right]"".
+   - Add depth token [foreground|midground|background] only if clear from overlap/relative scale; otherwise omit.
+
+2) Immediately after, include exactly one visible micro‑action/part phrase if any of these verifiable cues is present: visible limb‑object contact, object held in hand, visible deformation/pressure, object midair/off ground, clear gaze at a visible object, or motion blur on a limb. Use one of these templates only:
+   - ""[hand] [verb] [object]"" (e.g., ""right hand holding pole"")
+   - ""holding [object] with [hand]"" (e.g., ""holding violin with chin and right hand"")
+   - ""[body_part] [verb] [structure/object]"" (e.g., ""left foot on pedal"")
+   If none apply, include exactly ""no-action-visible"".
+
+3) Then include up to 1–3 high‑signal descriptor(s) chosen by strict priority (pick highest‑ranked verifiable candidates, break ties lexicographically):
+   A) Legible text — transcribe exact string only if every character is clearly readable; include it in quotes and localize (e.g., ""'LOEWE' on lower sill at left"").
+   B) Reflection/surface condition (e.g., ""wet pavement with reflections"", ""glass reflections"").
+   C) Material/texture (e.g., ""rusted metal"", ""woven straw"").
+   D) Distinctive accessory (e.g., ""white hard hat"", ""red pennant"").
+   E) Color (e.g., ""red sweatshirt"").
+   - Enforce ≤3 descriptors; if none verifiable, omit descriptors.
+
+4) If a person/object clearly interacts with another object/structure, include exactly one concise part‑level relation phrase using the template: ""[part] [verb] [object/structure]"" (e.g., ""right hand holding pole"", ""rear wheel off ground""). Include this only if contact/displacement is visually evident.
+
+5) Optionally include exactly one viewpoint token when obvious: {close-up, medium, wide, high-angle, low-angle}.
+
+6) Optionally include exactly one lighting token when obvious: {backlit, front-lit, rim-lit, long-shadow-left, long-shadow-right}.
+
+7) If a clear background anchor is visible, append one concise background noun phrase (single phrase, e.g., ""storefront window"", ""stone embankment"", ""Radio City marquee""). Omit if no clear anchor.
+
+Reflections vs. behind‑glass rule
+- If an element appears doubled, reversed, or overlayed on the glass plane without 3D occlusion → label as ""reflections"".
+- If objects clearly sit on the far side of the glass (shelf, mannequin, handbags) → label as ""on display behind glass"" or ""behind glass"".
+- If uncertain, omit both.
+
+Two‑pass verification (must run before emitting):
+a) Transcribe quoted text only if every character is readable; otherwise drop text token.
+b) Include a digit count only if each instance is clearly visible and ≥50% unobstructed; otherwise omit count.
+c) Include depth only if overlap/relative scale is unambiguous.
+d) Include ""partially cropped"" only if >5% of subject area is outside image.
+e) Drop any token failing verification and recheck sentence for grammaticality.
+
+Brevity & prioritization
+- If length limits force removal, prioritize tokens in this order: legible text → part‑level relation → background anchor → descriptors → viewpoint → lighting.
+- Use compact, active, factual phrasing and concrete nouns. Do not infer ages, emotions, roles, intent, or unseen attributes. Do not use vague quantifiers (""several"",""many"") — use digits only when clear.
+
+Style constraints
+- Single sentence, comma‑separated short phrases, no tags, no lists, no extra lines.
+- Use canonical labels (e.g., ""storefront window"", ""center""), consistent punctuation for quoted text.
+
+Canonical good examples (follow exact output format):
+- ""1 child left foreground, reaching toward storefront window, right hand touching glass, 'LOEWE' on lower sill at left, glass reflections, storefront window behind.""
+- ""1 woman center foreground, holding violin with chin and right hand, open instrument case on ground, medium, tiled underground passage behind.""
+- ""1 surfer center midground, crouching on surfboard, sharp turn with spray arc behind, sunlit green wave face, low-angle, ocean behind.""
+- ""5 dancers center foreground, standing in long line across crosswalk, red and white striped costumes, Radio City marquee above, street behind.""
+
+Follow these rules exactly to produce one precise caption.","1 woman center foreground, holding violin with chin and right hand, black outfit, no-action-visible, abstract paintings on display behind, tiled underground passage behind.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_53a1516f54,21,12773,flickr30k_test_012773,images/flickr30k/flickr30k_test_012773.jpg,"[""A man in blue jeans is sitting on the shoulders of another person as he interacts with a woman performer on stage at a concert."", ""A woman with a microphone on a stage points the microphone at a man who is standing in the audience in front of her"", ""A fan sitting on someone's shoulders is waving to a woman on a stage that says Amnesty International."", ""Woman on stage at Amnesty International event exchanges gestures with man offstage."", ""A woman on stage points to a man holding up his hand""]",textgrad_53a1516f54,TextGrad Step 5,"Output exactly one concise, information‑dense caption: a single grammatical sentence of comma‑separated short phrases. Use digits for counts; do not infer, hedge, paraphrase, or add anything not visually present. Output nothing else.
+
+Required phrase ordering (include an item only if visually verifiable; omit unverifiable items). Aim for ≤30 words; allow up to +10% length only to include a fully legible quoted text string or one necessary part‑level relation/background anchor.
+
+1) Start with: [digit] + subject noun(s) + spatial anchor.
+   - Deterministic spatial rule: compute subject centroid x; if x < 0.33 → ""left""; if 0.33 ≤ x ≤ 0.66 → ""center""; if x > 0.66 → ""right"".
+   - If subject width >60% image width, emit ""center"" regardless of centroid.
+   - If >5% of subject area lies outside image, append ""partially cropped at [top|bottom|left|right]"".
+   - Add depth token [foreground|midground|background] only if clear from overlap/relative scale; otherwise omit.
+
+2) Immediately after, include exactly one visible micro‑action/part phrase if any of these verifiable cues is present: visible limb‑object contact, object held in hand, visible deformation/pressure, object midair/off ground, clear gaze at a visible object, or motion blur on a limb. Use one of these templates only:
+   - ""[hand] [verb] [object]"" (e.g., ""right hand holding pole"")
+   - ""holding [object] with [hand]"" (e.g., ""holding violin with chin and right hand"")
+   - ""[body_part] [verb] [structure/object]"" (e.g., ""left foot on pedal"")
+   If none apply, include exactly ""no-action-visible"".
+
+3) Then include up to 1–3 high‑signal descriptor(s) chosen by strict priority (pick highest‑ranked verifiable candidates, break ties lexicographically):
+   A) Legible text — transcribe exact string only if every character is clearly readable; include it in quotes and localize (e.g., ""'LOEWE' on lower sill at left"").
+   B) Reflection/surface condition (e.g., ""wet pavement with reflections"", ""glass reflections"").
+   C) Material/texture (e.g., ""rusted metal"", ""woven straw"").
+   D) Distinctive accessory (e.g., ""white hard hat"", ""red pennant"").
+   E) Color (e.g., ""red sweatshirt"").
+   - Enforce ≤3 descriptors; if none verifiable, omit descriptors.
+
+4) If a person/object clearly interacts with another object/structure, include exactly one concise part‑level relation phrase using the template: ""[part] [verb] [object/structure]"" (e.g., ""right hand holding pole"", ""rear wheel off ground""). Include this only if contact/displacement is visually evident.
+
+5) Optionally include exactly one viewpoint token when obvious: {close-up, medium, wide, high-angle, low-angle}.
+
+6) Optionally include exactly one lighting token when obvious: {backlit, front-lit, rim-lit, long-shadow-left, long-shadow-right}.
+
+7) If a clear background anchor is visible, append one concise background noun phrase (single phrase, e.g., ""storefront window"", ""stone embankment"", ""Radio City marquee""). Omit if no clear anchor.
+
+Reflections vs. behind‑glass rule
+- If an element appears doubled, reversed, or overlayed on the glass plane without 3D occlusion → label as ""reflections"".
+- If objects clearly sit on the far side of the glass (shelf, mannequin, handbags) → label as ""on display behind glass"" or ""behind glass"".
+- If uncertain, omit both.
+
+Two‑pass verification (must run before emitting):
+a) Transcribe quoted text only if every character is readable; otherwise drop text token.
+b) Include a digit count only if each instance is clearly visible and ≥50% unobstructed; otherwise omit count.
+c) Include depth only if overlap/relative scale is unambiguous.
+d) Include ""partially cropped"" only if >5% of subject area is outside image.
+e) Drop any token failing verification and recheck sentence for grammaticality.
+
+Brevity & prioritization
+- If length limits force removal, prioritize tokens in this order: legible text → part‑level relation → background anchor → descriptors → viewpoint → lighting.
+- Use compact, active, factual phrasing and concrete nouns. Do not infer ages, emotions, roles, intent, or unseen attributes. Do not use vague quantifiers (""several"",""many"") — use digits only when clear.
+
+Style constraints
+- Single sentence, comma‑separated short phrases, no tags, no lists, no extra lines.
+- Use canonical labels (e.g., ""storefront window"", ""center""), consistent punctuation for quoted text.
+
+Canonical good examples (follow exact output format):
+- ""1 child left foreground, reaching toward storefront window, right hand touching glass, 'LOEWE' on lower sill at left, glass reflections, storefront window behind.""
+- ""1 woman center foreground, holding violin with chin and right hand, open instrument case on ground, medium, tiled underground passage behind.""
+- ""1 surfer center midground, crouching on surfboard, sharp turn with spray arc behind, sunlit green wave face, low-angle, ocean behind.""
+- ""5 dancers center foreground, standing in long line across crosswalk, red and white striped costumes, Radio City marquee above, street behind.""
+
+Follow these rules exactly to produce one precise caption.","1 man left foreground, right hand raised, blue jeans, brown belt, no-action-visible, Amnesty International banner background, stage lights above.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_53a1516f54,23,19904,flickr30k_test_019904,images/flickr30k/flickr30k_test_019904.jpg,"[""The man in the tan jacket is taking large steps as he walks past the off white building."", ""A well-dressed, shaven-head young man strides through railings past a restaurant."", ""A man wearing a tan jacket walks into Le Mignon in the afternoon."", ""A man walking across a bridge near a steak restaurant."", ""A bald man walking on a bridge.""]",textgrad_53a1516f54,TextGrad Step 5,"Output exactly one concise, information‑dense caption: a single grammatical sentence of comma‑separated short phrases. Use digits for counts; do not infer, hedge, paraphrase, or add anything not visually present. Output nothing else.
+
+Required phrase ordering (include an item only if visually verifiable; omit unverifiable items). Aim for ≤30 words; allow up to +10% length only to include a fully legible quoted text string or one necessary part‑level relation/background anchor.
+
+1) Start with: [digit] + subject noun(s) + spatial anchor.
+   - Deterministic spatial rule: compute subject centroid x; if x < 0.33 → ""left""; if 0.33 ≤ x ≤ 0.66 → ""center""; if x > 0.66 → ""right"".
+   - If subject width >60% image width, emit ""center"" regardless of centroid.
+   - If >5% of subject area lies outside image, append ""partially cropped at [top|bottom|left|right]"".
+   - Add depth token [foreground|midground|background] only if clear from overlap/relative scale; otherwise omit.
+
+2) Immediately after, include exactly one visible micro‑action/part phrase if any of these verifiable cues is present: visible limb‑object contact, object held in hand, visible deformation/pressure, object midair/off ground, clear gaze at a visible object, or motion blur on a limb. Use one of these templates only:
+   - ""[hand] [verb] [object]"" (e.g., ""right hand holding pole"")
+   - ""holding [object] with [hand]"" (e.g., ""holding violin with chin and right hand"")
+   - ""[body_part] [verb] [structure/object]"" (e.g., ""left foot on pedal"")
+   If none apply, include exactly ""no-action-visible"".
+
+3) Then include up to 1–3 high‑signal descriptor(s) chosen by strict priority (pick highest‑ranked verifiable candidates, break ties lexicographically):
+   A) Legible text — transcribe exact string only if every character is clearly readable; include it in quotes and localize (e.g., ""'LOEWE' on lower sill at left"").
+   B) Reflection/surface condition (e.g., ""wet pavement with reflections"", ""glass reflections"").
+   C) Material/texture (e.g., ""rusted metal"", ""woven straw"").
+   D) Distinctive accessory (e.g., ""white hard hat"", ""red pennant"").
+   E) Color (e.g., ""red sweatshirt"").
+   - Enforce ≤3 descriptors; if none verifiable, omit descriptors.
+
+4) If a person/object clearly interacts with another object/structure, include exactly one concise part‑level relation phrase using the template: ""[part] [verb] [object/structure]"" (e.g., ""right hand holding pole"", ""rear wheel off ground""). Include this only if contact/displacement is visually evident.
+
+5) Optionally include exactly one viewpoint token when obvious: {close-up, medium, wide, high-angle, low-angle}.
+
+6) Optionally include exactly one lighting token when obvious: {backlit, front-lit, rim-lit, long-shadow-left, long-shadow-right}.
+
+7) If a clear background anchor is visible, append one concise background noun phrase (single phrase, e.g., ""storefront window"", ""stone embankment"", ""Radio City marquee""). Omit if no clear anchor.
+
+Reflections vs. behind‑glass rule
+- If an element appears doubled, reversed, or overlayed on the glass plane without 3D occlusion → label as ""reflections"".
+- If objects clearly sit on the far side of the glass (shelf, mannequin, handbags) → label as ""on display behind glass"" or ""behind glass"".
+- If uncertain, omit both.
+
+Two‑pass verification (must run before emitting):
+a) Transcribe quoted text only if every character is readable; otherwise drop text token.
+b) Include a digit count only if each instance is clearly visible and ≥50% unobstructed; otherwise omit count.
+c) Include depth only if overlap/relative scale is unambiguous.
+d) Include ""partially cropped"" only if >5% of subject area is outside image.
+e) Drop any token failing verification and recheck sentence for grammaticality.
+
+Brevity & prioritization
+- If length limits force removal, prioritize tokens in this order: legible text → part‑level relation → background anchor → descriptors → viewpoint → lighting.
+- Use compact, active, factual phrasing and concrete nouns. Do not infer ages, emotions, roles, intent, or unseen attributes. Do not use vague quantifiers (""several"",""many"") — use digits only when clear.
+
+Style constraints
+- Single sentence, comma‑separated short phrases, no tags, no lists, no extra lines.
+- Use canonical labels (e.g., ""storefront window"", ""center""), consistent punctuation for quoted text.
+
+Canonical good examples (follow exact output format):
+- ""1 child left foreground, reaching toward storefront window, right hand touching glass, 'LOEWE' on lower sill at left, glass reflections, storefront window behind.""
+- ""1 woman center foreground, holding violin with chin and right hand, open instrument case on ground, medium, tiled underground passage behind.""
+- ""1 surfer center midground, crouching on surfboard, sharp turn with spray arc behind, sunlit green wave face, low-angle, ocean behind.""
+- ""5 dancers center foreground, standing in long line across crosswalk, red and white striped costumes, Radio City marquee above, street behind.""
+
+Follow these rules exactly to produce one precise caption.","1 man center foreground, no-action-visible, tan jacket, dark pants, walking on bridge railing, ""LE MIGNON"" on red sign at left, ""LE MIGNON"" on red sign at right, brick wall background.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_53a1516f54,25,25138,flickr30k_test_025138,images/flickr30k/flickr30k_test_025138.jpg,"[""A woman in a black stocking hat and black leather jacket, talking to a man with a beard in a black fleece jacket."", ""A girl in a black sock hat is talking to a man wearing a blue shirt."", ""A woman and man talking to each other in front of a scenic lake."", ""People talking to one another outside near a fountain."", ""A woman in a black beanie looks up at a bearded man.""]",textgrad_53a1516f54,TextGrad Step 5,"Output exactly one concise, information‑dense caption: a single grammatical sentence of comma‑separated short phrases. Use digits for counts; do not infer, hedge, paraphrase, or add anything not visually present. Output nothing else.
+
+Required phrase ordering (include an item only if visually verifiable; omit unverifiable items). Aim for ≤30 words; allow up to +10% length only to include a fully legible quoted text string or one necessary part‑level relation/background anchor.
+
+1) Start with: [digit] + subject noun(s) + spatial anchor.
+   - Deterministic spatial rule: compute subject centroid x; if x < 0.33 → ""left""; if 0.33 ≤ x ≤ 0.66 → ""center""; if x > 0.66 → ""right"".
+   - If subject width >60% image width, emit ""center"" regardless of centroid.
+   - If >5% of subject area lies outside image, append ""partially cropped at [top|bottom|left|right]"".
+   - Add depth token [foreground|midground|background] only if clear from overlap/relative scale; otherwise omit.
+
+2) Immediately after, include exactly one visible micro‑action/part phrase if any of these verifiable cues is present: visible limb‑object contact, object held in hand, visible deformation/pressure, object midair/off ground, clear gaze at a visible object, or motion blur on a limb. Use one of these templates only:
+   - ""[hand] [verb] [object]"" (e.g., ""right hand holding pole"")
+   - ""holding [object] with [hand]"" (e.g., ""holding violin with chin and right hand"")
+   - ""[body_part] [verb] [structure/object]"" (e.g., ""left foot on pedal"")
+   If none apply, include exactly ""no-action-visible"".
+
+3) Then include up to 1–3 high‑signal descriptor(s) chosen by strict priority (pick highest‑ranked verifiable candidates, break ties lexicographically):
+   A) Legible text — transcribe exact string only if every character is clearly readable; include it in quotes and localize (e.g., ""'LOEWE' on lower sill at left"").
+   B) Reflection/surface condition (e.g., ""wet pavement with reflections"", ""glass reflections"").
+   C) Material/texture (e.g., ""rusted metal"", ""woven straw"").
+   D) Distinctive accessory (e.g., ""white hard hat"", ""red pennant"").
+   E) Color (e.g., ""red sweatshirt"").
+   - Enforce ≤3 descriptors; if none verifiable, omit descriptors.
+
+4) If a person/object clearly interacts with another object/structure, include exactly one concise part‑level relation phrase using the template: ""[part] [verb] [object/structure]"" (e.g., ""right hand holding pole"", ""rear wheel off ground""). Include this only if contact/displacement is visually evident.
+
+5) Optionally include exactly one viewpoint token when obvious: {close-up, medium, wide, high-angle, low-angle}.
+
+6) Optionally include exactly one lighting token when obvious: {backlit, front-lit, rim-lit, long-shadow-left, long-shadow-right}.
+
+7) If a clear background anchor is visible, append one concise background noun phrase (single phrase, e.g., ""storefront window"", ""stone embankment"", ""Radio City marquee""). Omit if no clear anchor.
+
+Reflections vs. behind‑glass rule
+- If an element appears doubled, reversed, or overlayed on the glass plane without 3D occlusion → label as ""reflections"".
+- If objects clearly sit on the far side of the glass (shelf, mannequin, handbags) → label as ""on display behind glass"" or ""behind glass"".
+- If uncertain, omit both.
+
+Two‑pass verification (must run before emitting):
+a) Transcribe quoted text only if every character is readable; otherwise drop text token.
+b) Include a digit count only if each instance is clearly visible and ≥50% unobstructed; otherwise omit count.
+c) Include depth only if overlap/relative scale is unambiguous.
+d) Include ""partially cropped"" only if >5% of subject area is outside image.
+e) Drop any token failing verification and recheck sentence for grammaticality.
+
+Brevity & prioritization
+- If length limits force removal, prioritize tokens in this order: legible text → part‑level relation → background anchor → descriptors → viewpoint → lighting.
+- Use compact, active, factual phrasing and concrete nouns. Do not infer ages, emotions, roles, intent, or unseen attributes. Do not use vague quantifiers (""several"",""many"") — use digits only when clear.
+
+Style constraints
+- Single sentence, comma‑separated short phrases, no tags, no lists, no extra lines.
+- Use canonical labels (e.g., ""storefront window"", ""center""), consistent punctuation for quoted text.
+
+Canonical good examples (follow exact output format):
+- ""1 child left foreground, reaching toward storefront window, right hand touching glass, 'LOEWE' on lower sill at left, glass reflections, storefront window behind.""
+- ""1 woman center foreground, holding violin with chin and right hand, open instrument case on ground, medium, tiled underground passage behind.""
+- ""1 surfer center midground, crouching on surfboard, sharp turn with spray arc behind, sunlit green wave face, low-angle, ocean behind.""
+- ""5 dancers center foreground, standing in long line across crosswalk, red and white striped costumes, Radio City marquee above, street behind.""
+
+Follow these rules exactly to produce one precise caption.","4 people center foreground, right hand holding railing, black beanie, dark jacket, dark hoodie, glasses, overcast sky behind, stone embankment behind.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_53a1516f54,26,69,flickr30k_test_000069,images/flickr30k/flickr30k_test_000069.jpg,"[""A man in a black coat walks past a red spaceship with a parking ticket stuck to its window."", ""A man is standing in front of a small red object that looks like a plane."", ""A man wearing a black jacket is walking towards the street."", ""A man in a black jacket is moving towards a street."", ""Man in black coat examining airplane nose.""]",textgrad_53a1516f54,TextGrad Step 5,"Output exactly one concise, information‑dense caption: a single grammatical sentence of comma‑separated short phrases. Use digits for counts; do not infer, hedge, paraphrase, or add anything not visually present. Output nothing else.
+
+Required phrase ordering (include an item only if visually verifiable; omit unverifiable items). Aim for ≤30 words; allow up to +10% length only to include a fully legible quoted text string or one necessary part‑level relation/background anchor.
+
+1) Start with: [digit] + subject noun(s) + spatial anchor.
+   - Deterministic spatial rule: compute subject centroid x; if x < 0.33 → ""left""; if 0.33 ≤ x ≤ 0.66 → ""center""; if x > 0.66 → ""right"".
+   - If subject width >60% image width, emit ""center"" regardless of centroid.
+   - If >5% of subject area lies outside image, append ""partially cropped at [top|bottom|left|right]"".
+   - Add depth token [foreground|midground|background] only if clear from overlap/relative scale; otherwise omit.
+
+2) Immediately after, include exactly one visible micro‑action/part phrase if any of these verifiable cues is present: visible limb‑object contact, object held in hand, visible deformation/pressure, object midair/off ground, clear gaze at a visible object, or motion blur on a limb. Use one of these templates only:
+   - ""[hand] [verb] [object]"" (e.g., ""right hand holding pole"")
+   - ""holding [object] with [hand]"" (e.g., ""holding violin with chin and right hand"")
+   - ""[body_part] [verb] [structure/object]"" (e.g., ""left foot on pedal"")
+   If none apply, include exactly ""no-action-visible"".
+
+3) Then include up to 1–3 high‑signal descriptor(s) chosen by strict priority (pick highest‑ranked verifiable candidates, break ties lexicographically):
+   A) Legible text — transcribe exact string only if every character is clearly readable; include it in quotes and localize (e.g., ""'LOEWE' on lower sill at left"").
+   B) Reflection/surface condition (e.g., ""wet pavement with reflections"", ""glass reflections"").
+   C) Material/texture (e.g., ""rusted metal"", ""woven straw"").
+   D) Distinctive accessory (e.g., ""white hard hat"", ""red pennant"").
+   E) Color (e.g., ""red sweatshirt"").
+   - Enforce ≤3 descriptors; if none verifiable, omit descriptors.
+
+4) If a person/object clearly interacts with another object/structure, include exactly one concise part‑level relation phrase using the template: ""[part] [verb] [object/structure]"" (e.g., ""right hand holding pole"", ""rear wheel off ground""). Include this only if contact/displacement is visually evident.
+
+5) Optionally include exactly one viewpoint token when obvious: {close-up, medium, wide, high-angle, low-angle}.
+
+6) Optionally include exactly one lighting token when obvious: {backlit, front-lit, rim-lit, long-shadow-left, long-shadow-right}.
+
+7) If a clear background anchor is visible, append one concise background noun phrase (single phrase, e.g., ""storefront window"", ""stone embankment"", ""Radio City marquee""). Omit if no clear anchor.
+
+Reflections vs. behind‑glass rule
+- If an element appears doubled, reversed, or overlayed on the glass plane without 3D occlusion → label as ""reflections"".
+- If objects clearly sit on the far side of the glass (shelf, mannequin, handbags) → label as ""on display behind glass"" or ""behind glass"".
+- If uncertain, omit both.
+
+Two‑pass verification (must run before emitting):
+a) Transcribe quoted text only if every character is readable; otherwise drop text token.
+b) Include a digit count only if each instance is clearly visible and ≥50% unobstructed; otherwise omit count.
+c) Include depth only if overlap/relative scale is unambiguous.
+d) Include ""partially cropped"" only if >5% of subject area is outside image.
+e) Drop any token failing verification and recheck sentence for grammaticality.
+
+Brevity & prioritization
+- If length limits force removal, prioritize tokens in this order: legible text → part‑level relation → background anchor → descriptors → viewpoint → lighting.
+- Use compact, active, factual phrasing and concrete nouns. Do not infer ages, emotions, roles, intent, or unseen attributes. Do not use vague quantifiers (""several"",""many"") — use digits only when clear.
+
+Style constraints
+- Single sentence, comma‑separated short phrases, no tags, no lists, no extra lines.
+- Use canonical labels (e.g., ""storefront window"", ""center""), consistent punctuation for quoted text.
+
+Canonical good examples (follow exact output format):
+- ""1 child left foreground, reaching toward storefront window, right hand touching glass, 'LOEWE' on lower sill at left, glass reflections, storefront window behind.""
+- ""1 woman center foreground, holding violin with chin and right hand, open instrument case on ground, medium, tiled underground passage behind.""
+- ""1 surfer center midground, crouching on surfboard, sharp turn with spray arc behind, sunlit green wave face, low-angle, ocean behind.""
+- ""5 dancers center foreground, standing in long line across crosswalk, red and white striped costumes, Radio City marquee above, street behind.""
+
+Follow these rules exactly to produce one precise caption.","1 man center foreground, no-action-visible, red inflatable sculpture, street lamp right, building facade behind.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_53a1516f54,42,17741,flickr30k_test_017741,images/flickr30k/flickr30k_test_017741.jpg,"[""Two people sit on a bench overlooking a vast amount of windows."", ""Two people sitting on a bench in front of a large window."", ""Two people sitting looking at a glass wall."", ""Two people are siting on a black bench."", ""Two women sitting on a bench.""]",textgrad_53a1516f54,TextGrad Step 5,"Output exactly one concise, information‑dense caption: a single grammatical sentence of comma‑separated short phrases. Use digits for counts; do not infer, hedge, paraphrase, or add anything not visually present. Output nothing else.
+
+Required phrase ordering (include an item only if visually verifiable; omit unverifiable items). Aim for ≤30 words; allow up to +10% length only to include a fully legible quoted text string or one necessary part‑level relation/background anchor.
+
+1) Start with: [digit] + subject noun(s) + spatial anchor.
+   - Deterministic spatial rule: compute subject centroid x; if x < 0.33 → ""left""; if 0.33 ≤ x ≤ 0.66 → ""center""; if x > 0.66 → ""right"".
+   - If subject width >60% image width, emit ""center"" regardless of centroid.
+   - If >5% of subject area lies outside image, append ""partially cropped at [top|bottom|left|right]"".
+   - Add depth token [foreground|midground|background] only if clear from overlap/relative scale; otherwise omit.
+
+2) Immediately after, include exactly one visible micro‑action/part phrase if any of these verifiable cues is present: visible limb‑object contact, object held in hand, visible deformation/pressure, object midair/off ground, clear gaze at a visible object, or motion blur on a limb. Use one of these templates only:
+   - ""[hand] [verb] [object]"" (e.g., ""right hand holding pole"")
+   - ""holding [object] with [hand]"" (e.g., ""holding violin with chin and right hand"")
+   - ""[body_part] [verb] [structure/object]"" (e.g., ""left foot on pedal"")
+   If none apply, include exactly ""no-action-visible"".
+
+3) Then include up to 1–3 high‑signal descriptor(s) chosen by strict priority (pick highest‑ranked verifiable candidates, break ties lexicographically):
+   A) Legible text — transcribe exact string only if every character is clearly readable; include it in quotes and localize (e.g., ""'LOEWE' on lower sill at left"").
+   B) Reflection/surface condition (e.g., ""wet pavement with reflections"", ""glass reflections"").
+   C) Material/texture (e.g., ""rusted metal"", ""woven straw"").
+   D) Distinctive accessory (e.g., ""white hard hat"", ""red pennant"").
+   E) Color (e.g., ""red sweatshirt"").
+   - Enforce ≤3 descriptors; if none verifiable, omit descriptors.
+
+4) If a person/object clearly interacts with another object/structure, include exactly one concise part‑level relation phrase using the template: ""[part] [verb] [object/structure]"" (e.g., ""right hand holding pole"", ""rear wheel off ground""). Include this only if contact/displacement is visually evident.
+
+5) Optionally include exactly one viewpoint token when obvious: {close-up, medium, wide, high-angle, low-angle}.
+
+6) Optionally include exactly one lighting token when obvious: {backlit, front-lit, rim-lit, long-shadow-left, long-shadow-right}.
+
+7) If a clear background anchor is visible, append one concise background noun phrase (single phrase, e.g., ""storefront window"", ""stone embankment"", ""Radio City marquee""). Omit if no clear anchor.
+
+Reflections vs. behind‑glass rule
+- If an element appears doubled, reversed, or overlayed on the glass plane without 3D occlusion → label as ""reflections"".
+- If objects clearly sit on the far side of the glass (shelf, mannequin, handbags) → label as ""on display behind glass"" or ""behind glass"".
+- If uncertain, omit both.
+
+Two‑pass verification (must run before emitting):
+a) Transcribe quoted text only if every character is readable; otherwise drop text token.
+b) Include a digit count only if each instance is clearly visible and ≥50% unobstructed; otherwise omit count.
+c) Include depth only if overlap/relative scale is unambiguous.
+d) Include ""partially cropped"" only if >5% of subject area is outside image.
+e) Drop any token failing verification and recheck sentence for grammaticality.
+
+Brevity & prioritization
+- If length limits force removal, prioritize tokens in this order: legible text → part‑level relation → background anchor → descriptors → viewpoint → lighting.
+- Use compact, active, factual phrasing and concrete nouns. Do not infer ages, emotions, roles, intent, or unseen attributes. Do not use vague quantifiers (""several"",""many"") — use digits only when clear.
+
+Style constraints
+- Single sentence, comma‑separated short phrases, no tags, no lists, no extra lines.
+- Use canonical labels (e.g., ""storefront window"", ""center""), consistent punctuation for quoted text.
+
+Canonical good examples (follow exact output format):
+- ""1 child left foreground, reaching toward storefront window, right hand touching glass, 'LOEWE' on lower sill at left, glass reflections, storefront window behind.""
+- ""1 woman center foreground, holding violin with chin and right hand, open instrument case on ground, medium, tiled underground passage behind.""
+- ""1 surfer center midground, crouching on surfboard, sharp turn with spray arc behind, sunlit green wave face, low-angle, ocean behind.""
+- ""5 dancers center foreground, standing in long line across crosswalk, red and white striped costumes, Radio City marquee above, street behind.""
+
+Follow these rules exactly to produce one precise caption.","2 people center foreground, no-action-visible, seated on bench, glass reflections, large window behind.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_53a1516f54,48,7097,flickr30k_test_007097,images/flickr30k/flickr30k_test_007097.jpg,"[""A little boy in a tan shirt and shorts walking in an area with many gray mesh tables and chairs."", ""A group of people sitting in gray metal chairs with orange umbrellas in the background."", ""A young boy is on a patio crowded with metal tables and chairs and 2 yellow umbrellas."", ""A boy walking through chairs and tables at Au Bon Pain."", ""Lots of people are sitting at tables doing something.""]",textgrad_53a1516f54,TextGrad Step 5,"Output exactly one concise, information‑dense caption: a single grammatical sentence of comma‑separated short phrases. Use digits for counts; do not infer, hedge, paraphrase, or add anything not visually present. Output nothing else.
+
+Required phrase ordering (include an item only if visually verifiable; omit unverifiable items). Aim for ≤30 words; allow up to +10% length only to include a fully legible quoted text string or one necessary part‑level relation/background anchor.
+
+1) Start with: [digit] + subject noun(s) + spatial anchor.
+   - Deterministic spatial rule: compute subject centroid x; if x < 0.33 → ""left""; if 0.33 ≤ x ≤ 0.66 → ""center""; if x > 0.66 → ""right"".
+   - If subject width >60% image width, emit ""center"" regardless of centroid.
+   - If >5% of subject area lies outside image, append ""partially cropped at [top|bottom|left|right]"".
+   - Add depth token [foreground|midground|background] only if clear from overlap/relative scale; otherwise omit.
+
+2) Immediately after, include exactly one visible micro‑action/part phrase if any of these verifiable cues is present: visible limb‑object contact, object held in hand, visible deformation/pressure, object midair/off ground, clear gaze at a visible object, or motion blur on a limb. Use one of these templates only:
+   - ""[hand] [verb] [object]"" (e.g., ""right hand holding pole"")
+   - ""holding [object] with [hand]"" (e.g., ""holding violin with chin and right hand"")
+   - ""[body_part] [verb] [structure/object]"" (e.g., ""left foot on pedal"")
+   If none apply, include exactly ""no-action-visible"".
+
+3) Then include up to 1–3 high‑signal descriptor(s) chosen by strict priority (pick highest‑ranked verifiable candidates, break ties lexicographically):
+   A) Legible text — transcribe exact string only if every character is clearly readable; include it in quotes and localize (e.g., ""'LOEWE' on lower sill at left"").
+   B) Reflection/surface condition (e.g., ""wet pavement with reflections"", ""glass reflections"").
+   C) Material/texture (e.g., ""rusted metal"", ""woven straw"").
+   D) Distinctive accessory (e.g., ""white hard hat"", ""red pennant"").
+   E) Color (e.g., ""red sweatshirt"").
+   - Enforce ≤3 descriptors; if none verifiable, omit descriptors.
+
+4) If a person/object clearly interacts with another object/structure, include exactly one concise part‑level relation phrase using the template: ""[part] [verb] [object/structure]"" (e.g., ""right hand holding pole"", ""rear wheel off ground""). Include this only if contact/displacement is visually evident.
+
+5) Optionally include exactly one viewpoint token when obvious: {close-up, medium, wide, high-angle, low-angle}.
+
+6) Optionally include exactly one lighting token when obvious: {backlit, front-lit, rim-lit, long-shadow-left, long-shadow-right}.
+
+7) If a clear background anchor is visible, append one concise background noun phrase (single phrase, e.g., ""storefront window"", ""stone embankment"", ""Radio City marquee""). Omit if no clear anchor.
+
+Reflections vs. behind‑glass rule
+- If an element appears doubled, reversed, or overlayed on the glass plane without 3D occlusion → label as ""reflections"".
+- If objects clearly sit on the far side of the glass (shelf, mannequin, handbags) → label as ""on display behind glass"" or ""behind glass"".
+- If uncertain, omit both.
+
+Two‑pass verification (must run before emitting):
+a) Transcribe quoted text only if every character is readable; otherwise drop text token.
+b) Include a digit count only if each instance is clearly visible and ≥50% unobstructed; otherwise omit count.
+c) Include depth only if overlap/relative scale is unambiguous.
+d) Include ""partially cropped"" only if >5% of subject area is outside image.
+e) Drop any token failing verification and recheck sentence for grammaticality.
+
+Brevity & prioritization
+- If length limits force removal, prioritize tokens in this order: legible text → part‑level relation → background anchor → descriptors → viewpoint → lighting.
+- Use compact, active, factual phrasing and concrete nouns. Do not infer ages, emotions, roles, intent, or unseen attributes. Do not use vague quantifiers (""several"",""many"") — use digits only when clear.
+
+Style constraints
+- Single sentence, comma‑separated short phrases, no tags, no lists, no extra lines.
+- Use canonical labels (e.g., ""storefront window"", ""center""), consistent punctuation for quoted text.
+
+Canonical good examples (follow exact output format):
+- ""1 child left foreground, reaching toward storefront window, right hand touching glass, 'LOEWE' on lower sill at left, glass reflections, storefront window behind.""
+- ""1 woman center foreground, holding violin with chin and right hand, open instrument case on ground, medium, tiled underground passage behind.""
+- ""1 surfer center midground, crouching on surfboard, sharp turn with spray arc behind, sunlit green wave face, low-angle, ocean behind.""
+- ""5 dancers center foreground, standing in long line across crosswalk, red and white striped costumes, Radio City marquee above, street behind.""
+
+Follow these rules exactly to produce one precise caption.","1 child center foreground, no-action-visible, beige shirt, light-colored pants, metal mesh chair, outdoor café with orange umbrellas, people seated at tables, brick pavement, trees overhead.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_53a1516f54,57,18116,flickr30k_test_018116,images/flickr30k/flickr30k_test_018116.jpg,"[""Overhead shot of a gray-haired man working on a piece of art."", ""A man in a white shirt adds detail to small sculptures."", ""A very old dark-skinned many is picking at bones."", ""An older man carving something out of wood."", ""An old man carves designs into gold.""]",textgrad_53a1516f54,TextGrad Step 5,"Output exactly one concise, information‑dense caption: a single grammatical sentence of comma‑separated short phrases. Use digits for counts; do not infer, hedge, paraphrase, or add anything not visually present. Output nothing else.
+
+Required phrase ordering (include an item only if visually verifiable; omit unverifiable items). Aim for ≤30 words; allow up to +10% length only to include a fully legible quoted text string or one necessary part‑level relation/background anchor.
+
+1) Start with: [digit] + subject noun(s) + spatial anchor.
+   - Deterministic spatial rule: compute subject centroid x; if x < 0.33 → ""left""; if 0.33 ≤ x ≤ 0.66 → ""center""; if x > 0.66 → ""right"".
+   - If subject width >60% image width, emit ""center"" regardless of centroid.
+   - If >5% of subject area lies outside image, append ""partially cropped at [top|bottom|left|right]"".
+   - Add depth token [foreground|midground|background] only if clear from overlap/relative scale; otherwise omit.
+
+2) Immediately after, include exactly one visible micro‑action/part phrase if any of these verifiable cues is present: visible limb‑object contact, object held in hand, visible deformation/pressure, object midair/off ground, clear gaze at a visible object, or motion blur on a limb. Use one of these templates only:
+   - ""[hand] [verb] [object]"" (e.g., ""right hand holding pole"")
+   - ""holding [object] with [hand]"" (e.g., ""holding violin with chin and right hand"")
+   - ""[body_part] [verb] [structure/object]"" (e.g., ""left foot on pedal"")
+   If none apply, include exactly ""no-action-visible"".
+
+3) Then include up to 1–3 high‑signal descriptor(s) chosen by strict priority (pick highest‑ranked verifiable candidates, break ties lexicographically):
+   A) Legible text — transcribe exact string only if every character is clearly readable; include it in quotes and localize (e.g., ""'LOEWE' on lower sill at left"").
+   B) Reflection/surface condition (e.g., ""wet pavement with reflections"", ""glass reflections"").
+   C) Material/texture (e.g., ""rusted metal"", ""woven straw"").
+   D) Distinctive accessory (e.g., ""white hard hat"", ""red pennant"").
+   E) Color (e.g., ""red sweatshirt"").
+   - Enforce ≤3 descriptors; if none verifiable, omit descriptors.
+
+4) If a person/object clearly interacts with another object/structure, include exactly one concise part‑level relation phrase using the template: ""[part] [verb] [object/structure]"" (e.g., ""right hand holding pole"", ""rear wheel off ground""). Include this only if contact/displacement is visually evident.
+
+5) Optionally include exactly one viewpoint token when obvious: {close-up, medium, wide, high-angle, low-angle}.
+
+6) Optionally include exactly one lighting token when obvious: {backlit, front-lit, rim-lit, long-shadow-left, long-shadow-right}.
+
+7) If a clear background anchor is visible, append one concise background noun phrase (single phrase, e.g., ""storefront window"", ""stone embankment"", ""Radio City marquee""). Omit if no clear anchor.
+
+Reflections vs. behind‑glass rule
+- If an element appears doubled, reversed, or overlayed on the glass plane without 3D occlusion → label as ""reflections"".
+- If objects clearly sit on the far side of the glass (shelf, mannequin, handbags) → label as ""on display behind glass"" or ""behind glass"".
+- If uncertain, omit both.
+
+Two‑pass verification (must run before emitting):
+a) Transcribe quoted text only if every character is readable; otherwise drop text token.
+b) Include a digit count only if each instance is clearly visible and ≥50% unobstructed; otherwise omit count.
+c) Include depth only if overlap/relative scale is unambiguous.
+d) Include ""partially cropped"" only if >5% of subject area is outside image.
+e) Drop any token failing verification and recheck sentence for grammaticality.
+
+Brevity & prioritization
+- If length limits force removal, prioritize tokens in this order: legible text → part‑level relation → background anchor → descriptors → viewpoint → lighting.
+- Use compact, active, factual phrasing and concrete nouns. Do not infer ages, emotions, roles, intent, or unseen attributes. Do not use vague quantifiers (""several"",""many"") — use digits only when clear.
+
+Style constraints
+- Single sentence, comma‑separated short phrases, no tags, no lists, no extra lines.
+- Use canonical labels (e.g., ""storefront window"", ""center""), consistent punctuation for quoted text.
+
+Canonical good examples (follow exact output format):
+- ""1 child left foreground, reaching toward storefront window, right hand touching glass, 'LOEWE' on lower sill at left, glass reflections, storefront window behind.""
+- ""1 woman center foreground, holding violin with chin and right hand, open instrument case on ground, medium, tiled underground passage behind.""
+- ""1 surfer center midground, crouching on surfboard, sharp turn with spray arc behind, sunlit green wave face, low-angle, ocean behind.""
+- ""5 dancers center foreground, standing in long line across crosswalk, red and white striped costumes, Radio City marquee above, street behind.""
+
+Follow these rules exactly to produce one precise caption.","1 man center foreground, right hand holding tool, working on gold piece, gold leaf on newspaper, concrete floor background, high-angle.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_53a1516f54,66,30359,flickr30k_test_030359,images/flickr30k/flickr30k_test_030359.jpg,"[""A soccer game with 5 guys in the picture but three of them are about to commence in a three way kick."", ""A group of soccer teammates are fighting over the soccer ball while in a stadium full of supporters."", ""Five young men, three in yellow, one in red and one in white are playing soccer."", ""A soccer player is attempting to score a goal."", ""Guys are play soccer on the field.""]",textgrad_53a1516f54,TextGrad Step 5,"Output exactly one concise, information‑dense caption: a single grammatical sentence of comma‑separated short phrases. Use digits for counts; do not infer, hedge, paraphrase, or add anything not visually present. Output nothing else.
+
+Required phrase ordering (include an item only if visually verifiable; omit unverifiable items). Aim for ≤30 words; allow up to +10% length only to include a fully legible quoted text string or one necessary part‑level relation/background anchor.
+
+1) Start with: [digit] + subject noun(s) + spatial anchor.
+   - Deterministic spatial rule: compute subject centroid x; if x < 0.33 → ""left""; if 0.33 ≤ x ≤ 0.66 → ""center""; if x > 0.66 → ""right"".
+   - If subject width >60% image width, emit ""center"" regardless of centroid.
+   - If >5% of subject area lies outside image, append ""partially cropped at [top|bottom|left|right]"".
+   - Add depth token [foreground|midground|background] only if clear from overlap/relative scale; otherwise omit.
+
+2) Immediately after, include exactly one visible micro‑action/part phrase if any of these verifiable cues is present: visible limb‑object contact, object held in hand, visible deformation/pressure, object midair/off ground, clear gaze at a visible object, or motion blur on a limb. Use one of these templates only:
+   - ""[hand] [verb] [object]"" (e.g., ""right hand holding pole"")
+   - ""holding [object] with [hand]"" (e.g., ""holding violin with chin and right hand"")
+   - ""[body_part] [verb] [structure/object]"" (e.g., ""left foot on pedal"")
+   If none apply, include exactly ""no-action-visible"".
+
+3) Then include up to 1–3 high‑signal descriptor(s) chosen by strict priority (pick highest‑ranked verifiable candidates, break ties lexicographically):
+   A) Legible text — transcribe exact string only if every character is clearly readable; include it in quotes and localize (e.g., ""'LOEWE' on lower sill at left"").
+   B) Reflection/surface condition (e.g., ""wet pavement with reflections"", ""glass reflections"").
+   C) Material/texture (e.g., ""rusted metal"", ""woven straw"").
+   D) Distinctive accessory (e.g., ""white hard hat"", ""red pennant"").
+   E) Color (e.g., ""red sweatshirt"").
+   - Enforce ≤3 descriptors; if none verifiable, omit descriptors.
+
+4) If a person/object clearly interacts with another object/structure, include exactly one concise part‑level relation phrase using the template: ""[part] [verb] [object/structure]"" (e.g., ""right hand holding pole"", ""rear wheel off ground""). Include this only if contact/displacement is visually evident.
+
+5) Optionally include exactly one viewpoint token when obvious: {close-up, medium, wide, high-angle, low-angle}.
+
+6) Optionally include exactly one lighting token when obvious: {backlit, front-lit, rim-lit, long-shadow-left, long-shadow-right}.
+
+7) If a clear background anchor is visible, append one concise background noun phrase (single phrase, e.g., ""storefront window"", ""stone embankment"", ""Radio City marquee""). Omit if no clear anchor.
+
+Reflections vs. behind‑glass rule
+- If an element appears doubled, reversed, or overlayed on the glass plane without 3D occlusion → label as ""reflections"".
+- If objects clearly sit on the far side of the glass (shelf, mannequin, handbags) → label as ""on display behind glass"" or ""behind glass"".
+- If uncertain, omit both.
+
+Two‑pass verification (must run before emitting):
+a) Transcribe quoted text only if every character is readable; otherwise drop text token.
+b) Include a digit count only if each instance is clearly visible and ≥50% unobstructed; otherwise omit count.
+c) Include depth only if overlap/relative scale is unambiguous.
+d) Include ""partially cropped"" only if >5% of subject area is outside image.
+e) Drop any token failing verification and recheck sentence for grammaticality.
+
+Brevity & prioritization
+- If length limits force removal, prioritize tokens in this order: legible text → part‑level relation → background anchor → descriptors → viewpoint → lighting.
+- Use compact, active, factual phrasing and concrete nouns. Do not infer ages, emotions, roles, intent, or unseen attributes. Do not use vague quantifiers (""several"",""many"") — use digits only when clear.
+
+Style constraints
+- Single sentence, comma‑separated short phrases, no tags, no lists, no extra lines.
+- Use canonical labels (e.g., ""storefront window"", ""center""), consistent punctuation for quoted text.
+
+Canonical good examples (follow exact output format):
+- ""1 child left foreground, reaching toward storefront window, right hand touching glass, 'LOEWE' on lower sill at left, glass reflections, storefront window behind.""
+- ""1 woman center foreground, holding violin with chin and right hand, open instrument case on ground, medium, tiled underground passage behind.""
+- ""1 surfer center midground, crouching on surfboard, sharp turn with spray arc behind, sunlit green wave face, low-angle, ocean behind.""
+- ""5 dancers center foreground, standing in long line across crosswalk, red and white striped costumes, Radio City marquee above, street behind.""
+
+Follow these rules exactly to produce one precise caption.","1 goalkeeper left foreground, right hand reaching toward ball, no-action-visible, 'THAT CALLS FOR A' on green advertising board behind, stadium crowd background.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_53a1516f54,70,30024,flickr30k_test_030024,images/flickr30k/flickr30k_test_030024.jpg,"[""Several men are sitting around a dinner table having separate conversations."", ""A group of men are sitting at a table talking."", ""A man with gray hair is sitting at a table."", ""Four men are at a dining table."", ""Four men sitting at a table.""]",textgrad_53a1516f54,TextGrad Step 5,"Output exactly one concise, information‑dense caption: a single grammatical sentence of comma‑separated short phrases. Use digits for counts; do not infer, hedge, paraphrase, or add anything not visually present. Output nothing else.
+
+Required phrase ordering (include an item only if visually verifiable; omit unverifiable items). Aim for ≤30 words; allow up to +10% length only to include a fully legible quoted text string or one necessary part‑level relation/background anchor.
+
+1) Start with: [digit] + subject noun(s) + spatial anchor.
+   - Deterministic spatial rule: compute subject centroid x; if x < 0.33 → ""left""; if 0.33 ≤ x ≤ 0.66 → ""center""; if x > 0.66 → ""right"".
+   - If subject width >60% image width, emit ""center"" regardless of centroid.
+   - If >5% of subject area lies outside image, append ""partially cropped at [top|bottom|left|right]"".
+   - Add depth token [foreground|midground|background] only if clear from overlap/relative scale; otherwise omit.
+
+2) Immediately after, include exactly one visible micro‑action/part phrase if any of these verifiable cues is present: visible limb‑object contact, object held in hand, visible deformation/pressure, object midair/off ground, clear gaze at a visible object, or motion blur on a limb. Use one of these templates only:
+   - ""[hand] [verb] [object]"" (e.g., ""right hand holding pole"")
+   - ""holding [object] with [hand]"" (e.g., ""holding violin with chin and right hand"")
+   - ""[body_part] [verb] [structure/object]"" (e.g., ""left foot on pedal"")
+   If none apply, include exactly ""no-action-visible"".
+
+3) Then include up to 1–3 high‑signal descriptor(s) chosen by strict priority (pick highest‑ranked verifiable candidates, break ties lexicographically):
+   A) Legible text — transcribe exact string only if every character is clearly readable; include it in quotes and localize (e.g., ""'LOEWE' on lower sill at left"").
+   B) Reflection/surface condition (e.g., ""wet pavement with reflections"", ""glass reflections"").
+   C) Material/texture (e.g., ""rusted metal"", ""woven straw"").
+   D) Distinctive accessory (e.g., ""white hard hat"", ""red pennant"").
+   E) Color (e.g., ""red sweatshirt"").
+   - Enforce ≤3 descriptors; if none verifiable, omit descriptors.
+
+4) If a person/object clearly interacts with another object/structure, include exactly one concise part‑level relation phrase using the template: ""[part] [verb] [object/structure]"" (e.g., ""right hand holding pole"", ""rear wheel off ground""). Include this only if contact/displacement is visually evident.
+
+5) Optionally include exactly one viewpoint token when obvious: {close-up, medium, wide, high-angle, low-angle}.
+
+6) Optionally include exactly one lighting token when obvious: {backlit, front-lit, rim-lit, long-shadow-left, long-shadow-right}.
+
+7) If a clear background anchor is visible, append one concise background noun phrase (single phrase, e.g., ""storefront window"", ""stone embankment"", ""Radio City marquee""). Omit if no clear anchor.
+
+Reflections vs. behind‑glass rule
+- If an element appears doubled, reversed, or overlayed on the glass plane without 3D occlusion → label as ""reflections"".
+- If objects clearly sit on the far side of the glass (shelf, mannequin, handbags) → label as ""on display behind glass"" or ""behind glass"".
+- If uncertain, omit both.
+
+Two‑pass verification (must run before emitting):
+a) Transcribe quoted text only if every character is readable; otherwise drop text token.
+b) Include a digit count only if each instance is clearly visible and ≥50% unobstructed; otherwise omit count.
+c) Include depth only if overlap/relative scale is unambiguous.
+d) Include ""partially cropped"" only if >5% of subject area is outside image.
+e) Drop any token failing verification and recheck sentence for grammaticality.
+
+Brevity & prioritization
+- If length limits force removal, prioritize tokens in this order: legible text → part‑level relation → background anchor → descriptors → viewpoint → lighting.
+- Use compact, active, factual phrasing and concrete nouns. Do not infer ages, emotions, roles, intent, or unseen attributes. Do not use vague quantifiers (""several"",""many"") — use digits only when clear.
+
+Style constraints
+- Single sentence, comma‑separated short phrases, no tags, no lists, no extra lines.
+- Use canonical labels (e.g., ""storefront window"", ""center""), consistent punctuation for quoted text.
+
+Canonical good examples (follow exact output format):
+- ""1 child left foreground, reaching toward storefront window, right hand touching glass, 'LOEWE' on lower sill at left, glass reflections, storefront window behind.""
+- ""1 woman center foreground, holding violin with chin and right hand, open instrument case on ground, medium, tiled underground passage behind.""
+- ""1 surfer center midground, crouching on surfboard, sharp turn with spray arc behind, sunlit green wave face, low-angle, ocean behind.""
+- ""5 dancers center foreground, standing in long line across crosswalk, red and white striped costumes, Radio City marquee above, street behind.""
+
+Follow these rules exactly to produce one precise caption.","4 men center foreground, no-action-visible, gray suit, white tablecloth, wine glasses, bottles, black chair at left, stone column at right, indoor setting.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_53a1516f54,71,18233,flickr30k_test_018233,images/flickr30k/flickr30k_test_018233.jpg,"[""Here is a picture of Asian dancers performing a new dance in front of their class and teacher."", ""Young girl balances on a reclined man's legs as part of a performance in front of an audience"", ""A man in black lies on his back while a little girl stands on his feet."", ""Circus actors play with a child while other children watch."", ""Children watch while an acrobatic team performs stunts.""]",textgrad_53a1516f54,TextGrad Step 5,"Output exactly one concise, information‑dense caption: a single grammatical sentence of comma‑separated short phrases. Use digits for counts; do not infer, hedge, paraphrase, or add anything not visually present. Output nothing else.
+
+Required phrase ordering (include an item only if visually verifiable; omit unverifiable items). Aim for ≤30 words; allow up to +10% length only to include a fully legible quoted text string or one necessary part‑level relation/background anchor.
+
+1) Start with: [digit] + subject noun(s) + spatial anchor.
+   - Deterministic spatial rule: compute subject centroid x; if x < 0.33 → ""left""; if 0.33 ≤ x ≤ 0.66 → ""center""; if x > 0.66 → ""right"".
+   - If subject width >60% image width, emit ""center"" regardless of centroid.
+   - If >5% of subject area lies outside image, append ""partially cropped at [top|bottom|left|right]"".
+   - Add depth token [foreground|midground|background] only if clear from overlap/relative scale; otherwise omit.
+
+2) Immediately after, include exactly one visible micro‑action/part phrase if any of these verifiable cues is present: visible limb‑object contact, object held in hand, visible deformation/pressure, object midair/off ground, clear gaze at a visible object, or motion blur on a limb. Use one of these templates only:
+   - ""[hand] [verb] [object]"" (e.g., ""right hand holding pole"")
+   - ""holding [object] with [hand]"" (e.g., ""holding violin with chin and right hand"")
+   - ""[body_part] [verb] [structure/object]"" (e.g., ""left foot on pedal"")
+   If none apply, include exactly ""no-action-visible"".
+
+3) Then include up to 1–3 high‑signal descriptor(s) chosen by strict priority (pick highest‑ranked verifiable candidates, break ties lexicographically):
+   A) Legible text — transcribe exact string only if every character is clearly readable; include it in quotes and localize (e.g., ""'LOEWE' on lower sill at left"").
+   B) Reflection/surface condition (e.g., ""wet pavement with reflections"", ""glass reflections"").
+   C) Material/texture (e.g., ""rusted metal"", ""woven straw"").
+   D) Distinctive accessory (e.g., ""white hard hat"", ""red pennant"").
+   E) Color (e.g., ""red sweatshirt"").
+   - Enforce ≤3 descriptors; if none verifiable, omit descriptors.
+
+4) If a person/object clearly interacts with another object/structure, include exactly one concise part‑level relation phrase using the template: ""[part] [verb] [object/structure]"" (e.g., ""right hand holding pole"", ""rear wheel off ground""). Include this only if contact/displacement is visually evident.
+
+5) Optionally include exactly one viewpoint token when obvious: {close-up, medium, wide, high-angle, low-angle}.
+
+6) Optionally include exactly one lighting token when obvious: {backlit, front-lit, rim-lit, long-shadow-left, long-shadow-right}.
+
+7) If a clear background anchor is visible, append one concise background noun phrase (single phrase, e.g., ""storefront window"", ""stone embankment"", ""Radio City marquee""). Omit if no clear anchor.
+
+Reflections vs. behind‑glass rule
+- If an element appears doubled, reversed, or overlayed on the glass plane without 3D occlusion → label as ""reflections"".
+- If objects clearly sit on the far side of the glass (shelf, mannequin, handbags) → label as ""on display behind glass"" or ""behind glass"".
+- If uncertain, omit both.
+
+Two‑pass verification (must run before emitting):
+a) Transcribe quoted text only if every character is readable; otherwise drop text token.
+b) Include a digit count only if each instance is clearly visible and ≥50% unobstructed; otherwise omit count.
+c) Include depth only if overlap/relative scale is unambiguous.
+d) Include ""partially cropped"" only if >5% of subject area is outside image.
+e) Drop any token failing verification and recheck sentence for grammaticality.
+
+Brevity & prioritization
+- If length limits force removal, prioritize tokens in this order: legible text → part‑level relation → background anchor → descriptors → viewpoint → lighting.
+- Use compact, active, factual phrasing and concrete nouns. Do not infer ages, emotions, roles, intent, or unseen attributes. Do not use vague quantifiers (""several"",""many"") — use digits only when clear.
+
+Style constraints
+- Single sentence, comma‑separated short phrases, no tags, no lists, no extra lines.
+- Use canonical labels (e.g., ""storefront window"", ""center""), consistent punctuation for quoted text.
+
+Canonical good examples (follow exact output format):
+- ""1 child left foreground, reaching toward storefront window, right hand touching glass, 'LOEWE' on lower sill at left, glass reflections, storefront window behind.""
+- ""1 woman center foreground, holding violin with chin and right hand, open instrument case on ground, medium, tiled underground passage behind.""
+- ""1 surfer center midground, crouching on surfboard, sharp turn with spray arc behind, sunlit green wave face, low-angle, ocean behind.""
+- ""5 dancers center foreground, standing in long line across crosswalk, red and white striped costumes, Radio City marquee above, street behind.""
+
+Follow these rules exactly to produce one precise caption.","1 performer center foreground, right hand holding balloon, wearing black pants and shirt, lying on red mat, no-action-visible, red mat beneath, high-angle, red lantern above.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_53a1516f54,72,30218,flickr30k_test_030218,images/flickr30k/flickr30k_test_030218.jpg,"[""An older, bearded man play a small metal whistle while holding an oboe in his arm on a city street in font of a store window."", ""A bearded man, dressed in jeans and a jacket, is preparing to play a flute instrument on the sidewalk."", ""A man in a gray sweater and blue jeans, playing a flute along a street."", ""An old bearded man plays a hand flute on the side of a sidewalk."", ""An old man playing a musical instrument at a city sidewalk.""]",textgrad_53a1516f54,TextGrad Step 5,"Output exactly one concise, information‑dense caption: a single grammatical sentence of comma‑separated short phrases. Use digits for counts; do not infer, hedge, paraphrase, or add anything not visually present. Output nothing else.
+
+Required phrase ordering (include an item only if visually verifiable; omit unverifiable items). Aim for ≤30 words; allow up to +10% length only to include a fully legible quoted text string or one necessary part‑level relation/background anchor.
+
+1) Start with: [digit] + subject noun(s) + spatial anchor.
+   - Deterministic spatial rule: compute subject centroid x; if x < 0.33 → ""left""; if 0.33 ≤ x ≤ 0.66 → ""center""; if x > 0.66 → ""right"".
+   - If subject width >60% image width, emit ""center"" regardless of centroid.
+   - If >5% of subject area lies outside image, append ""partially cropped at [top|bottom|left|right]"".
+   - Add depth token [foreground|midground|background] only if clear from overlap/relative scale; otherwise omit.
+
+2) Immediately after, include exactly one visible micro‑action/part phrase if any of these verifiable cues is present: visible limb‑object contact, object held in hand, visible deformation/pressure, object midair/off ground, clear gaze at a visible object, or motion blur on a limb. Use one of these templates only:
+   - ""[hand] [verb] [object]"" (e.g., ""right hand holding pole"")
+   - ""holding [object] with [hand]"" (e.g., ""holding violin with chin and right hand"")
+   - ""[body_part] [verb] [structure/object]"" (e.g., ""left foot on pedal"")
+   If none apply, include exactly ""no-action-visible"".
+
+3) Then include up to 1–3 high‑signal descriptor(s) chosen by strict priority (pick highest‑ranked verifiable candidates, break ties lexicographically):
+   A) Legible text — transcribe exact string only if every character is clearly readable; include it in quotes and localize (e.g., ""'LOEWE' on lower sill at left"").
+   B) Reflection/surface condition (e.g., ""wet pavement with reflections"", ""glass reflections"").
+   C) Material/texture (e.g., ""rusted metal"", ""woven straw"").
+   D) Distinctive accessory (e.g., ""white hard hat"", ""red pennant"").
+   E) Color (e.g., ""red sweatshirt"").
+   - Enforce ≤3 descriptors; if none verifiable, omit descriptors.
+
+4) If a person/object clearly interacts with another object/structure, include exactly one concise part‑level relation phrase using the template: ""[part] [verb] [object/structure]"" (e.g., ""right hand holding pole"", ""rear wheel off ground""). Include this only if contact/displacement is visually evident.
+
+5) Optionally include exactly one viewpoint token when obvious: {close-up, medium, wide, high-angle, low-angle}.
+
+6) Optionally include exactly one lighting token when obvious: {backlit, front-lit, rim-lit, long-shadow-left, long-shadow-right}.
+
+7) If a clear background anchor is visible, append one concise background noun phrase (single phrase, e.g., ""storefront window"", ""stone embankment"", ""Radio City marquee""). Omit if no clear anchor.
+
+Reflections vs. behind‑glass rule
+- If an element appears doubled, reversed, or overlayed on the glass plane without 3D occlusion → label as ""reflections"".
+- If objects clearly sit on the far side of the glass (shelf, mannequin, handbags) → label as ""on display behind glass"" or ""behind glass"".
+- If uncertain, omit both.
+
+Two‑pass verification (must run before emitting):
+a) Transcribe quoted text only if every character is readable; otherwise drop text token.
+b) Include a digit count only if each instance is clearly visible and ≥50% unobstructed; otherwise omit count.
+c) Include depth only if overlap/relative scale is unambiguous.
+d) Include ""partially cropped"" only if >5% of subject area is outside image.
+e) Drop any token failing verification and recheck sentence for grammaticality.
+
+Brevity & prioritization
+- If length limits force removal, prioritize tokens in this order: legible text → part‑level relation → background anchor → descriptors → viewpoint → lighting.
+- Use compact, active, factual phrasing and concrete nouns. Do not infer ages, emotions, roles, intent, or unseen attributes. Do not use vague quantifiers (""several"",""many"") — use digits only when clear.
+
+Style constraints
+- Single sentence, comma‑separated short phrases, no tags, no lists, no extra lines.
+- Use canonical labels (e.g., ""storefront window"", ""center""), consistent punctuation for quoted text.
+
+Canonical good examples (follow exact output format):
+- ""1 child left foreground, reaching toward storefront window, right hand touching glass, 'LOEWE' on lower sill at left, glass reflections, storefront window behind.""
+- ""1 woman center foreground, holding violin with chin and right hand, open instrument case on ground, medium, tiled underground passage behind.""
+- ""1 surfer center midground, crouching on surfboard, sharp turn with spray arc behind, sunlit green wave face, low-angle, ocean behind.""
+- ""5 dancers center foreground, standing in long line across crosswalk, red and white striped costumes, Radio City marquee above, street behind.""
+
+Follow these rules exactly to produce one precise caption.","1 man left foreground, holding flute with right hand, gray jacket, blue jeans, brown shoes, sidewalk with white tiles, pedestrians in background.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_53a1516f54,82,10901,flickr30k_test_010901,images/flickr30k/flickr30k_test_010901.jpg,"[""Two children, warmly dressed, are playing in the snow."", ""Two kids playing in the snow in a rural area."", ""Two young children play in the snow."", ""Two young children enjoy the snow."", ""Two children playing in the snow.""]",textgrad_53a1516f54,TextGrad Step 5,"Output exactly one concise, information‑dense caption: a single grammatical sentence of comma‑separated short phrases. Use digits for counts; do not infer, hedge, paraphrase, or add anything not visually present. Output nothing else.
+
+Required phrase ordering (include an item only if visually verifiable; omit unverifiable items). Aim for ≤30 words; allow up to +10% length only to include a fully legible quoted text string or one necessary part‑level relation/background anchor.
+
+1) Start with: [digit] + subject noun(s) + spatial anchor.
+   - Deterministic spatial rule: compute subject centroid x; if x < 0.33 → ""left""; if 0.33 ≤ x ≤ 0.66 → ""center""; if x > 0.66 → ""right"".
+   - If subject width >60% image width, emit ""center"" regardless of centroid.
+   - If >5% of subject area lies outside image, append ""partially cropped at [top|bottom|left|right]"".
+   - Add depth token [foreground|midground|background] only if clear from overlap/relative scale; otherwise omit.
+
+2) Immediately after, include exactly one visible micro‑action/part phrase if any of these verifiable cues is present: visible limb‑object contact, object held in hand, visible deformation/pressure, object midair/off ground, clear gaze at a visible object, or motion blur on a limb. Use one of these templates only:
+   - ""[hand] [verb] [object]"" (e.g., ""right hand holding pole"")
+   - ""holding [object] with [hand]"" (e.g., ""holding violin with chin and right hand"")
+   - ""[body_part] [verb] [structure/object]"" (e.g., ""left foot on pedal"")
+   If none apply, include exactly ""no-action-visible"".
+
+3) Then include up to 1–3 high‑signal descriptor(s) chosen by strict priority (pick highest‑ranked verifiable candidates, break ties lexicographically):
+   A) Legible text — transcribe exact string only if every character is clearly readable; include it in quotes and localize (e.g., ""'LOEWE' on lower sill at left"").
+   B) Reflection/surface condition (e.g., ""wet pavement with reflections"", ""glass reflections"").
+   C) Material/texture (e.g., ""rusted metal"", ""woven straw"").
+   D) Distinctive accessory (e.g., ""white hard hat"", ""red pennant"").
+   E) Color (e.g., ""red sweatshirt"").
+   - Enforce ≤3 descriptors; if none verifiable, omit descriptors.
+
+4) If a person/object clearly interacts with another object/structure, include exactly one concise part‑level relation phrase using the template: ""[part] [verb] [object/structure]"" (e.g., ""right hand holding pole"", ""rear wheel off ground""). Include this only if contact/displacement is visually evident.
+
+5) Optionally include exactly one viewpoint token when obvious: {close-up, medium, wide, high-angle, low-angle}.
+
+6) Optionally include exactly one lighting token when obvious: {backlit, front-lit, rim-lit, long-shadow-left, long-shadow-right}.
+
+7) If a clear background anchor is visible, append one concise background noun phrase (single phrase, e.g., ""storefront window"", ""stone embankment"", ""Radio City marquee""). Omit if no clear anchor.
+
+Reflections vs. behind‑glass rule
+- If an element appears doubled, reversed, or overlayed on the glass plane without 3D occlusion → label as ""reflections"".
+- If objects clearly sit on the far side of the glass (shelf, mannequin, handbags) → label as ""on display behind glass"" or ""behind glass"".
+- If uncertain, omit both.
+
+Two‑pass verification (must run before emitting):
+a) Transcribe quoted text only if every character is readable; otherwise drop text token.
+b) Include a digit count only if each instance is clearly visible and ≥50% unobstructed; otherwise omit count.
+c) Include depth only if overlap/relative scale is unambiguous.
+d) Include ""partially cropped"" only if >5% of subject area is outside image.
+e) Drop any token failing verification and recheck sentence for grammaticality.
+
+Brevity & prioritization
+- If length limits force removal, prioritize tokens in this order: legible text → part‑level relation → background anchor → descriptors → viewpoint → lighting.
+- Use compact, active, factual phrasing and concrete nouns. Do not infer ages, emotions, roles, intent, or unseen attributes. Do not use vague quantifiers (""several"",""many"") — use digits only when clear.
+
+Style constraints
+- Single sentence, comma‑separated short phrases, no tags, no lists, no extra lines.
+- Use canonical labels (e.g., ""storefront window"", ""center""), consistent punctuation for quoted text.
+
+Canonical good examples (follow exact output format):
+- ""1 child left foreground, reaching toward storefront window, right hand touching glass, 'LOEWE' on lower sill at left, glass reflections, storefront window behind.""
+- ""1 woman center foreground, holding violin with chin and right hand, open instrument case on ground, medium, tiled underground passage behind.""
+- ""1 surfer center midground, crouching on surfboard, sharp turn with spray arc behind, sunlit green wave face, low-angle, ocean behind.""
+- ""5 dancers center foreground, standing in long line across crosswalk, red and white striped costumes, Radio City marquee above, street behind.""
+
+Follow these rules exactly to produce one precise caption.","2 children center foreground, no-action-visible, wearing winter hats, snow-covered ground with footprints, bare trees in background, sunset lighting.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_53a1516f54,84,23641,flickr30k_test_023641,images/flickr30k/flickr30k_test_023641.jpg,"[""There are several people either sitting on benches or walking through what appears to be a brick road with trees coming up from various circular openings in the road."", ""A group of people rest on a park bench underneath the shade of the canopy of trees as a man in a brightly colored pink stripe shirt walks past."", ""A park with trees, people sitting on benches, and people walking."", ""People are walking under trees while other are sitting down."", ""People walking through a watery path.""]",textgrad_53a1516f54,TextGrad Step 5,"Output exactly one concise, information‑dense caption: a single grammatical sentence of comma‑separated short phrases. Use digits for counts; do not infer, hedge, paraphrase, or add anything not visually present. Output nothing else.
+
+Required phrase ordering (include an item only if visually verifiable; omit unverifiable items). Aim for ≤30 words; allow up to +10% length only to include a fully legible quoted text string or one necessary part‑level relation/background anchor.
+
+1) Start with: [digit] + subject noun(s) + spatial anchor.
+   - Deterministic spatial rule: compute subject centroid x; if x < 0.33 → ""left""; if 0.33 ≤ x ≤ 0.66 → ""center""; if x > 0.66 → ""right"".
+   - If subject width >60% image width, emit ""center"" regardless of centroid.
+   - If >5% of subject area lies outside image, append ""partially cropped at [top|bottom|left|right]"".
+   - Add depth token [foreground|midground|background] only if clear from overlap/relative scale; otherwise omit.
+
+2) Immediately after, include exactly one visible micro‑action/part phrase if any of these verifiable cues is present: visible limb‑object contact, object held in hand, visible deformation/pressure, object midair/off ground, clear gaze at a visible object, or motion blur on a limb. Use one of these templates only:
+   - ""[hand] [verb] [object]"" (e.g., ""right hand holding pole"")
+   - ""holding [object] with [hand]"" (e.g., ""holding violin with chin and right hand"")
+   - ""[body_part] [verb] [structure/object]"" (e.g., ""left foot on pedal"")
+   If none apply, include exactly ""no-action-visible"".
+
+3) Then include up to 1–3 high‑signal descriptor(s) chosen by strict priority (pick highest‑ranked verifiable candidates, break ties lexicographically):
+   A) Legible text — transcribe exact string only if every character is clearly readable; include it in quotes and localize (e.g., ""'LOEWE' on lower sill at left"").
+   B) Reflection/surface condition (e.g., ""wet pavement with reflections"", ""glass reflections"").
+   C) Material/texture (e.g., ""rusted metal"", ""woven straw"").
+   D) Distinctive accessory (e.g., ""white hard hat"", ""red pennant"").
+   E) Color (e.g., ""red sweatshirt"").
+   - Enforce ≤3 descriptors; if none verifiable, omit descriptors.
+
+4) If a person/object clearly interacts with another object/structure, include exactly one concise part‑level relation phrase using the template: ""[part] [verb] [object/structure]"" (e.g., ""right hand holding pole"", ""rear wheel off ground""). Include this only if contact/displacement is visually evident.
+
+5) Optionally include exactly one viewpoint token when obvious: {close-up, medium, wide, high-angle, low-angle}.
+
+6) Optionally include exactly one lighting token when obvious: {backlit, front-lit, rim-lit, long-shadow-left, long-shadow-right}.
+
+7) If a clear background anchor is visible, append one concise background noun phrase (single phrase, e.g., ""storefront window"", ""stone embankment"", ""Radio City marquee""). Omit if no clear anchor.
+
+Reflections vs. behind‑glass rule
+- If an element appears doubled, reversed, or overlayed on the glass plane without 3D occlusion → label as ""reflections"".
+- If objects clearly sit on the far side of the glass (shelf, mannequin, handbags) → label as ""on display behind glass"" or ""behind glass"".
+- If uncertain, omit both.
+
+Two‑pass verification (must run before emitting):
+a) Transcribe quoted text only if every character is readable; otherwise drop text token.
+b) Include a digit count only if each instance is clearly visible and ≥50% unobstructed; otherwise omit count.
+c) Include depth only if overlap/relative scale is unambiguous.
+d) Include ""partially cropped"" only if >5% of subject area is outside image.
+e) Drop any token failing verification and recheck sentence for grammaticality.
+
+Brevity & prioritization
+- If length limits force removal, prioritize tokens in this order: legible text → part‑level relation → background anchor → descriptors → viewpoint → lighting.
+- Use compact, active, factual phrasing and concrete nouns. Do not infer ages, emotions, roles, intent, or unseen attributes. Do not use vague quantifiers (""several"",""many"") — use digits only when clear.
+
+Style constraints
+- Single sentence, comma‑separated short phrases, no tags, no lists, no extra lines.
+- Use canonical labels (e.g., ""storefront window"", ""center""), consistent punctuation for quoted text.
+
+Canonical good examples (follow exact output format):
+- ""1 child left foreground, reaching toward storefront window, right hand touching glass, 'LOEWE' on lower sill at left, glass reflections, storefront window behind.""
+- ""1 woman center foreground, holding violin with chin and right hand, open instrument case on ground, medium, tiled underground passage behind.""
+- ""1 surfer center midground, crouching on surfboard, sharp turn with spray arc behind, sunlit green wave face, low-angle, ocean behind.""
+- ""5 dancers center foreground, standing in long line across crosswalk, red and white striped costumes, Radio City marquee above, street behind.""
+
+Follow these rules exactly to produce one precise caption.","1 woman center foreground, no-action-visible, wet pavement with reflections, stone cobblestone path, group seated on bench right midground, trees overhead, buildings background.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_53a1516f54,102,19300,flickr30k_test_019300,images/flickr30k/flickr30k_test_019300.jpg,"[""A man dangles from the room of an incompletely built building in the middle of a field."", ""A man laying on the roof attempting to rebuild it."", ""A man hanging off a partially framed roof."", ""Man laying on a partially built house."", ""A man is installing a roof.""]",textgrad_53a1516f54,TextGrad Step 5,"Output exactly one concise, information‑dense caption: a single grammatical sentence of comma‑separated short phrases. Use digits for counts; do not infer, hedge, paraphrase, or add anything not visually present. Output nothing else.
+
+Required phrase ordering (include an item only if visually verifiable; omit unverifiable items). Aim for ≤30 words; allow up to +10% length only to include a fully legible quoted text string or one necessary part‑level relation/background anchor.
+
+1) Start with: [digit] + subject noun(s) + spatial anchor.
+   - Deterministic spatial rule: compute subject centroid x; if x < 0.33 → ""left""; if 0.33 ≤ x ≤ 0.66 → ""center""; if x > 0.66 → ""right"".
+   - If subject width >60% image width, emit ""center"" regardless of centroid.
+   - If >5% of subject area lies outside image, append ""partially cropped at [top|bottom|left|right]"".
+   - Add depth token [foreground|midground|background] only if clear from overlap/relative scale; otherwise omit.
+
+2) Immediately after, include exactly one visible micro‑action/part phrase if any of these verifiable cues is present: visible limb‑object contact, object held in hand, visible deformation/pressure, object midair/off ground, clear gaze at a visible object, or motion blur on a limb. Use one of these templates only:
+   - ""[hand] [verb] [object]"" (e.g., ""right hand holding pole"")
+   - ""holding [object] with [hand]"" (e.g., ""holding violin with chin and right hand"")
+   - ""[body_part] [verb] [structure/object]"" (e.g., ""left foot on pedal"")
+   If none apply, include exactly ""no-action-visible"".
+
+3) Then include up to 1–3 high‑signal descriptor(s) chosen by strict priority (pick highest‑ranked verifiable candidates, break ties lexicographically):
+   A) Legible text — transcribe exact string only if every character is clearly readable; include it in quotes and localize (e.g., ""'LOEWE' on lower sill at left"").
+   B) Reflection/surface condition (e.g., ""wet pavement with reflections"", ""glass reflections"").
+   C) Material/texture (e.g., ""rusted metal"", ""woven straw"").
+   D) Distinctive accessory (e.g., ""white hard hat"", ""red pennant"").
+   E) Color (e.g., ""red sweatshirt"").
+   - Enforce ≤3 descriptors; if none verifiable, omit descriptors.
+
+4) If a person/object clearly interacts with another object/structure, include exactly one concise part‑level relation phrase using the template: ""[part] [verb] [object/structure]"" (e.g., ""right hand holding pole"", ""rear wheel off ground""). Include this only if contact/displacement is visually evident.
+
+5) Optionally include exactly one viewpoint token when obvious: {close-up, medium, wide, high-angle, low-angle}.
+
+6) Optionally include exactly one lighting token when obvious: {backlit, front-lit, rim-lit, long-shadow-left, long-shadow-right}.
+
+7) If a clear background anchor is visible, append one concise background noun phrase (single phrase, e.g., ""storefront window"", ""stone embankment"", ""Radio City marquee""). Omit if no clear anchor.
+
+Reflections vs. behind‑glass rule
+- If an element appears doubled, reversed, or overlayed on the glass plane without 3D occlusion → label as ""reflections"".
+- If objects clearly sit on the far side of the glass (shelf, mannequin, handbags) → label as ""on display behind glass"" or ""behind glass"".
+- If uncertain, omit both.
+
+Two‑pass verification (must run before emitting):
+a) Transcribe quoted text only if every character is readable; otherwise drop text token.
+b) Include a digit count only if each instance is clearly visible and ≥50% unobstructed; otherwise omit count.
+c) Include depth only if overlap/relative scale is unambiguous.
+d) Include ""partially cropped"" only if >5% of subject area is outside image.
+e) Drop any token failing verification and recheck sentence for grammaticality.
+
+Brevity & prioritization
+- If length limits force removal, prioritize tokens in this order: legible text → part‑level relation → background anchor → descriptors → viewpoint → lighting.
+- Use compact, active, factual phrasing and concrete nouns. Do not infer ages, emotions, roles, intent, or unseen attributes. Do not use vague quantifiers (""several"",""many"") — use digits only when clear.
+
+Style constraints
+- Single sentence, comma‑separated short phrases, no tags, no lists, no extra lines.
+- Use canonical labels (e.g., ""storefront window"", ""center""), consistent punctuation for quoted text.
+
+Canonical good examples (follow exact output format):
+- ""1 child left foreground, reaching toward storefront window, right hand touching glass, 'LOEWE' on lower sill at left, glass reflections, storefront window behind.""
+- ""1 woman center foreground, holding violin with chin and right hand, open instrument case on ground, medium, tiled underground passage behind.""
+- ""1 surfer center midground, crouching on surfboard, sharp turn with spray arc behind, sunlit green wave face, low-angle, ocean behind.""
+- ""5 dancers center foreground, standing in long line across crosswalk, red and white striped costumes, Radio City marquee above, street behind.""
+
+Follow these rules exactly to produce one precise caption.","1 person center foreground, climbing wooden roof frame, wearing white shirt and blue shorts, no-action-visible, wooden beams and scaffolding, grassy field behind.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_53a1516f54,107,24370,flickr30k_test_024370,images/flickr30k/flickr30k_test_024370.jpg,"[""An aerial view of a large building with many windows, a terracotta roof, and a few pedestrians crossing a street."", ""People are crossing a tree lined street in front of a building."", ""Many people walking near tall building and crossing street"", ""A distant view of a building and the people around it."", ""A large building in the city in the sunlight.""]",textgrad_53a1516f54,TextGrad Step 5,"Output exactly one concise, information‑dense caption: a single grammatical sentence of comma‑separated short phrases. Use digits for counts; do not infer, hedge, paraphrase, or add anything not visually present. Output nothing else.
+
+Required phrase ordering (include an item only if visually verifiable; omit unverifiable items). Aim for ≤30 words; allow up to +10% length only to include a fully legible quoted text string or one necessary part‑level relation/background anchor.
+
+1) Start with: [digit] + subject noun(s) + spatial anchor.
+   - Deterministic spatial rule: compute subject centroid x; if x < 0.33 → ""left""; if 0.33 ≤ x ≤ 0.66 → ""center""; if x > 0.66 → ""right"".
+   - If subject width >60% image width, emit ""center"" regardless of centroid.
+   - If >5% of subject area lies outside image, append ""partially cropped at [top|bottom|left|right]"".
+   - Add depth token [foreground|midground|background] only if clear from overlap/relative scale; otherwise omit.
+
+2) Immediately after, include exactly one visible micro‑action/part phrase if any of these verifiable cues is present: visible limb‑object contact, object held in hand, visible deformation/pressure, object midair/off ground, clear gaze at a visible object, or motion blur on a limb. Use one of these templates only:
+   - ""[hand] [verb] [object]"" (e.g., ""right hand holding pole"")
+   - ""holding [object] with [hand]"" (e.g., ""holding violin with chin and right hand"")
+   - ""[body_part] [verb] [structure/object]"" (e.g., ""left foot on pedal"")
+   If none apply, include exactly ""no-action-visible"".
+
+3) Then include up to 1–3 high‑signal descriptor(s) chosen by strict priority (pick highest‑ranked verifiable candidates, break ties lexicographically):
+   A) Legible text — transcribe exact string only if every character is clearly readable; include it in quotes and localize (e.g., ""'LOEWE' on lower sill at left"").
+   B) Reflection/surface condition (e.g., ""wet pavement with reflections"", ""glass reflections"").
+   C) Material/texture (e.g., ""rusted metal"", ""woven straw"").
+   D) Distinctive accessory (e.g., ""white hard hat"", ""red pennant"").
+   E) Color (e.g., ""red sweatshirt"").
+   - Enforce ≤3 descriptors; if none verifiable, omit descriptors.
+
+4) If a person/object clearly interacts with another object/structure, include exactly one concise part‑level relation phrase using the template: ""[part] [verb] [object/structure]"" (e.g., ""right hand holding pole"", ""rear wheel off ground""). Include this only if contact/displacement is visually evident.
+
+5) Optionally include exactly one viewpoint token when obvious: {close-up, medium, wide, high-angle, low-angle}.
+
+6) Optionally include exactly one lighting token when obvious: {backlit, front-lit, rim-lit, long-shadow-left, long-shadow-right}.
+
+7) If a clear background anchor is visible, append one concise background noun phrase (single phrase, e.g., ""storefront window"", ""stone embankment"", ""Radio City marquee""). Omit if no clear anchor.
+
+Reflections vs. behind‑glass rule
+- If an element appears doubled, reversed, or overlayed on the glass plane without 3D occlusion → label as ""reflections"".
+- If objects clearly sit on the far side of the glass (shelf, mannequin, handbags) → label as ""on display behind glass"" or ""behind glass"".
+- If uncertain, omit both.
+
+Two‑pass verification (must run before emitting):
+a) Transcribe quoted text only if every character is readable; otherwise drop text token.
+b) Include a digit count only if each instance is clearly visible and ≥50% unobstructed; otherwise omit count.
+c) Include depth only if overlap/relative scale is unambiguous.
+d) Include ""partially cropped"" only if >5% of subject area is outside image.
+e) Drop any token failing verification and recheck sentence for grammaticality.
+
+Brevity & prioritization
+- If length limits force removal, prioritize tokens in this order: legible text → part‑level relation → background anchor → descriptors → viewpoint → lighting.
+- Use compact, active, factual phrasing and concrete nouns. Do not infer ages, emotions, roles, intent, or unseen attributes. Do not use vague quantifiers (""several"",""many"") — use digits only when clear.
+
+Style constraints
+- Single sentence, comma‑separated short phrases, no tags, no lists, no extra lines.
+- Use canonical labels (e.g., ""storefront window"", ""center""), consistent punctuation for quoted text.
+
+Canonical good examples (follow exact output format):
+- ""1 child left foreground, reaching toward storefront window, right hand touching glass, 'LOEWE' on lower sill at left, glass reflections, storefront window behind.""
+- ""1 woman center foreground, holding violin with chin and right hand, open instrument case on ground, medium, tiled underground passage behind.""
+- ""1 surfer center midground, crouching on surfboard, sharp turn with spray arc behind, sunlit green wave face, low-angle, ocean behind.""
+- ""5 dancers center foreground, standing in long line across crosswalk, red and white striped costumes, Radio City marquee above, street behind.""
+
+Follow these rules exactly to produce one precise caption.","1 building center, partially cropped at bottom, no-action-visible, red-tiled roof, white-framed windows, stone facade, street behind.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_53a1516f54,109,13247,flickr30k_test_013247,images/flickr30k/flickr30k_test_013247.jpg,"[""Several men walk in front of a building marked 'Bass Pro Shops Outdoor World'."", ""People are walking outside the entrance to Bass Pro Shops Outdoor World."", ""People walking in front of the Outdoor World store."", ""A white-haired man is walking out of a store."", ""People outside of an Outdoor World shop.""]",textgrad_53a1516f54,TextGrad Step 5,"Output exactly one concise, information‑dense caption: a single grammatical sentence of comma‑separated short phrases. Use digits for counts; do not infer, hedge, paraphrase, or add anything not visually present. Output nothing else.
+
+Required phrase ordering (include an item only if visually verifiable; omit unverifiable items). Aim for ≤30 words; allow up to +10% length only to include a fully legible quoted text string or one necessary part‑level relation/background anchor.
+
+1) Start with: [digit] + subject noun(s) + spatial anchor.
+   - Deterministic spatial rule: compute subject centroid x; if x < 0.33 → ""left""; if 0.33 ≤ x ≤ 0.66 → ""center""; if x > 0.66 → ""right"".
+   - If subject width >60% image width, emit ""center"" regardless of centroid.
+   - If >5% of subject area lies outside image, append ""partially cropped at [top|bottom|left|right]"".
+   - Add depth token [foreground|midground|background] only if clear from overlap/relative scale; otherwise omit.
+
+2) Immediately after, include exactly one visible micro‑action/part phrase if any of these verifiable cues is present: visible limb‑object contact, object held in hand, visible deformation/pressure, object midair/off ground, clear gaze at a visible object, or motion blur on a limb. Use one of these templates only:
+   - ""[hand] [verb] [object]"" (e.g., ""right hand holding pole"")
+   - ""holding [object] with [hand]"" (e.g., ""holding violin with chin and right hand"")
+   - ""[body_part] [verb] [structure/object]"" (e.g., ""left foot on pedal"")
+   If none apply, include exactly ""no-action-visible"".
+
+3) Then include up to 1–3 high‑signal descriptor(s) chosen by strict priority (pick highest‑ranked verifiable candidates, break ties lexicographically):
+   A) Legible text — transcribe exact string only if every character is clearly readable; include it in quotes and localize (e.g., ""'LOEWE' on lower sill at left"").
+   B) Reflection/surface condition (e.g., ""wet pavement with reflections"", ""glass reflections"").
+   C) Material/texture (e.g., ""rusted metal"", ""woven straw"").
+   D) Distinctive accessory (e.g., ""white hard hat"", ""red pennant"").
+   E) Color (e.g., ""red sweatshirt"").
+   - Enforce ≤3 descriptors; if none verifiable, omit descriptors.
+
+4) If a person/object clearly interacts with another object/structure, include exactly one concise part‑level relation phrase using the template: ""[part] [verb] [object/structure]"" (e.g., ""right hand holding pole"", ""rear wheel off ground""). Include this only if contact/displacement is visually evident.
+
+5) Optionally include exactly one viewpoint token when obvious: {close-up, medium, wide, high-angle, low-angle}.
+
+6) Optionally include exactly one lighting token when obvious: {backlit, front-lit, rim-lit, long-shadow-left, long-shadow-right}.
+
+7) If a clear background anchor is visible, append one concise background noun phrase (single phrase, e.g., ""storefront window"", ""stone embankment"", ""Radio City marquee""). Omit if no clear anchor.
+
+Reflections vs. behind‑glass rule
+- If an element appears doubled, reversed, or overlayed on the glass plane without 3D occlusion → label as ""reflections"".
+- If objects clearly sit on the far side of the glass (shelf, mannequin, handbags) → label as ""on display behind glass"" or ""behind glass"".
+- If uncertain, omit both.
+
+Two‑pass verification (must run before emitting):
+a) Transcribe quoted text only if every character is readable; otherwise drop text token.
+b) Include a digit count only if each instance is clearly visible and ≥50% unobstructed; otherwise omit count.
+c) Include depth only if overlap/relative scale is unambiguous.
+d) Include ""partially cropped"" only if >5% of subject area is outside image.
+e) Drop any token failing verification and recheck sentence for grammaticality.
+
+Brevity & prioritization
+- If length limits force removal, prioritize tokens in this order: legible text → part‑level relation → background anchor → descriptors → viewpoint → lighting.
+- Use compact, active, factual phrasing and concrete nouns. Do not infer ages, emotions, roles, intent, or unseen attributes. Do not use vague quantifiers (""several"",""many"") — use digits only when clear.
+
+Style constraints
+- Single sentence, comma‑separated short phrases, no tags, no lists, no extra lines.
+- Use canonical labels (e.g., ""storefront window"", ""center""), consistent punctuation for quoted text.
+
+Canonical good examples (follow exact output format):
+- ""1 child left foreground, reaching toward storefront window, right hand touching glass, 'LOEWE' on lower sill at left, glass reflections, storefront window behind.""
+- ""1 woman center foreground, holding violin with chin and right hand, open instrument case on ground, medium, tiled underground passage behind.""
+- ""1 surfer center midground, crouching on surfboard, sharp turn with spray arc behind, sunlit green wave face, low-angle, ocean behind.""
+- ""5 dancers center foreground, standing in long line across crosswalk, red and white striped costumes, Radio City marquee above, street behind.""
+
+Follow these rules exactly to produce one precise caption.","1 building center midground, ""Bass Pro Shops"" and ""Outdoor World"" signage visible, rusted metal facade, no-action-visible, stone embankment behind.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_53a1516f54,114,17983,flickr30k_test_017983,images/flickr30k/flickr30k_test_017983.jpg,"[""A man and woman perform a martial arts demonstration with practice katanas in front of an audience in an outside park like environment."", ""A man in a black costume wielding a wooden stick attacks a woman in yellow garb outdoors, under green trees, for a crowd."", ""A young lady and man dressed in warriors costume wielding sticks with a group of people in the background."", ""A man in a black costume and a woman in an orange costume are dueling in front of a crowd of spectators."", ""Battling between the sexes, who will win.""]",textgrad_53a1516f54,TextGrad Step 5,"Output exactly one concise, information‑dense caption: a single grammatical sentence of comma‑separated short phrases. Use digits for counts; do not infer, hedge, paraphrase, or add anything not visually present. Output nothing else.
+
+Required phrase ordering (include an item only if visually verifiable; omit unverifiable items). Aim for ≤30 words; allow up to +10% length only to include a fully legible quoted text string or one necessary part‑level relation/background anchor.
+
+1) Start with: [digit] + subject noun(s) + spatial anchor.
+   - Deterministic spatial rule: compute subject centroid x; if x < 0.33 → ""left""; if 0.33 ≤ x ≤ 0.66 → ""center""; if x > 0.66 → ""right"".
+   - If subject width >60% image width, emit ""center"" regardless of centroid.
+   - If >5% of subject area lies outside image, append ""partially cropped at [top|bottom|left|right]"".
+   - Add depth token [foreground|midground|background] only if clear from overlap/relative scale; otherwise omit.
+
+2) Immediately after, include exactly one visible micro‑action/part phrase if any of these verifiable cues is present: visible limb‑object contact, object held in hand, visible deformation/pressure, object midair/off ground, clear gaze at a visible object, or motion blur on a limb. Use one of these templates only:
+   - ""[hand] [verb] [object]"" (e.g., ""right hand holding pole"")
+   - ""holding [object] with [hand]"" (e.g., ""holding violin with chin and right hand"")
+   - ""[body_part] [verb] [structure/object]"" (e.g., ""left foot on pedal"")
+   If none apply, include exactly ""no-action-visible"".
+
+3) Then include up to 1–3 high‑signal descriptor(s) chosen by strict priority (pick highest‑ranked verifiable candidates, break ties lexicographically):
+   A) Legible text — transcribe exact string only if every character is clearly readable; include it in quotes and localize (e.g., ""'LOEWE' on lower sill at left"").
+   B) Reflection/surface condition (e.g., ""wet pavement with reflections"", ""glass reflections"").
+   C) Material/texture (e.g., ""rusted metal"", ""woven straw"").
+   D) Distinctive accessory (e.g., ""white hard hat"", ""red pennant"").
+   E) Color (e.g., ""red sweatshirt"").
+   - Enforce ≤3 descriptors; if none verifiable, omit descriptors.
+
+4) If a person/object clearly interacts with another object/structure, include exactly one concise part‑level relation phrase using the template: ""[part] [verb] [object/structure]"" (e.g., ""right hand holding pole"", ""rear wheel off ground""). Include this only if contact/displacement is visually evident.
+
+5) Optionally include exactly one viewpoint token when obvious: {close-up, medium, wide, high-angle, low-angle}.
+
+6) Optionally include exactly one lighting token when obvious: {backlit, front-lit, rim-lit, long-shadow-left, long-shadow-right}.
+
+7) If a clear background anchor is visible, append one concise background noun phrase (single phrase, e.g., ""storefront window"", ""stone embankment"", ""Radio City marquee""). Omit if no clear anchor.
+
+Reflections vs. behind‑glass rule
+- If an element appears doubled, reversed, or overlayed on the glass plane without 3D occlusion → label as ""reflections"".
+- If objects clearly sit on the far side of the glass (shelf, mannequin, handbags) → label as ""on display behind glass"" or ""behind glass"".
+- If uncertain, omit both.
+
+Two‑pass verification (must run before emitting):
+a) Transcribe quoted text only if every character is readable; otherwise drop text token.
+b) Include a digit count only if each instance is clearly visible and ≥50% unobstructed; otherwise omit count.
+c) Include depth only if overlap/relative scale is unambiguous.
+d) Include ""partially cropped"" only if >5% of subject area is outside image.
+e) Drop any token failing verification and recheck sentence for grammaticality.
+
+Brevity & prioritization
+- If length limits force removal, prioritize tokens in this order: legible text → part‑level relation → background anchor → descriptors → viewpoint → lighting.
+- Use compact, active, factual phrasing and concrete nouns. Do not infer ages, emotions, roles, intent, or unseen attributes. Do not use vague quantifiers (""several"",""many"") — use digits only when clear.
+
+Style constraints
+- Single sentence, comma‑separated short phrases, no tags, no lists, no extra lines.
+- Use canonical labels (e.g., ""storefront window"", ""center""), consistent punctuation for quoted text.
+
+Canonical good examples (follow exact output format):
+- ""1 child left foreground, reaching toward storefront window, right hand touching glass, 'LOEWE' on lower sill at left, glass reflections, storefront window behind.""
+- ""1 woman center foreground, holding violin with chin and right hand, open instrument case on ground, medium, tiled underground passage behind.""
+- ""1 surfer center midground, crouching on surfboard, sharp turn with spray arc behind, sunlit green wave face, low-angle, ocean behind.""
+- ""5 dancers center foreground, standing in long line across crosswalk, red and white striped costumes, Radio City marquee above, street behind.""
+
+Follow these rules exactly to produce one precise caption.","1 woman center foreground, holding sword with right hand, yellow kimono with red accents, no-action-visible, crowd seated on ground behind, trees behind.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_53a1516f54,123,21750,flickr30k_test_021750,images/flickr30k/flickr30k_test_021750.jpg,"[""Two women who just had lunch hugging and saying goodbye."", ""Two women holding takeout boxes hugging on the street."", ""Two women are embracing while holding to go packages."", ""Two women, holding food carryout containers, hug."", ""Two blond women are hugging one another.""]",textgrad_53a1516f54,TextGrad Step 5,"Output exactly one concise, information‑dense caption: a single grammatical sentence of comma‑separated short phrases. Use digits for counts; do not infer, hedge, paraphrase, or add anything not visually present. Output nothing else.
+
+Required phrase ordering (include an item only if visually verifiable; omit unverifiable items). Aim for ≤30 words; allow up to +10% length only to include a fully legible quoted text string or one necessary part‑level relation/background anchor.
+
+1) Start with: [digit] + subject noun(s) + spatial anchor.
+   - Deterministic spatial rule: compute subject centroid x; if x < 0.33 → ""left""; if 0.33 ≤ x ≤ 0.66 → ""center""; if x > 0.66 → ""right"".
+   - If subject width >60% image width, emit ""center"" regardless of centroid.
+   - If >5% of subject area lies outside image, append ""partially cropped at [top|bottom|left|right]"".
+   - Add depth token [foreground|midground|background] only if clear from overlap/relative scale; otherwise omit.
+
+2) Immediately after, include exactly one visible micro‑action/part phrase if any of these verifiable cues is present: visible limb‑object contact, object held in hand, visible deformation/pressure, object midair/off ground, clear gaze at a visible object, or motion blur on a limb. Use one of these templates only:
+   - ""[hand] [verb] [object]"" (e.g., ""right hand holding pole"")
+   - ""holding [object] with [hand]"" (e.g., ""holding violin with chin and right hand"")
+   - ""[body_part] [verb] [structure/object]"" (e.g., ""left foot on pedal"")
+   If none apply, include exactly ""no-action-visible"".
+
+3) Then include up to 1–3 high‑signal descriptor(s) chosen by strict priority (pick highest‑ranked verifiable candidates, break ties lexicographically):
+   A) Legible text — transcribe exact string only if every character is clearly readable; include it in quotes and localize (e.g., ""'LOEWE' on lower sill at left"").
+   B) Reflection/surface condition (e.g., ""wet pavement with reflections"", ""glass reflections"").
+   C) Material/texture (e.g., ""rusted metal"", ""woven straw"").
+   D) Distinctive accessory (e.g., ""white hard hat"", ""red pennant"").
+   E) Color (e.g., ""red sweatshirt"").
+   - Enforce ≤3 descriptors; if none verifiable, omit descriptors.
+
+4) If a person/object clearly interacts with another object/structure, include exactly one concise part‑level relation phrase using the template: ""[part] [verb] [object/structure]"" (e.g., ""right hand holding pole"", ""rear wheel off ground""). Include this only if contact/displacement is visually evident.
+
+5) Optionally include exactly one viewpoint token when obvious: {close-up, medium, wide, high-angle, low-angle}.
+
+6) Optionally include exactly one lighting token when obvious: {backlit, front-lit, rim-lit, long-shadow-left, long-shadow-right}.
+
+7) If a clear background anchor is visible, append one concise background noun phrase (single phrase, e.g., ""storefront window"", ""stone embankment"", ""Radio City marquee""). Omit if no clear anchor.
+
+Reflections vs. behind‑glass rule
+- If an element appears doubled, reversed, or overlayed on the glass plane without 3D occlusion → label as ""reflections"".
+- If objects clearly sit on the far side of the glass (shelf, mannequin, handbags) → label as ""on display behind glass"" or ""behind glass"".
+- If uncertain, omit both.
+
+Two‑pass verification (must run before emitting):
+a) Transcribe quoted text only if every character is readable; otherwise drop text token.
+b) Include a digit count only if each instance is clearly visible and ≥50% unobstructed; otherwise omit count.
+c) Include depth only if overlap/relative scale is unambiguous.
+d) Include ""partially cropped"" only if >5% of subject area is outside image.
+e) Drop any token failing verification and recheck sentence for grammaticality.
+
+Brevity & prioritization
+- If length limits force removal, prioritize tokens in this order: legible text → part‑level relation → background anchor → descriptors → viewpoint → lighting.
+- Use compact, active, factual phrasing and concrete nouns. Do not infer ages, emotions, roles, intent, or unseen attributes. Do not use vague quantifiers (""several"",""many"") — use digits only when clear.
+
+Style constraints
+- Single sentence, comma‑separated short phrases, no tags, no lists, no extra lines.
+- Use canonical labels (e.g., ""storefront window"", ""center""), consistent punctuation for quoted text.
+
+Canonical good examples (follow exact output format):
+- ""1 child left foreground, reaching toward storefront window, right hand touching glass, 'LOEWE' on lower sill at left, glass reflections, storefront window behind.""
+- ""1 woman center foreground, holding violin with chin and right hand, open instrument case on ground, medium, tiled underground passage behind.""
+- ""1 surfer center midground, crouching on surfboard, sharp turn with spray arc behind, sunlit green wave face, low-angle, ocean behind.""
+- ""5 dancers center foreground, standing in long line across crosswalk, red and white striped costumes, Radio City marquee above, street behind.""
+
+Follow these rules exactly to produce one precise caption.","2 women center foreground, embracing, right hand holding white takeout container, left hand holding white folder, blonde hair, sunglasses, red plastic bag at left, blurred construction vehicle background.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_53a1516f54,128,17070,flickr30k_test_017070,images/flickr30k/flickr30k_test_017070.jpg,"[""A man with a hat and suspenders is walking through cornfields toward a silo in the background."", ""A man in a straw hat and suspenders walks away from the camera towards a field of corn."", ""The solitary man wearing the hat is walking in the field."", ""A man in a straw hat is walking in a cornfield."", ""Farmer walking in his fields.""]",textgrad_53a1516f54,TextGrad Step 5,"Output exactly one concise, information‑dense caption: a single grammatical sentence of comma‑separated short phrases. Use digits for counts; do not infer, hedge, paraphrase, or add anything not visually present. Output nothing else.
+
+Required phrase ordering (include an item only if visually verifiable; omit unverifiable items). Aim for ≤30 words; allow up to +10% length only to include a fully legible quoted text string or one necessary part‑level relation/background anchor.
+
+1) Start with: [digit] + subject noun(s) + spatial anchor.
+   - Deterministic spatial rule: compute subject centroid x; if x < 0.33 → ""left""; if 0.33 ≤ x ≤ 0.66 → ""center""; if x > 0.66 → ""right"".
+   - If subject width >60% image width, emit ""center"" regardless of centroid.
+   - If >5% of subject area lies outside image, append ""partially cropped at [top|bottom|left|right]"".
+   - Add depth token [foreground|midground|background] only if clear from overlap/relative scale; otherwise omit.
+
+2) Immediately after, include exactly one visible micro‑action/part phrase if any of these verifiable cues is present: visible limb‑object contact, object held in hand, visible deformation/pressure, object midair/off ground, clear gaze at a visible object, or motion blur on a limb. Use one of these templates only:
+   - ""[hand] [verb] [object]"" (e.g., ""right hand holding pole"")
+   - ""holding [object] with [hand]"" (e.g., ""holding violin with chin and right hand"")
+   - ""[body_part] [verb] [structure/object]"" (e.g., ""left foot on pedal"")
+   If none apply, include exactly ""no-action-visible"".
+
+3) Then include up to 1–3 high‑signal descriptor(s) chosen by strict priority (pick highest‑ranked verifiable candidates, break ties lexicographically):
+   A) Legible text — transcribe exact string only if every character is clearly readable; include it in quotes and localize (e.g., ""'LOEWE' on lower sill at left"").
+   B) Reflection/surface condition (e.g., ""wet pavement with reflections"", ""glass reflections"").
+   C) Material/texture (e.g., ""rusted metal"", ""woven straw"").
+   D) Distinctive accessory (e.g., ""white hard hat"", ""red pennant"").
+   E) Color (e.g., ""red sweatshirt"").
+   - Enforce ≤3 descriptors; if none verifiable, omit descriptors.
+
+4) If a person/object clearly interacts with another object/structure, include exactly one concise part‑level relation phrase using the template: ""[part] [verb] [object/structure]"" (e.g., ""right hand holding pole"", ""rear wheel off ground""). Include this only if contact/displacement is visually evident.
+
+5) Optionally include exactly one viewpoint token when obvious: {close-up, medium, wide, high-angle, low-angle}.
+
+6) Optionally include exactly one lighting token when obvious: {backlit, front-lit, rim-lit, long-shadow-left, long-shadow-right}.
+
+7) If a clear background anchor is visible, append one concise background noun phrase (single phrase, e.g., ""storefront window"", ""stone embankment"", ""Radio City marquee""). Omit if no clear anchor.
+
+Reflections vs. behind‑glass rule
+- If an element appears doubled, reversed, or overlayed on the glass plane without 3D occlusion → label as ""reflections"".
+- If objects clearly sit on the far side of the glass (shelf, mannequin, handbags) → label as ""on display behind glass"" or ""behind glass"".
+- If uncertain, omit both.
+
+Two‑pass verification (must run before emitting):
+a) Transcribe quoted text only if every character is readable; otherwise drop text token.
+b) Include a digit count only if each instance is clearly visible and ≥50% unobstructed; otherwise omit count.
+c) Include depth only if overlap/relative scale is unambiguous.
+d) Include ""partially cropped"" only if >5% of subject area is outside image.
+e) Drop any token failing verification and recheck sentence for grammaticality.
+
+Brevity & prioritization
+- If length limits force removal, prioritize tokens in this order: legible text → part‑level relation → background anchor → descriptors → viewpoint → lighting.
+- Use compact, active, factual phrasing and concrete nouns. Do not infer ages, emotions, roles, intent, or unseen attributes. Do not use vague quantifiers (""several"",""many"") — use digits only when clear.
+
+Style constraints
+- Single sentence, comma‑separated short phrases, no tags, no lists, no extra lines.
+- Use canonical labels (e.g., ""storefront window"", ""center""), consistent punctuation for quoted text.
+
+Canonical good examples (follow exact output format):
+- ""1 child left foreground, reaching toward storefront window, right hand touching glass, 'LOEWE' on lower sill at left, glass reflections, storefront window behind.""
+- ""1 woman center foreground, holding violin with chin and right hand, open instrument case on ground, medium, tiled underground passage behind.""
+- ""1 surfer center midground, crouching on surfboard, sharp turn with spray arc behind, sunlit green wave face, low-angle, ocean behind.""
+- ""5 dancers center foreground, standing in long line across crosswalk, red and white striped costumes, Radio City marquee above, street behind.""
+
+Follow these rules exactly to produce one precise caption.","1 man center midground, no-action-visible, wearing straw hat and suspenders, walking through tall grass, farm silo and barn background.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_53a1516f54,130,12886,flickr30k_test_012886,images/flickr30k/flickr30k_test_012886.jpg,"[""Man with long dark hair, wearing a gray winter cap and sunglasses, hiking gear across his back, tracking in snow with two hiking poles."", ""A man in a ski outfit and gear standing in the snow, smiling and posing for a picture."", ""A woman hiking in the snow using ski poles."", ""A man is in the snow holding ski poles."", ""A man that is skiing with glasses on.""]",textgrad_53a1516f54,TextGrad Step 5,"Output exactly one concise, information‑dense caption: a single grammatical sentence of comma‑separated short phrases. Use digits for counts; do not infer, hedge, paraphrase, or add anything not visually present. Output nothing else.
+
+Required phrase ordering (include an item only if visually verifiable; omit unverifiable items). Aim for ≤30 words; allow up to +10% length only to include a fully legible quoted text string or one necessary part‑level relation/background anchor.
+
+1) Start with: [digit] + subject noun(s) + spatial anchor.
+   - Deterministic spatial rule: compute subject centroid x; if x < 0.33 → ""left""; if 0.33 ≤ x ≤ 0.66 → ""center""; if x > 0.66 → ""right"".
+   - If subject width >60% image width, emit ""center"" regardless of centroid.
+   - If >5% of subject area lies outside image, append ""partially cropped at [top|bottom|left|right]"".
+   - Add depth token [foreground|midground|background] only if clear from overlap/relative scale; otherwise omit.
+
+2) Immediately after, include exactly one visible micro‑action/part phrase if any of these verifiable cues is present: visible limb‑object contact, object held in hand, visible deformation/pressure, object midair/off ground, clear gaze at a visible object, or motion blur on a limb. Use one of these templates only:
+   - ""[hand] [verb] [object]"" (e.g., ""right hand holding pole"")
+   - ""holding [object] with [hand]"" (e.g., ""holding violin with chin and right hand"")
+   - ""[body_part] [verb] [structure/object]"" (e.g., ""left foot on pedal"")
+   If none apply, include exactly ""no-action-visible"".
+
+3) Then include up to 1–3 high‑signal descriptor(s) chosen by strict priority (pick highest‑ranked verifiable candidates, break ties lexicographically):
+   A) Legible text — transcribe exact string only if every character is clearly readable; include it in quotes and localize (e.g., ""'LOEWE' on lower sill at left"").
+   B) Reflection/surface condition (e.g., ""wet pavement with reflections"", ""glass reflections"").
+   C) Material/texture (e.g., ""rusted metal"", ""woven straw"").
+   D) Distinctive accessory (e.g., ""white hard hat"", ""red pennant"").
+   E) Color (e.g., ""red sweatshirt"").
+   - Enforce ≤3 descriptors; if none verifiable, omit descriptors.
+
+4) If a person/object clearly interacts with another object/structure, include exactly one concise part‑level relation phrase using the template: ""[part] [verb] [object/structure]"" (e.g., ""right hand holding pole"", ""rear wheel off ground""). Include this only if contact/displacement is visually evident.
+
+5) Optionally include exactly one viewpoint token when obvious: {close-up, medium, wide, high-angle, low-angle}.
+
+6) Optionally include exactly one lighting token when obvious: {backlit, front-lit, rim-lit, long-shadow-left, long-shadow-right}.
+
+7) If a clear background anchor is visible, append one concise background noun phrase (single phrase, e.g., ""storefront window"", ""stone embankment"", ""Radio City marquee""). Omit if no clear anchor.
+
+Reflections vs. behind‑glass rule
+- If an element appears doubled, reversed, or overlayed on the glass plane without 3D occlusion → label as ""reflections"".
+- If objects clearly sit on the far side of the glass (shelf, mannequin, handbags) → label as ""on display behind glass"" or ""behind glass"".
+- If uncertain, omit both.
+
+Two‑pass verification (must run before emitting):
+a) Transcribe quoted text only if every character is readable; otherwise drop text token.
+b) Include a digit count only if each instance is clearly visible and ≥50% unobstructed; otherwise omit count.
+c) Include depth only if overlap/relative scale is unambiguous.
+d) Include ""partially cropped"" only if >5% of subject area is outside image.
+e) Drop any token failing verification and recheck sentence for grammaticality.
+
+Brevity & prioritization
+- If length limits force removal, prioritize tokens in this order: legible text → part‑level relation → background anchor → descriptors → viewpoint → lighting.
+- Use compact, active, factual phrasing and concrete nouns. Do not infer ages, emotions, roles, intent, or unseen attributes. Do not use vague quantifiers (""several"",""many"") — use digits only when clear.
+
+Style constraints
+- Single sentence, comma‑separated short phrases, no tags, no lists, no extra lines.
+- Use canonical labels (e.g., ""storefront window"", ""center""), consistent punctuation for quoted text.
+
+Canonical good examples (follow exact output format):
+- ""1 child left foreground, reaching toward storefront window, right hand touching glass, 'LOEWE' on lower sill at left, glass reflections, storefront window behind.""
+- ""1 woman center foreground, holding violin with chin and right hand, open instrument case on ground, medium, tiled underground passage behind.""
+- ""1 surfer center midground, crouching on surfboard, sharp turn with spray arc behind, sunlit green wave face, low-angle, ocean behind.""
+- ""5 dancers center foreground, standing in long line across crosswalk, red and white striped costumes, Radio City marquee above, street behind.""
+
+Follow these rules exactly to produce one precise caption.","1 person center foreground, holding ski poles with both hands, wearing yellow vest and gray beanie, snow-covered ground, trees behind.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_53a1516f54,133,24011,flickr30k_test_024011,images/flickr30k/flickr30k_test_024011.jpg,"[""Street performers with Santa Clause in the middle and ladies on the sides joining hands."", ""A man in a Santa suit stands amid a long row of dancers on a New York City street."", ""Santa and dancers outside of Radio City Music Hall in NYC."", ""Santa is in the line of dancers for the parade."", ""A dance in a city featuring Santa.""]",textgrad_53a1516f54,TextGrad Step 5,"Output exactly one concise, information‑dense caption: a single grammatical sentence of comma‑separated short phrases. Use digits for counts; do not infer, hedge, paraphrase, or add anything not visually present. Output nothing else.
+
+Required phrase ordering (include an item only if visually verifiable; omit unverifiable items). Aim for ≤30 words; allow up to +10% length only to include a fully legible quoted text string or one necessary part‑level relation/background anchor.
+
+1) Start with: [digit] + subject noun(s) + spatial anchor.
+   - Deterministic spatial rule: compute subject centroid x; if x < 0.33 → ""left""; if 0.33 ≤ x ≤ 0.66 → ""center""; if x > 0.66 → ""right"".
+   - If subject width >60% image width, emit ""center"" regardless of centroid.
+   - If >5% of subject area lies outside image, append ""partially cropped at [top|bottom|left|right]"".
+   - Add depth token [foreground|midground|background] only if clear from overlap/relative scale; otherwise omit.
+
+2) Immediately after, include exactly one visible micro‑action/part phrase if any of these verifiable cues is present: visible limb‑object contact, object held in hand, visible deformation/pressure, object midair/off ground, clear gaze at a visible object, or motion blur on a limb. Use one of these templates only:
+   - ""[hand] [verb] [object]"" (e.g., ""right hand holding pole"")
+   - ""holding [object] with [hand]"" (e.g., ""holding violin with chin and right hand"")
+   - ""[body_part] [verb] [structure/object]"" (e.g., ""left foot on pedal"")
+   If none apply, include exactly ""no-action-visible"".
+
+3) Then include up to 1–3 high‑signal descriptor(s) chosen by strict priority (pick highest‑ranked verifiable candidates, break ties lexicographically):
+   A) Legible text — transcribe exact string only if every character is clearly readable; include it in quotes and localize (e.g., ""'LOEWE' on lower sill at left"").
+   B) Reflection/surface condition (e.g., ""wet pavement with reflections"", ""glass reflections"").
+   C) Material/texture (e.g., ""rusted metal"", ""woven straw"").
+   D) Distinctive accessory (e.g., ""white hard hat"", ""red pennant"").
+   E) Color (e.g., ""red sweatshirt"").
+   - Enforce ≤3 descriptors; if none verifiable, omit descriptors.
+
+4) If a person/object clearly interacts with another object/structure, include exactly one concise part‑level relation phrase using the template: ""[part] [verb] [object/structure]"" (e.g., ""right hand holding pole"", ""rear wheel off ground""). Include this only if contact/displacement is visually evident.
+
+5) Optionally include exactly one viewpoint token when obvious: {close-up, medium, wide, high-angle, low-angle}.
+
+6) Optionally include exactly one lighting token when obvious: {backlit, front-lit, rim-lit, long-shadow-left, long-shadow-right}.
+
+7) If a clear background anchor is visible, append one concise background noun phrase (single phrase, e.g., ""storefront window"", ""stone embankment"", ""Radio City marquee""). Omit if no clear anchor.
+
+Reflections vs. behind‑glass rule
+- If an element appears doubled, reversed, or overlayed on the glass plane without 3D occlusion → label as ""reflections"".
+- If objects clearly sit on the far side of the glass (shelf, mannequin, handbags) → label as ""on display behind glass"" or ""behind glass"".
+- If uncertain, omit both.
+
+Two‑pass verification (must run before emitting):
+a) Transcribe quoted text only if every character is readable; otherwise drop text token.
+b) Include a digit count only if each instance is clearly visible and ≥50% unobstructed; otherwise omit count.
+c) Include depth only if overlap/relative scale is unambiguous.
+d) Include ""partially cropped"" only if >5% of subject area is outside image.
+e) Drop any token failing verification and recheck sentence for grammaticality.
+
+Brevity & prioritization
+- If length limits force removal, prioritize tokens in this order: legible text → part‑level relation → background anchor → descriptors → viewpoint → lighting.
+- Use compact, active, factual phrasing and concrete nouns. Do not infer ages, emotions, roles, intent, or unseen attributes. Do not use vague quantifiers (""several"",""many"") — use digits only when clear.
+
+Style constraints
+- Single sentence, comma‑separated short phrases, no tags, no lists, no extra lines.
+- Use canonical labels (e.g., ""storefront window"", ""center""), consistent punctuation for quoted text.
+
+Canonical good examples (follow exact output format):
+- ""1 child left foreground, reaching toward storefront window, right hand touching glass, 'LOEWE' on lower sill at left, glass reflections, storefront window behind.""
+- ""1 woman center foreground, holding violin with chin and right hand, open instrument case on ground, medium, tiled underground passage behind.""
+- ""1 surfer center midground, crouching on surfboard, sharp turn with spray arc behind, sunlit green wave face, low-angle, ocean behind.""
+- ""5 dancers center foreground, standing in long line across crosswalk, red and white striped costumes, Radio City marquee above, street behind.""
+
+Follow these rules exactly to produce one precise caption.","12 dancers center foreground, standing in long line across crosswalk, red and white striped costumes, no-action-visible, Radio City marquee above, street behind.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_53a1516f54,134,969,flickr30k_test_000969,images/flickr30k/flickr30k_test_000969.jpg,"[""Young men and women sit at a wooden table on which several partially-drunk beverages have been placed; the picture is interrupted by an outstretched hand, colored green in the odd light of the wood-paneled interior."", ""A green tinted hand is being held up in front of a table of people."", ""Two guys gather around a table with two girls while drinking."", ""People socializing at a table with beverages."", ""A group of friends hanging out in a bar.""]",textgrad_53a1516f54,TextGrad Step 5,"Output exactly one concise, information‑dense caption: a single grammatical sentence of comma‑separated short phrases. Use digits for counts; do not infer, hedge, paraphrase, or add anything not visually present. Output nothing else.
+
+Required phrase ordering (include an item only if visually verifiable; omit unverifiable items). Aim for ≤30 words; allow up to +10% length only to include a fully legible quoted text string or one necessary part‑level relation/background anchor.
+
+1) Start with: [digit] + subject noun(s) + spatial anchor.
+   - Deterministic spatial rule: compute subject centroid x; if x < 0.33 → ""left""; if 0.33 ≤ x ≤ 0.66 → ""center""; if x > 0.66 → ""right"".
+   - If subject width >60% image width, emit ""center"" regardless of centroid.
+   - If >5% of subject area lies outside image, append ""partially cropped at [top|bottom|left|right]"".
+   - Add depth token [foreground|midground|background] only if clear from overlap/relative scale; otherwise omit.
+
+2) Immediately after, include exactly one visible micro‑action/part phrase if any of these verifiable cues is present: visible limb‑object contact, object held in hand, visible deformation/pressure, object midair/off ground, clear gaze at a visible object, or motion blur on a limb. Use one of these templates only:
+   - ""[hand] [verb] [object]"" (e.g., ""right hand holding pole"")
+   - ""holding [object] with [hand]"" (e.g., ""holding violin with chin and right hand"")
+   - ""[body_part] [verb] [structure/object]"" (e.g., ""left foot on pedal"")
+   If none apply, include exactly ""no-action-visible"".
+
+3) Then include up to 1–3 high‑signal descriptor(s) chosen by strict priority (pick highest‑ranked verifiable candidates, break ties lexicographically):
+   A) Legible text — transcribe exact string only if every character is clearly readable; include it in quotes and localize (e.g., ""'LOEWE' on lower sill at left"").
+   B) Reflection/surface condition (e.g., ""wet pavement with reflections"", ""glass reflections"").
+   C) Material/texture (e.g., ""rusted metal"", ""woven straw"").
+   D) Distinctive accessory (e.g., ""white hard hat"", ""red pennant"").
+   E) Color (e.g., ""red sweatshirt"").
+   - Enforce ≤3 descriptors; if none verifiable, omit descriptors.
+
+4) If a person/object clearly interacts with another object/structure, include exactly one concise part‑level relation phrase using the template: ""[part] [verb] [object/structure]"" (e.g., ""right hand holding pole"", ""rear wheel off ground""). Include this only if contact/displacement is visually evident.
+
+5) Optionally include exactly one viewpoint token when obvious: {close-up, medium, wide, high-angle, low-angle}.
+
+6) Optionally include exactly one lighting token when obvious: {backlit, front-lit, rim-lit, long-shadow-left, long-shadow-right}.
+
+7) If a clear background anchor is visible, append one concise background noun phrase (single phrase, e.g., ""storefront window"", ""stone embankment"", ""Radio City marquee""). Omit if no clear anchor.
+
+Reflections vs. behind‑glass rule
+- If an element appears doubled, reversed, or overlayed on the glass plane without 3D occlusion → label as ""reflections"".
+- If objects clearly sit on the far side of the glass (shelf, mannequin, handbags) → label as ""on display behind glass"" or ""behind glass"".
+- If uncertain, omit both.
+
+Two‑pass verification (must run before emitting):
+a) Transcribe quoted text only if every character is readable; otherwise drop text token.
+b) Include a digit count only if each instance is clearly visible and ≥50% unobstructed; otherwise omit count.
+c) Include depth only if overlap/relative scale is unambiguous.
+d) Include ""partially cropped"" only if >5% of subject area is outside image.
+e) Drop any token failing verification and recheck sentence for grammaticality.
+
+Brevity & prioritization
+- If length limits force removal, prioritize tokens in this order: legible text → part‑level relation → background anchor → descriptors → viewpoint → lighting.
+- Use compact, active, factual phrasing and concrete nouns. Do not infer ages, emotions, roles, intent, or unseen attributes. Do not use vague quantifiers (""several"",""many"") — use digits only when clear.
+
+Style constraints
+- Single sentence, comma‑separated short phrases, no tags, no lists, no extra lines.
+- Use canonical labels (e.g., ""storefront window"", ""center""), consistent punctuation for quoted text.
+
+Canonical good examples (follow exact output format):
+- ""1 child left foreground, reaching toward storefront window, right hand touching glass, 'LOEWE' on lower sill at left, glass reflections, storefront window behind.""
+- ""1 woman center foreground, holding violin with chin and right hand, open instrument case on ground, medium, tiled underground passage behind.""
+- ""1 surfer center midground, crouching on surfboard, sharp turn with spray arc behind, sunlit green wave face, low-angle, ocean behind.""
+- ""5 dancers center foreground, standing in long line across crosswalk, red and white striped costumes, Radio City marquee above, street behind.""
+
+Follow these rules exactly to produce one precise caption.","1 person center foreground, left hand raised midair, green glow on skin, wooden table with beer glasses, dim ambient lighting, framed artwork on wood-paneled wall behind.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"

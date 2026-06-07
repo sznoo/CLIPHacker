@@ -1,0 +1,117 @@
+{
+  "prompt": "Write exactly one short, factual caption (a single sentence of 8–14 words) that describes only visible content in the image. Be literal and concrete: state visible objects, clear actions, counts when they are clearly seen, simple spatial relations, and observable colors. Do not infer or guess unseen attributes (age, emotions, relationships, intentions) and do not use figurative, evaluative, or subjective language (no metaphors or opinion words like \"beautiful\" or \"daring\"). Prefer common everyday nouns and verbs (man, woman, child, dog, bike, car, street, tree, sitting, riding). Include adjectives only if directly visible; if a count is uncertain, omit it. Output exactly one sentence caption only — no labels, keywords, examples, or extra text. Examples of the desired style: \"Three children jump on a sandy beach near the shoreline.\" \"A man pushes a bicycle across a sunlit city street.\" \"Black dog runs on grass toward a red frisbee in sunlight.\"",
+  "prompt_id": "textgrad_7e864dc8d5",
+  "split_csv": "data/splits/flickr30k_main_seed1_val.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_00/val/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_00/val/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_00/val/scores.csv",
+  "summary": {
+    "n": 260,
+    "mean_clip": 0.30953563262636846,
+    "mean_siglip": 0.1740379141500363,
+    "mean_caption_len": 11.534615384615385,
+    "generic_rate": 0.4423076923076923,
+    "mean_delta_clip": -0.01437602879909369,
+    "mean_delta_siglip": -0.02487207251386,
+    "clip_win_rate": 0.3211538461538462,
+    "siglip_win_rate": 0.2673076923076923
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_003587",
+      "caption": "A photo of one black man sitting in a race suit.",
+      "clip_score": 0.2304004728794098,
+      "siglip_score": 0.101117804646492,
+      "delta_clip": -0.1348864734172821,
+      "delta_siglip": -0.16318626701831818
+    },
+    {
+      "image_id": "flickr30k_test_023317",
+      "caption": "A photo of one woman standing at guest services counter.",
+      "clip_score": 0.2609108090400696,
+      "siglip_score": 0.179502785205841,
+      "delta_clip": -0.13023710250854492,
+      "delta_siglip": -0.038885772228240995
+    },
+    {
+      "image_id": "flickr30k_test_011250",
+      "caption": "Two children stand on grass near a yellow caution tape.",
+      "clip_score": 0.2829630970954895,
+      "siglip_score": 0.2172373831272125,
+      "delta_clip": -0.1296306848526001,
+      "delta_siglip": -0.0032782405614852905
+    },
+    {
+      "image_id": "flickr30k_test_011691",
+      "caption": "A photo of one black man dancing at night.",
+      "clip_score": 0.1936506628990173,
+      "siglip_score": 0.1178450360894203,
+      "delta_clip": -0.1045489311218262,
+      "delta_siglip": -0.13630404323339457
+    },
+    {
+      "image_id": "flickr30k_test_008802",
+      "caption": "A photo of one black and white dog running on grass.",
+      "clip_score": 0.2652933895587921,
+      "siglip_score": 0.1087334975600242,
+      "delta_clip": -0.10352060198783869,
+      "delta_siglip": -0.0848449245095253
+    },
+    {
+      "image_id": "flickr30k_test_023900",
+      "caption": "A photo of one man standing near food stall.",
+      "clip_score": 0.2644266486167907,
+      "siglip_score": 0.1599465161561966,
+      "delta_clip": -0.09737998247146606,
+      "delta_siglip": -0.13086910545825958
+    },
+    {
+      "image_id": "flickr30k_test_028189",
+      "caption": "A photo of one man standing near insulation panel.",
+      "clip_score": 0.2566841840744018,
+      "siglip_score": 0.1795755475759506,
+      "delta_clip": -0.0940583348274231,
+      "delta_siglip": -0.0822602063417435
+    },
+    {
+      "image_id": "flickr30k_test_006537",
+      "caption": "A photo of one person walking on a train station platform.",
+      "clip_score": 0.2990067899227142,
+      "siglip_score": 0.1361012160778045,
+      "delta_clip": -0.0924740731716156,
+      "delta_siglip": -0.08160203695297238
+    },
+    {
+      "image_id": "flickr30k_test_022056",
+      "caption": "A photo of 1 green child standing in front of group.",
+      "clip_score": 0.2608033418655395,
+      "siglip_score": 0.1845771372318267,
+      "delta_clip": -0.09113672375679022,
+      "delta_siglip": -0.051244243979454096
+    },
+    {
+      "image_id": "flickr30k_test_011250",
+      "caption": "Two children stand on grass near a yellow caution tape.",
+      "clip_score": 0.2829630970954895,
+      "siglip_score": 0.2172373831272125,
+      "delta_clip": -0.0896596908569336,
+      "delta_siglip": -0.0311034023761749
+    },
+    {
+      "image_id": "flickr30k_test_003587",
+      "caption": "A man wearing a black cap and jacket with logos sits in a crowd.",
+      "clip_score": 0.2773787081241607,
+      "siglip_score": 0.1717528104782104,
+      "delta_clip": -0.08790823817253118,
+      "delta_siglip": -0.09255126118659979
+    },
+    {
+      "image_id": "flickr30k_test_023317",
+      "caption": "A photo of one woman standing at guest services counter.",
+      "clip_score": 0.2609108090400696,
+      "siglip_score": 0.179502785205841,
+      "delta_clip": -0.08541974425315851,
+      "delta_siglip": -0.09838390350341797
+    }
+  ]
+}

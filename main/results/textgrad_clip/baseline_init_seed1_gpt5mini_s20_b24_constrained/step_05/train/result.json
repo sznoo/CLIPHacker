@@ -1,0 +1,117 @@
+{
+  "prompt": "Output exactly one literal, factual sentence (8–18 words) describing only visible content in the image. Do not add labels, examples, lists, annotations, or any extra text.\n\nDefinitions: content words exclude leading articles (a/an/the) and punctuation. A high‑signal token is one of: visible color or pattern, a concrete object class (prefer the most specific multiword class, e.g., \"electric guitar\", \"motorbike\"), a clear count (Arabic numeral), clothing/accessory, or legible text/logo (copy verbatim). Preferred token priority: color/pattern > concrete object class > numeral/count > clothing/accessory > legible text/logo.\n\nSentence rules:\n- Place at least one high‑signal token within the first three content words. If a second high‑signal token is visible, include it within the first six content words.\n- Use a concise present‑tense verb (present simple or present‑participle: \"stands\" or \"standing\").\n- Keep the main attribute immediately before the noun when natural (e.g., \"red bicycle\"); allow \"noun with [attribute]\" only if that preserves a high‑signal token within the required early words.\n- Prefer specific visible nouns over generic labels (choose \"electric guitar\" or \"saxophone\" rather than \"instrument\"; use \"person\" only when gender/age/role is unclear).\n- Use Arabic numerals for clearly separable counts; use \"several\" if >3 or items are indistinct.\n- Include at most one short spatial connector (\"next to\", \"on\", \"in front of\", \"near\") to link the primary subject to a clear nearby object or surface.\n- Copy any legible text/logo exactly as seen.\n- Do not infer unseen attributes (age, emotion, intent, relationships) and avoid figurative or subjective language.\n\nIf the first draft lacks a high‑signal token or uses a generic noun when a specific class is visible, rephrase to include the most specific visible noun and at least one color/number/logo.\n\nOutput exactly one short sentence only—no extra text.",
+  "prompt_id": "textgrad_37d50c1d42",
+  "split_csv": "data/splits/flickr30k_main_seed1_train.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_05/train/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_05/train/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_05/train/scores.csv",
+  "summary": {
+    "n": 24,
+    "mean_clip": 0.3138435122867425,
+    "mean_siglip": 0.17653508018702269,
+    "mean_caption_len": 10.666666666666666,
+    "generic_rate": 0.08333333333333333,
+    "mean_delta_clip": -0.007306714852650965,
+    "mean_delta_siglip": -0.005603696840504803,
+    "clip_win_rate": 0.5,
+    "siglip_win_rate": 0.5416666666666666
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_018651",
+      "caption": "Man in straw hat stands next to red bicycle with oranges.",
+      "clip_score": 0.3232438564300537,
+      "siglip_score": 0.1977918297052383,
+      "delta_clip": -0.07897982001304626,
+      "delta_siglip": 0.0012481510639190951
+    },
+    {
+      "image_id": "flickr30k_test_024011",
+      "caption": "Several dancers in red-and-white costumes stand on a street near Radio City Music Hall.",
+      "clip_score": 0.3172597289085388,
+      "siglip_score": 0.1726686358451843,
+      "delta_clip": -0.0641946792602539,
+      "delta_siglip": 6.662309169769287e-05
+    },
+    {
+      "image_id": "flickr30k_test_023641",
+      "caption": "A woman in a striped shirt stands on a wet cobblestone path.",
+      "clip_score": 0.2873595356941223,
+      "siglip_score": 0.1358022689819336,
+      "delta_clip": -0.050883471965789795,
+      "delta_siglip": -0.043835863471031106
+    },
+    {
+      "image_id": "flickr30k_test_007097",
+      "caption": "Yellow umbrellas shade people sitting at metal tables outdoors.",
+      "clip_score": 0.2719539701938629,
+      "siglip_score": 0.1559727489948272,
+      "delta_clip": -0.040446132421493475,
+      "delta_siglip": -0.05077582597732552
+    },
+    {
+      "image_id": "flickr30k_test_018116",
+      "caption": "Golden metal pieces lie on newspaper near a person working.",
+      "clip_score": 0.287634015083313,
+      "siglip_score": 0.1350454688072204,
+      "delta_clip": -0.040409535169601385,
+      "delta_siglip": -0.018798977136611994
+    },
+    {
+      "image_id": "flickr30k_test_030024",
+      "caption": "Gray-haired man wearing medal sits at table with wine glasses.",
+      "clip_score": 0.2659382820129394,
+      "siglip_score": 0.1921604573726654,
+      "delta_clip": -0.0365331768989563,
+      "delta_siglip": 0.007945165038108909
+    },
+    {
+      "image_id": "flickr30k_test_030218",
+      "caption": "Man with gray hair stands near wall playing flute.",
+      "clip_score": 0.3185815215110779,
+      "siglip_score": 0.2024736255407333,
+      "delta_clip": -0.035513877868652344,
+      "delta_siglip": -0.020132496953010587
+    },
+    {
+      "image_id": "flickr30k_test_021351",
+      "caption": "A woman stands near colorful abstract paintings in a gallery.",
+      "clip_score": 0.3188082575798034,
+      "siglip_score": 0.0925033167004585,
+      "delta_clip": -0.026561409235000666,
+      "delta_siglip": -0.1397282853722572
+    },
+    {
+      "image_id": "flickr30k_test_021750",
+      "caption": "Two women hugging, one holding white takeout containers, near red plastic bag.",
+      "clip_score": 0.298766165971756,
+      "siglip_score": 0.2158529460430145,
+      "delta_clip": -0.025169759988784735,
+      "delta_siglip": 0.04897771775722501
+    },
+    {
+      "image_id": "flickr30k_test_013247",
+      "caption": "Outdoor World sign stands above a building with several people walking in front.",
+      "clip_score": 0.3217544257640838,
+      "siglip_score": 0.189970463514328,
+      "delta_clip": -0.017615169286727905,
+      "delta_siglip": 0.038779929280281095
+    },
+    {
+      "image_id": "flickr30k_test_019300",
+      "caption": "Person climbs wooden roof frame under clear blue sky.",
+      "clip_score": 0.3187633752822876,
+      "siglip_score": 0.1516850143671035,
+      "delta_clip": -0.012798547744750977,
+      "delta_siglip": 0.04075493663549419
+    },
+    {
+      "image_id": "flickr30k_test_012886",
+      "caption": "A person wearing a yellow vest stands in the snow with ski poles.",
+      "clip_score": 0.2853049039840698,
+      "siglip_score": 0.1668490171432495,
+      "delta_clip": -0.009982973337173462,
+      "delta_siglip": -0.017680659890174782
+    }
+  ]
+}

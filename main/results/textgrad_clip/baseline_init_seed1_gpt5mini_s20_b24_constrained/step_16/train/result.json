@@ -1,0 +1,117 @@
+{
+  "prompt": "Generate exactly one short, literal, factual caption (one grammatically correct sentence) describing only visible content in the image. Output exactly one sentence only — no extra text. Total words: 8–14 (prefer 9–12). Follow these prioritized rules (apply in order):\n\n1) Subject selection: choose the subject that maximizes a simple visibility score combining normalized area and detector confidence, with a strong bonus if the subject enables one or more visible high‑signal tokens (see rule 3). If scores tie, prefer the larger area. Prefer a detected person only when that person scores near the top and provides discriminative tokens.\n\n2) Visibility (safety): treat a detection as usable if its visibility score is meaningfully positive (use area% and detector_confidence together) and it meets a small minimum (very small detections should be ignored). Do not invent attributes not supported by detections.\n\n3) High‑signal tokens (definition and placement): high‑signal tokens = visible colors or patterns, concrete multiword classes (e.g., \"stop sign\", \"double‑decker bus\"), clear Arabic numerals, clothing/accessory terms, or short readable text/logos (1–3 tokens). Require at least one high‑signal token within the first 3 content words (a single leading article does not count). If two distinct high‑signal tokens are clearly visible, include both within the first 4 content words unless grammar absolutely prevents it.\n\n4) OCR/text copying: allow copying short readable text/logos (1–3 tokens) only when OCR_confidence ≥ 0.55 and OCR_bbox_area ≥ 0.5% (or otherwise clearly legible). Never copy phone numbers or runs of ≥5 consecutive digits. Do not copy unreadable or low‑confidence text.\n\n5) Second object allowance: you may append one compact post‑nominal prepositional or participial phrase (one relation only, e.g., \"by market stall\", \"on sidewalk\") if that second short phrase adds a distinct high‑signal token. No stacked relations or long descriptive chains.\n\n6) Wording, modifiers, verbs, and length: prefer starting with a high‑signal modifier plus class (e.g., \"red bicycle\", \"two dogs\", \"striped shirt\") when natural, but a leading article is acceptable if it yields more natural grammar. Use present‑tense, concise S V (+ O) sentences. Prefer specific, concrete verbs when action is visible; use \"is/are\" only when no clear action can be inferred.\n\n7) Numbers and formatting: use Arabic numerals for visible counts that meet visibility/OCR rules. Keep captions dense with concrete tokens and minimal function words.\n\n8) Safety and literalness: do not invent unseen attributes, emotions, intentions, or dialogue. Do not hallucinate unreadable text. If no high‑signal token meets the thresholds, select the next best visible candidate that provides at least one high‑signal token, but never violate visibility or OCR safety rules.\n\nFinal constraints: one sentence only, 8–14 words, literal description of visible content, follow the visibility and OCR guidance above, do not output fallback phrases, and do not add any extra commentary.",
+  "prompt_id": "textgrad_2c3cead2e3",
+  "split_csv": "data/splits/flickr30k_main_seed1_train.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_16/train/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_16/train/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_16/train/scores.csv",
+  "summary": {
+    "n": 24,
+    "mean_clip": 0.32338254526257515,
+    "mean_siglip": 0.1986353614677985,
+    "mean_caption_len": 11.583333333333334,
+    "generic_rate": 0.041666666666666664,
+    "mean_delta_clip": -0.001168557753165549,
+    "mean_delta_siglip": -0.003943514078855517,
+    "clip_win_rate": 0.5833333333333334,
+    "siglip_win_rate": 0.5416666666666666
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_006091",
+      "caption": "A child in a pink shirt and blue cap plays with a kitchen faucet.",
+      "clip_score": 0.3236958682537079,
+      "siglip_score": 0.1987265646457672,
+      "delta_clip": -0.06127652525901789,
+      "delta_siglip": -0.044454589486122076
+    },
+    {
+      "image_id": "flickr30k_test_022494",
+      "caption": "Man in orange shirt carries orange ladder near brick wall.",
+      "clip_score": 0.3104771375656128,
+      "siglip_score": 0.1987255811691284,
+      "delta_clip": -0.05064097046852112,
+      "delta_siglip": -0.016979292035102816
+    },
+    {
+      "image_id": "flickr30k_test_028876",
+      "caption": "Player in blue jersey number 14 performs a flip while another player in red jersey number 22 kneels nearby.",
+      "clip_score": 0.2903430461883545,
+      "siglip_score": 0.164237841963768,
+      "delta_clip": -0.04303669929504389,
+      "delta_siglip": 0.005707874894142206
+    },
+    {
+      "image_id": "flickr30k_test_013247",
+      "caption": "People walk near the Outdoor World store entrance.",
+      "clip_score": 0.3019352257251739,
+      "siglip_score": 0.1868728846311569,
+      "delta_clip": -0.03743436932563782,
+      "delta_siglip": 0.035682350397109985
+    },
+    {
+      "image_id": "flickr30k_test_030685",
+      "caption": "Two men converse in a hallway with visible \"Squidoo\" and \"Flock\" logos on the wall.",
+      "clip_score": 0.309556782245636,
+      "siglip_score": 0.2530618011951446,
+      "delta_clip": -0.0298506617546081,
+      "delta_siglip": 0.019533306360244695
+    },
+    {
+      "image_id": "flickr30k_test_024189",
+      "caption": "Man in green shirt and blue cap bends over bags on sidewalk near Subway store.",
+      "clip_score": 0.3026280999183655,
+      "siglip_score": 0.2051346898078918,
+      "delta_clip": -0.023986250162124634,
+      "delta_siglip": -0.032281294465065
+    },
+    {
+      "image_id": "flickr30k_test_016246",
+      "caption": "Child in blue shorts carries colorful balloons on street.",
+      "clip_score": 0.3150565028190613,
+      "siglip_score": 0.180613487958908,
+      "delta_clip": -0.019587516784667913,
+      "delta_siglip": -0.026818752288818415
+    },
+    {
+      "image_id": "flickr30k_test_009311",
+      "caption": "Blond-haired child in plaid shirt laughs by water fountain.",
+      "clip_score": 0.3143825829029083,
+      "siglip_score": 0.1733104288578033,
+      "delta_clip": -0.016179025173187256,
+      "delta_siglip": 0.005632117390632602
+    },
+    {
+      "image_id": "flickr30k_test_007436",
+      "caption": "Woman in patterned shirt holds phone near yellow truck.",
+      "clip_score": 0.2859716117382049,
+      "siglip_score": 0.1906231939792633,
+      "delta_clip": -0.012455075979232788,
+      "delta_siglip": -0.0570014417171478
+    },
+    {
+      "image_id": "flickr30k_test_023784",
+      "caption": "A smiling woman in a blue vest stands among bags and boxes.",
+      "clip_score": 0.320279061794281,
+      "siglip_score": 0.194520354270935,
+      "delta_clip": -0.004467368125915472,
+      "delta_siglip": -0.023477077484130887
+    },
+    {
+      "image_id": "flickr30k_test_008727",
+      "caption": "A girl in red pajamas and a boy in blue pajamas play with wrapping paper on the floor.",
+      "clip_score": 0.3499450981616974,
+      "siglip_score": 0.2060843855142593,
+      "delta_clip": 0.002089947462081909,
+      "delta_siglip": -0.027207180857658386
+    },
+    {
+      "image_id": "flickr30k_test_007264",
+      "caption": "Woman in white top kneels to pet small dog on sidewalk.",
+      "clip_score": 0.3369330167770386,
+      "siglip_score": 0.2006003111600875,
+      "delta_clip": 0.0052290558815003,
+      "delta_siglip": -0.04415012896060949
+    }
+  ]
+}

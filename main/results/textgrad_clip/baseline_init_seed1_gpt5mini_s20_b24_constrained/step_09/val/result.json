@@ -1,0 +1,117 @@
+{
+  "prompt": "Generate exactly one short, literal, factual caption (one sentence) describing only visible content in the image. Output exactly one sentence only—no extra text. Total words: 8–20.\n\nDefinitions\n- High‑signal tokens = a visible color or pattern; a concrete, specific object class (prefer multiword classes like \"stop sign\", \"fire hydrant\", \"rolling metal door\"); a clear Arabic numeral count; a clothing/accessory; or legible text/logo copied exactly (only when prominent as defined below).\n- \"Content words\" = all words except a single leading article (a/an/the) if present.\n\nVisibility and prominence thresholds (use these deterministically)\n- Consider an object proposal \"clearly visible\" if it occupies ≥0.8% of the image area and detector/confidence ≥0.35.\n- Copy legible text/logo exactly only if OCR confidence ≥0.60 and its bounding box area ≥1.5% of the image; otherwise do not include small/unclear text.\n- Treat counts/numerals as visible only if digits are clearly legible or clearly present on an object.\n\nCore rules (follow unless doing so breaks grammar or yields an unnatural sentence)\n1. Early high‑signal placement: require at least one high‑signal token within the first four content words. If two distinct high‑signal tokens are clearly visible (per thresholds), require both to appear within the first five content words. Ignore a single leading article when counting content words.\n2. Subject selection by salience: choose the primary subject using a salience preference that favors large, high‑confidence foreground objects: area (strongest) > detector confidence > closeness to center > local contrast. If two candidates score within 5%, pick the one that allows more distinct high‑signal tokens early.\n3. Specific class preference: use the most specific available concrete class (prefer multiword classes). Fall back to a specific single‑word class only if no more specific label is visible.\n4. Legible text/logo rule: copy visible text or logos exactly only when they meet the prominence thresholds above; place such text early if it is prominent and central to the subject, integrating it grammatically (e.g., \"sign reading 'OPEN'\" or \"shirt with 'NYC'\").\n5. Color and pattern: prefer color or pattern adjectives directly before their noun (e.g., \"red bicycle\"), but allow \"noun with [color]\" when necessary to keep a high‑signal token early or to preserve grammar.\n6. Numerals and counts: always use Arabic numerals and place them early when they are clearly visible and prominent.\n7. Syntax and fluency: prefer a short present‑tense subject + verb sentence using common collocations (e.g., \"X sits on Y\", \"X holds Y\", \"X leans against Y\"). A bare noun phrase is allowed only if any verb would push required high‑signal tokens past their allowed positions. Always prioritize grammatical, natural phrasing over rigid placement.\n8. Openings: avoid generic openings (\"There is\", \"A group of\", \"Some people\") unless no confident specific subject can be identified or a generic opening yields a more natural, grammatical caption.\n9. Compact second descriptor allowed: you may include a brief second descriptor or prepositional phrase (e.g., \"Red truck by garage\", \"Woman in blue jacket, holding a phone\") if it adds a distinct high‑signal token and keeps total words ≤20.\n10. Tie resolution: when multiple reasonable captions tie, prefer the caption containing the greater number of distinct high‑signal tokens within the early content window.\n\nWord‑choice guidance\n- Prefer common color and class words (e.g., red, blue, black, bicycle, truck, dog) over rare synonyms.\n- Aim for about 9–14 content words but remain within the 8–20 total word limit.\n\nOutput exactly one sentence only—no extra text.",
+  "prompt_id": "textgrad_122bd83e60",
+  "split_csv": "data/splits/flickr30k_main_seed1_val.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_09/val/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_09/val/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_09/val/scores.csv",
+  "summary": {
+    "n": 150,
+    "mean_clip": 0.32214232623577116,
+    "mean_siglip": 0.19456857537229855,
+    "mean_caption_len": 15.073333333333334,
+    "generic_rate": 0.02,
+    "mean_delta_clip": -0.002423122078180317,
+    "mean_delta_siglip": -0.004271970316767693,
+    "clip_win_rate": 0.51,
+    "siglip_win_rate": 0.4633333333333333
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_011250",
+      "caption": "Two boys stand in grass near yellow tape, one wearing a brown shirt with \"Lake Placid\" text.",
+      "clip_score": 0.3195201158523559,
+      "siglip_score": 0.1721534430980682,
+      "delta_clip": -0.0930736660957337,
+      "delta_siglip": -0.04836218059062958
+    },
+    {
+      "image_id": "flickr30k_test_000585",
+      "caption": "Workers in yellow vests stand near a red crane on a construction site.",
+      "clip_score": 0.2538291811943054,
+      "siglip_score": 0.118200659751892,
+      "delta_clip": -0.08317258954048157,
+      "delta_siglip": -0.08973419666290289
+    },
+    {
+      "image_id": "flickr30k_test_026753",
+      "caption": "Man in black shirt with \"LOVE\" text grinds rail on inline skates.",
+      "clip_score": 0.248860627412796,
+      "siglip_score": 0.1859456598758697,
+      "delta_clip": -0.08273062109947202,
+      "delta_siglip": 0.028404653072357205
+    },
+    {
+      "image_id": "flickr30k_test_011286",
+      "caption": "Three people in orange shorts walk along rocky riverbank.",
+      "clip_score": 0.2790911793708801,
+      "siglip_score": 0.1892420947551727,
+      "delta_clip": -0.07866442203521729,
+      "delta_siglip": -0.03584381937980649
+    },
+    {
+      "image_id": "flickr30k_test_017698",
+      "caption": "Woman in black jacket holds clipboard near soldiers in camouflage uniforms.",
+      "clip_score": 0.2740916311740875,
+      "siglip_score": 0.1823735237121582,
+      "delta_clip": -0.07739463448524475,
+      "delta_siglip": -0.07766634225845337
+    },
+    {
+      "image_id": "flickr30k_test_026753",
+      "caption": "Man in black shirt with \"LOVE\" text grinds rail on inline skates.",
+      "clip_score": 0.248860627412796,
+      "siglip_score": 0.1859456598758697,
+      "delta_clip": -0.0749353468418121,
+      "delta_siglip": -0.034994378685951205
+    },
+    {
+      "image_id": "flickr30k_test_000585",
+      "caption": "Workers in yellow vests stand near a red crane on a construction site.",
+      "clip_score": 0.2538291811943054,
+      "siglip_score": 0.118200659751892,
+      "delta_clip": -0.07218831777572626,
+      "delta_siglip": -0.034407615661621094
+    },
+    {
+      "image_id": "flickr30k_test_003587",
+      "caption": "Man in black cap and jacket with number 3 and sponsor logos.",
+      "clip_score": 0.2991998195648193,
+      "siglip_score": 0.2457993030548095,
+      "delta_clip": -0.06608712673187261,
+      "delta_siglip": -0.018504768610000694
+    },
+    {
+      "image_id": "flickr30k_test_023317",
+      "caption": "Woman in pink jacket and white hat stands near guest services booth with red barrel nearby.",
+      "clip_score": 0.329213798046112,
+      "siglip_score": 0.2421906441450119,
+      "delta_clip": -0.0619341135025025,
+      "delta_siglip": 0.0238020867109299
+    },
+    {
+      "image_id": "flickr30k_test_024264",
+      "caption": "People walk near a modern building with a stone base and glass facade under a blue sky.",
+      "clip_score": 0.2512588798999786,
+      "siglip_score": 0.1242653131484985,
+      "delta_clip": -0.059137135744094904,
+      "delta_siglip": -0.1068025380373001
+    },
+    {
+      "image_id": "flickr30k_test_015890",
+      "caption": "Biker in white shirt with red logo performs trick on black BMX bike above concrete ramp.",
+      "clip_score": 0.2833893895149231,
+      "siglip_score": 0.1705588549375534,
+      "delta_clip": -0.05689910054206848,
+      "delta_siglip": -0.004051581025123596
+    },
+    {
+      "image_id": "flickr30k_test_017698",
+      "caption": "Woman in black jacket holds clipboard near soldiers in camouflage uniforms.",
+      "clip_score": 0.2740916311740875,
+      "siglip_score": 0.1823735237121582,
+      "delta_clip": -0.05576410889625549,
+      "delta_siglip": -0.0828644335269928
+    }
+  ]
+}

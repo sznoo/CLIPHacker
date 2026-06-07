@@ -1,0 +1,142 @@
+{
+  "prompt": "Output exactly one concise, information‑dense caption: a single grammatical sentence, composed of comma‑separated short phrases, describing only visibly present facts. Use digits for counts, no inference, hedging, or metaphors (no \"appears/likely/seems\"); do not output anything else.\n\nRequired ordering for the sentence (include each item only if clearly visible; omit unverifiable items). Prefer ≤30 words:\n1) Begin with digit(s) + subject noun(s) + spatial anchor for each counted subject: [left|center|right] and [foreground|midground|background]. If partly out of frame, use \"partially cropped at [edge]\".\n2) Immediately after, include one visible action if present plus the specific body/vehicle part or object involved (e.g., \"right hand on fretboard\", \"left foot stepping\", \"holding knife at table edge\"). Run the micro‑action checklist before using \"no-action-visible\"; use \"no-action-visible\" only if absolutely no limb/object contact, gaze direction, posture, object displacement, or interaction is detectable.\n3) Add 1–3 high‑signal discriminative descriptor(s), chosen by priority: (A) exact legible text (transcribe in quotes and localize, e.g., \"'NO PARKING' stenciled on roll‑up door at background right\") > (B) reflection/wetness/surface condition > (C) material/texture > (D) distinctive accessory (hat, bag) > (E) color. If >3 candidates exist, select top 3 by this priority.\n4) If a person/object interacts with another object/structure, require one part‑level relation phrase (e.g., \"sitting on metal chair beside small round table\", \"rear wheel off ground\").\n5) Optionally include exactly one viewpoint token when obvious: {close-up, medium, wide, high-angle, low-angle}. Omit if unclear.\n6) Optionally include exactly one lighting token when obvious: {backlit, front-lit, rim-lit, long-shadow-left, long-shadow-right}. Omit if unclear.\n7) If visible, add one concise background landmark/texture noun phrase (single phrase, e.g., \"wet pavement with ripples\", \"stone embankment\", \"storefront window\", \"pier with canopy\").\n8) Preserve the final ordering in the sentence: [digit+subject+location], [action+part if any], [1–3 descriptors], [viewpoint if included], [lighting if included], [background phrase].\n\nPre-output verification checklist (must be applied before emitting the caption):\n- Did I detect any legible text? If yes, transcribe exact string in quotes and localize.\n- Did I detect limb/object contact, gaze, posture, object displacement, or interaction? If yes, include action+part phrase; otherwise use \"no-action-visible\" or omit action.\n- Did I spot reflections, wet surfaces, or distinctive background landmarks? If yes, include one background noun phrase.\n- Are small props or distinctive clothing/accessories visible? If yes, include up to the top descriptor(s) per priority.\n- Is any subject partially out of frame? If yes, use \"partially cropped at [edge]\".\n\nStyle and constraints:\n- Use compact, active, factual phrasing and concrete nouns (prefer canonical object names: \"acoustic guitar\" not \"instrument\" when specific). Limit descriptors to the top 3 priority items.\n- Do not infer ages, emotions, relationships, or unverified attributes. No hedging words.\n- Keep punctuation simple and phrases comma‑separated in one sentence.\n\nMicro‑examples (do not output these; follow their style):\nPositive: \"1 man center foreground, right hand on fretboard, reddish‑brown acoustic guitar body, medium, front-lit, wet pavement with reflections.\" \nPositive: \"2 boats center and left foreground, people boarding at stern, white hulls with red trim, wide, front-lit, stone embankment behind.\"\nNegative (avoid): \"Several people in a busy scene with objects and unclear lighting.\"",
+  "prompt_id": "textgrad_4a56f6c519",
+  "split_csv": "data/splits/flickr30k_main_seed1_train.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal/step_03/train/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal/step_03/train/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal/step_03/train/scores.csv",
+  "data_root": "data",
+  "summary": {
+    "n": 24,
+    "mean_clip": 0.2942669081191222,
+    "mean_siglip": 0.18285924584294355,
+    "mean_caption_len": 24.041666666666668,
+    "generic_rate": 0.0,
+    "mean_delta_clip": -0.03259965094427269,
+    "mean_delta_siglip": -0.006712407649805148,
+    "clip_win_rate": 0.08333333333333333,
+    "siglip_win_rate": 0.4583333333333333
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_012029",
+      "image_relpath": "images/flickr30k/flickr30k_test_012029.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_012029.jpg",
+      "caption": "1 boat center foreground, people boarding at rail, white hull with red trim, wide, front-lit, stone embankment behind.",
+      "clip_score": 0.210411250591278,
+      "siglip_score": 0.1257255971431732,
+      "delta_clip": -0.1407735347747803,
+      "delta_siglip": -0.015889257192611722
+    },
+    {
+      "image_id": "flickr30k_test_020622",
+      "image_relpath": "images/flickr30k/flickr30k_test_020622.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_020622.jpg",
+      "caption": "1 man center foreground, climbing metal fire escape stairs, wearing white cap, gray jacket, holding yellow-and-red flag, low-angle, overcast sky, brick building with red awning.",
+      "clip_score": 0.2811885178089142,
+      "siglip_score": 0.2418640553951263,
+      "delta_clip": -0.04957026243209839,
+      "delta_siglip": 0.02738933265209198
+    },
+    {
+      "image_id": "flickr30k_test_008358",
+      "image_relpath": "images/flickr30k/flickr30k_test_008358.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_008358.jpg",
+      "caption": "1 goalkeeper center foreground, diving horizontally with outstretched arms, red jersey with white stripes and number \"1\", black shorts, red socks, blue cleats, wide, backlit, green grass field with dense foliage background.",
+      "clip_score": 0.3088445663452148,
+      "siglip_score": 0.1920418441295623,
+      "delta_clip": -0.04926878213882452,
+      "delta_siglip": -0.009469985961914118
+    },
+    {
+      "image_id": "flickr30k_test_030218",
+      "image_relpath": "images/flickr30k/flickr30k_test_030218.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_030218.jpg",
+      "caption": "1 man center foreground, playing flute with right hand, gray beard, brown jacket, blue jeans, standing beside black folding stool, wide, front-lit, storefront window background.",
+      "clip_score": 0.3086976408958435,
+      "siglip_score": 0.2283769845962524,
+      "delta_clip": -0.04539775848388672,
+      "delta_siglip": 0.005770862102508517
+    },
+    {
+      "image_id": "flickr30k_test_027960",
+      "image_relpath": "images/flickr30k/flickr30k_test_027960.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_027960.jpg",
+      "caption": "5 boys center foreground, running with green ball, white jerseys, blue pants, long-shadow-right, parked cars and wall in background.",
+      "clip_score": 0.2733003497123718,
+      "siglip_score": 0.1457463353872299,
+      "delta_clip": -0.04256331920623779,
+      "delta_siglip": -0.01004558801651001
+    },
+    {
+      "image_id": "flickr30k_test_015378",
+      "image_relpath": "images/flickr30k/flickr30k_test_015378.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_015378.jpg",
+      "caption": "1 man center foreground, back to camera, red shirt, gray trousers, black bowler hat, holding plastic bag with right hand, no-action-visible, medium, front-lit, concrete wall background.",
+      "clip_score": 0.2631399035453796,
+      "siglip_score": 0.2242564260959625,
+      "delta_clip": -0.041306078433990534,
+      "delta_siglip": -0.012202620506286593
+    },
+    {
+      "image_id": "flickr30k_test_022494",
+      "image_relpath": "images/flickr30k/flickr30k_test_022494.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_022494.jpg",
+      "caption": "1 man center foreground, holding orange ladder, wearing orange shirt and gray pants, no-action-visible, medium, front-lit, brick wall and wooden structure background.",
+      "clip_score": 0.3207126557826996,
+      "siglip_score": 0.2062485218048095,
+      "delta_clip": -0.040405452251434326,
+      "delta_siglip": -0.00945635139942172
+    },
+    {
+      "image_id": "flickr30k_test_027198",
+      "image_relpath": "images/flickr30k/flickr30k_test_027198.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_027198.jpg",
+      "caption": "3 people on grass field, running, holding water guns, wearing black cap, blue jeans, white t-shirt, medium, front-lit, green grass field.",
+      "clip_score": 0.3007991313934326,
+      "siglip_score": 0.1801415979862213,
+      "delta_clip": -0.03770136833190918,
+      "delta_siglip": 0.039268031716346824
+    },
+    {
+      "image_id": "flickr30k_test_001002",
+      "image_relpath": "images/flickr30k/flickr30k_test_001002.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_001002.jpg",
+      "caption": "1 person center foreground, sitting on colorful woven blanket, wearing red jacket, patterned hat, blue patterned scarf, black pants, black shoes, holding sword with both hands, no-action-visible, red jacket, patterned hat, blue scarf, wide, front-lit, dirt ground with scattered stones.",
+      "clip_score": 0.3215317726135254,
+      "siglip_score": 0.1418516635894775,
+      "delta_clip": -0.03737914562225342,
+      "delta_siglip": -0.0903291404247284
+    },
+    {
+      "image_id": "flickr30k_test_009495",
+      "image_relpath": "images/flickr30k/flickr30k_test_009495.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_009495.jpg",
+      "caption": "2 people center midground, no-action-visible, yellow bag with black trim, wallpapered wall behind, medium, backlit, chandelier above.",
+      "clip_score": 0.252723753452301,
+      "siglip_score": 0.1846511662006378,
+      "delta_clip": -0.037259578704833984,
+      "delta_siglip": -0.01650604605674741
+    },
+    {
+      "image_id": "flickr30k_test_000833",
+      "image_relpath": "images/flickr30k/flickr30k_test_000833.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_000833.jpg",
+      "caption": "3 boys center foreground, holding paddles, blue paddle, black swim trunks with white stripe, medium, front-lit, wet sand with waves.",
+      "clip_score": 0.266729474067688,
+      "siglip_score": 0.1743801236152649,
+      "delta_clip": -0.03694760799407959,
+      "delta_siglip": -0.011145502328872597
+    },
+    {
+      "image_id": "flickr30k_test_022101",
+      "image_relpath": "images/flickr30k/flickr30k_test_022101.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_022101.jpg",
+      "caption": "7 people on escalators, center and left midground, no-action-visible, wearing varied clothing, high-angle, indoor metallic escalator steps.",
+      "clip_score": 0.2851244807243347,
+      "siglip_score": 0.205125629901886,
+      "delta_clip": -0.03551933169364929,
+      "delta_siglip": 0.009306132793426597
+    }
+  ]
+}

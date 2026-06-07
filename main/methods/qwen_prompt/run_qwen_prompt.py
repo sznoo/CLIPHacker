@@ -65,6 +65,19 @@ def load_existing_rows(out_csv: str, overwrite: bool):
     return rows, keys
 
 
+def get_run_prompts(args):
+    if args.custom_prompt_text is not None:
+        return [
+            {
+                "prompt_id": args.custom_prompt_id or "textgrad_prompt",
+                "prompt_name": args.custom_prompt_name or "TextGrad Prompt",
+                "text": args.custom_prompt_text,
+            }
+        ]
+
+    return get_prompts(args.prompt_ids)
+
+
 def make_output_row(
     split_row,
     prompt,
@@ -125,7 +138,7 @@ def run(args):
     split_id = split_ids[0]
     run_id = make_run_id(args, split_id)
 
-    prompts = get_prompts(args.prompt_ids)
+    prompts = get_run_prompts(args)
 
     rows, existing_keys = load_existing_rows(
         out_csv=args.out_csv,
@@ -213,6 +226,10 @@ def parse_args():
         nargs="+",
         default=["baseline", "observer_specific_supported"],
     )
+
+    parser.add_argument("--custom-prompt-id", type=str, default=None)
+    parser.add_argument("--custom-prompt-name", type=str, default=None)
+    parser.add_argument("--custom-prompt-text", type=str, default=None)
 
     parser.add_argument(
         "--method-id",

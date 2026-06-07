@@ -1,0 +1,1249 @@
+split_id,method_id,run_id,order,dataset_index,image_id,image_relpath,reference_captions,prompt_id,prompt_name,prompt_text,caption,candidate_id,selected,model,temperature,top_p,max_new_tokens,generation_config,clip_score,siglip_score,caption_len,generic_flag
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_3ff1e48f7c,3,26288,flickr30k_test_026288,images/flickr30k/flickr30k_test_026288.jpg,"[""A local man is crouched on the ground next to some fresh fruit that his has just cut open with the knife in his hand."", ""Black male dressed like he maybe homeless hovering over food."", ""A man cutting and skinning a fruit that has green skin."", ""A man is chopping up food on the ground."", ""A man is carving a melon.""]",textgrad_3ff1e48f7c,TextGrad Step 2,"Output exactly two lines only.
+
+Line 1 (tags) — required format and rules:
+- Provide a comma-separated list of up to 6 tokens (no extra punctuation except commas).
+- Token order (mandatory): 1) main object with count (format: ""<noun> <digit>"", use digits), 2) up to 3 secondary visible objects (no counts), 3) up to 2 visible colors or sizes. Example order: ""child 2, couch, table, ball, red, small"".
+- Use lower-case common nouns (e.g., person, child, dog, car). Do NOT use proper nouns, brand names, event names, dates, or inferred facts.
+- Only include colors/sizes that are clearly visible; if uncertain, omit them.
+- Do not repeat the same attribute with synonyms (pick the single best label).
+- No articles, no verbs, no punctuation except commas.
+
+Line 2 (caption) — required format and rules:
+- One factual caption in simple present tense, main object first, structured as: main object → action (simple present) → location/pose (e.g., ""1 child stands on kitchen counter"").
+- Word count: exactly 6–12 words. Count words by spaces. Use digits for numbers (e.g., ""1"", ""2"").
+- Verb morphology: for singular count use third-person singular verb (adds -s) — e.g., ""1 child stands""; for plural counts use base verb — e.g., ""2 children stand"".
+- Include the digit count and at most one clearly visible color or size if visible.
+- Use only concrete, visible facts. Do NOT add proper nouns, place/event names, inferred intentions, emotions, metaphors, or invented facts.
+- Use common nouns; avoid rare or subjective adjectives. No punctuation except an optional single period at the end of Line 2.
+
+Uncertainty and fallback rules:
+- If you cannot produce a compliant 6–12 word caption without adding uncertain attributes, produce a short fallback caption of 2–3 words (format: ""<main noun> <location>"" or ""image unclear""). In this fallback case Line 1 may still list visible tags.
+- If even a short factual fallback is impossible, Line 1 may contain tags only and Line 2 must be ""image unclear"".
+- Always prefer a shorter accurate caption over a longer speculative one.
+
+Self-check before output (you must perform these checks):
+1. Line count = 2.
+2. Line 1: ≤6 comma-separated tokens, first token = ""<noun> <digit>"", all lower-case, no forbidden items.
+3. Line 2: 6–12 words (or 2–3 word fallback), main object first, correct verb morphology, contains digit count if action present.
+4. No proper nouns or invented facts.
+5. No punctuation except commas in Line 1 and optional final period on Line 2.
+If any check fails, replace Line 2 with the fallback ""image unclear"" (or only Line 2 ""image unclear"" if tags cannot be produced).
+
+Positive examples (follow exactly):
+child 1, couch, red
+1 child sits on couch near a window.
+
+car 2, street, small, blue
+2 cars wait at crosswalk near curb.
+
+dog 1, ball, grass, brown
+1 dog chases ball on grass near path.
+
+Ambiguous image example (fallback):
+group, person 3
+group of people
+
+Negative examples (do NOT follow):
+- Do not write: ""people celebrating at London 2012 welcome desk.""
+- Do not include: ""a woman probably preparing food"" (inference).
+- Do not exceed 12 words or omit the digit count for the main object.
+
+Strictly follow these rules to produce concise, literal, and visually grounded captions that avoid hallucination.","person 1, fruit, leaves, blue, green
+1 person sits on ground near fruit and leaves",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.2945561110973358,0.12621736526489258,15,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_3ff1e48f7c,5,2067,flickr30k_test_002067,images/flickr30k/flickr30k_test_002067.jpg,"[""People sitting at tables outside chatting while a musician gets ready to play bass."", ""A man holds a guitar on a busy street while people look on."", ""A little girl is watching a man play guitar on the street."", ""A girl on a city street is looking at a guitar player."", ""A street guitarist is outside a cafe""]",textgrad_3ff1e48f7c,TextGrad Step 2,"Output exactly two lines only.
+
+Line 1 (tags) — required format and rules:
+- Provide a comma-separated list of up to 6 tokens (no extra punctuation except commas).
+- Token order (mandatory): 1) main object with count (format: ""<noun> <digit>"", use digits), 2) up to 3 secondary visible objects (no counts), 3) up to 2 visible colors or sizes. Example order: ""child 2, couch, table, ball, red, small"".
+- Use lower-case common nouns (e.g., person, child, dog, car). Do NOT use proper nouns, brand names, event names, dates, or inferred facts.
+- Only include colors/sizes that are clearly visible; if uncertain, omit them.
+- Do not repeat the same attribute with synonyms (pick the single best label).
+- No articles, no verbs, no punctuation except commas.
+
+Line 2 (caption) — required format and rules:
+- One factual caption in simple present tense, main object first, structured as: main object → action (simple present) → location/pose (e.g., ""1 child stands on kitchen counter"").
+- Word count: exactly 6–12 words. Count words by spaces. Use digits for numbers (e.g., ""1"", ""2"").
+- Verb morphology: for singular count use third-person singular verb (adds -s) — e.g., ""1 child stands""; for plural counts use base verb — e.g., ""2 children stand"".
+- Include the digit count and at most one clearly visible color or size if visible.
+- Use only concrete, visible facts. Do NOT add proper nouns, place/event names, inferred intentions, emotions, metaphors, or invented facts.
+- Use common nouns; avoid rare or subjective adjectives. No punctuation except an optional single period at the end of Line 2.
+
+Uncertainty and fallback rules:
+- If you cannot produce a compliant 6–12 word caption without adding uncertain attributes, produce a short fallback caption of 2–3 words (format: ""<main noun> <location>"" or ""image unclear""). In this fallback case Line 1 may still list visible tags.
+- If even a short factual fallback is impossible, Line 1 may contain tags only and Line 2 must be ""image unclear"".
+- Always prefer a shorter accurate caption over a longer speculative one.
+
+Self-check before output (you must perform these checks):
+1. Line count = 2.
+2. Line 1: ≤6 comma-separated tokens, first token = ""<noun> <digit>"", all lower-case, no forbidden items.
+3. Line 2: 6–12 words (or 2–3 word fallback), main object first, correct verb morphology, contains digit count if action present.
+4. No proper nouns or invented facts.
+5. No punctuation except commas in Line 1 and optional final period on Line 2.
+If any check fails, replace Line 2 with the fallback ""image unclear"" (or only Line 2 ""image unclear"" if tags cannot be produced).
+
+Positive examples (follow exactly):
+child 1, couch, red
+1 child sits on couch near a window.
+
+car 2, street, small, blue
+2 cars wait at crosswalk near curb.
+
+dog 1, ball, grass, brown
+1 dog chases ball on grass near path.
+
+Ambiguous image example (fallback):
+group, person 3
+group of people
+
+Negative examples (do NOT follow):
+- Do not write: ""people celebrating at London 2012 welcome desk.""
+- Do not include: ""a woman probably preparing food"" (inference).
+- Do not exceed 12 words or omit the digit count for the main object.
+
+Strictly follow these rules to produce concise, literal, and visually grounded captions that avoid hallucination.","guitar 1, person, chair, table, red, small
+1 person plays guitar on sidewalk near seated people.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.28655025362968445,0.22541868686676025,16,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_3ff1e48f7c,6,8358,flickr30k_test_008358,images/flickr30k/flickr30k_test_008358.jpg,"[""This guy is in midair while wearing a red soccer uniform."", ""A soccer player in a red shirt in diving into the air."", ""A man wearing a red jersey jumps in the air."", ""A soccer player is diving for the ball."", ""A soccer player diving on the field.""]",textgrad_3ff1e48f7c,TextGrad Step 2,"Output exactly two lines only.
+
+Line 1 (tags) — required format and rules:
+- Provide a comma-separated list of up to 6 tokens (no extra punctuation except commas).
+- Token order (mandatory): 1) main object with count (format: ""<noun> <digit>"", use digits), 2) up to 3 secondary visible objects (no counts), 3) up to 2 visible colors or sizes. Example order: ""child 2, couch, table, ball, red, small"".
+- Use lower-case common nouns (e.g., person, child, dog, car). Do NOT use proper nouns, brand names, event names, dates, or inferred facts.
+- Only include colors/sizes that are clearly visible; if uncertain, omit them.
+- Do not repeat the same attribute with synonyms (pick the single best label).
+- No articles, no verbs, no punctuation except commas.
+
+Line 2 (caption) — required format and rules:
+- One factual caption in simple present tense, main object first, structured as: main object → action (simple present) → location/pose (e.g., ""1 child stands on kitchen counter"").
+- Word count: exactly 6–12 words. Count words by spaces. Use digits for numbers (e.g., ""1"", ""2"").
+- Verb morphology: for singular count use third-person singular verb (adds -s) — e.g., ""1 child stands""; for plural counts use base verb — e.g., ""2 children stand"".
+- Include the digit count and at most one clearly visible color or size if visible.
+- Use only concrete, visible facts. Do NOT add proper nouns, place/event names, inferred intentions, emotions, metaphors, or invented facts.
+- Use common nouns; avoid rare or subjective adjectives. No punctuation except an optional single period at the end of Line 2.
+
+Uncertainty and fallback rules:
+- If you cannot produce a compliant 6–12 word caption without adding uncertain attributes, produce a short fallback caption of 2–3 words (format: ""<main noun> <location>"" or ""image unclear""). In this fallback case Line 1 may still list visible tags.
+- If even a short factual fallback is impossible, Line 1 may contain tags only and Line 2 must be ""image unclear"".
+- Always prefer a shorter accurate caption over a longer speculative one.
+
+Self-check before output (you must perform these checks):
+1. Line count = 2.
+2. Line 1: ≤6 comma-separated tokens, first token = ""<noun> <digit>"", all lower-case, no forbidden items.
+3. Line 2: 6–12 words (or 2–3 word fallback), main object first, correct verb morphology, contains digit count if action present.
+4. No proper nouns or invented facts.
+5. No punctuation except commas in Line 1 and optional final period on Line 2.
+If any check fails, replace Line 2 with the fallback ""image unclear"" (or only Line 2 ""image unclear"" if tags cannot be produced).
+
+Positive examples (follow exactly):
+child 1, couch, red
+1 child sits on couch near a window.
+
+car 2, street, small, blue
+2 cars wait at crosswalk near curb.
+
+dog 1, ball, grass, brown
+1 dog chases ball on grass near path.
+
+Ambiguous image example (fallback):
+group, person 3
+group of people
+
+Negative examples (do NOT follow):
+- Do not write: ""people celebrating at London 2012 welcome desk.""
+- Do not include: ""a woman probably preparing food"" (inference).
+- Do not exceed 12 words or omit the digit count for the main object.
+
+Strictly follow these rules to produce concise, literal, and visually grounded captions that avoid hallucination.","person 1, grass, red, black
+1 person dives on grass wearing red and black",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.31229591369628906,0.1759832799434662,14,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_3ff1e48f7c,12,21351,flickr30k_test_021351,images/flickr30k/flickr30k_test_021351.jpg,"[""A woman dressed in all black standing in front of colorful picture playing a violin."", ""A woman dressed in black is playing the violin in front of some artwork."", ""A woman in black playing an instrument on the subway platform."", ""A woman on a bright street is playing the violin."", ""A lady performing in a underground train station""]",textgrad_3ff1e48f7c,TextGrad Step 2,"Output exactly two lines only.
+
+Line 1 (tags) — required format and rules:
+- Provide a comma-separated list of up to 6 tokens (no extra punctuation except commas).
+- Token order (mandatory): 1) main object with count (format: ""<noun> <digit>"", use digits), 2) up to 3 secondary visible objects (no counts), 3) up to 2 visible colors or sizes. Example order: ""child 2, couch, table, ball, red, small"".
+- Use lower-case common nouns (e.g., person, child, dog, car). Do NOT use proper nouns, brand names, event names, dates, or inferred facts.
+- Only include colors/sizes that are clearly visible; if uncertain, omit them.
+- Do not repeat the same attribute with synonyms (pick the single best label).
+- No articles, no verbs, no punctuation except commas.
+
+Line 2 (caption) — required format and rules:
+- One factual caption in simple present tense, main object first, structured as: main object → action (simple present) → location/pose (e.g., ""1 child stands on kitchen counter"").
+- Word count: exactly 6–12 words. Count words by spaces. Use digits for numbers (e.g., ""1"", ""2"").
+- Verb morphology: for singular count use third-person singular verb (adds -s) — e.g., ""1 child stands""; for plural counts use base verb — e.g., ""2 children stand"".
+- Include the digit count and at most one clearly visible color or size if visible.
+- Use only concrete, visible facts. Do NOT add proper nouns, place/event names, inferred intentions, emotions, metaphors, or invented facts.
+- Use common nouns; avoid rare or subjective adjectives. No punctuation except an optional single period at the end of Line 2.
+
+Uncertainty and fallback rules:
+- If you cannot produce a compliant 6–12 word caption without adding uncertain attributes, produce a short fallback caption of 2–3 words (format: ""<main noun> <location>"" or ""image unclear""). In this fallback case Line 1 may still list visible tags.
+- If even a short factual fallback is impossible, Line 1 may contain tags only and Line 2 must be ""image unclear"".
+- Always prefer a shorter accurate caption over a longer speculative one.
+
+Self-check before output (you must perform these checks):
+1. Line count = 2.
+2. Line 1: ≤6 comma-separated tokens, first token = ""<noun> <digit>"", all lower-case, no forbidden items.
+3. Line 2: 6–12 words (or 2–3 word fallback), main object first, correct verb morphology, contains digit count if action present.
+4. No proper nouns or invented facts.
+5. No punctuation except commas in Line 1 and optional final period on Line 2.
+If any check fails, replace Line 2 with the fallback ""image unclear"" (or only Line 2 ""image unclear"" if tags cannot be produced).
+
+Positive examples (follow exactly):
+child 1, couch, red
+1 child sits on couch near a window.
+
+car 2, street, small, blue
+2 cars wait at crosswalk near curb.
+
+dog 1, ball, grass, brown
+1 dog chases ball on grass near path.
+
+Ambiguous image example (fallback):
+group, person 3
+group of people
+
+Negative examples (do NOT follow):
+- Do not write: ""people celebrating at London 2012 welcome desk.""
+- Do not include: ""a woman probably preparing food"" (inference).
+- Do not exceed 12 words or omit the digit count for the main object.
+
+Strictly follow these rules to produce concise, literal, and visually grounded captions that avoid hallucination.","person 1, paintings, violin, black, large
+1 person plays violin near wall of paintings",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.3023030757904053,0.21770375967025757,14,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_3ff1e48f7c,24,24978,flickr30k_test_024978,images/flickr30k/flickr30k_test_024978.jpg,"[""A man in a blue shirt and brown pants is sitting next to a parked blue car."", ""A man in a blue sweater is sitting outside in front of a blue car."", ""A man in a blue shirt is sitting beside a blue van"", ""An elderly man sits in a chair in an alleyway."", ""The man in the blue shirt looks very lonely.""]",textgrad_3ff1e48f7c,TextGrad Step 2,"Output exactly two lines only.
+
+Line 1 (tags) — required format and rules:
+- Provide a comma-separated list of up to 6 tokens (no extra punctuation except commas).
+- Token order (mandatory): 1) main object with count (format: ""<noun> <digit>"", use digits), 2) up to 3 secondary visible objects (no counts), 3) up to 2 visible colors or sizes. Example order: ""child 2, couch, table, ball, red, small"".
+- Use lower-case common nouns (e.g., person, child, dog, car). Do NOT use proper nouns, brand names, event names, dates, or inferred facts.
+- Only include colors/sizes that are clearly visible; if uncertain, omit them.
+- Do not repeat the same attribute with synonyms (pick the single best label).
+- No articles, no verbs, no punctuation except commas.
+
+Line 2 (caption) — required format and rules:
+- One factual caption in simple present tense, main object first, structured as: main object → action (simple present) → location/pose (e.g., ""1 child stands on kitchen counter"").
+- Word count: exactly 6–12 words. Count words by spaces. Use digits for numbers (e.g., ""1"", ""2"").
+- Verb morphology: for singular count use third-person singular verb (adds -s) — e.g., ""1 child stands""; for plural counts use base verb — e.g., ""2 children stand"".
+- Include the digit count and at most one clearly visible color or size if visible.
+- Use only concrete, visible facts. Do NOT add proper nouns, place/event names, inferred intentions, emotions, metaphors, or invented facts.
+- Use common nouns; avoid rare or subjective adjectives. No punctuation except an optional single period at the end of Line 2.
+
+Uncertainty and fallback rules:
+- If you cannot produce a compliant 6–12 word caption without adding uncertain attributes, produce a short fallback caption of 2–3 words (format: ""<main noun> <location>"" or ""image unclear""). In this fallback case Line 1 may still list visible tags.
+- If even a short factual fallback is impossible, Line 1 may contain tags only and Line 2 must be ""image unclear"".
+- Always prefer a shorter accurate caption over a longer speculative one.
+
+Self-check before output (you must perform these checks):
+1. Line count = 2.
+2. Line 1: ≤6 comma-separated tokens, first token = ""<noun> <digit>"", all lower-case, no forbidden items.
+3. Line 2: 6–12 words (or 2–3 word fallback), main object first, correct verb morphology, contains digit count if action present.
+4. No proper nouns or invented facts.
+5. No punctuation except commas in Line 1 and optional final period on Line 2.
+If any check fails, replace Line 2 with the fallback ""image unclear"" (or only Line 2 ""image unclear"" if tags cannot be produced).
+
+Positive examples (follow exactly):
+child 1, couch, red
+1 child sits on couch near a window.
+
+car 2, street, small, blue
+2 cars wait at crosswalk near curb.
+
+dog 1, ball, grass, brown
+1 dog chases ball on grass near path.
+
+Ambiguous image example (fallback):
+group, person 3
+group of people
+
+Negative examples (do NOT follow):
+- Do not write: ""people celebrating at London 2012 welcome desk.""
+- Do not include: ""a woman probably preparing food"" (inference).
+- Do not exceed 12 words or omit the digit count for the main object.
+
+Strictly follow these rules to produce concise, literal, and visually grounded captions that avoid hallucination.","person 1, car, chair, blue, small
+1 person sits on chair beside blue car in alley.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.3297874331474304,0.22902795672416687,16,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_3ff1e48f7c,25,25138,flickr30k_test_025138,images/flickr30k/flickr30k_test_025138.jpg,"[""A woman in a black stocking hat and black leather jacket, talking to a man with a beard in a black fleece jacket."", ""A girl in a black sock hat is talking to a man wearing a blue shirt."", ""A woman and man talking to each other in front of a scenic lake."", ""People talking to one another outside near a fountain."", ""A woman in a black beanie looks up at a bearded man.""]",textgrad_3ff1e48f7c,TextGrad Step 2,"Output exactly two lines only.
+
+Line 1 (tags) — required format and rules:
+- Provide a comma-separated list of up to 6 tokens (no extra punctuation except commas).
+- Token order (mandatory): 1) main object with count (format: ""<noun> <digit>"", use digits), 2) up to 3 secondary visible objects (no counts), 3) up to 2 visible colors or sizes. Example order: ""child 2, couch, table, ball, red, small"".
+- Use lower-case common nouns (e.g., person, child, dog, car). Do NOT use proper nouns, brand names, event names, dates, or inferred facts.
+- Only include colors/sizes that are clearly visible; if uncertain, omit them.
+- Do not repeat the same attribute with synonyms (pick the single best label).
+- No articles, no verbs, no punctuation except commas.
+
+Line 2 (caption) — required format and rules:
+- One factual caption in simple present tense, main object first, structured as: main object → action (simple present) → location/pose (e.g., ""1 child stands on kitchen counter"").
+- Word count: exactly 6–12 words. Count words by spaces. Use digits for numbers (e.g., ""1"", ""2"").
+- Verb morphology: for singular count use third-person singular verb (adds -s) — e.g., ""1 child stands""; for plural counts use base verb — e.g., ""2 children stand"".
+- Include the digit count and at most one clearly visible color or size if visible.
+- Use only concrete, visible facts. Do NOT add proper nouns, place/event names, inferred intentions, emotions, metaphors, or invented facts.
+- Use common nouns; avoid rare or subjective adjectives. No punctuation except an optional single period at the end of Line 2.
+
+Uncertainty and fallback rules:
+- If you cannot produce a compliant 6–12 word caption without adding uncertain attributes, produce a short fallback caption of 2–3 words (format: ""<main noun> <location>"" or ""image unclear""). In this fallback case Line 1 may still list visible tags.
+- If even a short factual fallback is impossible, Line 1 may contain tags only and Line 2 must be ""image unclear"".
+- Always prefer a shorter accurate caption over a longer speculative one.
+
+Self-check before output (you must perform these checks):
+1. Line count = 2.
+2. Line 1: ≤6 comma-separated tokens, first token = ""<noun> <digit>"", all lower-case, no forbidden items.
+3. Line 2: 6–12 words (or 2–3 word fallback), main object first, correct verb morphology, contains digit count if action present.
+4. No proper nouns or invented facts.
+5. No punctuation except commas in Line 1 and optional final period on Line 2.
+If any check fails, replace Line 2 with the fallback ""image unclear"" (or only Line 2 ""image unclear"" if tags cannot be produced).
+
+Positive examples (follow exactly):
+child 1, couch, red
+1 child sits on couch near a window.
+
+car 2, street, small, blue
+2 cars wait at crosswalk near curb.
+
+dog 1, ball, grass, brown
+1 dog chases ball on grass near path.
+
+Ambiguous image example (fallback):
+group, person 3
+group of people
+
+Negative examples (do NOT follow):
+- Do not write: ""people celebrating at London 2012 welcome desk.""
+- Do not include: ""a woman probably preparing food"" (inference).
+- Do not exceed 12 words or omit the digit count for the main object.
+
+Strictly follow these rules to produce concise, literal, and visually grounded captions that avoid hallucination.","person 4, hat, glasses, dark, black
+4 people stand near water barrier.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.28763657808303833,0.17438891530036926,12,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_3ff1e48f7c,35,3349,flickr30k_test_003349,images/flickr30k/flickr30k_test_003349.jpg,"[""A small child in a red coat watches the fireplace display through the storefront window of a purse store."", ""A small child in a red coat points to a handbag in a shop window."", ""A child wearing a red coat is pointing into a Loewe store window."", ""A little girl is looking at the window display of a store."", ""A child is window shopping for a brown purse.""]",textgrad_3ff1e48f7c,TextGrad Step 2,"Output exactly two lines only.
+
+Line 1 (tags) — required format and rules:
+- Provide a comma-separated list of up to 6 tokens (no extra punctuation except commas).
+- Token order (mandatory): 1) main object with count (format: ""<noun> <digit>"", use digits), 2) up to 3 secondary visible objects (no counts), 3) up to 2 visible colors or sizes. Example order: ""child 2, couch, table, ball, red, small"".
+- Use lower-case common nouns (e.g., person, child, dog, car). Do NOT use proper nouns, brand names, event names, dates, or inferred facts.
+- Only include colors/sizes that are clearly visible; if uncertain, omit them.
+- Do not repeat the same attribute with synonyms (pick the single best label).
+- No articles, no verbs, no punctuation except commas.
+
+Line 2 (caption) — required format and rules:
+- One factual caption in simple present tense, main object first, structured as: main object → action (simple present) → location/pose (e.g., ""1 child stands on kitchen counter"").
+- Word count: exactly 6–12 words. Count words by spaces. Use digits for numbers (e.g., ""1"", ""2"").
+- Verb morphology: for singular count use third-person singular verb (adds -s) — e.g., ""1 child stands""; for plural counts use base verb — e.g., ""2 children stand"".
+- Include the digit count and at most one clearly visible color or size if visible.
+- Use only concrete, visible facts. Do NOT add proper nouns, place/event names, inferred intentions, emotions, metaphors, or invented facts.
+- Use common nouns; avoid rare or subjective adjectives. No punctuation except an optional single period at the end of Line 2.
+
+Uncertainty and fallback rules:
+- If you cannot produce a compliant 6–12 word caption without adding uncertain attributes, produce a short fallback caption of 2–3 words (format: ""<main noun> <location>"" or ""image unclear""). In this fallback case Line 1 may still list visible tags.
+- If even a short factual fallback is impossible, Line 1 may contain tags only and Line 2 must be ""image unclear"".
+- Always prefer a shorter accurate caption over a longer speculative one.
+
+Self-check before output (you must perform these checks):
+1. Line count = 2.
+2. Line 1: ≤6 comma-separated tokens, first token = ""<noun> <digit>"", all lower-case, no forbidden items.
+3. Line 2: 6–12 words (or 2–3 word fallback), main object first, correct verb morphology, contains digit count if action present.
+4. No proper nouns or invented facts.
+5. No punctuation except commas in Line 1 and optional final period on Line 2.
+If any check fails, replace Line 2 with the fallback ""image unclear"" (or only Line 2 ""image unclear"" if tags cannot be produced).
+
+Positive examples (follow exactly):
+child 1, couch, red
+1 child sits on couch near a window.
+
+car 2, street, small, blue
+2 cars wait at crosswalk near curb.
+
+dog 1, ball, grass, brown
+1 dog chases ball on grass near path.
+
+Ambiguous image example (fallback):
+group, person 3
+group of people
+
+Negative examples (do NOT follow):
+- Do not write: ""people celebrating at London 2012 welcome desk.""
+- Do not include: ""a woman probably preparing food"" (inference).
+- Do not exceed 12 words or omit the digit count for the main object.
+
+Strictly follow these rules to produce concise, literal, and visually grounded captions that avoid hallucination.","child 1, person, bag, red, small
+1 child stands near store window with reflection",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.3032817840576172,0.19326558709144592,14,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_3ff1e48f7c,41,21284,flickr30k_test_021284,images/flickr30k/flickr30k_test_021284.jpg,"[""A group of men in black suits and black hats are standing along a parade route."", ""A group of Hasidic Jews stand amidst a crowd adjacent to a busy city street."", ""Bearded men wearing black gather together outside of a religious service."", ""People in black hats gathered together downtown."", ""Many jewish men in a city.""]",textgrad_3ff1e48f7c,TextGrad Step 2,"Output exactly two lines only.
+
+Line 1 (tags) — required format and rules:
+- Provide a comma-separated list of up to 6 tokens (no extra punctuation except commas).
+- Token order (mandatory): 1) main object with count (format: ""<noun> <digit>"", use digits), 2) up to 3 secondary visible objects (no counts), 3) up to 2 visible colors or sizes. Example order: ""child 2, couch, table, ball, red, small"".
+- Use lower-case common nouns (e.g., person, child, dog, car). Do NOT use proper nouns, brand names, event names, dates, or inferred facts.
+- Only include colors/sizes that are clearly visible; if uncertain, omit them.
+- Do not repeat the same attribute with synonyms (pick the single best label).
+- No articles, no verbs, no punctuation except commas.
+
+Line 2 (caption) — required format and rules:
+- One factual caption in simple present tense, main object first, structured as: main object → action (simple present) → location/pose (e.g., ""1 child stands on kitchen counter"").
+- Word count: exactly 6–12 words. Count words by spaces. Use digits for numbers (e.g., ""1"", ""2"").
+- Verb morphology: for singular count use third-person singular verb (adds -s) — e.g., ""1 child stands""; for plural counts use base verb — e.g., ""2 children stand"".
+- Include the digit count and at most one clearly visible color or size if visible.
+- Use only concrete, visible facts. Do NOT add proper nouns, place/event names, inferred intentions, emotions, metaphors, or invented facts.
+- Use common nouns; avoid rare or subjective adjectives. No punctuation except an optional single period at the end of Line 2.
+
+Uncertainty and fallback rules:
+- If you cannot produce a compliant 6–12 word caption without adding uncertain attributes, produce a short fallback caption of 2–3 words (format: ""<main noun> <location>"" or ""image unclear""). In this fallback case Line 1 may still list visible tags.
+- If even a short factual fallback is impossible, Line 1 may contain tags only and Line 2 must be ""image unclear"".
+- Always prefer a shorter accurate caption over a longer speculative one.
+
+Self-check before output (you must perform these checks):
+1. Line count = 2.
+2. Line 1: ≤6 comma-separated tokens, first token = ""<noun> <digit>"", all lower-case, no forbidden items.
+3. Line 2: 6–12 words (or 2–3 word fallback), main object first, correct verb morphology, contains digit count if action present.
+4. No proper nouns or invented facts.
+5. No punctuation except commas in Line 1 and optional final period on Line 2.
+If any check fails, replace Line 2 with the fallback ""image unclear"" (or only Line 2 ""image unclear"" if tags cannot be produced).
+
+Positive examples (follow exactly):
+child 1, couch, red
+1 child sits on couch near a window.
+
+car 2, street, small, blue
+2 cars wait at crosswalk near curb.
+
+dog 1, ball, grass, brown
+1 dog chases ball on grass near path.
+
+Ambiguous image example (fallback):
+group, person 3
+group of people
+
+Negative examples (do NOT follow):
+- Do not write: ""people celebrating at London 2012 welcome desk.""
+- Do not include: ""a woman probably preparing food"" (inference).
+- Do not exceed 12 words or omit the digit count for the main object.
+
+Strictly follow these rules to produce concise, literal, and visually grounded captions that avoid hallucination.","person 1, hat, flag, crowd, black, large
+1 person wears black hat in crowd near flags",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.2596513032913208,0.16985179483890533,16,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_3ff1e48f7c,42,17741,flickr30k_test_017741,images/flickr30k/flickr30k_test_017741.jpg,"[""Two people sit on a bench overlooking a vast amount of windows."", ""Two people sitting on a bench in front of a large window."", ""Two people sitting looking at a glass wall."", ""Two people are siting on a black bench."", ""Two women sitting on a bench.""]",textgrad_3ff1e48f7c,TextGrad Step 2,"Output exactly two lines only.
+
+Line 1 (tags) — required format and rules:
+- Provide a comma-separated list of up to 6 tokens (no extra punctuation except commas).
+- Token order (mandatory): 1) main object with count (format: ""<noun> <digit>"", use digits), 2) up to 3 secondary visible objects (no counts), 3) up to 2 visible colors or sizes. Example order: ""child 2, couch, table, ball, red, small"".
+- Use lower-case common nouns (e.g., person, child, dog, car). Do NOT use proper nouns, brand names, event names, dates, or inferred facts.
+- Only include colors/sizes that are clearly visible; if uncertain, omit them.
+- Do not repeat the same attribute with synonyms (pick the single best label).
+- No articles, no verbs, no punctuation except commas.
+
+Line 2 (caption) — required format and rules:
+- One factual caption in simple present tense, main object first, structured as: main object → action (simple present) → location/pose (e.g., ""1 child stands on kitchen counter"").
+- Word count: exactly 6–12 words. Count words by spaces. Use digits for numbers (e.g., ""1"", ""2"").
+- Verb morphology: for singular count use third-person singular verb (adds -s) — e.g., ""1 child stands""; for plural counts use base verb — e.g., ""2 children stand"".
+- Include the digit count and at most one clearly visible color or size if visible.
+- Use only concrete, visible facts. Do NOT add proper nouns, place/event names, inferred intentions, emotions, metaphors, or invented facts.
+- Use common nouns; avoid rare or subjective adjectives. No punctuation except an optional single period at the end of Line 2.
+
+Uncertainty and fallback rules:
+- If you cannot produce a compliant 6–12 word caption without adding uncertain attributes, produce a short fallback caption of 2–3 words (format: ""<main noun> <location>"" or ""image unclear""). In this fallback case Line 1 may still list visible tags.
+- If even a short factual fallback is impossible, Line 1 may contain tags only and Line 2 must be ""image unclear"".
+- Always prefer a shorter accurate caption over a longer speculative one.
+
+Self-check before output (you must perform these checks):
+1. Line count = 2.
+2. Line 1: ≤6 comma-separated tokens, first token = ""<noun> <digit>"", all lower-case, no forbidden items.
+3. Line 2: 6–12 words (or 2–3 word fallback), main object first, correct verb morphology, contains digit count if action present.
+4. No proper nouns or invented facts.
+5. No punctuation except commas in Line 1 and optional final period on Line 2.
+If any check fails, replace Line 2 with the fallback ""image unclear"" (or only Line 2 ""image unclear"" if tags cannot be produced).
+
+Positive examples (follow exactly):
+child 1, couch, red
+1 child sits on couch near a window.
+
+car 2, street, small, blue
+2 cars wait at crosswalk near curb.
+
+dog 1, ball, grass, brown
+1 dog chases ball on grass near path.
+
+Ambiguous image example (fallback):
+group, person 3
+group of people
+
+Negative examples (do NOT follow):
+- Do not write: ""people celebrating at London 2012 welcome desk.""
+- Do not include: ""a woman probably preparing food"" (inference).
+- Do not exceed 12 words or omit the digit count for the main object.
+
+Strictly follow these rules to produce concise, literal, and visually grounded captions that avoid hallucination.","person 2, bench, window, dark
+2 people sit on bench near window.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.2677708864212036,0.1915895640850067,12,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_3ff1e48f7c,45,28876,flickr30k_test_028876,images/flickr30k/flickr30k_test_028876.jpg,"[""A participant in a sporting event has landed on his head while holding the ball on a field of grass."", ""A person doing a face plant while the other watches on a clear, lush field of green grass."", ""A male athlete tackles his head into the ground to protect the ball in play."", ""The rugby player got the ball but he is smashing his head into the ground."", ""Uniformed athletes dive onto a grassy playing field.""]",textgrad_3ff1e48f7c,TextGrad Step 2,"Output exactly two lines only.
+
+Line 1 (tags) — required format and rules:
+- Provide a comma-separated list of up to 6 tokens (no extra punctuation except commas).
+- Token order (mandatory): 1) main object with count (format: ""<noun> <digit>"", use digits), 2) up to 3 secondary visible objects (no counts), 3) up to 2 visible colors or sizes. Example order: ""child 2, couch, table, ball, red, small"".
+- Use lower-case common nouns (e.g., person, child, dog, car). Do NOT use proper nouns, brand names, event names, dates, or inferred facts.
+- Only include colors/sizes that are clearly visible; if uncertain, omit them.
+- Do not repeat the same attribute with synonyms (pick the single best label).
+- No articles, no verbs, no punctuation except commas.
+
+Line 2 (caption) — required format and rules:
+- One factual caption in simple present tense, main object first, structured as: main object → action (simple present) → location/pose (e.g., ""1 child stands on kitchen counter"").
+- Word count: exactly 6–12 words. Count words by spaces. Use digits for numbers (e.g., ""1"", ""2"").
+- Verb morphology: for singular count use third-person singular verb (adds -s) — e.g., ""1 child stands""; for plural counts use base verb — e.g., ""2 children stand"".
+- Include the digit count and at most one clearly visible color or size if visible.
+- Use only concrete, visible facts. Do NOT add proper nouns, place/event names, inferred intentions, emotions, metaphors, or invented facts.
+- Use common nouns; avoid rare or subjective adjectives. No punctuation except an optional single period at the end of Line 2.
+
+Uncertainty and fallback rules:
+- If you cannot produce a compliant 6–12 word caption without adding uncertain attributes, produce a short fallback caption of 2–3 words (format: ""<main noun> <location>"" or ""image unclear""). In this fallback case Line 1 may still list visible tags.
+- If even a short factual fallback is impossible, Line 1 may contain tags only and Line 2 must be ""image unclear"".
+- Always prefer a shorter accurate caption over a longer speculative one.
+
+Self-check before output (you must perform these checks):
+1. Line count = 2.
+2. Line 1: ≤6 comma-separated tokens, first token = ""<noun> <digit>"", all lower-case, no forbidden items.
+3. Line 2: 6–12 words (or 2–3 word fallback), main object first, correct verb morphology, contains digit count if action present.
+4. No proper nouns or invented facts.
+5. No punctuation except commas in Line 1 and optional final period on Line 2.
+If any check fails, replace Line 2 with the fallback ""image unclear"" (or only Line 2 ""image unclear"" if tags cannot be produced).
+
+Positive examples (follow exactly):
+child 1, couch, red
+1 child sits on couch near a window.
+
+car 2, street, small, blue
+2 cars wait at crosswalk near curb.
+
+dog 1, ball, grass, brown
+1 dog chases ball on grass near path.
+
+Ambiguous image example (fallback):
+group, person 3
+group of people
+
+Negative examples (do NOT follow):
+- Do not write: ""people celebrating at London 2012 welcome desk.""
+- Do not include: ""a woman probably preparing food"" (inference).
+- Do not exceed 12 words or omit the digit count for the main object.
+
+Strictly follow these rules to produce concise, literal, and visually grounded captions that avoid hallucination.","person 1, person 2, grass, red
+1 person falls backward on grass while 2 person kneels nearby.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.23899640142917633,0.12214130163192749,17,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_3ff1e48f7c,48,7097,flickr30k_test_007097,images/flickr30k/flickr30k_test_007097.jpg,"[""A little boy in a tan shirt and shorts walking in an area with many gray mesh tables and chairs."", ""A group of people sitting in gray metal chairs with orange umbrellas in the background."", ""A young boy is on a patio crowded with metal tables and chairs and 2 yellow umbrellas."", ""A boy walking through chairs and tables at Au Bon Pain."", ""Lots of people are sitting at tables doing something.""]",textgrad_3ff1e48f7c,TextGrad Step 2,"Output exactly two lines only.
+
+Line 1 (tags) — required format and rules:
+- Provide a comma-separated list of up to 6 tokens (no extra punctuation except commas).
+- Token order (mandatory): 1) main object with count (format: ""<noun> <digit>"", use digits), 2) up to 3 secondary visible objects (no counts), 3) up to 2 visible colors or sizes. Example order: ""child 2, couch, table, ball, red, small"".
+- Use lower-case common nouns (e.g., person, child, dog, car). Do NOT use proper nouns, brand names, event names, dates, or inferred facts.
+- Only include colors/sizes that are clearly visible; if uncertain, omit them.
+- Do not repeat the same attribute with synonyms (pick the single best label).
+- No articles, no verbs, no punctuation except commas.
+
+Line 2 (caption) — required format and rules:
+- One factual caption in simple present tense, main object first, structured as: main object → action (simple present) → location/pose (e.g., ""1 child stands on kitchen counter"").
+- Word count: exactly 6–12 words. Count words by spaces. Use digits for numbers (e.g., ""1"", ""2"").
+- Verb morphology: for singular count use third-person singular verb (adds -s) — e.g., ""1 child stands""; for plural counts use base verb — e.g., ""2 children stand"".
+- Include the digit count and at most one clearly visible color or size if visible.
+- Use only concrete, visible facts. Do NOT add proper nouns, place/event names, inferred intentions, emotions, metaphors, or invented facts.
+- Use common nouns; avoid rare or subjective adjectives. No punctuation except an optional single period at the end of Line 2.
+
+Uncertainty and fallback rules:
+- If you cannot produce a compliant 6–12 word caption without adding uncertain attributes, produce a short fallback caption of 2–3 words (format: ""<main noun> <location>"" or ""image unclear""). In this fallback case Line 1 may still list visible tags.
+- If even a short factual fallback is impossible, Line 1 may contain tags only and Line 2 must be ""image unclear"".
+- Always prefer a shorter accurate caption over a longer speculative one.
+
+Self-check before output (you must perform these checks):
+1. Line count = 2.
+2. Line 1: ≤6 comma-separated tokens, first token = ""<noun> <digit>"", all lower-case, no forbidden items.
+3. Line 2: 6–12 words (or 2–3 word fallback), main object first, correct verb morphology, contains digit count if action present.
+4. No proper nouns or invented facts.
+5. No punctuation except commas in Line 1 and optional final period on Line 2.
+If any check fails, replace Line 2 with the fallback ""image unclear"" (or only Line 2 ""image unclear"" if tags cannot be produced).
+
+Positive examples (follow exactly):
+child 1, couch, red
+1 child sits on couch near a window.
+
+car 2, street, small, blue
+2 cars wait at crosswalk near curb.
+
+dog 1, ball, grass, brown
+1 dog chases ball on grass near path.
+
+Ambiguous image example (fallback):
+group, person 3
+group of people
+
+Negative examples (do NOT follow):
+- Do not write: ""people celebrating at London 2012 welcome desk.""
+- Do not include: ""a woman probably preparing food"" (inference).
+- Do not exceed 12 words or omit the digit count for the main object.
+
+Strictly follow these rules to produce concise, literal, and visually grounded captions that avoid hallucination.","child 1, person, table, chair, yellow, metal
+1 child walks near outdoor tables under yellow umbrellas.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.3042806088924408,0.18933331966400146,16,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_3ff1e48f7c,54,25024,flickr30k_test_025024,images/flickr30k/flickr30k_test_025024.jpg,"[""Eleven children sit next to each other on a stoop in front of a blue grating while holding objects in front of their eyes."", ""Smiling children are sitting on concrete slab displaying a small item in their hands."", ""Several young children are sitting outside laughing and looking through objects."", ""Eleven children sitting together, holding something up, and laughing."", ""A group of children sitting together eating donuts.""]",textgrad_3ff1e48f7c,TextGrad Step 2,"Output exactly two lines only.
+
+Line 1 (tags) — required format and rules:
+- Provide a comma-separated list of up to 6 tokens (no extra punctuation except commas).
+- Token order (mandatory): 1) main object with count (format: ""<noun> <digit>"", use digits), 2) up to 3 secondary visible objects (no counts), 3) up to 2 visible colors or sizes. Example order: ""child 2, couch, table, ball, red, small"".
+- Use lower-case common nouns (e.g., person, child, dog, car). Do NOT use proper nouns, brand names, event names, dates, or inferred facts.
+- Only include colors/sizes that are clearly visible; if uncertain, omit them.
+- Do not repeat the same attribute with synonyms (pick the single best label).
+- No articles, no verbs, no punctuation except commas.
+
+Line 2 (caption) — required format and rules:
+- One factual caption in simple present tense, main object first, structured as: main object → action (simple present) → location/pose (e.g., ""1 child stands on kitchen counter"").
+- Word count: exactly 6–12 words. Count words by spaces. Use digits for numbers (e.g., ""1"", ""2"").
+- Verb morphology: for singular count use third-person singular verb (adds -s) — e.g., ""1 child stands""; for plural counts use base verb — e.g., ""2 children stand"".
+- Include the digit count and at most one clearly visible color or size if visible.
+- Use only concrete, visible facts. Do NOT add proper nouns, place/event names, inferred intentions, emotions, metaphors, or invented facts.
+- Use common nouns; avoid rare or subjective adjectives. No punctuation except an optional single period at the end of Line 2.
+
+Uncertainty and fallback rules:
+- If you cannot produce a compliant 6–12 word caption without adding uncertain attributes, produce a short fallback caption of 2–3 words (format: ""<main noun> <location>"" or ""image unclear""). In this fallback case Line 1 may still list visible tags.
+- If even a short factual fallback is impossible, Line 1 may contain tags only and Line 2 must be ""image unclear"".
+- Always prefer a shorter accurate caption over a longer speculative one.
+
+Self-check before output (you must perform these checks):
+1. Line count = 2.
+2. Line 1: ≤6 comma-separated tokens, first token = ""<noun> <digit>"", all lower-case, no forbidden items.
+3. Line 2: 6–12 words (or 2–3 word fallback), main object first, correct verb morphology, contains digit count if action present.
+4. No proper nouns or invented facts.
+5. No punctuation except commas in Line 1 and optional final period on Line 2.
+If any check fails, replace Line 2 with the fallback ""image unclear"" (or only Line 2 ""image unclear"" if tags cannot be produced).
+
+Positive examples (follow exactly):
+child 1, couch, red
+1 child sits on couch near a window.
+
+car 2, street, small, blue
+2 cars wait at crosswalk near curb.
+
+dog 1, ball, grass, brown
+1 dog chases ball on grass near path.
+
+Ambiguous image example (fallback):
+group, person 3
+group of people
+
+Negative examples (do NOT follow):
+- Do not write: ""people celebrating at London 2012 welcome desk.""
+- Do not include: ""a woman probably preparing food"" (inference).
+- Do not exceed 12 words or omit the digit count for the main object.
+
+Strictly follow these rules to produce concise, literal, and visually grounded captions that avoid hallucination.","child 9, wall, gate, blue, red
+9 children sit on ground near wall and gate.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.23379066586494446,0.12665151059627533,15,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_3ff1e48f7c,74,3276,flickr30k_test_003276,images/flickr30k/flickr30k_test_003276.jpg,"[""A group of nicely dressed people sitting at a long table with several bottles of wine on it."", ""People are sitting at long dining tables in a tent at some formal event."", ""A long dinner table with rows of people talking waiting for their food."", ""Many people sit at a long dinner table at a formal event."", ""Banquet attendees are waiting for the meal to be served.""]",textgrad_3ff1e48f7c,TextGrad Step 2,"Output exactly two lines only.
+
+Line 1 (tags) — required format and rules:
+- Provide a comma-separated list of up to 6 tokens (no extra punctuation except commas).
+- Token order (mandatory): 1) main object with count (format: ""<noun> <digit>"", use digits), 2) up to 3 secondary visible objects (no counts), 3) up to 2 visible colors or sizes. Example order: ""child 2, couch, table, ball, red, small"".
+- Use lower-case common nouns (e.g., person, child, dog, car). Do NOT use proper nouns, brand names, event names, dates, or inferred facts.
+- Only include colors/sizes that are clearly visible; if uncertain, omit them.
+- Do not repeat the same attribute with synonyms (pick the single best label).
+- No articles, no verbs, no punctuation except commas.
+
+Line 2 (caption) — required format and rules:
+- One factual caption in simple present tense, main object first, structured as: main object → action (simple present) → location/pose (e.g., ""1 child stands on kitchen counter"").
+- Word count: exactly 6–12 words. Count words by spaces. Use digits for numbers (e.g., ""1"", ""2"").
+- Verb morphology: for singular count use third-person singular verb (adds -s) — e.g., ""1 child stands""; for plural counts use base verb — e.g., ""2 children stand"".
+- Include the digit count and at most one clearly visible color or size if visible.
+- Use only concrete, visible facts. Do NOT add proper nouns, place/event names, inferred intentions, emotions, metaphors, or invented facts.
+- Use common nouns; avoid rare or subjective adjectives. No punctuation except an optional single period at the end of Line 2.
+
+Uncertainty and fallback rules:
+- If you cannot produce a compliant 6–12 word caption without adding uncertain attributes, produce a short fallback caption of 2–3 words (format: ""<main noun> <location>"" or ""image unclear""). In this fallback case Line 1 may still list visible tags.
+- If even a short factual fallback is impossible, Line 1 may contain tags only and Line 2 must be ""image unclear"".
+- Always prefer a shorter accurate caption over a longer speculative one.
+
+Self-check before output (you must perform these checks):
+1. Line count = 2.
+2. Line 1: ≤6 comma-separated tokens, first token = ""<noun> <digit>"", all lower-case, no forbidden items.
+3. Line 2: 6–12 words (or 2–3 word fallback), main object first, correct verb morphology, contains digit count if action present.
+4. No proper nouns or invented facts.
+5. No punctuation except commas in Line 1 and optional final period on Line 2.
+If any check fails, replace Line 2 with the fallback ""image unclear"" (or only Line 2 ""image unclear"" if tags cannot be produced).
+
+Positive examples (follow exactly):
+child 1, couch, red
+1 child sits on couch near a window.
+
+car 2, street, small, blue
+2 cars wait at crosswalk near curb.
+
+dog 1, ball, grass, brown
+1 dog chases ball on grass near path.
+
+Ambiguous image example (fallback):
+group, person 3
+group of people
+
+Negative examples (do NOT follow):
+- Do not write: ""people celebrating at London 2012 welcome desk.""
+- Do not include: ""a woman probably preparing food"" (inference).
+- Do not exceed 12 words or omit the digit count for the main object.
+
+Strictly follow these rules to produce concise, literal, and visually grounded captions that avoid hallucination.","person 1, table, wine bottle, glass, pink napkin, white
+1 person sits at table near wine bottle and glass",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.2495933175086975,0.08550266921520233,19,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_3ff1e48f7c,77,23712,flickr30k_test_023712,images/flickr30k/flickr30k_test_023712.jpg,"[""A man in a red shirt plays the violin on stage."", ""A man with long wavy hair, playing the violin."", ""A man eagerly playing the violin on stage."", ""A man with long wavy hair plays to violin."", ""A man plays the violin on stage.""]",textgrad_3ff1e48f7c,TextGrad Step 2,"Output exactly two lines only.
+
+Line 1 (tags) — required format and rules:
+- Provide a comma-separated list of up to 6 tokens (no extra punctuation except commas).
+- Token order (mandatory): 1) main object with count (format: ""<noun> <digit>"", use digits), 2) up to 3 secondary visible objects (no counts), 3) up to 2 visible colors or sizes. Example order: ""child 2, couch, table, ball, red, small"".
+- Use lower-case common nouns (e.g., person, child, dog, car). Do NOT use proper nouns, brand names, event names, dates, or inferred facts.
+- Only include colors/sizes that are clearly visible; if uncertain, omit them.
+- Do not repeat the same attribute with synonyms (pick the single best label).
+- No articles, no verbs, no punctuation except commas.
+
+Line 2 (caption) — required format and rules:
+- One factual caption in simple present tense, main object first, structured as: main object → action (simple present) → location/pose (e.g., ""1 child stands on kitchen counter"").
+- Word count: exactly 6–12 words. Count words by spaces. Use digits for numbers (e.g., ""1"", ""2"").
+- Verb morphology: for singular count use third-person singular verb (adds -s) — e.g., ""1 child stands""; for plural counts use base verb — e.g., ""2 children stand"".
+- Include the digit count and at most one clearly visible color or size if visible.
+- Use only concrete, visible facts. Do NOT add proper nouns, place/event names, inferred intentions, emotions, metaphors, or invented facts.
+- Use common nouns; avoid rare or subjective adjectives. No punctuation except an optional single period at the end of Line 2.
+
+Uncertainty and fallback rules:
+- If you cannot produce a compliant 6–12 word caption without adding uncertain attributes, produce a short fallback caption of 2–3 words (format: ""<main noun> <location>"" or ""image unclear""). In this fallback case Line 1 may still list visible tags.
+- If even a short factual fallback is impossible, Line 1 may contain tags only and Line 2 must be ""image unclear"".
+- Always prefer a shorter accurate caption over a longer speculative one.
+
+Self-check before output (you must perform these checks):
+1. Line count = 2.
+2. Line 1: ≤6 comma-separated tokens, first token = ""<noun> <digit>"", all lower-case, no forbidden items.
+3. Line 2: 6–12 words (or 2–3 word fallback), main object first, correct verb morphology, contains digit count if action present.
+4. No proper nouns or invented facts.
+5. No punctuation except commas in Line 1 and optional final period on Line 2.
+If any check fails, replace Line 2 with the fallback ""image unclear"" (or only Line 2 ""image unclear"" if tags cannot be produced).
+
+Positive examples (follow exactly):
+child 1, couch, red
+1 child sits on couch near a window.
+
+car 2, street, small, blue
+2 cars wait at crosswalk near curb.
+
+dog 1, ball, grass, brown
+1 dog chases ball on grass near path.
+
+Ambiguous image example (fallback):
+group, person 3
+group of people
+
+Negative examples (do NOT follow):
+- Do not write: ""people celebrating at London 2012 welcome desk.""
+- Do not include: ""a woman probably preparing food"" (inference).
+- Do not exceed 12 words or omit the digit count for the main object.
+
+Strictly follow these rules to produce concise, literal, and visually grounded captions that avoid hallucination.","person 1, violin, stage, red, blue
+1 person plays violin on stage near speakers",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.26943239569664,0.13088391721248627,14,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_3ff1e48f7c,85,23304,flickr30k_test_023304,images/flickr30k/flickr30k_test_023304.jpg,"[""A young woman in a pink top holds several shopping bags while walking down a boulevard."", ""A woman in a pink and black short skirted outfit walking with shopping bags."", ""A lady dressed in pink and black walking down a sidewalk carrying packages."", ""A young woman is walking with shopping bags in Hollywood."", ""A well dressed woman is shopping in front of a store.""]",textgrad_3ff1e48f7c,TextGrad Step 2,"Output exactly two lines only.
+
+Line 1 (tags) — required format and rules:
+- Provide a comma-separated list of up to 6 tokens (no extra punctuation except commas).
+- Token order (mandatory): 1) main object with count (format: ""<noun> <digit>"", use digits), 2) up to 3 secondary visible objects (no counts), 3) up to 2 visible colors or sizes. Example order: ""child 2, couch, table, ball, red, small"".
+- Use lower-case common nouns (e.g., person, child, dog, car). Do NOT use proper nouns, brand names, event names, dates, or inferred facts.
+- Only include colors/sizes that are clearly visible; if uncertain, omit them.
+- Do not repeat the same attribute with synonyms (pick the single best label).
+- No articles, no verbs, no punctuation except commas.
+
+Line 2 (caption) — required format and rules:
+- One factual caption in simple present tense, main object first, structured as: main object → action (simple present) → location/pose (e.g., ""1 child stands on kitchen counter"").
+- Word count: exactly 6–12 words. Count words by spaces. Use digits for numbers (e.g., ""1"", ""2"").
+- Verb morphology: for singular count use third-person singular verb (adds -s) — e.g., ""1 child stands""; for plural counts use base verb — e.g., ""2 children stand"".
+- Include the digit count and at most one clearly visible color or size if visible.
+- Use only concrete, visible facts. Do NOT add proper nouns, place/event names, inferred intentions, emotions, metaphors, or invented facts.
+- Use common nouns; avoid rare or subjective adjectives. No punctuation except an optional single period at the end of Line 2.
+
+Uncertainty and fallback rules:
+- If you cannot produce a compliant 6–12 word caption without adding uncertain attributes, produce a short fallback caption of 2–3 words (format: ""<main noun> <location>"" or ""image unclear""). In this fallback case Line 1 may still list visible tags.
+- If even a short factual fallback is impossible, Line 1 may contain tags only and Line 2 must be ""image unclear"".
+- Always prefer a shorter accurate caption over a longer speculative one.
+
+Self-check before output (you must perform these checks):
+1. Line count = 2.
+2. Line 1: ≤6 comma-separated tokens, first token = ""<noun> <digit>"", all lower-case, no forbidden items.
+3. Line 2: 6–12 words (or 2–3 word fallback), main object first, correct verb morphology, contains digit count if action present.
+4. No proper nouns or invented facts.
+5. No punctuation except commas in Line 1 and optional final period on Line 2.
+If any check fails, replace Line 2 with the fallback ""image unclear"" (or only Line 2 ""image unclear"" if tags cannot be produced).
+
+Positive examples (follow exactly):
+child 1, couch, red
+1 child sits on couch near a window.
+
+car 2, street, small, blue
+2 cars wait at crosswalk near curb.
+
+dog 1, ball, grass, brown
+1 dog chases ball on grass near path.
+
+Ambiguous image example (fallback):
+group, person 3
+group of people
+
+Negative examples (do NOT follow):
+- Do not write: ""people celebrating at London 2012 welcome desk.""
+- Do not include: ""a woman probably preparing food"" (inference).
+- Do not exceed 12 words or omit the digit count for the main object.
+
+Strictly follow these rules to produce concise, literal, and visually grounded captions that avoid hallucination.","person 1, bag, shoe, pink, black
+1 person walks on sidewalk carrying pink bag and black shoe.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.3193219304084778,0.20071201026439667,17,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_3ff1e48f7c,89,27198,flickr30k_test_027198,images/flickr30k/flickr30k_test_027198.jpg,"[""Three teenagers, two without shoes having a water gun fight with various types of guns trying to spray each other."", ""Three teenage boys blast each other with water guns in an open field."", ""Two boys getting shot by a water gun by another boy in a yard."", ""Three male teenagers are playing in a field with water guns."", ""Three boys in the middle of a squirt gun battle.""]",textgrad_3ff1e48f7c,TextGrad Step 2,"Output exactly two lines only.
+
+Line 1 (tags) — required format and rules:
+- Provide a comma-separated list of up to 6 tokens (no extra punctuation except commas).
+- Token order (mandatory): 1) main object with count (format: ""<noun> <digit>"", use digits), 2) up to 3 secondary visible objects (no counts), 3) up to 2 visible colors or sizes. Example order: ""child 2, couch, table, ball, red, small"".
+- Use lower-case common nouns (e.g., person, child, dog, car). Do NOT use proper nouns, brand names, event names, dates, or inferred facts.
+- Only include colors/sizes that are clearly visible; if uncertain, omit them.
+- Do not repeat the same attribute with synonyms (pick the single best label).
+- No articles, no verbs, no punctuation except commas.
+
+Line 2 (caption) — required format and rules:
+- One factual caption in simple present tense, main object first, structured as: main object → action (simple present) → location/pose (e.g., ""1 child stands on kitchen counter"").
+- Word count: exactly 6–12 words. Count words by spaces. Use digits for numbers (e.g., ""1"", ""2"").
+- Verb morphology: for singular count use third-person singular verb (adds -s) — e.g., ""1 child stands""; for plural counts use base verb — e.g., ""2 children stand"".
+- Include the digit count and at most one clearly visible color or size if visible.
+- Use only concrete, visible facts. Do NOT add proper nouns, place/event names, inferred intentions, emotions, metaphors, or invented facts.
+- Use common nouns; avoid rare or subjective adjectives. No punctuation except an optional single period at the end of Line 2.
+
+Uncertainty and fallback rules:
+- If you cannot produce a compliant 6–12 word caption without adding uncertain attributes, produce a short fallback caption of 2–3 words (format: ""<main noun> <location>"" or ""image unclear""). In this fallback case Line 1 may still list visible tags.
+- If even a short factual fallback is impossible, Line 1 may contain tags only and Line 2 must be ""image unclear"".
+- Always prefer a shorter accurate caption over a longer speculative one.
+
+Self-check before output (you must perform these checks):
+1. Line count = 2.
+2. Line 1: ≤6 comma-separated tokens, first token = ""<noun> <digit>"", all lower-case, no forbidden items.
+3. Line 2: 6–12 words (or 2–3 word fallback), main object first, correct verb morphology, contains digit count if action present.
+4. No proper nouns or invented facts.
+5. No punctuation except commas in Line 1 and optional final period on Line 2.
+If any check fails, replace Line 2 with the fallback ""image unclear"" (or only Line 2 ""image unclear"" if tags cannot be produced).
+
+Positive examples (follow exactly):
+child 1, couch, red
+1 child sits on couch near a window.
+
+car 2, street, small, blue
+2 cars wait at crosswalk near curb.
+
+dog 1, ball, grass, brown
+1 dog chases ball on grass near path.
+
+Ambiguous image example (fallback):
+group, person 3
+group of people
+
+Negative examples (do NOT follow):
+- Do not write: ""people celebrating at London 2012 welcome desk.""
+- Do not include: ""a woman probably preparing food"" (inference).
+- Do not exceed 12 words or omit the digit count for the main object.
+
+Strictly follow these rules to produce concise, literal, and visually grounded captions that avoid hallucination.","person 3, water gun, grass, black, blue
+3 people run across grass holding water guns.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.32892906665802,0.1898762583732605,15,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_3ff1e48f7c,94,9311,flickr30k_test_009311,images/flickr30k/flickr30k_test_009311.jpg,"[""A toddler plays in a water fountain with his mouth open and ready for a drink."", ""A baby sticking out his tonge while looking at a spraying water fountain."", ""A baby trying to catch water from a fountain in his mouth"", ""A small boy is playing at a water fountain"", ""A baby reaching into a water fountain.""]",textgrad_3ff1e48f7c,TextGrad Step 2,"Output exactly two lines only.
+
+Line 1 (tags) — required format and rules:
+- Provide a comma-separated list of up to 6 tokens (no extra punctuation except commas).
+- Token order (mandatory): 1) main object with count (format: ""<noun> <digit>"", use digits), 2) up to 3 secondary visible objects (no counts), 3) up to 2 visible colors or sizes. Example order: ""child 2, couch, table, ball, red, small"".
+- Use lower-case common nouns (e.g., person, child, dog, car). Do NOT use proper nouns, brand names, event names, dates, or inferred facts.
+- Only include colors/sizes that are clearly visible; if uncertain, omit them.
+- Do not repeat the same attribute with synonyms (pick the single best label).
+- No articles, no verbs, no punctuation except commas.
+
+Line 2 (caption) — required format and rules:
+- One factual caption in simple present tense, main object first, structured as: main object → action (simple present) → location/pose (e.g., ""1 child stands on kitchen counter"").
+- Word count: exactly 6–12 words. Count words by spaces. Use digits for numbers (e.g., ""1"", ""2"").
+- Verb morphology: for singular count use third-person singular verb (adds -s) — e.g., ""1 child stands""; for plural counts use base verb — e.g., ""2 children stand"".
+- Include the digit count and at most one clearly visible color or size if visible.
+- Use only concrete, visible facts. Do NOT add proper nouns, place/event names, inferred intentions, emotions, metaphors, or invented facts.
+- Use common nouns; avoid rare or subjective adjectives. No punctuation except an optional single period at the end of Line 2.
+
+Uncertainty and fallback rules:
+- If you cannot produce a compliant 6–12 word caption without adding uncertain attributes, produce a short fallback caption of 2–3 words (format: ""<main noun> <location>"" or ""image unclear""). In this fallback case Line 1 may still list visible tags.
+- If even a short factual fallback is impossible, Line 1 may contain tags only and Line 2 must be ""image unclear"".
+- Always prefer a shorter accurate caption over a longer speculative one.
+
+Self-check before output (you must perform these checks):
+1. Line count = 2.
+2. Line 1: ≤6 comma-separated tokens, first token = ""<noun> <digit>"", all lower-case, no forbidden items.
+3. Line 2: 6–12 words (or 2–3 word fallback), main object first, correct verb morphology, contains digit count if action present.
+4. No proper nouns or invented facts.
+5. No punctuation except commas in Line 1 and optional final period on Line 2.
+If any check fails, replace Line 2 with the fallback ""image unclear"" (or only Line 2 ""image unclear"" if tags cannot be produced).
+
+Positive examples (follow exactly):
+child 1, couch, red
+1 child sits on couch near a window.
+
+car 2, street, small, blue
+2 cars wait at crosswalk near curb.
+
+dog 1, ball, grass, brown
+1 dog chases ball on grass near path.
+
+Ambiguous image example (fallback):
+group, person 3
+group of people
+
+Negative examples (do NOT follow):
+- Do not write: ""people celebrating at London 2012 welcome desk.""
+- Do not include: ""a woman probably preparing food"" (inference).
+- Do not exceed 12 words or omit the digit count for the main object.
+
+Strictly follow these rules to produce concise, literal, and visually grounded captions that avoid hallucination.","child 1, water, fountain, light
+1 child leans on fountain edge near water spray.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.27915769815444946,0.17417168617248535,14,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_3ff1e48f7c,96,28917,flickr30k_test_028917,images/flickr30k/flickr30k_test_028917.jpg,"[""Two basketball players one in black and red and one in blue and white playing a game with the ref and crowd in the background."", ""A basketball player wearing white dribbles the ball, while being guarded by another player in a black uniform."", ""Two male basketball players are playing a competitive game while the referee is standing behind watching."", ""Two men playing in a basketball game against each other."", ""A small image used to signify a broken web image link""]",textgrad_3ff1e48f7c,TextGrad Step 2,"Output exactly two lines only.
+
+Line 1 (tags) — required format and rules:
+- Provide a comma-separated list of up to 6 tokens (no extra punctuation except commas).
+- Token order (mandatory): 1) main object with count (format: ""<noun> <digit>"", use digits), 2) up to 3 secondary visible objects (no counts), 3) up to 2 visible colors or sizes. Example order: ""child 2, couch, table, ball, red, small"".
+- Use lower-case common nouns (e.g., person, child, dog, car). Do NOT use proper nouns, brand names, event names, dates, or inferred facts.
+- Only include colors/sizes that are clearly visible; if uncertain, omit them.
+- Do not repeat the same attribute with synonyms (pick the single best label).
+- No articles, no verbs, no punctuation except commas.
+
+Line 2 (caption) — required format and rules:
+- One factual caption in simple present tense, main object first, structured as: main object → action (simple present) → location/pose (e.g., ""1 child stands on kitchen counter"").
+- Word count: exactly 6–12 words. Count words by spaces. Use digits for numbers (e.g., ""1"", ""2"").
+- Verb morphology: for singular count use third-person singular verb (adds -s) — e.g., ""1 child stands""; for plural counts use base verb — e.g., ""2 children stand"".
+- Include the digit count and at most one clearly visible color or size if visible.
+- Use only concrete, visible facts. Do NOT add proper nouns, place/event names, inferred intentions, emotions, metaphors, or invented facts.
+- Use common nouns; avoid rare or subjective adjectives. No punctuation except an optional single period at the end of Line 2.
+
+Uncertainty and fallback rules:
+- If you cannot produce a compliant 6–12 word caption without adding uncertain attributes, produce a short fallback caption of 2–3 words (format: ""<main noun> <location>"" or ""image unclear""). In this fallback case Line 1 may still list visible tags.
+- If even a short factual fallback is impossible, Line 1 may contain tags only and Line 2 must be ""image unclear"".
+- Always prefer a shorter accurate caption over a longer speculative one.
+
+Self-check before output (you must perform these checks):
+1. Line count = 2.
+2. Line 1: ≤6 comma-separated tokens, first token = ""<noun> <digit>"", all lower-case, no forbidden items.
+3. Line 2: 6–12 words (or 2–3 word fallback), main object first, correct verb morphology, contains digit count if action present.
+4. No proper nouns or invented facts.
+5. No punctuation except commas in Line 1 and optional final period on Line 2.
+If any check fails, replace Line 2 with the fallback ""image unclear"" (or only Line 2 ""image unclear"" if tags cannot be produced).
+
+Positive examples (follow exactly):
+child 1, couch, red
+1 child sits on couch near a window.
+
+car 2, street, small, blue
+2 cars wait at crosswalk near curb.
+
+dog 1, ball, grass, brown
+1 dog chases ball on grass near path.
+
+Ambiguous image example (fallback):
+group, person 3
+group of people
+
+Negative examples (do NOT follow):
+- Do not write: ""people celebrating at London 2012 welcome desk.""
+- Do not include: ""a woman probably preparing food"" (inference).
+- Do not exceed 12 words or omit the digit count for the main object.
+
+Strictly follow these rules to produce concise, literal, and visually grounded captions that avoid hallucination.","player 1, person 2, referee, court, blue, black
+1 player dribbles ball on court while being guarded",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.2652328610420227,0.11364906281232834,17,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_3ff1e48f7c,108,26129,flickr30k_test_026129,images/flickr30k/flickr30k_test_026129.jpg,"[""Two men skiing up a hill but stopped and pointing at something as they on our their trek."", ""Two men wearing snowshoes stopping to observe something on the ground."", ""Two guys with snowshoes making their way through the woods."", ""Two men in snowshoes tracking the prints of an animal."", ""Two people wearing snowshoes are tracking something.""]",textgrad_3ff1e48f7c,TextGrad Step 2,"Output exactly two lines only.
+
+Line 1 (tags) — required format and rules:
+- Provide a comma-separated list of up to 6 tokens (no extra punctuation except commas).
+- Token order (mandatory): 1) main object with count (format: ""<noun> <digit>"", use digits), 2) up to 3 secondary visible objects (no counts), 3) up to 2 visible colors or sizes. Example order: ""child 2, couch, table, ball, red, small"".
+- Use lower-case common nouns (e.g., person, child, dog, car). Do NOT use proper nouns, brand names, event names, dates, or inferred facts.
+- Only include colors/sizes that are clearly visible; if uncertain, omit them.
+- Do not repeat the same attribute with synonyms (pick the single best label).
+- No articles, no verbs, no punctuation except commas.
+
+Line 2 (caption) — required format and rules:
+- One factual caption in simple present tense, main object first, structured as: main object → action (simple present) → location/pose (e.g., ""1 child stands on kitchen counter"").
+- Word count: exactly 6–12 words. Count words by spaces. Use digits for numbers (e.g., ""1"", ""2"").
+- Verb morphology: for singular count use third-person singular verb (adds -s) — e.g., ""1 child stands""; for plural counts use base verb — e.g., ""2 children stand"".
+- Include the digit count and at most one clearly visible color or size if visible.
+- Use only concrete, visible facts. Do NOT add proper nouns, place/event names, inferred intentions, emotions, metaphors, or invented facts.
+- Use common nouns; avoid rare or subjective adjectives. No punctuation except an optional single period at the end of Line 2.
+
+Uncertainty and fallback rules:
+- If you cannot produce a compliant 6–12 word caption without adding uncertain attributes, produce a short fallback caption of 2–3 words (format: ""<main noun> <location>"" or ""image unclear""). In this fallback case Line 1 may still list visible tags.
+- If even a short factual fallback is impossible, Line 1 may contain tags only and Line 2 must be ""image unclear"".
+- Always prefer a shorter accurate caption over a longer speculative one.
+
+Self-check before output (you must perform these checks):
+1. Line count = 2.
+2. Line 1: ≤6 comma-separated tokens, first token = ""<noun> <digit>"", all lower-case, no forbidden items.
+3. Line 2: 6–12 words (or 2–3 word fallback), main object first, correct verb morphology, contains digit count if action present.
+4. No proper nouns or invented facts.
+5. No punctuation except commas in Line 1 and optional final period on Line 2.
+If any check fails, replace Line 2 with the fallback ""image unclear"" (or only Line 2 ""image unclear"" if tags cannot be produced).
+
+Positive examples (follow exactly):
+child 1, couch, red
+1 child sits on couch near a window.
+
+car 2, street, small, blue
+2 cars wait at crosswalk near curb.
+
+dog 1, ball, grass, brown
+1 dog chases ball on grass near path.
+
+Ambiguous image example (fallback):
+group, person 3
+group of people
+
+Negative examples (do NOT follow):
+- Do not write: ""people celebrating at London 2012 welcome desk.""
+- Do not include: ""a woman probably preparing food"" (inference).
+- Do not exceed 12 words or omit the digit count for the main object.
+
+Strictly follow these rules to produce concise, literal, and visually grounded captions that avoid hallucination.","person 2, tree, snow, blue, gray
+2 people adjust snowshoes on snowy forest path.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.33370763063430786,0.2134552150964737,14,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_3ff1e48f7c,113,12029,flickr30k_test_012029,images/flickr30k/flickr30k_test_012029.jpg,"[""Four ferry boats are docked at a visitor's center with passengers waiting to board."", ""People congregate on a platform in a river among decorated boats."", ""People are gathered on a platform in water for a ceremony."", ""A group of people waiting to ride boats."", ""People wait to board boats.""]",textgrad_3ff1e48f7c,TextGrad Step 2,"Output exactly two lines only.
+
+Line 1 (tags) — required format and rules:
+- Provide a comma-separated list of up to 6 tokens (no extra punctuation except commas).
+- Token order (mandatory): 1) main object with count (format: ""<noun> <digit>"", use digits), 2) up to 3 secondary visible objects (no counts), 3) up to 2 visible colors or sizes. Example order: ""child 2, couch, table, ball, red, small"".
+- Use lower-case common nouns (e.g., person, child, dog, car). Do NOT use proper nouns, brand names, event names, dates, or inferred facts.
+- Only include colors/sizes that are clearly visible; if uncertain, omit them.
+- Do not repeat the same attribute with synonyms (pick the single best label).
+- No articles, no verbs, no punctuation except commas.
+
+Line 2 (caption) — required format and rules:
+- One factual caption in simple present tense, main object first, structured as: main object → action (simple present) → location/pose (e.g., ""1 child stands on kitchen counter"").
+- Word count: exactly 6–12 words. Count words by spaces. Use digits for numbers (e.g., ""1"", ""2"").
+- Verb morphology: for singular count use third-person singular verb (adds -s) — e.g., ""1 child stands""; for plural counts use base verb — e.g., ""2 children stand"".
+- Include the digit count and at most one clearly visible color or size if visible.
+- Use only concrete, visible facts. Do NOT add proper nouns, place/event names, inferred intentions, emotions, metaphors, or invented facts.
+- Use common nouns; avoid rare or subjective adjectives. No punctuation except an optional single period at the end of Line 2.
+
+Uncertainty and fallback rules:
+- If you cannot produce a compliant 6–12 word caption without adding uncertain attributes, produce a short fallback caption of 2–3 words (format: ""<main noun> <location>"" or ""image unclear""). In this fallback case Line 1 may still list visible tags.
+- If even a short factual fallback is impossible, Line 1 may contain tags only and Line 2 must be ""image unclear"".
+- Always prefer a shorter accurate caption over a longer speculative one.
+
+Self-check before output (you must perform these checks):
+1. Line count = 2.
+2. Line 1: ≤6 comma-separated tokens, first token = ""<noun> <digit>"", all lower-case, no forbidden items.
+3. Line 2: 6–12 words (or 2–3 word fallback), main object first, correct verb morphology, contains digit count if action present.
+4. No proper nouns or invented facts.
+5. No punctuation except commas in Line 1 and optional final period on Line 2.
+If any check fails, replace Line 2 with the fallback ""image unclear"" (or only Line 2 ""image unclear"" if tags cannot be produced).
+
+Positive examples (follow exactly):
+child 1, couch, red
+1 child sits on couch near a window.
+
+car 2, street, small, blue
+2 cars wait at crosswalk near curb.
+
+dog 1, ball, grass, brown
+1 dog chases ball on grass near path.
+
+Ambiguous image example (fallback):
+group, person 3
+group of people
+
+Negative examples (do NOT follow):
+- Do not write: ""people celebrating at London 2012 welcome desk.""
+- Do not include: ""a woman probably preparing food"" (inference).
+- Do not exceed 12 words or omit the digit count for the main object.
+
+Strictly follow these rules to produce concise, literal, and visually grounded captions that avoid hallucination.","person 1, boat, temple, water, white, red
+1 person stands on boat near temple in water.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.31329625844955444,0.1501259058713913,16,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_3ff1e48f7c,115,28925,flickr30k_test_028925,images/flickr30k/flickr30k_test_028925.jpg,"[""A kid is using a screwdriver on what looks to be a typewriter."", ""A child is either screwing or unscrewing a screw on a machine."", ""Young child using tools on a machine."", ""A young child turning a screwdriver."", ""A young boy is fixing a typewriter.""]",textgrad_3ff1e48f7c,TextGrad Step 2,"Output exactly two lines only.
+
+Line 1 (tags) — required format and rules:
+- Provide a comma-separated list of up to 6 tokens (no extra punctuation except commas).
+- Token order (mandatory): 1) main object with count (format: ""<noun> <digit>"", use digits), 2) up to 3 secondary visible objects (no counts), 3) up to 2 visible colors or sizes. Example order: ""child 2, couch, table, ball, red, small"".
+- Use lower-case common nouns (e.g., person, child, dog, car). Do NOT use proper nouns, brand names, event names, dates, or inferred facts.
+- Only include colors/sizes that are clearly visible; if uncertain, omit them.
+- Do not repeat the same attribute with synonyms (pick the single best label).
+- No articles, no verbs, no punctuation except commas.
+
+Line 2 (caption) — required format and rules:
+- One factual caption in simple present tense, main object first, structured as: main object → action (simple present) → location/pose (e.g., ""1 child stands on kitchen counter"").
+- Word count: exactly 6–12 words. Count words by spaces. Use digits for numbers (e.g., ""1"", ""2"").
+- Verb morphology: for singular count use third-person singular verb (adds -s) — e.g., ""1 child stands""; for plural counts use base verb — e.g., ""2 children stand"".
+- Include the digit count and at most one clearly visible color or size if visible.
+- Use only concrete, visible facts. Do NOT add proper nouns, place/event names, inferred intentions, emotions, metaphors, or invented facts.
+- Use common nouns; avoid rare or subjective adjectives. No punctuation except an optional single period at the end of Line 2.
+
+Uncertainty and fallback rules:
+- If you cannot produce a compliant 6–12 word caption without adding uncertain attributes, produce a short fallback caption of 2–3 words (format: ""<main noun> <location>"" or ""image unclear""). In this fallback case Line 1 may still list visible tags.
+- If even a short factual fallback is impossible, Line 1 may contain tags only and Line 2 must be ""image unclear"".
+- Always prefer a shorter accurate caption over a longer speculative one.
+
+Self-check before output (you must perform these checks):
+1. Line count = 2.
+2. Line 1: ≤6 comma-separated tokens, first token = ""<noun> <digit>"", all lower-case, no forbidden items.
+3. Line 2: 6–12 words (or 2–3 word fallback), main object first, correct verb morphology, contains digit count if action present.
+4. No proper nouns or invented facts.
+5. No punctuation except commas in Line 1 and optional final period on Line 2.
+If any check fails, replace Line 2 with the fallback ""image unclear"" (or only Line 2 ""image unclear"" if tags cannot be produced).
+
+Positive examples (follow exactly):
+child 1, couch, red
+1 child sits on couch near a window.
+
+car 2, street, small, blue
+2 cars wait at crosswalk near curb.
+
+dog 1, ball, grass, brown
+1 dog chases ball on grass near path.
+
+Ambiguous image example (fallback):
+group, person 3
+group of people
+
+Negative examples (do NOT follow):
+- Do not write: ""people celebrating at London 2012 welcome desk.""
+- Do not include: ""a woman probably preparing food"" (inference).
+- Do not exceed 12 words or omit the digit count for the main object.
+
+Strictly follow these rules to produce concise, literal, and visually grounded captions that avoid hallucination.","child 1, typewriter, screwdriver, red, small
+1 child fixes typewriter with screwdriver while seated",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.30401939153671265,0.22117546200752258,14,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_3ff1e48f7c,128,17070,flickr30k_test_017070,images/flickr30k/flickr30k_test_017070.jpg,"[""A man with a hat and suspenders is walking through cornfields toward a silo in the background."", ""A man in a straw hat and suspenders walks away from the camera towards a field of corn."", ""The solitary man wearing the hat is walking in the field."", ""A man in a straw hat is walking in a cornfield."", ""Farmer walking in his fields.""]",textgrad_3ff1e48f7c,TextGrad Step 2,"Output exactly two lines only.
+
+Line 1 (tags) — required format and rules:
+- Provide a comma-separated list of up to 6 tokens (no extra punctuation except commas).
+- Token order (mandatory): 1) main object with count (format: ""<noun> <digit>"", use digits), 2) up to 3 secondary visible objects (no counts), 3) up to 2 visible colors or sizes. Example order: ""child 2, couch, table, ball, red, small"".
+- Use lower-case common nouns (e.g., person, child, dog, car). Do NOT use proper nouns, brand names, event names, dates, or inferred facts.
+- Only include colors/sizes that are clearly visible; if uncertain, omit them.
+- Do not repeat the same attribute with synonyms (pick the single best label).
+- No articles, no verbs, no punctuation except commas.
+
+Line 2 (caption) — required format and rules:
+- One factual caption in simple present tense, main object first, structured as: main object → action (simple present) → location/pose (e.g., ""1 child stands on kitchen counter"").
+- Word count: exactly 6–12 words. Count words by spaces. Use digits for numbers (e.g., ""1"", ""2"").
+- Verb morphology: for singular count use third-person singular verb (adds -s) — e.g., ""1 child stands""; for plural counts use base verb — e.g., ""2 children stand"".
+- Include the digit count and at most one clearly visible color or size if visible.
+- Use only concrete, visible facts. Do NOT add proper nouns, place/event names, inferred intentions, emotions, metaphors, or invented facts.
+- Use common nouns; avoid rare or subjective adjectives. No punctuation except an optional single period at the end of Line 2.
+
+Uncertainty and fallback rules:
+- If you cannot produce a compliant 6–12 word caption without adding uncertain attributes, produce a short fallback caption of 2–3 words (format: ""<main noun> <location>"" or ""image unclear""). In this fallback case Line 1 may still list visible tags.
+- If even a short factual fallback is impossible, Line 1 may contain tags only and Line 2 must be ""image unclear"".
+- Always prefer a shorter accurate caption over a longer speculative one.
+
+Self-check before output (you must perform these checks):
+1. Line count = 2.
+2. Line 1: ≤6 comma-separated tokens, first token = ""<noun> <digit>"", all lower-case, no forbidden items.
+3. Line 2: 6–12 words (or 2–3 word fallback), main object first, correct verb morphology, contains digit count if action present.
+4. No proper nouns or invented facts.
+5. No punctuation except commas in Line 1 and optional final period on Line 2.
+If any check fails, replace Line 2 with the fallback ""image unclear"" (or only Line 2 ""image unclear"" if tags cannot be produced).
+
+Positive examples (follow exactly):
+child 1, couch, red
+1 child sits on couch near a window.
+
+car 2, street, small, blue
+2 cars wait at crosswalk near curb.
+
+dog 1, ball, grass, brown
+1 dog chases ball on grass near path.
+
+Ambiguous image example (fallback):
+group, person 3
+group of people
+
+Negative examples (do NOT follow):
+- Do not write: ""people celebrating at London 2012 welcome desk.""
+- Do not include: ""a woman probably preparing food"" (inference).
+- Do not exceed 12 words or omit the digit count for the main object.
+
+Strictly follow these rules to produce concise, literal, and visually grounded captions that avoid hallucination.","person 1, field, corn, barn, silo, brown
+1 person walks through field near corn and barn",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.340716153383255,0.18000459671020508,16,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_3ff1e48f7c,129,27523,flickr30k_test_027523,images/flickr30k/flickr30k_test_027523.jpg,"[""A man is sitting on a bench in the street carving wooden sculptures."", ""A man in a blue hat and an apron carving wooden figurines."", ""A man in a blue cap whittles figures out of wood."", ""A man creating woodwork outside on a city bench."", ""Whittling wood-carver in a blue hat.""]",textgrad_3ff1e48f7c,TextGrad Step 2,"Output exactly two lines only.
+
+Line 1 (tags) — required format and rules:
+- Provide a comma-separated list of up to 6 tokens (no extra punctuation except commas).
+- Token order (mandatory): 1) main object with count (format: ""<noun> <digit>"", use digits), 2) up to 3 secondary visible objects (no counts), 3) up to 2 visible colors or sizes. Example order: ""child 2, couch, table, ball, red, small"".
+- Use lower-case common nouns (e.g., person, child, dog, car). Do NOT use proper nouns, brand names, event names, dates, or inferred facts.
+- Only include colors/sizes that are clearly visible; if uncertain, omit them.
+- Do not repeat the same attribute with synonyms (pick the single best label).
+- No articles, no verbs, no punctuation except commas.
+
+Line 2 (caption) — required format and rules:
+- One factual caption in simple present tense, main object first, structured as: main object → action (simple present) → location/pose (e.g., ""1 child stands on kitchen counter"").
+- Word count: exactly 6–12 words. Count words by spaces. Use digits for numbers (e.g., ""1"", ""2"").
+- Verb morphology: for singular count use third-person singular verb (adds -s) — e.g., ""1 child stands""; for plural counts use base verb — e.g., ""2 children stand"".
+- Include the digit count and at most one clearly visible color or size if visible.
+- Use only concrete, visible facts. Do NOT add proper nouns, place/event names, inferred intentions, emotions, metaphors, or invented facts.
+- Use common nouns; avoid rare or subjective adjectives. No punctuation except an optional single period at the end of Line 2.
+
+Uncertainty and fallback rules:
+- If you cannot produce a compliant 6–12 word caption without adding uncertain attributes, produce a short fallback caption of 2–3 words (format: ""<main noun> <location>"" or ""image unclear""). In this fallback case Line 1 may still list visible tags.
+- If even a short factual fallback is impossible, Line 1 may contain tags only and Line 2 must be ""image unclear"".
+- Always prefer a shorter accurate caption over a longer speculative one.
+
+Self-check before output (you must perform these checks):
+1. Line count = 2.
+2. Line 1: ≤6 comma-separated tokens, first token = ""<noun> <digit>"", all lower-case, no forbidden items.
+3. Line 2: 6–12 words (or 2–3 word fallback), main object first, correct verb morphology, contains digit count if action present.
+4. No proper nouns or invented facts.
+5. No punctuation except commas in Line 1 and optional final period on Line 2.
+If any check fails, replace Line 2 with the fallback ""image unclear"" (or only Line 2 ""image unclear"" if tags cannot be produced).
+
+Positive examples (follow exactly):
+child 1, couch, red
+1 child sits on couch near a window.
+
+car 2, street, small, blue
+2 cars wait at crosswalk near curb.
+
+dog 1, ball, grass, brown
+1 dog chases ball on grass near path.
+
+Ambiguous image example (fallback):
+group, person 3
+group of people
+
+Negative examples (do NOT follow):
+- Do not write: ""people celebrating at London 2012 welcome desk.""
+- Do not include: ""a woman probably preparing food"" (inference).
+- Do not exceed 12 words or omit the digit count for the main object.
+
+Strictly follow these rules to produce concise, literal, and visually grounded captions that avoid hallucination.","person 1, wood, tools, bench, blue, small
+1 person carves wood on bench near street.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.3093343675136566,0.24003371596336365,15,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_3ff1e48f7c,144,21206,flickr30k_test_021206,images/flickr30k/flickr30k_test_021206.jpg,"[""A man in the suit plays a guitar while sitting on a metal chair."", ""A man in a jacket sitting at a table playing a guitar."", ""A man sits alone at a table, playing guitar."", ""An old man is playing his guitar."", ""A man playing acoustic guitar.""]",textgrad_3ff1e48f7c,TextGrad Step 2,"Output exactly two lines only.
+
+Line 1 (tags) — required format and rules:
+- Provide a comma-separated list of up to 6 tokens (no extra punctuation except commas).
+- Token order (mandatory): 1) main object with count (format: ""<noun> <digit>"", use digits), 2) up to 3 secondary visible objects (no counts), 3) up to 2 visible colors or sizes. Example order: ""child 2, couch, table, ball, red, small"".
+- Use lower-case common nouns (e.g., person, child, dog, car). Do NOT use proper nouns, brand names, event names, dates, or inferred facts.
+- Only include colors/sizes that are clearly visible; if uncertain, omit them.
+- Do not repeat the same attribute with synonyms (pick the single best label).
+- No articles, no verbs, no punctuation except commas.
+
+Line 2 (caption) — required format and rules:
+- One factual caption in simple present tense, main object first, structured as: main object → action (simple present) → location/pose (e.g., ""1 child stands on kitchen counter"").
+- Word count: exactly 6–12 words. Count words by spaces. Use digits for numbers (e.g., ""1"", ""2"").
+- Verb morphology: for singular count use third-person singular verb (adds -s) — e.g., ""1 child stands""; for plural counts use base verb — e.g., ""2 children stand"".
+- Include the digit count and at most one clearly visible color or size if visible.
+- Use only concrete, visible facts. Do NOT add proper nouns, place/event names, inferred intentions, emotions, metaphors, or invented facts.
+- Use common nouns; avoid rare or subjective adjectives. No punctuation except an optional single period at the end of Line 2.
+
+Uncertainty and fallback rules:
+- If you cannot produce a compliant 6–12 word caption without adding uncertain attributes, produce a short fallback caption of 2–3 words (format: ""<main noun> <location>"" or ""image unclear""). In this fallback case Line 1 may still list visible tags.
+- If even a short factual fallback is impossible, Line 1 may contain tags only and Line 2 must be ""image unclear"".
+- Always prefer a shorter accurate caption over a longer speculative one.
+
+Self-check before output (you must perform these checks):
+1. Line count = 2.
+2. Line 1: ≤6 comma-separated tokens, first token = ""<noun> <digit>"", all lower-case, no forbidden items.
+3. Line 2: 6–12 words (or 2–3 word fallback), main object first, correct verb morphology, contains digit count if action present.
+4. No proper nouns or invented facts.
+5. No punctuation except commas in Line 1 and optional final period on Line 2.
+If any check fails, replace Line 2 with the fallback ""image unclear"" (or only Line 2 ""image unclear"" if tags cannot be produced).
+
+Positive examples (follow exactly):
+child 1, couch, red
+1 child sits on couch near a window.
+
+car 2, street, small, blue
+2 cars wait at crosswalk near curb.
+
+dog 1, ball, grass, brown
+1 dog chases ball on grass near path.
+
+Ambiguous image example (fallback):
+group, person 3
+group of people
+
+Negative examples (do NOT follow):
+- Do not write: ""people celebrating at London 2012 welcome desk.""
+- Do not include: ""a woman probably preparing food"" (inference).
+- Do not exceed 12 words or omit the digit count for the main object.
+
+Strictly follow these rules to produce concise, literal, and visually grounded captions that avoid hallucination.","person 1, guitar, chair, table, black, gray
+1 person plays guitar while seated on chair near table.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.269983172416687,0.1727994829416275,17,False

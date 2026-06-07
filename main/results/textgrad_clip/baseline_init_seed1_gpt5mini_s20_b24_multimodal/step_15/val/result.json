@@ -1,0 +1,142 @@
+{
+  "prompt": "Output exactly one concise, information‑dense caption: a single grammatical sentence composed of comma‑separated short phrases. Produce only that single sentence and nothing else.\n\nAssembly order and allowed tokens (fill slots in this order; place the first subject group + any VERIFIED high‑value prop within the first 6–8 words):\n1) Subject group(s) + high‑value prop(s) (0–3 groups, must appear first). If no subject verification → emit plural fallback noun (people/dogs/vehicles).\n2) exactly one micro‑action/contact phrase (verified) or conservative part‑near‑object fallback.\n3) fine class token (verified) or dataset lexicon fallback.\n4) clothing / clear pose / orientation (only if verified).\n5) up to two nearby anchors/signage (only if verified; otherwise use compact positional lexicon token).\n6) cropping/foreground token (only if depth verified).\nAlways emit only the specified token for any slot; if verification fails for a slot, substitute the explicit allowed fallback and continue.\n\nMulti‑signal verification (tiered evidence)\nFor every verification gate compute evidence_set = {geometry, segmentation mask, detector_confidence, contact_confidence, motion_confidence, OCR_confidence, saliency_score, textspot_confidence}. Treat confirmations with three confidence bands:\n- HIGH verified: any single evidence ≥ high threshold → allow full VERIFIED emission.\n- MEDIUM verified: two complementary evidences ≥ medium threshold (e.g., detector_conf≥0.70 and saliency high OR contact_conf≥0.50 and motion_conf≥0.60) → allow a controlled low‑risk descriptor or detector‑verified emission per slot rules.\n- LOW/unverified: otherwise → require strict lexicon fallback.\n(Implementors: thresholds are fixed numerics in the pipeline; the captioner uses the band labels, not raw numbers.)\n\nCount verification (digits and counts)\n- Emit a digit only when Count is HIGH verified by geometry/segmentation OR when detector_count_confidence ≥ 0.70 (detector‑verified). If neither → use plural lexicon fallback (people/dogs/vehicles/group of people). Do not append meta qualifiers; use the digit directly.\n\nMicro‑action / contact rules\n- Emit a micro‑action only when HIGH verified OR when combined evidence (contact_conf≥0.50 AND motion_conf≥0.60 or hand_detector+saliency agree) → use exact template: \"left|right [hand|foot|part] [strong‑verb] [object]\" (example: \"right hand holding woven basket\"). Motion verbs allowed only with verified motion evidence.\n- If micro‑action is MEDIUM verified → allow a restrained action or detector‑verified verb only from a controlled short list; if not, emit conservative fallback: \"[part] near [object]\" (example: \"right hand near woven basket\").\n- Never use hedging words (\"probably\", \"maybe\") in the final caption.\n\nFine‑class & cue pairs\n- Emit a fine class (bicycle, motorbike/scooter, vendor/produce stand, ladder, performer, etc.) only when HIGH verified (classifier_conf≥0.60 OR cue‑pair satisfied) or when MEDIUM verified allow one of the controlled detector labels. Otherwise use dataset lexicon fallback: storefront, painted metal shutter, two‑wheeled vehicle, woven basket, cart, minivan, marquee.\n\nOCR / signage policy (quote only when strongly verified)\n- Quote exact text only when OCR_quote_verified HIGH (OCR_confidence ≥ 0.65 AND text_bbox_area and contrast meet thresholds; exception for short marquee ≤3 words with OCR_confidence ≥ 0.60). If OCR_quote_verified HIGH → quote exact text (counts toward length).\n- If OCR_confidence is MEDIUM (≈0.50–0.65) AND text_bbox_area or saliency is large → emit a controlled low‑risk descriptor from the allowed set (e.g., \"large red sign upper right\", \"marquee above entrance\", \"three red rectangular signs upper right\"). Do NOT invent characters or partial text.\n- If OCR low/unverified → emit compact positional fallback tokens (storefront behind, marquee behind, painted metal shutter).\n\nHigh‑value anchor checklist\n- Attempt verification of anchors in priority order: marquee/storefront, corrugated metal shutter, flagpole, red rectangular signs, ladder, bicycle/two‑wheeled vehicle, guitar/amp case, boats/canopies. If an anchor is unverified, use the prescribed lexicon fallback (e.g., \"storefront behind\", \"flagpole left\", \"red rectangular sign upper right\"). Emit at most two anchor tokens.\n\nDepth, cropping, occlusion\n- Emit \"foreground\"/\"background\" or \"partially cropped at [top|bottom|left|right]\" only when depth/cropping is HIGH verified by segmentation or bbox area ratios. Otherwise omit these tokens.\n\nSaliency tie‑breaking\n- When multiple VERIFIED candidates compete, prefer tokens with higher saliency: text → face → large color patch/prop → clothing. Use saliency to choose between equally verified anchors or subject groups.\n\nPruning, compression, and length control\n- Target caption length: 10–14 words; hard cap 18 words. Allow up to 20 words only when an exact quoted text string is emitted or two HIGH VERIFIED fine classes are present.\n- Before pruning, compress adjective chains into compact noun phrases (e.g., \"rustic wooden facade\" rather than several separate adjectives). Then, if still over cap, iteratively remove descriptors in this exact priority: lighting/reflection → object state/material → background. NEVER remove HIGH VERIFIED discriminative props, micro‑actions, or fine classes (slots 1–3).\n- Maintain a simple token budget while assembling: accept a token only if the estimated cumulative length remains ≤ hard cap; otherwise compress/prune per above.\n\nAllowed lexicon and low‑risk descriptor examples (use only these forms when fallbacks required)\n- Dataset lexicon fallbacks: storefront, painted metal shutter, two‑wheeled vehicle, woven basket, cart, minivan, marquee, group of people.\n- Low‑risk signage descriptors (MEDIUM OCR): \"large red sign upper right\", \"marquee above entrance\", \"three red rectangular signs upper right\", \"storefront behind\".\n- Anchor fallbacks: \"storefront behind\", \"flagpole left\", \"marquee above\", \"painted metal shutter\".\n\nAnti‑hallucination absolute rules\n- Never invent brand names, quoted text, partial words, celebrity names, ages, emotions, intentions, or unsupported attributes. Do not output hedges. If uncertainty prevents a verified token, use the controlled fallback lexicon above.\n\nPreferred micro‑template shapes (use these shapes when slots allow)\n- Examples the caption should prefer to match to verified tokens:\n  - \"1 woman center foreground, right hand holding woven basket of oranges, storefront behind.\"\n  - \"two dogs left foreground, small white dog jumping at car passenger window, woman leaning out.\"\n  - \"1 person right foreground, standing by two‑wheeled vehicle with visible pedals and chain, metal shutter behind.\"\n  - \"many dancers center foreground, line of red/gold sequined costumes, marquee behind.\"\n\nFinal emission rule\n- Execute the verification steps in order, choose HIGH/MEDIUM/LOW bands per multi‑signal evidence, fill assembly slots deterministically with VERIFIED or fallback tokens, compress/prune to meet length budget, and output exactly one comma‑separated grammatical sentence and nothing else.",
+  "prompt_id": "textgrad_3ce3501452",
+  "split_csv": "data/splits/flickr30k_main_seed1_val.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal/step_15/val/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal/step_15/val/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal/step_15/val/scores.csv",
+  "data_root": "data",
+  "summary": {
+    "n": 150,
+    "mean_clip": 0.31632126261790594,
+    "mean_siglip": 0.19946612258752186,
+    "mean_caption_len": 24.166666666666668,
+    "generic_rate": 0.0,
+    "mean_delta_clip": -0.008244185696045563,
+    "mean_delta_siglip": 0.0006255768984556197,
+    "clip_win_rate": 0.38,
+    "siglip_win_rate": 0.47333333333333333
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_023900",
+      "image_relpath": "images/flickr30k/flickr30k_test_023900.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_023900.jpg",
+      "caption": "man right foreground, right hand holding skewers near food stall, red sign with \"UTIAH\" text, painted metal shutter behind.",
+      "clip_score": 0.2697088718414306,
+      "siglip_score": 0.1928742527961731,
+      "delta_clip": -0.09209775924682617,
+      "delta_siglip": -0.09794136881828308
+    },
+    {
+      "image_id": "flickr30k_test_005250",
+      "image_relpath": "images/flickr30k/flickr30k_test_005250.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_005250.jpg",
+      "caption": "woman center foreground, right hand holding red poinsettia bouquet, smiling, black dress, staircase behind, \"100 TO 117\" sign above.",
+      "clip_score": 0.2852435111999511,
+      "siglip_score": 0.1465964168310165,
+      "delta_clip": -0.07614082098007208,
+      "delta_siglip": -0.06264378130435938
+    },
+    {
+      "image_id": "flickr30k_test_007385",
+      "image_relpath": "images/flickr30k/flickr30k_test_007385.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_007385.jpg",
+      "caption": "Dancers in blue and multicolored suits toss green frisbees mid-air, performing synchronized throws near a storefront with \"Foods\" signage, under clear blue skies.",
+      "clip_score": 0.2970588207244873,
+      "siglip_score": 0.1813774108886718,
+      "delta_clip": -0.071798026561737,
+      "delta_siglip": 0.006448984146118081
+    },
+    {
+      "image_id": "flickr30k_test_024264",
+      "image_relpath": "images/flickr30k/flickr30k_test_024264.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_024264.jpg",
+      "caption": "people walking near modern stone building with blue sky, large mural on facade, flagpoles left, white tent right, partially cropped at bottom.",
+      "clip_score": 0.2396461218595504,
+      "siglip_score": 0.1309128254652023,
+      "delta_clip": -0.0707498937845231,
+      "delta_siglip": -0.10015502572059629
+    },
+    {
+      "image_id": "flickr30k_test_016715",
+      "image_relpath": "images/flickr30k/flickr30k_test_016715.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_016715.jpg",
+      "caption": "woman center foreground, right hand holding wooden hoe, dry field background, patterned dress, colorful striped skirt, woven basket nearby.",
+      "clip_score": 0.2918678522109985,
+      "siglip_score": 0.1608795225620269,
+      "delta_clip": -0.0685641765594483,
+      "delta_siglip": -0.029601305723190308
+    },
+    {
+      "image_id": "flickr30k_test_020473",
+      "image_relpath": "images/flickr30k/flickr30k_test_020473.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_020473.jpg",
+      "caption": "woman center foreground, right hand holding phone, black leather jacket, black pants, sunglasses, storefront behind, partially cropped at bottom.",
+      "clip_score": 0.3004604578018188,
+      "siglip_score": 0.2046697586774826,
+      "delta_clip": -0.0662301778793335,
+      "delta_siglip": -0.02240736782550809
+    },
+    {
+      "image_id": "flickr30k_test_019953",
+      "image_relpath": "images/flickr30k/flickr30k_test_019953.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_019953.jpg",
+      "caption": "silver sedan parked beside red car with cardboard cover, woman walking near orange trash bin, graffiti on brown shutter, yellow sign on sidewalk.",
+      "clip_score": 0.247155874967575,
+      "siglip_score": 0.1787781417369842,
+      "delta_clip": -0.0648875832557679,
+      "delta_siglip": 0.005712300539016696
+    },
+    {
+      "image_id": "flickr30k_test_020473",
+      "image_relpath": "images/flickr30k/flickr30k_test_020473.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_020473.jpg",
+      "caption": "woman center foreground, right hand holding phone, black leather jacket, black pants, sunglasses, storefront behind, partially cropped at bottom.",
+      "clip_score": 0.3004604578018188,
+      "siglip_score": 0.2046697586774826,
+      "delta_clip": -0.0634414553642273,
+      "delta_siglip": 0.0036562830209732056
+    },
+    {
+      "image_id": "flickr30k_test_001157",
+      "image_relpath": "images/flickr30k/flickr30k_test_001157.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_001157.jpg",
+      "caption": "light tan dog mid-leap, mouth clutching stick, red collar visible, grassy field blurred in motion, autumn leaves scattered foreground.",
+      "clip_score": 0.2895067632198334,
+      "siglip_score": 0.1507299393415451,
+      "delta_clip": -0.062295407056808416,
+      "delta_siglip": -0.061030671000480596
+    },
+    {
+      "image_id": "flickr30k_test_022222",
+      "image_relpath": "images/flickr30k/flickr30k_test_022222.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_022222.jpg",
+      "caption": "man standing near cart covered with green tarp, holding broom, sack on top, minivan passing behind, wet pavement.",
+      "clip_score": 0.3221381902694702,
+      "siglip_score": 0.189367800951004,
+      "delta_clip": -0.06162470579147339,
+      "delta_siglip": -0.05078807473182681
+    },
+    {
+      "image_id": "flickr30k_test_027582",
+      "image_relpath": "images/flickr30k/flickr30k_test_027582.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_027582.jpg",
+      "caption": "woman in red sports bra and black shorts running across street at crosswalk, right foot forward, traffic light green, pedestrian crossing sign visible, trees lining sidewalk behind.",
+      "clip_score": 0.2940812408924103,
+      "siglip_score": 0.1709865629673004,
+      "delta_clip": -0.0612507164478302,
+      "delta_siglip": -0.01002171635627741
+    },
+    {
+      "image_id": "flickr30k_test_013546",
+      "image_relpath": "images/flickr30k/flickr30k_test_013546.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_013546.jpg",
+      "caption": "child standing on yellow merry-go-round, hand gripping railing, motion blur background, blue patterned floor, adult hand holding rail left foreground",
+      "clip_score": 0.316859483718872,
+      "siglip_score": 0.1924789845943451,
+      "delta_clip": -0.06020870804786688,
+      "delta_siglip": -0.016950368881225503
+    }
+  ]
+}

@@ -1,0 +1,133 @@
+Primary objective
+- MAXIMIZE CLIP image–text similarity (primary). SigLIP is diagnostic only.
+
+Operational summary (high-level)
+- Deterministically generate up to 3 candidate captions for every image, normalize them with the exact CLIP normalizer, rerank using a CLIP reranker (external preferred; internal required if external unavailable). Only after full generation + normalization + reranking/fallback + acceptance/unit checks may the system return the exact lower-case token sequence:
+image unclear
+
+Hard-ordered step sequence (MUST be followed; single exception: catastrophic system failure)
+1) GENERATE: deterministically produce the full set of candidate captions (up to 3 distinct candidates) for every image. Do NOT return "image unclear" before completing Steps 1–4.
+2) NORMALIZE: run the exact CLIP tokenizer/normalizer on every generated string (document version). Use normalized strings for all comparisons, reranking inputs, and automated checks. Log original + normalized.
+3) RERANK: rerank the normalized candidates with the CLIP reranker (external preferred). If external reranker unavailable, run the INTERNAL CLIP reranker. If no CLIP model exists at all, run the calibrated fallback heuristic and set reranker_absent = true in logs.
+4) ACCEPTANCE/UNIT CHECKS: apply acceptance thresholds, margin logic, and unit tests to the top-ranked candidate. Only after Steps 1–4 fail may the system output "image unclear".
+
+Output requirements (final outputs)
+- If an acceptable candidate is found after Steps 1–4, return EXACTLY one final accepted candidate in two lines:
+  Line 1: canonical tags, comma-separated, no trailing comma. Default exactly 3 tags (primary object, action token if included, one salient attribute). A deterministic 4th context tag (scene/secondary-object) is allowed ONLY when the "4th-tag" conditions (below) are met; if present, return 3 or 4 tags as used in the candidate.
+  Line 2: one concise sentence ending with a single period.
+- If, AFTER full generation + normalization + reranking/fallback + acceptance checks (with cosmetic-tolerant subject matching) NO candidate is acceptable, return EXACTLY and ONLY:
+image unclear
+
+Tokenization / normalization (MUST)
+- Use the exact CLIP normalization/tokenization for all generation, internal checks, reranking input:
+  - Unicode NFC, lowercase, collapse repeated whitespace to single space, normalize hyphens to ASCII hyphen, strip surrounding punctuation except a permitted terminal period, canonicalize diacritics.
+- Record and log CLIP-normalizer version. Log both original and normalized strings. Cosmetic diffs are tolerated for subject matching but must be recorded.
+
+Canonical vocabulary and per-surface-token validation (MUST at generation time)
+- Integrator provides per-surface-token lists: keep, neutral, demote (from dev CLIP ablations).
+  - Prefer keep tokens for each slot.
+  - Use neutral tokens ONLY when no keep exists for a required slot; every neutral usage must be logged.
+  - NEVER generate tokens marked demote.
+- Do NOT block candidate generation if a keep verb is absent; include dev-validated neutral/fallback verbs as candidates instead.
+
+Candidate format and composition (generation-first, deterministic)
+- Candidate count: ALWAYS generate up to 3 deterministic, non-identical candidates. Determinism enforced by canonical priority lists and documented tie-breakers.
+- Candidate diversity requirement: candidates must differ along at least two of these axes (prioritized): verb/frame (keep→neutral), attribute specificity (color→material→pattern/clothing), scene/context/secondary-object token, foreground/background role, primary-tag synonym. Document tie-breakers.
+- Candidate per-candidate format during generation:
+  Line 1 (tags): 3 tags by default, ordered:
+    1) primary object token — REQUIRED and should be supported by detector_primary_tag_threshold if detector exists.
+    2) action token — include only if action_detector_confidence ≥ action_inclusion_threshold AND token ∈ keep ∪ allowed-neutral (if no keep exists).
+    3) one salient attribute token — exactly one of {color OR count OR position OR material/pattern/clothing}, chosen from keep ∪ neutral (neutral only when no keep exists).
+  - Optional 4th context tag: allow a deterministic 4th tag (scene/secondary-object) only when BOTH:
+    a) detector_confidence for that token ≥ high_confidence_threshold OR token is a dev-validated high-CLIP textual keeper, AND
+    b) dev validation shows per-token CLIP benefit for adding this 4th tag. Log justification.
+  - No synonyms/repeats within a candidate.
+  Line 2 (caption sentence):
+    - Must begin with Line1 primary tag's preferred surface token AFTER normalization (subject-first unless dev-validated alternative is better).
+    - Sentence shape: [Subject] [verb/frame OR copula/none] [short relationship/object phrase (optional)] [single salient attribute phrase] [optional single context phrase].
+    - Active verbs from CLIP-validated verb-list (keep preferred; neutral/fallback allowed when no keep). Verbs are OPTIONAL: noun-centric or copula constructions permitted when they better match the visual content.
+    - INCLUDE the exact attribute token from Line1; may reuse the 4th context tag if present.
+    - Target token length: 12–18 tokens. Hard max 20 tokens. Shorter permitted only when constraints satisfied and subject/attribute fidelity preserved.
+    - Allow at most one appositive comma or one short prepositional phrase to add high-value discriminative detail (e.g., age/clothing/location). No lists, no subordinate clauses, no speculative language. End with a single period.
+    - No repeated attributes or multi-attribute lists separated by commas.
+
+Determinism and candidate diversity (MUST)
+- Candidate generation MUST be deterministic across runs for the same inputs. Use canonical priority lists and explicit tie-breakers.
+- If fewer than 3 distinct candidates are possible under constraints, still produce the distinct set (1–3) and proceed to reranking.
+
+Reranking and fallback (MUST-run)
+- RERANK all normalized candidates with CLIP and choose the highest-scoring candidate.
+- If external reranker unavailable, an INTERNAL CLIP reranker is REQUIRED. If truly no CLIP model exists, use the calibrated fallback heuristic (below) and set reranker_absent = true and log heuristic values.
+- Reranker MUST receive normalized strings.
+
+No-reranker calibrated fallback heuristic (ONLY when no CLIP reranker exists)
+- Score = w1 * TagPrecisionScore + w2 * RerankMarginProxy - w3 * LengthPenalty - w4 * SubjectMismatchPenalty
+  - Emphasize TagPrecisionScore and RerankMarginProxy; penalize substantive subject mismatches heavily.
+  - LengthPenalty = max(0, token_count - 18) (reflects new length regime).
+  - SubjectMismatchPenalty = 0 for cosmetic-normalization-only diffs; = 1 for substantive mismatches.
+  - RerankMarginProxy = normalized(best_tag_precision - second_best_tag_precision).
+- Integrator must tune weights on dev and log calibration results.
+
+TagPrecisionScore and grounding (MUST)
+- TagPrecisionScore must prioritize specific, discriminative nouns and attributes (clothing, object parts, scene elements) and penalize overly-generic tokens ("person", "thing") unless no better token exists.
+- Incorporate per-token CLIP ablation contributions into TagPrecisionScore.
+- Require detector top-1 for primary tag unless dev ablation shows a textual token provides a larger CLIP benefit. Substantive subject mismatches must be penalized heavily in fallback.
+
+Acceptance thresholds and margin-based acceptance (MUST be tuned on dev)
+- Default starting clip_threshold = 0.20. Integrator MUST sweep clip_threshold in [0.20, 0.24] and choose final value on dev.
+- Acceptance rules:
+  - If top_CLIP ≥ clip_threshold → ACCEPT (subject to unit/format checks).
+  - If top_CLIP < clip_threshold: allow margin-based acceptance ONLY when BOTH:
+    a) top_vs_next_margin ≥ margin_accept_threshold (tunable on dev), AND
+    b) TagPrecisionScore ≥ tag_precision_threshold (tuned on dev).
+  - If reranker_absent: use analogous checks against the heuristic score and a tuned heuristic_accept_threshold.
+- All margin-accept decisions MUST be logged with per-example reasoning. Margin acceptance must be enabled only after dev evidence supports it.
+
+Verifier / "image unclear" (conservative, post-generation)
+- RETURN EXACTLY AND ONLY "image unclear" if ANY of these apply after full generation + reranking/fallback + unit/format checks:
+  1) No primary object detected above detector_primary_tag_threshold AND no high-confidence alternate primary exists across generated candidates.
+  2) After CLIP reranking: top candidate CLIP score < clip_threshold AND (top_vs_next_margin < margin_accept_threshold OR TagPrecisionScore insufficient). (If reranker absent: analogous using heuristic.)
+  3) Any strict formatting/unit test fails after normalization and cosmetic-tolerant subject match: invalid tag set (demote token used), wrong tag count (unless justified 4th tag meets conditions), Line2 contains multiple attributes/lists/subordinate clauses, Line2 token_count > 20, or disallowed verb.
+  4) Active-verb unavailability: no candidate contains a validated verb OR valid noun-centric/copy choices AND no dev-approved fallback exists.
+- When returning "image unclear", output EXACTLY:
+image unclear
+
+Automated checks and unit tests (MUST run programmatically after reranking/fallback)
+1) Whitelist/CLIP-preference check: every Line1 tag ∈ keep ∪ allowed-neutral-for-this-id (neutral usage logged).
+2) Tag count/composition: default exactly 3 tags; 4th tag allowed only per validated rule and logged.
+3) Subject reuse: normalized(Line2 subject) must match normalized(Line1 primary); cosmetic diffs allowed and logged.
+4) Length: token_count(Line2) ≤ 20; prefer 12–18.
+5) Punctuation: at most one appositive comma OR one short prepositional phrase; Line2 ends with a single period.
+6) Verb presence: at least one candidate must contain a keep verb OR permitted neutral/fallback OR be an approved noun-centric frame; final verb/frame must be permitted per dev policy.
+7) Grounding: detector confidences for included tags must meet thresholds unless neutral token usage explicitly allowed.
+8) Tokenization-normalization: normalized strings must match CLIP normalizer exactly; log cosmetic diffs.
+- If any automated checks fail after the full flow (other than cosmetic-normalization-only failures), return "image unclear". If failure is cosmetic-normalization-only, perform deterministic canonical rewrite using the exact CLIP normalizer and re-run checks once; if still failing, return "image unclear". Do NOT perform freeform rewrites beyond canonical normalization.
+
+Telemetry, logging, and CI gating (MANDATORY)
+- For every invocation, log:
+  - All generated candidates (original + normalized), which tokens are keep/neutral/demote, candidate-level CLIP scores and margins, detector confidences, TagPrecisionScore, reranker_absent flag if set, final decision, and a single canonical failure reason if "image unclear".
+  - Per-token average CLIP contribution (from dev) and per-example per-token CLIP deltas when reranker used.
+- CI gating: Integrator MUST block deployment if dev validation sweep yields mean_delta_clip < 0 or clip_win_rate below agreed threshold. Run dev sweeps for clip_threshold, margin_accept_threshold, action/scene/primary thresholds, and heuristic weight tuning.
+
+Dev calibration requirements (MUST before production)
+- Build per-primary keep/neutral/demote token lists using per-surface CLIP ablations; lock keep tokens only when stable & positive.
+- Run per-token CLIP ablation to compute average per-token contribution; use this to prune demote tokens and promote keep tokens.
+- Tune clip_threshold, margin_accept_threshold, TagPrecisionScore weights, detector thresholds, high_confidence_threshold for 4th tag, and fallback heuristic weights to maximize mean_CLIP and mean_delta_clip on dev.
+- Validate 4th-tag expansion rule on dev before enabling in production.
+
+Practical generation guidance (deterministic + richer)
+- Broaden candidate diversity axes: verb/frame, attribute specificity (color → material → pattern/clothing), scene/context token, secondary-object presence, foreground/background relation.
+- Allow verbs to be optional; accept copula/passive/noun-centric frames when they better match image content.
+- Permit at most one high-value comma or short prepositional phrase to include discriminative details (age, clothing, location). Avoid lists and subordinate clauses.
+
+Quick implementation and dev-checklist (immediate enforcement)
+- Enforce CLIP normalizer usage and version logging; add unit tests asserting normalization before reranking.
+- Change target token length to 12–18 (hard max 20) and enforce with unit tests and CI.
+- Allow deterministic 4th context tag under validated conditions; log justification.
+- Expand keep lists with high-value nouns/attributes shown to improve CLIP on dev (e.g., sink, umbrella, bridge, stage, water, metal); validate by ablation.
+- Re-run dev sweeps to pick clip_threshold ∈ [0.20,0.24], margin_accept_threshold, and TagPrecisionScore weights. Block release if mean_delta_clip < 0.
+
+Final requirement restated
+- Do NOT return "image unclear" before generating candidates and reranking/fallback.
+- AFTER unconditional generation, normalization, reranking/fallback, margin consideration, and formatting/unit checks (with cosmetic-tolerant subject matching and a single normalization-only deterministic rewrite attempt), if no acceptable candidate remains, output EXACTLY and ONLY:
+image unclear

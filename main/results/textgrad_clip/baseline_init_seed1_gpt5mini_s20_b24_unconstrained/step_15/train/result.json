@@ -1,0 +1,117 @@
+{
+  "prompt": "Default behavior\n- Output exactly one candidate by default. Each candidate must be exactly two lines: \n  Line 1 = 3–5 comma-separated canonical tags (no trailing comma). \n  Line 2 = one concise sentence (10–15 tokens target) that is active-voice, leads with the main subject, includes a concrete action/relationship, and contains one salient attribute (color, count, or position). The sentence must end with a single period. Do not use comma-separated descriptive lists on Line 2.\n\nLine 1 (tags) — strict rules\n- Produce 3–5 high-precision tags only: primary object(s) + action (if visually present) + one salient attribute or location. Examples of allowed tags: person, bicycle, red, two-people, running, modern-building.\n- Tags must be canonical_ids or map to a small pre-approved canonical_id → preferred-surface-token table. Do not list synonyms, do not repeat tokens, and do not include generic scene words (e.g., “outdoor”) unless they are visually distinctive and diagnostic.\n- No trailing commas, no punctuation other than internal hyphens for multiword canonical tags (e.g., two-people).\n\nLine 2 (caption) — strict rules\n- One short sentence, 10–15 tokens target, active voice, subject + action + one salient attribute. Avoid lists, speculative language, or extra clauses. Example form: \"A child unwraps a red gift.\" \n- Prefer concrete counts and colors (\"two children\", \"red bike\") over vague nouns (\"kids\", \"toy\"). Prefer active verbs (“rides”, “holds”, “kicks”).\n- End with a single period. No extra sentences, no trailing commas or synonym lists.\n\nDeterminism and synonym policy\n- Use a deterministic tie-breaker: prioritize canonical tags by pre-defined canonical priority list, then choose the CLIP-preferred surface synonym for each canonical_id (pre-measured highest-CLIP synonym). Do not introduce free-form wording differences across candidates.\n\nMultiple-candidate policy\n- Only produce 2–3 candidates when an external CLIP reranker is guaranteed by the integrator. When allowed, produce at most 3 deterministic variants differing only by:\n  (a) alternate Line 1 tag-sets (each 3–5 tags), or\n  (b) swapping among pre-approved CLIP-preferred surface synonyms for the same canonical_ids.\n- Do not vary free-form caption wording between candidates. Separate candidates with a single blank line.\n\nInternal selection / simulated reranker (if external CLIP not provided)\n- If an internal CLIP model is available, deterministically generate up to 3 structured candidates (different tag-sets or synonyms only), score them with CLIP, and emit the top-scoring candidate.\n- If internal CLIP is unavailable, deterministically generate up to 3 structured candidates and select the top by a heuristic: TagPrecisionScore (proportion of tags grounded by visual detections weighted by canonical priority) minus LengthPenalty (penalize captions >15 tokens). Emit the top candidate.\n\nVerifier / \"image unclear\" rule\n- If no high-confidence primary object tag is detected (no visual detection above the detector's primary-tag threshold) OR the internal CLIP max score < 0.18 (or below the integrator's configured CLIP threshold), output exactly:\nimage unclear\n- Do not output alternative text or any other punctuation when declaring uncertainty — output the exact phrase on a single line.\n\nFormatting and quality guards\n- Enforce no trailing commas, no trailing punctuation in Line 1, and a single period at end of Line 2.\n- Ban long, bag-of-words tag lists and comma-heavy tag punctuation. Ban synonym lists in Line 1.\n- Do not hallucinate objects, actions, or attributes not grounded by a visual detector or by high-confidence visual evidence.\n- Ensure deterministic behavior: same image → same caption under the same canonical mapping and available reranker.\n\nOptimization hints for implementers (to embed in system rules)\n- Maintain and use a small canonical_id → preferred-surface-token table chosen by pre-evaluated CLIP scores.\n- During prompt development, evaluate candidate surface tokens against CLIP and fix the highest-scoring synonym per canonical_id.\n- Monitor mean CLIP similarity, clip_win_rate, caption length median (aim 10–15 tokens), and frequency of \"image unclear\" to avoid overuse.\n\nFinal requirement\n- If you cannot produce a reliable candidate under the verifier's checks above, output exactly and only:\nimage unclear",
+  "prompt_id": "textgrad_8d212486aa",
+  "split_csv": "data/splits/flickr30k_main_seed1_train.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24/step_15/train/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24/step_15/train/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24/step_15/train/scores.csv",
+  "summary": {
+    "n": 24,
+    "mean_clip": 0.29563275414208573,
+    "mean_siglip": 0.1668241987936198,
+    "mean_caption_len": 16.0,
+    "generic_rate": 0.08333333333333333,
+    "mean_delta_clip": -0.02281367344160874,
+    "mean_delta_siglip": -0.013382400230815024,
+    "clip_win_rate": 0.20833333333333334,
+    "siglip_win_rate": 0.25
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_013247",
+      "caption": "person, walking, outdoor-world, two-people, blue-shirt\n\nTwo people walk toward the outdoor-world building.",
+      "clip_score": 0.2480897009372711,
+      "siglip_score": 0.1696501076221466,
+      "delta_clip": -0.09127989411354062,
+      "delta_siglip": 0.018459573388099698
+    },
+    {
+      "image_id": "flickr30k_test_024935",
+      "caption": "person, standing, orange, cone, street\nA man stands near an orange cone on the street.",
+      "clip_score": 0.1918925344944,
+      "siglip_score": 0.0615111105144023,
+      "delta_clip": -0.07904854416847232,
+      "delta_siglip": -0.0884608514606953
+    },
+    {
+      "image_id": "flickr30k_test_023643",
+      "caption": "child, smiling, red, outdoor, market\n\nA child smiles with a red top at an outdoor market.",
+      "clip_score": 0.2497124224901199,
+      "siglip_score": 0.1548565030097961,
+      "delta_clip": -0.0771996229887009,
+      "delta_siglip": -0.12106847763061529
+    },
+    {
+      "image_id": "flickr30k_test_022494",
+      "caption": "person, ladder, orange, wooden-deck, brick-wall\nA man carries an orange ladder across a wooden deck.",
+      "clip_score": 0.2902454733848572,
+      "siglip_score": 0.2115523815155029,
+      "delta_clip": -0.07087263464927673,
+      "delta_siglip": -0.004152491688728305
+    },
+    {
+      "image_id": "flickr30k_test_019253",
+      "caption": "person, scarf, purple, looking down\nA person wearing a purple jacket looks down while wrapped in a yellow scarf.",
+      "clip_score": 0.3090213239192962,
+      "siglip_score": 0.2526694536209106,
+      "delta_clip": -0.06317934393882757,
+      "delta_siglip": -0.02210861444473272
+    },
+    {
+      "image_id": "flickr30k_test_014348",
+      "caption": "person, baseball-bat, red, running, field\nA player in red swings a baseball bat.",
+      "clip_score": 0.2464121878147125,
+      "siglip_score": 0.1373626440763473,
+      "delta_clip": -0.045743852853775,
+      "delta_siglip": -0.018140926957130404
+    },
+    {
+      "image_id": "flickr30k_test_029824",
+      "caption": "person, welcome, red, olympic, london-2012\nA woman smiles behind a red Olympic welcome desk.",
+      "clip_score": 0.346789002418518,
+      "siglip_score": 0.2332244962453842,
+      "delta_clip": -0.044866293668747004,
+      "delta_siglip": -0.012781962752342224
+    },
+    {
+      "image_id": "flickr30k_test_026274",
+      "caption": "horse, rider, red, arena, rearing\n\nA rider in a black hat holds a silver baton while riding a brown horse that is rearing up in the arena.",
+      "clip_score": 0.2879142761230469,
+      "siglip_score": 0.1419083178043365,
+      "delta_clip": -0.021830201148986816,
+      "delta_siglip": 0.0448179766535759
+    },
+    {
+      "image_id": "flickr30k_test_027728",
+      "caption": "diver, yellow, ocean, snorkeling, black\n\nA diver in yellow gear stands in the ocean.",
+      "clip_score": 0.2996135354042053,
+      "siglip_score": 0.1121759787201881,
+      "delta_clip": -0.01982444524765009,
+      "delta_siglip": -0.01713798195123671
+    },
+    {
+      "image_id": "flickr30k_test_003276",
+      "caption": "person, dining, tent, glasses, wine\n\nA man in glasses sits at a long dining table under a white tent.",
+      "clip_score": 0.272507905960083,
+      "siglip_score": 0.1484150439500808,
+      "delta_clip": -0.01870307326316828,
+      "delta_siglip": -0.0037994533777237216
+    },
+    {
+      "image_id": "flickr30k_test_008358",
+      "caption": "person, goalkeeper, diving, red, grass\n\nA goalkeeper in red dives across the grass.",
+      "clip_score": 0.3405682444572449,
+      "siglip_score": 0.1767019629478454,
+      "delta_clip": -0.017545104026794434,
+      "delta_siglip": -0.02480986714363101
+    },
+    {
+      "image_id": "flickr30k_test_028925",
+      "caption": "child, typewriter, red, repairing, close-up\n\nA child in a red hoodie repairs a typewriter with a screwdriver.",
+      "clip_score": 0.3051888942718506,
+      "siglip_score": 0.2101594507694244,
+      "delta_clip": -0.016944020986557007,
+      "delta_siglip": -0.06157323718070987
+    }
+  ]
+}

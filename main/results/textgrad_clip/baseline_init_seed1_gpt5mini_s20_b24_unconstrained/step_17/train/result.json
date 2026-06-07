@@ -1,0 +1,117 @@
+{
+  "prompt": "Default behavior (strict, enforceable)\n\nPrimary objective\n- Maximize CLIP image–text similarity while preserving conservative gating for low-confidence images. SigLIP is only a diagnostic metric.\n\nCanonical vocabulary: CLIP-validated whitelist (mandatory)\n- Do NOT use a static “trusted” whitelist without evaluation. For every canonical_id, the integrator MUST run an explicit CLIP-driven validation procedure on a dev split:\n  - For images where canonical_id is present, test candidate surface-tokens for that canonical_id (vary only that token), compute per-example CLIP deltas, and aggregate.\n  - Mark each surface-token as CLIP-preferred (keep), neutral (optional), or demote/remove (forbid) based on positive/neutral average CLIP contribution and stability.\n  - Lock the CLIP-preferred token as preferred-surface-token for that canonical_id. Record alternative synonyms only if they are CLIP-validated and ranked.\n- The generator MUST use only CLIP-preferred tokens for outputs unless an integrator override with documented dev evidence exists.\n\nDeterminism and tokenization\n- Deterministic selection rules remain (canonical priority lists, tie-breakers). However, subject-match checks MUST be tokenization-aware:\n  - Normalize whitespace, hyphens, and case consistently with the CLIP tokenizer used for reranking (e.g., canonicalize hyphenation, collapse multiple spaces).\n  - Exact-match requirement applies after this normalization step.\n- Document the tokenizer normalization applied and log mismatches.\n\nOutput format (strict)\n- Emit exactly one candidate by default; candidate = exactly two lines:\n  Line 1: 3 comma-separated canonical tags (no trailing comma). Hyphens allowed for multiword tokens.\n  Line 2: One concise sentence ending with a single period.\n\nLine 1 (tags) — hard rules (conservative defaults)\n- Default composition: exactly 3 tags in this order:\n  1) primary object token — REQUIRED and must be detected above detector_primary_tag_threshold;\n  2) action token — include ONLY if action_detector_confidence ≥ action_inclusion_threshold AND the action token is CLIP-preferred for the primary canonical_id;\n  3) one salient attribute token — exactly one of {color OR count OR position}, chosen from CLIP-preferred tokens.\n- Allow expanding to 4–5 tags ONLY when a) each extra tag has detector_confidence ≥ high_confidence_threshold AND b) per-token CLIP-benefit has been validated on dev (i.e., token-level positive delta). Expansion is an exception, logged per-example.\n- Prohibit scene/texture tokens unless they are CLIP-preferred for this primary id and detector_confidence ≥ scene_inclusion_threshold.\n- No synonyms, no repeats, no comma lists of descriptors beyond the 3 tags.\n\nLine 2 (caption) — hard rules (subject-first, CLIP-validated verbs)\n- Must begin exactly with the primary Line 1 tag's preferred-surface-token AFTER tokenization-normalization (subject phrase == normalized Line1 primary token).\n- Sentence shape: [Subject] [active-verb] [object/relationship] [single salient attribute phrase]. Use concrete, CLIP-validated verbs from the curated verb-list (e.g., holds, carries, walks, rides, opens, falls, runs, picks-up). The verb-list must be CLIP-evaluated; only verbs marked CLIP-preferred may be used for a given primary canonical_id or action.\n- Include only ONE salient attribute and reuse the exact attribute token from Line 1.\n- Target token length: 10–13 tokens. Hard max: 15 tokens. Fewer tokens allowed if constraints satisfied.\n- No commas, no lists, no subordinate clauses, no speculative language. End with a single period and no extra punctuation.\n\nCandidate generation and reranking (must-run)\n- Always generate up to 3 deterministic candidates for reranking. Variations allowed:\n  a) alternate CLIP-preferred attribute types (if multiple valid attributes exist), or\n  b) alternate CLIP-preferred synonyms/variants for the same canonical_ids (only from the CLIP-validated set).\n- The free-form wording of Line 2 must be identical across candidates; only Line1 tag-sets and synonym substitutions may differ.\n- If any CLIP reranker is available (external or internal), the system MUST rerank candidates with CLIP and emit the highest-scoring candidate.\n- If NO CLIP reranker is available, still generate up to 3 deterministic candidates and apply the calibrated internal heuristic (see below). However the integrator should prioritize enabling internal CLIP reranking.\n\nNo-reranker scoring heuristic (calibrated fallback)\n- Score = 1.5 * TagPrecisionScore - 0.03 * LengthPenalty - 0.50 * SubjectMismatchPenalty + 0.25 * RerankMarginProxy\n  where:\n  - TagPrecisionScore = weighted proportion of Line1 tags grounded by detectors (weights = canonical priority).\n  - LengthPenalty = max(0, token_count - 13).\n  - SubjectMismatchPenalty = 0 if normalized(Line2 subject) == normalized(Line1 primary) else 1.\n  - RerankMarginProxy = normalized difference between best- and second-best TagPrecisionScore (proxy for confidence).\n- Tune weights on dev; default raises TagPrecision importance relative to previous version.\n- Emit top-scoring candidate if it passes verifier checks or if its CLIP-rerank-proxy margin is sufficiently large (useful when CLIP reranker is not available).\n\nVerifier / \"image unclear\" (conservative, enforced)\n- If ANY of the following apply, output exactly and only (single line, no punctuation):\nimage unclear\n  Conditions (any):\n  1) No primary object detected above detector_primary_tag_threshold.\n  2) If CLIP reranker is used: top candidate CLIP score < clip_threshold, UNLESS top score < clip_threshold but top_vs_next_margin ≥ margin_accept_threshold and per-token diagnostics indicate high TagPrecisionScore — integrator may enable margin-based acceptance after dev validation.\n  3) If NO CLIP reranker: top candidate Score (heuristic) < heuristic_accept_threshold (tuned on dev).\n  4) Any strict formatting or vocabulary check fails after normalization (Line1 tags not all CLIP-preferred, Line1 tag count ≠ required, Line2 subject mismatch after tokenization normalization, Line2 token_count > 15, Line2 contains commas or multiple attributes, or Line2 verb not CLIP-preferred).\n  5) Required active-verb not available in CLIP-preferred verb-list for this primary/action.\n- When returning \"image unclear\", output exactly that string and nothing else.\n\nFormatting and automated checks (programmatic)\n- Enforce unit tests:\n  1) Whitelist/CLIP-preference check: every Line1 tag ∈ CLIP-preferred canonical_table for that canonical_id.\n  2) Tag count and composition check: exactly 3 tags by default; extra tags allowed only per expansion rule.\n  3) Subject reuse check: normalized first token(s) of Line2 == normalized Line1 primary token.\n  4) Length check: token_count(Line2) ≤ 15; prefer 10–13.\n  5) No commas; no trailing commas; Line2 ends with single period.\n  6) Active-verb check: Line2 verb ∈ CLIP-preferred verb-list for this primary/action.\n  7) Grounding check: ensure detector confidences meet thresholds for included tags.\n  8) Tokenization-normalization check: ensure normalization rules for matching are identical to CLIP tokenizer; mismatch = failure.\n- If any automated check fails, do NOT attempt free-form repairs — return \"image unclear\".\n\nThresholds, calibration, and dev validation (must-run before deployment)\n- Required tuning on a held-out dev split:\n  - Validate clip_threshold in the range [0.20, 0.24] and set clip_threshold to the value that optimizes mean_clip vs coverage.\n  - Sweep action_inclusion_threshold, scene_inclusion_threshold, and detector_primary_tag_threshold; choose conservative defaults that balance coverage.\n  - Set margin_accept_threshold for margin-based acceptance when top CLIP < clip_threshold (optional with caution).\n  - Calibrate heuristic_accept_threshold and Score weights if no reranker is available.\n- Document chosen thresholds and keep them versioned.\n\nTelemetry and diagnostics (mandatory logging)\n- For every captioning decision log:\n  - Per-token average CLIP contribution (from dev), per-example per-token CLIP deltas (if reranker used), and final CLIP score.\n  - Detector confidences for all candidate tags.\n  - Candidate-level CLIP scores and margins.\n  - Failure reason when \"image unclear\" is returned (detector_low_confidence, clip_threshold_fail, formatting_check_fail, verb_unavailable, subject_mismatch, etc.).\n  - Frequency of \"image unclear\" and false-positive/false-negative analysis on dev.\n\nOperational notes and rationale\n- Determinism remains but the CLIP-validated whitelist must be updated regularly when CLIP model versions change.\n- Prefer fewer, higher-precision tags (default 3) and CLIP-validated verbs to avoid locking in low-CLIP choices.\n- Always prefer producing multiple CLIP-reranked deterministic candidates; internal CLIP reranking is acceptable and preferred to no reranker.\n\nFinal requirement\n- If you cannot produce a reliable candidate under the verifier's checks above, output exactly and only:\nimage unclear",
+  "prompt_id": "textgrad_9e8f3c4aa7",
+  "split_csv": "data/splits/flickr30k_main_seed1_train.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24/step_17/train/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24/step_17/train/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24/step_17/train/scores.csv",
+  "summary": {
+    "n": 24,
+    "mean_clip": 0.21947592745224634,
+    "mean_siglip": 0.00763529135535163,
+    "mean_caption_len": 2.625,
+    "generic_rate": 0.0,
+    "mean_delta_clip": -0.11258064086238544,
+    "mean_delta_siglip": -0.17632271194209648,
+    "clip_win_rate": 0.0,
+    "siglip_win_rate": 0.041666666666666664
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_013576",
+      "caption": "image unclear",
+      "clip_score": 0.2120007574558258,
+      "siglip_score": 0.0090952664613723,
+      "delta_clip": -0.1967572271823883,
+      "delta_siglip": -0.2633469551801682
+    },
+    {
+      "image_id": "flickr30k_test_024011",
+      "caption": "image unclear",
+      "clip_score": 0.2081677168607711,
+      "siglip_score": -0.0174622014164924,
+      "delta_clip": -0.17328669130802163,
+      "delta_siglip": -0.190064214169979
+    },
+    {
+      "image_id": "flickr30k_test_025508",
+      "caption": "image unclear",
+      "clip_score": 0.1967407912015915,
+      "siglip_score": 0.0202207379043102,
+      "delta_clip": -0.16893811523914332,
+      "delta_siglip": -0.1742622442543507
+    },
+    {
+      "image_id": "flickr30k_test_016046",
+      "caption": "image unclear",
+      "clip_score": 0.1867461204528808,
+      "siglip_score": -0.0156908817589283,
+      "delta_clip": -0.1507448554039002,
+      "delta_siglip": -0.1746844239532947
+    },
+    {
+      "image_id": "flickr30k_test_029272",
+      "caption": "image unclear",
+      "clip_score": 0.1883526742458343,
+      "siglip_score": 0.0056898184120655,
+      "delta_clip": -0.1505695879459381,
+      "delta_siglip": -0.1788015179336071
+    },
+    {
+      "image_id": "flickr30k_test_003075",
+      "caption": "image unclear",
+      "clip_score": 0.2228726893663406,
+      "siglip_score": 0.0571583993732929,
+      "delta_clip": -0.1476821154356003,
+      "delta_siglip": -0.16239156946539882
+    },
+    {
+      "image_id": "flickr30k_test_001002",
+      "caption": "image unclear",
+      "clip_score": 0.212563544511795,
+      "siglip_score": -0.0434071868658065,
+      "delta_clip": -0.14634737372398382,
+      "delta_siglip": -0.2755879908800124
+    },
+    {
+      "image_id": "flickr30k_test_012029",
+      "caption": "image unclear",
+      "clip_score": 0.2099629044532776,
+      "siglip_score": -0.1058202758431434,
+      "delta_clip": -0.1412218809127807,
+      "delta_siglip": -0.24743513017892832
+    },
+    {
+      "image_id": "flickr30k_test_023641",
+      "caption": "image unclear",
+      "clip_score": 0.1995384395122528,
+      "siglip_score": -0.0117593873292207,
+      "delta_clip": -0.1387045681476593,
+      "delta_siglip": -0.1913975197821854
+    },
+    {
+      "image_id": "flickr30k_test_005582",
+      "caption": "image unclear",
+      "clip_score": 0.223818153142929,
+      "siglip_score": 0.025797164067626,
+      "delta_clip": -0.130470097064972,
+      "delta_siglip": -0.1505370233207941
+    },
+    {
+      "image_id": "flickr30k_test_003961",
+      "caption": "image unclear",
+      "clip_score": 0.221896231174469,
+      "siglip_score": -0.0099257268011569,
+      "delta_clip": -0.12755239009857172,
+      "delta_siglip": -0.2805711068212985
+    },
+    {
+      "image_id": "flickr30k_test_027445",
+      "caption": "image unclear",
+      "clip_score": 0.2172759771347046,
+      "siglip_score": 0.0249410308897495,
+      "delta_clip": -0.1256988644599914,
+      "delta_siglip": -0.1684173606336117
+    }
+  ]
+}

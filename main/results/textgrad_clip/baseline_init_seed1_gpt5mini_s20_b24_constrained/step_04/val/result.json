@@ -1,0 +1,117 @@
+{
+  "prompt": "Output exactly one literal, factual sentence (8–18 words) describing only visible content in the image. Do not add labels, examples, lists, annotations, or any extra text.\n\nDefinitions: content words exclude leading articles (a/an/the) and punctuation. A high‑signal token is one of: visible color or pattern, a concrete object class (prefer the most specific multiword class, e.g., \"electric guitar\", \"motorbike\"), a clear count (Arabic numeral), clothing/accessory, or legible text/logo (copy verbatim). Preferred token priority: color/pattern > concrete object class > numeral/count > clothing/accessory > legible text/logo.\n\nSentence rules:\n- Place at least one high‑signal token within the first three content words. If a second high‑signal token is visible, include it within the first six content words.\n- Use a concise present‑tense verb (present simple or present‑participle: \"stands\" or \"standing\").\n- Keep the main attribute immediately before the noun when natural (e.g., \"red bicycle\"); allow \"noun with [attribute]\" only if that preserves a high‑signal token within the required early words.\n- Prefer specific visible nouns over generic labels (choose \"electric guitar\" or \"saxophone\" rather than \"instrument\"; use \"person\" only when gender/age/role is unclear).\n- Use Arabic numerals for clearly separable counts; use \"several\" if >3 or items are indistinct.\n- Include at most one short spatial connector (\"next to\", \"on\", \"in front of\", \"near\") to link the primary subject to a clear nearby object or surface.\n- Copy any legible text/logo exactly as seen.\n- Do not infer unseen attributes (age, emotion, intent, relationships) and avoid figurative or subjective language.\n\nIf the first draft lacks a high‑signal token or uses a generic noun when a specific class is visible, rephrase to include the most specific visible noun and at least one color/number/logo.\n\nOutput exactly one short sentence only—no extra text.",
+  "prompt_id": "textgrad_37d50c1d42",
+  "split_csv": "data/splits/flickr30k_main_seed1_val.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_04/val/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_04/val/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_04/val/scores.csv",
+  "summary": {
+    "n": 150,
+    "mean_clip": 0.30276037524143856,
+    "mean_siglip": 0.17383260712027548,
+    "mean_caption_len": 10.586666666666666,
+    "generic_rate": 0.02666666666666667,
+    "mean_delta_clip": -0.02180507307251294,
+    "mean_delta_siglip": -0.025007938568790754,
+    "clip_win_rate": 0.2733333333333333,
+    "siglip_win_rate": 0.30333333333333334
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_011250",
+      "caption": "Two children stand near yellow caution tape on grass.",
+      "clip_score": 0.2863728106021881,
+      "siglip_score": 0.212746188044548,
+      "delta_clip": -0.1262209713459015,
+      "delta_siglip": -0.00776943564414978
+    },
+    {
+      "image_id": "flickr30k_test_026513",
+      "caption": "Yellow jacket person stands near camera equipment on tripod.",
+      "clip_score": 0.2790705263614654,
+      "siglip_score": 0.1965852677822113,
+      "delta_clip": -0.12360349297523499,
+      "delta_siglip": -0.06343340873718262
+    },
+    {
+      "image_id": "flickr30k_test_026753",
+      "caption": "Man in black shirt with \"LOVE\" text stands on rail.",
+      "clip_score": 0.2169727832078933,
+      "siglip_score": 0.0925046131014823,
+      "delta_clip": -0.11461846530437472,
+      "delta_siglip": -0.0650363937020302
+    },
+    {
+      "image_id": "flickr30k_test_023317",
+      "caption": "Pink-jacketed woman stands near red barrel with \"WM\" logo.",
+      "clip_score": 0.2784982025623321,
+      "siglip_score": 0.1537480950355529,
+      "delta_clip": -0.1126497089862824,
+      "delta_siglip": -0.06464046239852911
+    },
+    {
+      "image_id": "flickr30k_test_026753",
+      "caption": "Man in black shirt with \"LOVE\" text stands on rail.",
+      "clip_score": 0.2169727832078933,
+      "siglip_score": 0.0925046131014823,
+      "delta_clip": -0.10682319104671481,
+      "delta_siglip": -0.1284354254603386
+    },
+    {
+      "image_id": "flickr30k_test_006161",
+      "caption": "Woman in green vest stands near crowd on paved street.",
+      "clip_score": 0.2425329089164734,
+      "siglip_score": 0.1238195374608039,
+      "delta_clip": -0.09544900059700012,
+      "delta_siglip": -0.1205202266573906
+    },
+    {
+      "image_id": "flickr30k_test_017698",
+      "caption": "Several people stand near a yellow building with white window frames.",
+      "clip_score": 0.2573164403438568,
+      "siglip_score": 0.1686412692070007,
+      "delta_clip": -0.09416982531547546,
+      "delta_siglip": -0.09139859676361087
+    },
+    {
+      "image_id": "flickr30k_test_028445",
+      "caption": "Blue mesh laundry basket on bicycle near red truck.",
+      "clip_score": 0.2774718105792999,
+      "siglip_score": 0.1795200854539871,
+      "delta_clip": -0.08990171551704407,
+      "delta_siglip": -0.03751648962497711
+    },
+    {
+      "image_id": "flickr30k_test_025473",
+      "caption": "Person in white shirt stands on head near green bushes.",
+      "clip_score": 0.2333062589168548,
+      "siglip_score": 0.209611490368843,
+      "delta_clip": -0.0889197289943695,
+      "delta_siglip": -0.01992751657962802
+    },
+    {
+      "image_id": "flickr30k_test_016590",
+      "caption": "Blue umbrella stands near people on stone steps.",
+      "clip_score": 0.2757866978645324,
+      "siglip_score": 0.166518285870552,
+      "delta_clip": -0.0887986421585083,
+      "delta_siglip": -0.05968049168586728
+    },
+    {
+      "image_id": "flickr30k_test_011250",
+      "caption": "Two children stand near yellow caution tape on grass.",
+      "clip_score": 0.2863728106021881,
+      "siglip_score": 0.212746188044548,
+      "delta_clip": -0.08624997735023499,
+      "delta_siglip": -0.03559459745883939
+    },
+    {
+      "image_id": "flickr30k_test_015890",
+      "caption": "Black bicycle with blue rims airborne near concrete ramp.",
+      "clip_score": 0.2548211216926574,
+      "siglip_score": 0.1245965734124183,
+      "delta_clip": -0.08546736836433416,
+      "delta_siglip": -0.050013862550258706
+    }
+  ]
+}

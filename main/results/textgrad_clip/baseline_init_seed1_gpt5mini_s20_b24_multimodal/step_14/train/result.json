@@ -1,0 +1,142 @@
+{
+  "prompt": "Output exactly one concise, information‑dense caption: a single grammatical sentence composed of comma‑separated short phrases. Produce only that single sentence and nothing else.\n\nFollow these deterministic, implementation‑friendly rules when forming the caption. Apply numeric verification where available, but allow pragmatic heuristics if exact detectors are unavailable. Keep all VERIFIED tokens and pronouns precise; never invent brands, celebrity names, ages, emotions, intentions, or unsupported attributes.\n\n1) Subject groups and placement\n- Identify up to 1–3 prominent subject groups in order of prominence. Front‑load subject nouns and any VERIFIED discriminative props so they appear within the first 6–8 words. Use spatial anchors (left/center/right) and include \"foreground\"/\"background\" only when depth is VERIFIED (rule 4). Use a digit only if Count is VERIFIED; otherwise use singular/plural noun forms (person/people, dog/dogs, vehicle/vehicles).\n\n2) Count verification (relaxed)\n- Emit a digit only when either (a) each instance has visible_fraction ≥ 0.45, centroid distance between instances ≥ 0.10 × image_width, and pairwise IoU < 0.10; OR (b) a clear repeating/patterned structure is detected (e.g., chorus line, row of identical performers) and instances are visually separable even if some are partially occluded. If Count is not VERIFIED, use a plural noun without a digit.\n\n3) Contact / micro‑action verification (practical)\n- Assert a contact micro‑action only when overlap_area / min(bbox_area) ≥ 0.10 AND there is contiguous boundary evidence (≈6+ adjacent overlap pixels), OR contact_classifier_confidence ≥ 0.55. If between borderline thresholds (≈0.07–0.10), use \"near\" phrasing (e.g., \"right hand near woven basket\"). When VERIFIED, include exactly one micro‑action using the template: \"left|right [hand|foot|part] [strong‑verb] [object]\" (e.g., \"right hand holding woven basket\"). Motion verbs (jumping, diving, running, holding) are allowed only with VERIFIED contact or motion evidence (airborne pose, strong motion blur, or motion_classifier_confidence ≥ 0.60).\n\n4) Depth / foreground verification\n- Include \"foreground\"/\"background\" when EITHER (a) subject_bbox_area ≥ 1.5 × any overlapping bbox_area AND pairwise IoU < 0.20 AND subject centroid is lower (visually in front), OR (b) segmentation mask shows >60% unoccluded area. Otherwise omit depth tokens.\n\n5) Fine classes & cue‑pair pragmatics\n- Emit a fine class (bicycle, motorbike/scooter, vendor/produce stand, ladder, performer, etc.) only when EITHER classifier_confidence ≥ 0.60 OR a prescribed cue‑pair is spatially satisfied within ~12% image width. Recognized cue‑pairs remain as defined (spokes+pedals ⇒ bicycle, engine casing+exhaust ⇒ motorbike, baskets+scale ⇒ vendor, rungs+rails ⇒ ladder, stage+audience or mic+facing_audience ⇒ performer). If cue‑pair fails and no classifier_confidence, use a dataset‑aware fallback from the lexicon: woven basket, pile of fruit, two‑wheeled vehicle, painted metal shutter, signboard/marquee, storefront, cart, minivan, pillow, chorus line, parade. Prefer marquee/storefront fallbacks for street/performance scenes.\n\n6) OCR / signage (practical, high‑value)\n- Quote exact text only when OCR_confidence ≥ 0.65 AND text_bbox_area ≥ 0.003 × image_area AND contrast_ratio ≥ 1.5 (or font_size_estimate ≥ 7pt). Allow a targeted exception to quote short, uppercase, centered marquee text (≤3 words) when OCR_confidence ≥ 0.60 and text_bbox_area ≥ 0.004 × image_area and local saliency/objectness is high. Otherwise do NOT invent characters; emit a compact positional descriptor (e.g., \"marquee behind\", \"two red rectangular signs at upper right\").\n\n7) Descriptor priority and pruning (preserve discriminative tokens)\n- Descriptor priority (high → low): (A) VERIFIED discriminative props or quoted text, (B) VERIFIED part‑relations/micro‑actions, (C) VERIFIED fine class, (D) clothing & clear pose/orientation, (E) color & costume patterns, (F) object state/material, (G) viewpoint/orientation, (H) lighting/reflection, (I) background. Note: color and costume descriptors are promoted above material/lighting because patterned costumes and colors are highly discriminative; text‑bearing structural backgrounds (marquee, storefront, stage) are treated as high‑priority background anchors and should be retained when VERIFIED.\n- Target length: aim for 10–14 words. Hard cap: 18 words. Allow up to 20 words only when a quoted text string is emitted or two VERIFIED fine classes are present. When over cap, prune iteratively in this order: H (lighting) → F (material/texture) → I (background) unless a background is text‑bearing or structural and VERIFIED (then keep). Never drop VERIFIED tokens from categories A–C or VERIFIED part‑relations. Tie‑break removals by token length then lexicographic order.\n\n8) Spatial relations and salient nearby objects\n- Include up to 2–3 highest‑confidence nearby salient objects and their compact spatial relations (left/right/behind/among) when those objects are VERIFIED or high‑priority discriminative tokens. Prioritize inclusion of any verified signboard/marquee as a background anchor phrase (e.g., \"marquee behind\", \"storefront behind\") even if background area is modest.\n\n9) Cropping and occlusion\n- If subject_bbox_intersection_area / subject_bbox_area < 0.95, append a compact phrase \"partially cropped at [top|bottom|left|right]\" indicating the clipped side(s).\n\n10) Anti‑hallucination and safe fallbacks\n- Never invent brand names, celebrity names, ages, emotions, intentions, or unseen attributes. Avoid hedged language like \"probably\" in the final caption; prefer safe fallbacks from the lexicon when uncertain. Use plural nouns without digits when counts are not VERIFIED.\n\n11) Implementation/diagnostics (developer only)\n- Internally record which numeric checks passed (Count/Contact/Depth/OCR/FineClass) for each emitted token to aid calibration. Do NOT include these diagnostics in the caption.\n\nMicro‑templates and exemplars (follow these patterns exactly as style examples; they obey the rules above):\n- \"1 woman center foreground, right hand holding woven basket of oranges, storefront behind.\"\n- \"two dogs left foreground, small white dog jumping at car passenger window, woman leaning out.\"\n- \"1 person right foreground, standing by two‑wheeled vehicle with visible pedals and chain, metal shutter behind.\"\n- \"1 boy center foreground, seated on red toy ride, playground court behind.\"\n- \"many dancers center foreground, line of red/gold sequined costumes, marquee behind.\"\n- Borderline OCR/contact examples:\n  - \"1 man left foreground, three red rectangular signs at upper right, bridge behind.\"\n  - \"1 child center foreground, right hand near woven basket, wet pavement reflecting light.\"\n  - \"people center foreground, clustered near storefront, raincoats visible.\"\n\nFinal emission rule: apply the verification rules and pruning deterministically, assemble a single comma‑separated grammatical sentence that is concise and information‑dense, and output exactly that one caption sentence and nothing else.",
+  "prompt_id": "textgrad_17824f66f1",
+  "split_csv": "data/splits/flickr30k_main_seed1_train.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal/step_14/train/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal/step_14/train/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal/step_14/train/scores.csv",
+  "data_root": "data",
+  "summary": {
+    "n": 24,
+    "mean_clip": 0.30200641974806786,
+    "mean_siglip": 0.20717662697037062,
+    "mean_caption_len": 20.208333333333332,
+    "generic_rate": 0.0,
+    "mean_delta_clip": -0.017324907705187808,
+    "mean_delta_siglip": 0.005791947866479563,
+    "clip_win_rate": 0.16666666666666666,
+    "siglip_win_rate": 0.625
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_012029",
+      "image_relpath": "images/flickr30k/flickr30k_test_012029.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_012029.jpg",
+      "caption": "people on floating platform center foreground, near temple shrine with white spire, stone embankment and trees in background.",
+      "clip_score": 0.2943189144134521,
+      "siglip_score": 0.1736342161893844,
+      "delta_clip": -0.0568658709526062,
+      "delta_siglip": 0.03201936185359949
+    },
+    {
+      "image_id": "flickr30k_test_019437",
+      "image_relpath": "images/flickr30k/flickr30k_test_019437.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_019437.jpg",
+      "caption": "woman center foreground, walking past painted metal shutter with \"NO PARKING ANY TIME\" text, two red rectangular warning signs at upper left and right.",
+      "clip_score": 0.2825801968574524,
+      "siglip_score": 0.244778037071228,
+      "delta_clip": -0.04782703518867493,
+      "delta_siglip": 0.0953503549098969
+    },
+    {
+      "image_id": "flickr30k_test_019904",
+      "image_relpath": "images/flickr30k/flickr30k_test_019904.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_019904.jpg",
+      "caption": "man center foreground, walking on bridge, tan jacket, dark pants, two red rectangular signs with \"LE MIGNON\" text at upper right, storefront behind.",
+      "clip_score": 0.2856278717517853,
+      "siglip_score": 0.300195574760437,
+      "delta_clip": -0.04569390416145325,
+      "delta_siglip": 0.01567092537879944
+    },
+    {
+      "image_id": "flickr30k_test_002067",
+      "image_relpath": "images/flickr30k/flickr30k_test_002067.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_002067.jpg",
+      "caption": "man left foreground holding electric guitar, child center foreground in pink dress, people seated at tables right, marquee with \"SALON DE THE\" text behind.",
+      "clip_score": 0.2885172665119171,
+      "siglip_score": 0.1771734058856964,
+      "delta_clip": -0.04547223448753357,
+      "delta_siglip": -0.05349607765674588
+    },
+    {
+      "image_id": "flickr30k_test_007264",
+      "image_relpath": "images/flickr30k/flickr30k_test_007264.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_007264.jpg",
+      "caption": "woman center foreground, crouching, left hand near small dog, child right foreground, wearing floral dress, woman right background, holding silver bag, marquee behind.",
+      "clip_score": 0.2864108681678772,
+      "siglip_score": 0.1730232983827591,
+      "delta_clip": -0.04529309272766108,
+      "delta_siglip": -0.0717271417379379
+    },
+    {
+      "image_id": "flickr30k_test_007436",
+      "image_relpath": "images/flickr30k/flickr30k_test_007436.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_007436.jpg",
+      "caption": "woman right foreground, right hand holding phone, yellow truck behind, pedestrian left foreground, bicycle rack nearby.",
+      "clip_score": 0.2601834535598755,
+      "siglip_score": 0.2555086016654968,
+      "delta_clip": -0.0382432341575622,
+      "delta_siglip": 0.007883965969085721
+    },
+    {
+      "image_id": "flickr30k_test_027386",
+      "image_relpath": "images/flickr30k/flickr30k_test_027386.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_027386.jpg",
+      "caption": "Group of hikers ascending grassy slope, each carrying backpack, trail winding through valley with distant snow-capped mountains.",
+      "clip_score": 0.3201257586479187,
+      "siglip_score": 0.1894285231828689,
+      "delta_clip": -0.027970612049102783,
+      "delta_siglip": -0.014040723443031311
+    },
+    {
+      "image_id": "flickr30k_test_008358",
+      "image_relpath": "images/flickr30k/flickr30k_test_008358.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_008358.jpg",
+      "caption": "One soccer goalkeeper center foreground, diving horizontally with arms extended, red jersey with number one, black shorts, green grass field, dense foliage background.",
+      "clip_score": 0.3325543403625488,
+      "siglip_score": 0.1891748011112213,
+      "delta_clip": -0.025559008121490534,
+      "delta_siglip": -0.0123370289802551
+    },
+    {
+      "image_id": "flickr30k_test_008727",
+      "image_relpath": "images/flickr30k/flickr30k_test_008727.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_008727.jpg",
+      "caption": "girl left foreground, holding magazine with visible text, toddler in blue onesie standing nearby, adult seated in background.",
+      "clip_score": 0.3240093886852264,
+      "siglip_score": 0.1566132009029388,
+      "delta_clip": -0.023845762014389094,
+      "delta_siglip": -0.07667836546897891
+    },
+    {
+      "image_id": "flickr30k_test_014180",
+      "image_relpath": "images/flickr30k/flickr30k_test_014180.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_014180.jpg",
+      "caption": "bicycle riders center foreground, one wearing blue helmet, tricycle vendors left, modern white dome structure background.",
+      "clip_score": 0.2989688515663147,
+      "siglip_score": 0.2328060567378997,
+      "delta_clip": -0.023261785507202093,
+      "delta_siglip": 0.0557431876659393
+    },
+    {
+      "image_id": "flickr30k_test_019253",
+      "image_relpath": "images/flickr30k/flickr30k_test_019253.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_019253.jpg",
+      "caption": "woman center foreground, curly hair, yellow knitted scarf, purple collar jacket, partial view of blue tent and signboard behind.",
+      "clip_score": 0.3492725491523742,
+      "siglip_score": 0.2557893097400665,
+      "delta_clip": -0.022928118705749567,
+      "delta_siglip": -0.018988758325576838
+    },
+    {
+      "image_id": "flickr30k_test_007637",
+      "image_relpath": "images/flickr30k/flickr30k_test_007637.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_007637.jpg",
+      "caption": "man right foreground, wearing black shirt and jeans, gloved hands near ground, another person bent left foreground, sandy terrain background.",
+      "clip_score": 0.3089733719825744,
+      "siglip_score": 0.2225694805383682,
+      "delta_clip": -0.021328479051589966,
+      "delta_siglip": 0.0300137251615524
+    }
+  ]
+}

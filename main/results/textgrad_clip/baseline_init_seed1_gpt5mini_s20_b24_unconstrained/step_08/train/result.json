@@ -1,0 +1,117 @@
+{
+  "prompt": "Output exactly two lines only.\n\nLine 1 — tags (format rules)\n- 2–5 comma-separated lower-case tokens (prefer 3). No punctuation except commas.\n- Tokens must be visible nouns or a single visible adjective (color/size). Multiword fused objects allowed (e.g., \"traffic light\", \"wine bottle\") as one token.\n- At least two tokens must be nouns. At most one token may be an attribute (color/size).\n- Deduplicate tokens; order by visual salience (most discriminative first). Prefer concrete, specific nouns (e.g., \"trumpet\" over \"person\" when a detector is confident).\n- Only include an attribute if a detector/segmenter reports ≥75% confidence for that attribute; if detectors are unavailable, omit attributes.\n- Forbidden tokens: never output meta/instruction words or tooling vocabulary (for example: prompt, detectors, thresholds, length, caption, tags, line, template, score, clip, siglip, example). Never output proper nouns, brand names, dates, events, or emotions.\n\nLine 2 — caption (format rules)\n- Either A) one factual short sentence in present simple/progressive of 7–14 words, OR B) a 2–3 word fallback (main noun + visible location) when a compliant 7–14 word caption would require guessing. If tags cannot be produced reliably, output exactly: image unclear\n- The main noun from Line 1 must appear verbatim in positions 1–4 of Line 2.\n- Non-fallback captions must have at least two exact token overlaps with Line 1 (one must be the main noun). All nouns used in the caption (except determiners/prepositions) must appear verbatim in Line 1.\n- Allowed extra words: determiners, prepositions (on, in, near, by, in front of, behind), one optional period at sentence end. No other punctuation.\n- Do not introduce attributes, objects, or locations that are not in Line 1 unless supported by a high-confidence detector; do not invent identities or inferred facts.\n\nConservatism and anti-hallucination\n- Prefer omission over guessing. If fewer than two high-confidence nouns are available, use the compact fallback or output \"image unclear\".\n- If an attribute token appears in Line 1, it must appear verbatim in Line 2. If attribute confidence <75%, do not include the attribute.\n\nOperational note (for system integrators)\n- Keep candidate generation, scoring, CLIP reranking, and grammar/number checks outside this prompt. The VLM should only follow the concise visual rules above.\n\nFew-shot visual examples (each block = two output lines)\nPositive (correct)\ntrumpet,man,street\ntrumpet man is playing on the street.\n\ndog,rooftop,people\ndog sits near people on the rooftop.\n\nman,accordion,car\nman plays accordion next to the car.\n\nNegative (incorrect → corrected)\nman,hat,flag\nman waves flag at parade.      <!-- BAD: introduces noun \"parade\" not in tags -->\nman,hat,flag\nman waves flag near the hat.\n\nchild,bicycle,park\nchild rides red bicycle in park.   <!-- BAD: introduces attribute \"red\" not in tags -->\nchild,bicycle,park\nchild rides bicycle in the park.\n\nperson,bench,tree\nperson sits in Central Park.   <!-- BAD: uses proper noun \"Central Park\" -->\nperson,bench,tree\nperson sits on the bench by the tree.\n\nStrictly follow the Line 1 / Line 2 rules above. If no valid caption candidate passes these checks, return Line 2 = \"image unclear\".",
+  "prompt_id": "textgrad_aea4fdafa0",
+  "split_csv": "data/splits/flickr30k_main_seed1_train.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24/step_08/train/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24/step_08/train/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24/step_08/train/scores.csv",
+  "summary": {
+    "n": 24,
+    "mean_clip": 0.27408888190984726,
+    "mean_siglip": 0.16408509388566014,
+    "mean_caption_len": 8.416666666666666,
+    "generic_rate": 0.0,
+    "mean_delta_clip": -0.04981437946359316,
+    "mean_delta_siglip": -0.03275769886871178,
+    "clip_win_rate": 0.08333333333333333,
+    "siglip_win_rate": 0.20833333333333334
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_016046",
+      "caption": "people,table,bowl\npeople sit around the table with a yellow bowl.",
+      "clip_score": 0.2321949005126953,
+      "siglip_score": 0.1049271151423454,
+      "delta_clip": -0.1052960753440857,
+      "delta_siglip": -0.054066427052021
+    },
+    {
+      "image_id": "flickr30k_test_008727",
+      "caption": "child,book,room\nchild looks at book on the floor.",
+      "clip_score": 0.2471097707748413,
+      "siglip_score": 0.070321649312973,
+      "delta_clip": -0.10074537992477417,
+      "delta_siglip": -0.1629699170589447
+    },
+    {
+      "image_id": "flickr30k_test_022801",
+      "caption": "umbrella,people,street\numbrella shades people on the street.",
+      "clip_score": 0.2087911963462829,
+      "siglip_score": 0.1093987077474594,
+      "delta_clip": -0.09621796011924749,
+      "delta_siglip": -0.08891926705837251
+    },
+    {
+      "image_id": "flickr30k_test_025027",
+      "caption": "woman,bench,headscarf\nwoman sits on the bench wearing a headscarf.",
+      "clip_score": 0.2431353032588958,
+      "siglip_score": 0.1453689336776733,
+      "delta_clip": -0.0862271487712861,
+      "delta_siglip": -0.06885319948196408
+    },
+    {
+      "image_id": "flickr30k_test_023784",
+      "caption": "woman,vest,garbage\nwoman in blue vest stands near garbage.",
+      "clip_score": 0.2493444979190826,
+      "siglip_score": 0.1838939487934112,
+      "delta_clip": -0.07540193200111386,
+      "delta_siglip": -0.03410348296165469
+    },
+    {
+      "image_id": "flickr30k_test_003276",
+      "caption": "wine bottle,table,people\nwine bottle sits on the table near people.",
+      "clip_score": 0.2171521782875061,
+      "siglip_score": 0.0807932913303375,
+      "delta_clip": -0.07405880093574518,
+      "delta_siglip": -0.07142120599746701
+    },
+    {
+      "image_id": "flickr30k_test_024189",
+      "caption": "person,tree,street\nperson bends over bags on the street near tree.",
+      "clip_score": 0.2549589872360229,
+      "siglip_score": 0.1777534782886505,
+      "delta_clip": -0.07165536284446722,
+      "delta_siglip": -0.05966250598430628
+    },
+    {
+      "image_id": "flickr30k_test_018651",
+      "caption": "man,orange,bicycle\nman sells oranges near the bicycle.",
+      "clip_score": 0.3350124955177307,
+      "siglip_score": 0.1965776979923248,
+      "delta_clip": -0.06721118092536926,
+      "delta_siglip": 3.401935100560971e-05
+    },
+    {
+      "image_id": "flickr30k_test_010109",
+      "caption": "woman,vegetable,basket\nwoman sorts vegetable in the basket.",
+      "clip_score": 0.2749299108982086,
+      "siglip_score": 0.1048641800880432,
+      "delta_clip": -0.061857253313064575,
+      "delta_siglip": -0.1142001897096634
+    },
+    {
+      "image_id": "flickr30k_test_019904",
+      "caption": "man,bridge,restaurant\nman walks on the bridge near the restaurant.",
+      "clip_score": 0.2752763032913208,
+      "siglip_score": 0.2209225445985794,
+      "delta_clip": -0.056045472621917725,
+      "delta_siglip": -0.06360210478305817
+    },
+    {
+      "image_id": "flickr30k_test_027523",
+      "caption": "woodcarver,bench,street\nwoodcarver shapes wood on the bench.",
+      "clip_score": 0.2867274880409241,
+      "siglip_score": 0.1967676877975464,
+      "delta_clip": -0.055010080337524414,
+      "delta_siglip": -0.0067124962806701105
+    },
+    {
+      "image_id": "flickr30k_test_017289",
+      "caption": "man,mop,wooden floor\nman mops the wooden floor.",
+      "clip_score": 0.2830749750137329,
+      "siglip_score": 0.1537199914455413,
+      "delta_clip": -0.05098766088485718,
+      "delta_siglip": -0.0036168843507767
+    }
+  ]
+}

@@ -1,0 +1,142 @@
+{
+  "prompt": "Output exactly one concise, information‑dense caption: a single grammatical sentence composed of comma‑separated short phrases. Produce only that one sentence (no lists, tags, JSON, logs, or extra lines). Use digits for counts only when each instance passes the Count verification below. Do not infer age, emotion, intention, or unseen attributes.\n\nRequired overall format and limits\n- Produce 1–3 clearly separable subject groups in prominence order; each group is rendered as: [digit] + subject noun(s) + spatial anchor (see Spatial anchors). Target ≤24 words; allow up to +10% length (≤27 words) only to include a fully legible quoted text string or one necessary verified part‑level relation/background anchor. Aim for compact, active comma‑separated noun‑verb phrases.\n\nTwo‑pass generation (mandatory)\n1) Token proposal: internally list candidate tokens for each slot — groups, micro‑action, part relation, up to three descriptors, viewpoint, lighting, background/text.\n2) Verification & pruning: apply the numeric checks below to every candidate; drop any token that fails; then recompose a single grammatical comma‑separated sentence from the remaining verified tokens. If pruning removes a slot, ensure the final sentence remains grammatical.\n\nNumeric verification rules (must be enforced)\n- Count: include a digit only if each instance is ≥50% unobstructed and individually separable in the image.\n- Contact (micro‑action): assert contact only if bbox overlap ≥12% of the smaller bbox OR clear segmentation adjacency/pixel overlap.\n- Fine object class: assert a fine class only if classifier confidence >0.60 OR two independent visual cues (distinctive part + unique shape or part + contextual prop).\n- Text transcription: transcribe quoted text only if fully legible at ≳8pt equivalent and high contrast; otherwise use a positional label (e.g., \"marquee above\").\n- Background anchor: include a background noun phrase only if that anchor occupies ≥5% image area or is a distinct structure.\n- If classifier/confidence metadata is unavailable, require at least two independent visual cues before asserting fine classes; otherwise use a higher‑level class.\n\nSpatial anchors, grouping and prominence\n- Centroid x rules: x < 0.33 → \"left\"; 0.33 ≤ x ≤ 0.66 → \"center\"; x > 0.66 → \"right\".\n- If subject width >50% image width, emit \"center\".\n- Append \"partially cropped at [top|bottom|left|right]\" if >5% of subject area lies outside image.\n- Include depth token [foreground|midground|background] only when overlap/relative scale unambiguously indicates depth.\n- Secondary group inclusion: include only if it covers ≥20% of main subject area OR passes a saliency threshold (top‑2 saliency bin). When ambiguous, prefer fewer groups.\n\nMicro‑action and part‑level relations (strict)\n- Include exactly one verbized micro‑action only if Contact verification passes. Use a strong verb (e.g., \"holding\", \"inserting\", \"walking\") and immediately follow with one part‑level relation using the exact template: \"[part] [verb] [object]\" (e.g., \"right hand holding pole\"). If contact is not verified, omit both micro‑action and part relation.\n- Do not use passive or vague forms; do not use \"with\" except inside the required template.\n\nDescriptor selection and priority (up to 1–3 descriptors)\n- Choose at most three verified descriptors in this strict priority order: (1) discriminative prop or part‑level prop, (2) precise object class, (3) fully legible text (quoted), (4) material/texture, (5) color, (6) reflection/surface condition. If none verify, omit descriptors.\n\nBackground, signage and reflections\n- If text is fully legible per Text verification, quote exact string. Otherwise use a positional label (e.g., \"signboard above\", \"storefront window\").\n- If an element appears doubled/reversed on a glass plane without 3D occlusion, label it \"reflections\". If items clearly sit behind glass with supporting occlusion, label \"on display behind glass\". If uncertain, omit both.\n\nPose/orientation and object state\n- When unambiguous, include one brief orientation token (e.g., \"facing camera\", \"turned away\", \"leaning over\").\n- When object state is clearly visible, include one object‑state descriptor (e.g., \"open instrument case\", \"wet reflective surface\").\n\nMandatory high‑signal inclusion\n- If any discriminative prop or verified part‑level relation passes verification, the caption must include at least one such token (priority: prop > part relation > precise class).\n\nTrimming priority (deterministic checklist)\n- If over length, deterministically drop tokens in this order until within limit: color → viewpoint → lighting → reflections → material/texture → quoted text (unless necessary) → background (unless ≥5% area or necessary) → low‑priority descriptors. Always preserve discriminative prop and verified part relation when present.\n\nNegative rules (must obey)\n- Do not output multiple candidates or meta information.\n- Do not invent counts, contacts, text, or fine classes that fail verification.\n- Do not infer age, emotion, intentions, or unseen attributes.\n- Do not use vague quantifiers (\"several\") — use digits only when verified.\n\nUse of metadata (if available)\n- If bounding boxes, saliency, segmentation, or classifier confidences are available, use them to compute subject area, overlap, centroid, contact metrics, and verify fine classes. If unavailable, require multiple visual cues per the fallback rule.\n\nCompact examples (good vs. bad)\n- Good: \"1 child left foreground, right hand touching fountain, multiple arcing jets, medium, leafy park behind.\"\n- Good: \"2 men center foreground, facing each other, left man handing packet, brown woven basket with fruit, storefront behind.\"\n- Bad (avoid): \"several people near a sign\" — (vague count and sign).\n- Bad (avoid): \"man holding something\" — (no verified contact or object).\n\nFinal note\n- Always perform the two‑pass proposal + verification + pruning process, then emit exactly one grammatical comma‑separated sentence that preserves verified discriminative props and part relations where available and stays within the word limit.",
+  "prompt_id": "textgrad_3e6350b67f",
+  "split_csv": "data/splits/flickr30k_main_seed1_val.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal/step_07/val/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal/step_07/val/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal/step_07/val/scores.csv",
+  "data_root": "data",
+  "summary": {
+    "n": 150,
+    "mean_clip": 0.2983947166800499,
+    "mean_siglip": 0.198566522449255,
+    "mean_caption_len": 18.96,
+    "generic_rate": 0.0,
+    "mean_delta_clip": -0.0261707316339016,
+    "mean_delta_siglip": -0.00027402323981125964,
+    "clip_win_rate": 0.2,
+    "siglip_win_rate": 0.5166666666666667
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_011250",
+      "image_relpath": "images/flickr30k/flickr30k_test_011250.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_011250.jpg",
+      "caption": "2 children center foreground, right hand holding each other, brown shirt with text, denim pants, yellow caution tape midground, airplane background.",
+      "clip_score": 0.2762978374958038,
+      "siglip_score": 0.2553436160087585,
+      "delta_clip": -0.13629594445228582,
+      "delta_siglip": 0.0348279923200607
+    },
+    {
+      "image_id": "flickr30k_test_007385",
+      "image_relpath": "images/flickr30k/flickr30k_test_007385.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_007385.jpg",
+      "caption": "1 dancer center foreground, right arm raised, blue and multicolored suit, multiple green batons arcing, storefront with \"Foods\" sign behind.",
+      "clip_score": 0.2435663938522339,
+      "siglip_score": 0.1502449363470077,
+      "delta_clip": -0.12529045343399042,
+      "delta_siglip": -0.024683490395546015
+    },
+    {
+      "image_id": "flickr30k_test_013546",
+      "image_relpath": "images/flickr30k/flickr30k_test_013546.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_013546.jpg",
+      "caption": "1 child center foreground, standing on yellow platform, holding metal rail, blurred green trees background.",
+      "clip_score": 0.2759081721305847,
+      "siglip_score": 0.1479485034942627,
+      "delta_clip": -0.10116001963615417,
+      "delta_siglip": -0.0614808499813079
+    },
+    {
+      "image_id": "flickr30k_test_011250",
+      "image_relpath": "images/flickr30k/flickr30k_test_011250.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_011250.jpg",
+      "caption": "2 children center foreground, right hand holding each other, brown shirt with text, denim pants, yellow caution tape midground, airplane background.",
+      "clip_score": 0.2762978374958038,
+      "siglip_score": 0.2553436160087585,
+      "delta_clip": -0.09632495045661932,
+      "delta_siglip": 0.007002830505371094
+    },
+    {
+      "image_id": "flickr30k_test_002308",
+      "image_relpath": "images/flickr30k/flickr30k_test_002308.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_002308.jpg",
+      "caption": "1 woman center foreground, right hand holding cup, left arm reaching upward, red tank top, denim pants, Van Gogh Museum poster right background.",
+      "clip_score": 0.2110310345888137,
+      "siglip_score": 0.0854292437434196,
+      "delta_clip": -0.0951042324304581,
+      "delta_siglip": -0.12366504222154619
+    },
+    {
+      "image_id": "flickr30k_test_026513",
+      "image_relpath": "images/flickr30k/flickr30k_test_026513.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_026513.jpg",
+      "caption": "1 cameraman right foreground operating camera on tripod, 2 crew members center midground holding equipment, 3 people left background under umbrella, wet pavement, potted plants, building facade.",
+      "clip_score": 0.3143101036548614,
+      "siglip_score": 0.2538122534751892,
+      "delta_clip": -0.08836391568183899,
+      "delta_siglip": -0.006206423044204712
+    },
+    {
+      "image_id": "flickr30k_test_028445",
+      "image_relpath": "images/flickr30k/flickr30k_test_028445.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_028445.jpg",
+      "caption": "1 man center foreground, holding blue mesh laundry hamper, bicycle handlebar in hand, red pickup truck right, beige building background.",
+      "clip_score": 0.279044508934021,
+      "siglip_score": 0.2112725228071212,
+      "delta_clip": -0.088329017162323,
+      "delta_siglip": -0.005764052271843012
+    },
+    {
+      "image_id": "flickr30k_test_016590",
+      "image_relpath": "images/flickr30k/flickr30k_test_016590.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_016590.jpg",
+      "caption": "1 vendor center foreground, holding striped umbrella, selling goods beside fountain, children nearby, stone steps ascending right.",
+      "clip_score": 0.2812409996986389,
+      "siglip_score": 0.2229127138853073,
+      "delta_clip": -0.0833443403244018,
+      "delta_siglip": -0.0032860636711119773
+    },
+    {
+      "image_id": "flickr30k_test_001063",
+      "image_relpath": "images/flickr30k/flickr30k_test_001063.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_001063.jpg",
+      "caption": "1 man center foreground, right hand pointing, olive tank top, beige couch, yellow wall, window with blinds left.",
+      "clip_score": 0.257468581199646,
+      "siglip_score": 0.1886863112449646,
+      "delta_clip": -0.08255264163017273,
+      "delta_siglip": -0.04729525744915
+    },
+    {
+      "image_id": "flickr30k_test_010223",
+      "image_relpath": "images/flickr30k/flickr30k_test_010223.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_010223.jpg",
+      "caption": "1 man center foreground, right hand holding bottle, left hand holding glass, brown leather chair, window blinds right.",
+      "clip_score": 0.269401341676712,
+      "siglip_score": 0.1810850799083709,
+      "delta_clip": -0.08238407969474792,
+      "delta_siglip": -0.01626269519329071
+    },
+    {
+      "image_id": "flickr30k_test_011340",
+      "image_relpath": "images/flickr30k/flickr30k_test_011340.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_011340.jpg",
+      "caption": "1 child center foreground, right hand holding racket, yellow ball airborne, green wall background, \"moments caught PHOTOGRAPHY\" watermark.",
+      "clip_score": 0.2427533268928527,
+      "siglip_score": 0.183649256825447,
+      "delta_clip": -0.08202940225601199,
+      "delta_siglip": 0.0417529344558715
+    },
+    {
+      "image_id": "flickr30k_test_023317",
+      "image_relpath": "images/flickr30k/flickr30k_test_023317.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_023317.jpg",
+      "caption": "1 woman center foreground, right hand touching chin, wearing pink jacket and blue skirt, standing near guest services booth, red barrel partially cropped at bottom right.",
+      "clip_score": 0.3091584742069244,
+      "siglip_score": 0.2869372367858886,
+      "delta_clip": -0.08198943734169012,
+      "delta_siglip": 0.06854867935180661
+    }
+  ]
+}

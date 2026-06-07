@@ -1,0 +1,117 @@
+{
+  "prompt": "Output two lines only.\n\nLine 1 (tags): comma-separated visible objects, counts (use digits), and colors/sizes (up to 6 items).\n\nLine 2 (caption): one factual caption in present tense using base verbs, 6–12 words. Use the structure: main object → action → location/pose. Include count and a color/size if visible. Use common nouns and digits for numbers. Do NOT use metaphors, opinions, emotions, storytelling, invented facts, rare or subjective adjectives.\n\nIf no clear action is visible, Line 2 may be 2–4 words as \"object + location\" (e.g., \"red car parked on street\"). If the image is highly ambiguous, list only tags on Line 1 and provide a short generic caption (2–3 words) on Line 2 (e.g., \"group of people\"). No punctuation except commas in tags and an optional period at the end of the caption.",
+  "prompt_id": "textgrad_5a2be40909",
+  "split_csv": "data/splits/flickr30k_main_seed1_train.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24/step_01/train/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24/step_01/train/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24/step_01/train/scores.csv",
+  "summary": {
+    "n": 24,
+    "mean_clip": 0.31515319645404816,
+    "mean_siglip": 0.1844330417613188,
+    "mean_caption_len": 16.458333333333332,
+    "generic_rate": 0.0,
+    "mean_delta_clip": -0.01547168195247651,
+    "mean_delta_siglip": -0.005254435042540223,
+    "clip_win_rate": 0.20833333333333334,
+    "siglip_win_rate": 0.4166666666666667
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_006091",
+      "caption": "child wearing pink shirt and blue jeans standing on kitchen counter\nchild stands on counter near running faucet",
+      "clip_score": 0.3225225806236267,
+      "siglip_score": 0.1657253205776214,
+      "delta_clip": -0.062449812889099066,
+      "delta_siglip": -0.07745583355426788
+    },
+    {
+      "image_id": "flickr30k_test_029824",
+      "caption": "person standing behind desk, red lanyard, black chair, white wall, pink pamphlets, green olympic rings\nperson stands behind London 2012 welcome desk",
+      "clip_score": 0.3356481194496155,
+      "siglip_score": 0.1899401247501373,
+      "delta_clip": -0.056007176637649536,
+      "delta_siglip": -0.05606633424758911
+    },
+    {
+      "image_id": "flickr30k_test_019437",
+      "caption": "woman walking past garage door\nwoman walks past closed garage door",
+      "clip_score": 0.2836736440658569,
+      "siglip_score": 0.1695359945297241,
+      "delta_clip": -0.04673358798027044,
+      "delta_siglip": 0.020108312368393
+    },
+    {
+      "image_id": "flickr30k_test_008727",
+      "caption": "girl, toddler, couch, wrapping paper, blue pajamas, red pajamas  \nGirl and toddler unwrap gifts on carpet",
+      "clip_score": 0.3018547296524048,
+      "siglip_score": 0.1771613806486129,
+      "delta_clip": -0.04600042104721069,
+      "delta_siglip": -0.056130185723304804
+    },
+    {
+      "image_id": "flickr30k_test_017741",
+      "caption": "two people sitting on bench near window  \ntwo people sitting on bench near window",
+      "clip_score": 0.2822656631469726,
+      "siglip_score": 0.1663727015256881,
+      "delta_clip": -0.03711116313934332,
+      "delta_siglip": -0.07579697668552401
+    },
+    {
+      "image_id": "flickr30k_test_003075",
+      "caption": "child in blue raincoat walking in puddle, boy in white shirt walking in puddle, silver van parked, person in blue shirt standing, child in pink shirt standing, black sunglasses on head\nChildren walk through puddles on wet pavement",
+      "clip_score": 0.3343796133995056,
+      "siglip_score": 0.1942988634109497,
+      "delta_clip": -0.0361751914024353,
+      "delta_siglip": -0.025251105427742004
+    },
+    {
+      "image_id": "flickr30k_test_000833",
+      "caption": "boys playing paddle on beach with blue and red paddles\nthree boys playing paddle on wet sand",
+      "clip_score": 0.2684225738048553,
+      "siglip_score": 0.1829079240560531,
+      "delta_clip": -0.03525450825691229,
+      "delta_siglip": -0.002617701888084384
+    },
+    {
+      "image_id": "flickr30k_test_023641",
+      "caption": "person walking on cobblestone path, tree, building, bench, people, bag  \nwoman in striped shirt walks on wet cobblestone path",
+      "clip_score": 0.3115150332450866,
+      "siglip_score": 0.1590040475130081,
+      "delta_clip": -0.026727974414825495,
+      "delta_siglip": -0.02063408493995661
+    },
+    {
+      "image_id": "flickr30k_test_019300",
+      "caption": "man climbing wooden frame structure  \nman climbs wooden frame structure",
+      "clip_score": 0.3114165365695953,
+      "siglip_score": 0.1336910128593444,
+      "delta_clip": -0.020145386457443293,
+      "delta_siglip": 0.022760935127735096
+    },
+    {
+      "image_id": "flickr30k_test_028178",
+      "caption": "man, trumpet, glasses, tree, lights, red shirt\nman plays trumpet under lit tree",
+      "clip_score": 0.3706142604351043,
+      "siglip_score": 0.2170900702476501,
+      "delta_clip": -0.017110794782638605,
+      "delta_siglip": -0.007586270570755005
+    },
+    {
+      "image_id": "flickr30k_test_009311",
+      "caption": "child, water, fountain, green, white, small\nchild laughs near small water fountain",
+      "clip_score": 0.3135885596275329,
+      "siglip_score": 0.1662068367004394,
+      "delta_clip": -0.016973048448562678,
+      "delta_siglip": -0.00147147476673129
+    },
+    {
+      "image_id": "flickr30k_test_012278",
+      "caption": "men sitting on rooftop, goat standing, satellite dishes, red blanket, wooden bench, stone wall  \nthree men sitting on rooftop near goat",
+      "clip_score": 0.2835623621940613,
+      "siglip_score": 0.2103869616985321,
+      "delta_clip": -0.014374226331710815,
+      "delta_siglip": 0.00343921780586251
+    }
+  ]
+}

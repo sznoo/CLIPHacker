@@ -1,0 +1,117 @@
+{
+  "prompt": "Output exactly one candidate by default. Only produce 2–3 alternate candidates if and only if an external CLIP reranker is guaranteed by the integrator; when multiple candidates are produced, separate each candidate by a single blank line. Each candidate must be exactly two lines (Line 1 = tags; Line 2 = caption). If you cannot produce a reliable caption under the checks below, output exactly:\nimage unclear\n\nLine 1 — tags (required)\n- Format: 2–3 comma-separated lower-case tokens (prefer exactly 3 when at least three high-confidence nouns exist). No punctuation except commas. No extra whitespace beyond single spaces around commas.\n- Token types: visible concrete noun(s) or a single visible adjective token as the only attribute token. Multiword fused objects (e.g., \"traffic light\", \"wine bottle\") count as one token.\n- Canonicalization required: every tag must have an upstream canonical_id from the canonical inventory (recommended: COCO/Visual Genome/CLIP-common). Before generating captions, map detector/classifier outputs to these canonical IDs. Normalize plurals→singular and synonyms→canonical_id.\n- Ordering & deduplication: deduplicate tokens; sort tokens by score = 0.6 * detector_confidence + 0.4 * normalized_CLIP_retrieval_frequency, descending. If two detectors are within tie_break_delta_confidence (default 10%), prefer the noun with higher CLIP_retrieval_frequency.\n- Attribute tokens: allow at most one adjective token (color/size). Include attribute token only if attribute_confidence ≥ attribute_confidence_threshold (default 70%). If below threshold, drop the attribute from Line 1 and Line 2.\n- Forbidden tokens: no meta/tooling words, no proper nouns/brands, no identity-sensitive dates/events, no inferred identities or emotions. Scene/event nouns allowed only if a scene classifier gives high confidence and they map to canonical inventory.\n- If fewer than two high-confidence specific nouns remain after filtering, do not invent tags. If at least one reliable noun exists, produce Line 1 with that noun (1–2 tokens) and follow the Option B fallback rules. If no reliable noun exists, leave Line 1 empty and output Line 2 = \"image unclear\".\n\nLine 2 — caption (required)\n- Two valid options. All checks below are hard constraints. If any check for Option A fails, immediately produce Option B (if allowed) or \"image unclear\" as specified.\n- Global constraints for both options:\n  - No punctuation except one optional trailing period on Option A only. No commas. Lower-case except canonical synonyms that require capitalization by canonical mapping (rare).\n  - Do not introduce any new concrete noun, attribute, identity, emotion, or inferred action that does not map to a Line 1 canonical_id. Every non-function word in Line 2 must be traceable to a Line 1 token via identical string or canonical_id mapping. If this fails, reject and fallback.\n  - The canonical main noun (Line 1 first token) must appear verbatim or as a canonical synonym (same canonical_id) in Line 2 and must appear early (within the first 3–4 tokens or in the subject phrase).\n  - If you cannot verify canonical mapping for nouns in Line 2, reject and fallback.\n- Option A (preferred when checks pass):\n  - One factual sentence in present simple or present progressive (subject + verb + object/prepositional phrase).\n  - Word count: exactly 7–13 words.\n  - Verb requirement: exactly one clear visible verb (allowed verbs list: sits, stands, rides, holds, carries, walks, leans, looks, points, reads, opens, plays, wears, pushes, pulls, places, covers, is holding, is sitting, dances, performs, marches, runs, climbs, jumps, throws, catches, skates). OR exactly one concrete spatial preposition used as the single main relation (on, in, near, by, next to, in front of, behind).\n  - Token overlap: must share at least two canonical tokens with Line 1 (one must be the main noun). If Line 1 contains only one token, Option A is allowed only if at least one other token in Line 2 maps to a Line 1 canonical_id (i.e., impossible → fallback).\n  - No compound verbs, no additional predicates, no subordinate clauses, and no added objects/attributes beyond Line 1 canonical_ids.\n  - Example pattern: \"a child rides a red motorcycle down the street.\"\n- Option B (fallback; use when fewer than two high-confidence nouns or when any Option A check fails):\n  - Conservative phrase of exactly 2–4 tokens, pattern: \"<main_noun> <preposition> <scene/location>\" or \"<main_noun> <scene>\" (examples: \"dog on sidewalk\", \"red car in street\", \"man near tree\"). No verbs. No punctuation.\n  - The main noun must be the Line 1 first token (or its canonical synonym).\n  - Use Option B whenever fewer than two high-confidence nouns exist, or whenever Option A fails any hard check (word count, verb count, token_overlap, or new-noun introduction).\n- If no valid Option B fallback can be constructed (no reliable noun), output exactly:\nimage unclear\n\nOperational & tuning parameters (defaults & required logs)\n- attribute_confidence_threshold = 70% (recommended sweep: 60, 70, 75).\n- preferred_tag_count = 3 (use 2 only when fewer than 3 high-confidence nouns available).\n- tie_break_delta_confidence = 10 percentage points.\n- If external CLIP reranker is absent, produce exactly one candidate. If present, you may output up to 3 candidates derived from alternate high-confidence Line 1 sets (each candidate must individually pass the checks above).\n\nDiagnostics (required per candidate; structured JSON-like log)\nFor every candidate generated, produce a compact diagnostics object (for tuning and reranking). Include:\n{ \n  \"candidate_id\": string,\n  \"option_used\": \"A\" or \"B\",\n  \"line1_tokens\": [{ \"text\": \"...\", \"canonical_id\": \"...\", \"detector_confidence\": n, \"clip_retrieval_freq\": n }, ...],\n  \"line2_text\": \"...\",\n  \"word_count\": n,\n  \"verbs_found\": [ ... ],\n  \"token_overlap_count\": n,\n  \"omitted_attributes\": [{ \"attribute\": \"...\", \"reason\": \"confidence_below_threshold\" }],\n  \"checks_failed\": [ ... ],\n  \"new_noun_introduced\": true|false,\n  \"fallback_reason\": \"...\"\n}\n- Log these diagnostics programmatically for every image to permit threshold sweeps and to compute hallucination_count and token_overlap_rate.\n\nEnforcement notes (implementation recommended)\n- Many rules are programmatic filters; do not rely solely on the generator to obey soft language cues. Implement a post-generation verifier that:\n  1) canonicalizes nouns/attributes in the candidate,\n  2) computes detector_confidence and clip_retrieval_freq overlap with Line 1,\n  3) rejects any candidate failing hard checks and regenerates/falls back to Option B or \"image unclear\",\n  4) emits diagnostics as above.\n- If the model is frozen and cannot be controlled reliably, use a deterministic repair: produce Option B from Line 1 tokens when Option A verification fails.\n\nShort exemplars (illustrative)\n- Valid Option A:\nLine1: child, motorcycle, red\nLine2: a child rides a red motorcycle down the street.\n- Valid Option B (fallback):\nLine1: dog\nLine2: dog on sidewalk\n- Image unclear:\nLine1:\nLine2: image unclear\n- Negative example (what to avoid — hallucination fallback):\nWrong generator output: \"man sits near bicycle with fruit baskets\"\nCorrect behavior: reject (new noun \"fruit baskets\" not in Line1) → fallback to Option B, for example:\nLine1: man, bicycle\nLine2: man near bicycle\n\nTargets to monitor (per-run)\n- mean_caption_len, fraction captions >13 words (target: reduce >13 by 95%), token_overlap_rate (>=2 tokens target ≥ 95%), hallucination_rate (new_noun_introduced fraction target < 1–2%), mean_clip, mean_delta_clip, clip_win_rate.\n\nStrictly follow the hard constraints above. If a candidate fails any required check and no valid fallback exists, output exactly: image unclear. Log diagnostics for every attempted candidate to aid tuning and CLIP reranking.",
+  "prompt_id": "textgrad_ba6729cfba",
+  "split_csv": "data/splits/flickr30k_main_seed1_val.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24/step_12/val/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24/step_12/val/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24/step_12/val/scores.csv",
+  "summary": {
+    "n": 150,
+    "mean_clip": 0.26052842557430267,
+    "mean_siglip": 0.11247831268546477,
+    "mean_caption_len": 24.36,
+    "generic_rate": 0.17333333333333334,
+    "mean_delta_clip": -0.06403702273964881,
+    "mean_delta_siglip": -0.08636223300360144,
+    "clip_win_rate": 0.02,
+    "siglip_win_rate": 0.043333333333333335
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_011250",
+      "caption": "child, boy, grass\na child stands on grass with another boy\n\n{\n  \"candidate_id\": \"c1\",\n  \"option_used\": \"A\",\n  \"line1_tokens\": [\n    {\n      \"text\": \"child\",\n      \"canonical_id\": \"child\",\n      \"detector_confidence\":",
+      "clip_score": 0.251567006111145,
+      "siglip_score": 0.1396420747041702,
+      "delta_clip": -0.16102677583694458,
+      "delta_siglip": -0.08087354898452759
+    },
+    {
+      "image_id": "flickr30k_test_018677",
+      "caption": "person, plate, wall\na person holds a plate near a wall\n\n{\n  \"candidate_id\": \"c1\",\n  \"option_used\": \"A\",\n  \"line1_tokens\": [\n    {\n      \"text\": \"person\",\n      \"canonical_id\": \"person\",\n      \"detector_confidence\":",
+      "clip_score": 0.180125206708908,
+      "siglip_score": -0.0363008081912994,
+      "delta_clip": -0.158208191394806,
+      "delta_siglip": -0.2490307986736297
+    },
+    {
+      "image_id": "flickr30k_test_023317",
+      "caption": "woman stands near guest services booth\n{\n  \"candidate_id\": \"1\",\n  \"option_used\": \"A\",\n  \"line1_tokens\": [\n    {\n      \"text\": \"woman\",\n      \"canonical_id\": \"person\",\n      \"detector_confidence\": 0.95,\n      \"clip_re",
+      "clip_score": 0.2355172634124755,
+      "siglip_score": 0.1391711086034774,
+      "delta_clip": -0.155630648136139,
+      "delta_siglip": -0.07921744883060461
+    },
+    {
+      "image_id": "flickr30k_test_016590",
+      "caption": "child, umbrella, street\na child holds an umbrella on the street.\n\n{\n  \"candidate_id\": \"c1\",\n  \"option_used\": \"A\",\n  \"line1_tokens\": [\n    {\n      \"text\": \"child\",\n      \"canonical_id\": \"child\",\n      \"detector_confidence\":",
+      "clip_score": 0.2132774293422699,
+      "siglip_score": 0.0452185161411762,
+      "delta_clip": -0.15130791068077082,
+      "delta_siglip": -0.1809802614152431
+    },
+    {
+      "image_id": "flickr30k_test_017956",
+      "caption": "people near building\npeople near building\n\n{\n  \"candidate_id\": \"c1\",\n  \"option_used\": \"B\",\n  \"line1_tokens\": [\n    {\n      \"text\": \"people\",\n      \"canonical_id\": \"person\",\n      \"detector_confidence\": 0.95,\n      \"",
+      "clip_score": 0.1920216977596283,
+      "siglip_score": 0.0093747433274984,
+      "delta_clip": -0.1416836678981781,
+      "delta_siglip": -0.1772200111299753
+    },
+    {
+      "image_id": "flickr30k_test_016590",
+      "caption": "child, umbrella, street\na child holds an umbrella on the street.\n\n{\n  \"candidate_id\": \"c1\",\n  \"option_used\": \"A\",\n  \"line1_tokens\": [\n    {\n      \"text\": \"child\",\n      \"canonical_id\": \"child\",\n      \"detector_confidence\":",
+      "clip_score": 0.2132774293422699,
+      "siglip_score": 0.0452185161411762,
+      "delta_clip": -0.13937807083129883,
+      "delta_siglip": -0.1836944483220577
+    },
+    {
+      "image_id": "flickr30k_test_026513",
+      "caption": "person, camera, umbrella\na person holds a camera under an umbrella\n\n{\n  \"candidate_id\": \"c1\",\n  \"option_used\": \"A\",\n  \"line1_tokens\": [\n    {\n      \"text\": \"person\",\n      \"canonical_id\": \"person\",\n      \"detector_confidence\":",
+      "clip_score": 0.2638660669326782,
+      "siglip_score": 0.0934999659657478,
+      "delta_clip": -0.13880795240402216,
+      "delta_siglip": -0.16651871055364612
+    },
+    {
+      "image_id": "flickr30k_test_020669",
+      "caption": "person, tree, grass\na person sits near a tree on grass\n\n{\n  \"candidate_id\": \"c1\",\n  \"option_used\": \"A\",\n  \"line1_tokens\": [\n    {\n      \"text\": \"person\",\n      \"canonical_id\": \"person\",\n      \"detector_confidence\":",
+      "clip_score": 0.2192341387271881,
+      "siglip_score": 0.1142080277204513,
+      "delta_clip": -0.13713952898979187,
+      "delta_siglip": -0.0874309241771698
+    },
+    {
+      "image_id": "flickr30k_test_015764",
+      "caption": "man, crowd, light\nman sits near crowd in light\n\n{\n  \"candidate_id\": \"c1\",\n  \"option_used\": \"A\",\n  \"line1_tokens\": [\n    {\n      \"text\": \"man\",\n      \"canonical_id\": \"person\",\n      \"detector_confidence\": 0.",
+      "clip_score": 0.2098233997821808,
+      "siglip_score": 0.0343101471662521,
+      "delta_clip": -0.1323100626468658,
+      "delta_siglip": -0.17681130766868589
+    },
+    {
+      "image_id": "flickr30k_test_023088",
+      "caption": "man stands on sidewalk\n{ \n  \"candidate_id\": \"c1\",\n  \"option_used\": \"A\",\n  \"line1_tokens\": [\n    { \"text\": \"man\", \"canonical_id\": \"man\", \"detector_confidence\": 0.95, \"clip_retrieval_freq\":",
+      "clip_score": 0.2081373929977417,
+      "siglip_score": 0.080022856593132,
+      "delta_clip": -0.1310696005821228,
+      "delta_siglip": -0.10744126141071318
+    },
+    {
+      "image_id": "flickr30k_test_007385",
+      "caption": "dancer, street, store\ndancer performs on street near store\n\n{\n  \"candidate_id\": \"c1\",\n  \"option_used\": \"A\",\n  \"line1_tokens\": [\n    {\n      \"text\": \"dancer\",\n      \"canonical_id\": \"person\",\n      \"detector_confidence\":",
+      "clip_score": 0.2383785098791122,
+      "siglip_score": 0.0615501105785369,
+      "delta_clip": -0.13047833740711212,
+      "delta_siglip": -0.1133783161640168
+    },
+    {
+      "image_id": "flickr30k_test_023900",
+      "caption": "man near food stall\nman near food stall\n\n{\n  \"candidate_id\": \"1\",\n  \"option_used\": \"B\",\n  \"line1_tokens\": [\n    {\n      \"text\": \"man\",\n      \"canonical_id\": \"person\",\n      \"detector_confidence\": 0.95,",
+      "clip_score": 0.2333376407623291,
+      "siglip_score": 0.0633314698934555,
+      "delta_clip": -0.12846899032592768,
+      "delta_siglip": -0.22748415172100067
+    }
+  ]
+}

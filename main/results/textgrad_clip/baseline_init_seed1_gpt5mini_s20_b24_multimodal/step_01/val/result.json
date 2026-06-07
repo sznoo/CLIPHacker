@@ -1,0 +1,142 @@
+{
+  "prompt": "Produce exactly one concise, information‑dense caption (one grammatical sentence) describing only visibly present facts. Output exactly one sentence and nothing else.\n\nFollow this ordered checklist and include each item only if clearly visible; omit unverifiable items. Use digits for counts. Do not infer, hedge, or use metaphors (no \"appears/likely/seems\"). Keep the sentence compact (prefer ≤30 words) and comma‑separate short phrases.\n\nOrder and rules:\n1) Start with numeral(s) (digit) + subject noun(s) + precise spatial anchor for each counted subject (left/center/right and foreground/midground/background). If subject is partly out of frame, state \"partially cropped at [edge]\".\n2) Immediately after, include a single visible action if present, and specify the body/vehicle part or object involved (e.g., \"right hand on handlebar\", \"left foot stepping\", \"rear wheel off ground\"). If no clear action is visible, use the token \"no-action-visible\" or omit the action.\n3) Add 1–3 high‑signal descriptor(s) (prefer material/texture, readable text, reflection/wetness, or a distinctive accessory). If legible text appears, transcribe it exactly and localize it (e.g., \"'NO PARKING' stenciled on roll-up door at background right\"). Cap descriptors to 1–3 short facts (color + material/unique accessory preferred).\n4) Choose exactly one viewpoint token if discernible: close-up | medium | wide | high-angle | low-angle.\n5) Choose exactly one lighting token if visible: backlit | front-lit | rim-lit | long-shadow-left | long-shadow-right.\n6) Choose exactly one short background landmark/texture phrase if visible (single noun phrase, e.g., \"wet pavement with ripples\", \"yellow picnic table\", \"roll-up door\", \"plywood roof\").\n7) For people interacting with structures, require pose + placement wording (e.g., \"clinging to top edge near peak, legs dangling\"). For visible building construction, include clear cues when present (exposed studs, plywood, insulation).\n8) No hedging, no inferred attributes (age, emotion, relationships) beyond visible appearance (hair color, clothing, accessories). Use compact, active phrasing and concrete nouns.\n\nOrdering to follow in the sentence: numeral(s) + subject(s)/location, action+part (if any), discriminative descriptor(s) (max 3), viewpoint token, lighting token, background token.\n\nExamples:\nPositive (desired): \"3 children center foreground, right child stepping in ankle‑deep puddle; blue raincoat with yellow drawstrings and sunglasses on center child's forehead; medium; backlit; beige van behind.\"\nNegative (avoid): \"Several kids standing in water, some wearing colorful clothes, a vague busy background with unclear objects and lighting.\"",
+  "prompt_id": "textgrad_faecdbad9d",
+  "split_csv": "data/splits/flickr30k_main_seed1_val.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal/step_01/val/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal/step_01/val/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal/step_01/val/scores.csv",
+  "data_root": "data",
+  "summary": {
+    "n": 150,
+    "mean_clip": 0.2864625707268715,
+    "mean_siglip": 0.17850890512267747,
+    "mean_caption_len": 22.726666666666667,
+    "generic_rate": 0.0,
+    "mean_delta_clip": -0.03810287758708,
+    "mean_delta_siglip": -0.020331640566388764,
+    "clip_win_rate": 0.14,
+    "siglip_win_rate": 0.3
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_022222",
+      "image_relpath": "images/flickr30k/flickr30k_test_022222.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_022222.jpg",
+      "caption": "1 man left foreground, no-action-visible; white shirt, dark pants, barefoot; medium; front-lit; wet pavement with ripples.",
+      "clip_score": 0.2298813164234161,
+      "siglip_score": 0.0702405273914337,
+      "delta_clip": -0.1538815796375275,
+      "delta_siglip": -0.1699153482913971
+    },
+    {
+      "image_id": "flickr30k_test_022222",
+      "image_relpath": "images/flickr30k/flickr30k_test_022222.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_022222.jpg",
+      "caption": "1 man left foreground, no-action-visible; white shirt, dark pants, barefoot; medium; front-lit; wet pavement with ripples.",
+      "clip_score": 0.2298813164234161,
+      "siglip_score": 0.0702405273914337,
+      "delta_clip": -0.145864874124527,
+      "delta_siglip": -0.1522841602563858
+    },
+    {
+      "image_id": "flickr30k_test_011250",
+      "image_relpath": "images/flickr30k/flickr30k_test_011250.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_011250.jpg",
+      "caption": "2 children center foreground, right child holding left hand of left child; brown shirt with \"LAKE PLACID\" text and camouflage shorts; wide; front-lit; yellow caution tape.",
+      "clip_score": 0.2788937091827392,
+      "siglip_score": 0.2046335339546203,
+      "delta_clip": -0.1337000727653504,
+      "delta_siglip": -0.01588208973407748
+    },
+    {
+      "image_id": "flickr30k_test_026513",
+      "image_relpath": "images/flickr30k/flickr30k_test_026513.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_026513.jpg",
+      "caption": "1 person left foreground, no-action-visible; blue raincoat with hood up; medium; front-lit; wet pavement with ripples.",
+      "clip_score": 0.2755853235721588,
+      "siglip_score": 0.0931437015533447,
+      "delta_clip": -0.12708869576454157,
+      "delta_siglip": -0.16687497496604922
+    },
+    {
+      "image_id": "flickr30k_test_016590",
+      "image_relpath": "images/flickr30k/flickr30k_test_016590.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_016590.jpg",
+      "caption": "1 person center midground, no-action-visible; blue and white striped umbrella, stone steps, wide; front-lit; stone wall with metal railing.",
+      "clip_score": 0.2428168207406997,
+      "siglip_score": 0.1400245577096939,
+      "delta_clip": -0.121768519282341,
+      "delta_siglip": -0.08617421984672538
+    },
+    {
+      "image_id": "flickr30k_test_013546",
+      "image_relpath": "images/flickr30k/flickr30k_test_013546.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_013546.jpg",
+      "caption": "1 child center midground, no-action-visible; black jacket and blue pants; medium; front-lit; green trees blurred in background.",
+      "clip_score": 0.2560655176639557,
+      "siglip_score": 0.1381548047065735,
+      "delta_clip": -0.1210026741027832,
+      "delta_siglip": -0.07127454876899711
+    },
+    {
+      "image_id": "flickr30k_test_007523",
+      "image_relpath": "images/flickr30k/flickr30k_test_007523.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_007523.jpg",
+      "caption": "1 woman center foreground, no-action-visible; brown violin with dark wood grain and red varnish; close-up; front-lit; teal textured wall.",
+      "clip_score": 0.2312039732933044,
+      "siglip_score": 0.1736321300268173,
+      "delta_clip": -0.11698389053344732,
+      "delta_siglip": -0.0199749618768692
+    },
+    {
+      "image_id": "flickr30k_test_007385",
+      "image_relpath": "images/flickr30k/flickr30k_test_007385.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_007385.jpg",
+      "caption": "1 dancer center foreground, left arm raised holding baton, wearing blue jumpsuit with multicolored pattern; wide; front-lit; storefront with \"Foods\" sign.",
+      "clip_score": 0.2584259510040283,
+      "siglip_score": 0.1709585785865783,
+      "delta_clip": -0.11043089628219599,
+      "delta_siglip": -0.003969848155975397
+    },
+    {
+      "image_id": "flickr30k_test_006537",
+      "image_relpath": "images/flickr30k/flickr30k_test_006537.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_006537.jpg",
+      "caption": "1 worker center foreground, no-action-visible; orange high-visibility vest and blue jeans; wide; front-lit; gravel track with yellow train right.",
+      "clip_score": 0.2810860276222229,
+      "siglip_score": 0.1537253856658935,
+      "delta_clip": -0.11039483547210688,
+      "delta_siglip": -0.0639778673648834
+    },
+    {
+      "image_id": "flickr30k_test_016590",
+      "image_relpath": "images/flickr30k/flickr30k_test_016590.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_016590.jpg",
+      "caption": "1 person center midground, no-action-visible; blue and white striped umbrella, stone steps, wide; front-lit; stone wall with metal railing.",
+      "clip_score": 0.2428168207406997,
+      "siglip_score": 0.1400245577096939,
+      "delta_clip": -0.10983867943286901,
+      "delta_siglip": -0.08888840675353998
+    },
+    {
+      "image_id": "flickr30k_test_004799",
+      "image_relpath": "images/flickr30k/flickr30k_test_004799.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_004799.jpg",
+      "caption": "1 toddler center foreground, holding red mop handle with right hand, wearing light blue onesie with cartoon duck; medium; front-lit; hardwood floor.",
+      "clip_score": 0.2428385615348816,
+      "siglip_score": 0.202045738697052,
+      "delta_clip": -0.10977673530578613,
+      "delta_siglip": -0.029250800609588595
+    },
+    {
+      "image_id": "flickr30k_test_025248",
+      "image_relpath": "images/flickr30k/flickr30k_test_025248.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_025248.jpg",
+      "caption": "1 child center foreground, climbing chain-link fence; black overalls and white shirt; medium; front-lit; gray house with green shutters in background.",
+      "clip_score": 0.2376827150583267,
+      "siglip_score": 0.2290517687797546,
+      "delta_clip": -0.10849662125110629,
+      "delta_siglip": -0.038123667240142795
+    }
+  ]
+}

@@ -1,0 +1,117 @@
+{
+  "prompt": "Output exactly two lines only.\n\nLine 1 (tags) — required format and rules:\n- Provide a comma-separated list of up to 6 tokens (no extra punctuation except commas).\n- Token order (mandatory): 1) main object with count (format: \"<noun> <digit>\", use digits), 2) up to 3 secondary visible objects (no counts), 3) up to 2 visible colors or sizes. Example order: \"child 2, couch, table, ball, red, small\".\n- Use lower-case common nouns (e.g., person, child, dog, car). Do NOT use proper nouns, brand names, event names, dates, or inferred facts.\n- Only include colors/sizes that are clearly visible; if uncertain, omit them.\n- Do not repeat the same attribute with synonyms (pick the single best label).\n- No articles, no verbs, no punctuation except commas.\n\nLine 2 (caption) — required format and rules:\n- One factual caption in simple present tense, main object first, structured as: main object → action (simple present) → location/pose (e.g., \"1 child stands on kitchen counter\").\n- Word count: exactly 6–12 words. Count words by spaces. Use digits for numbers (e.g., \"1\", \"2\").\n- Verb morphology: for singular count use third-person singular verb (adds -s) — e.g., \"1 child stands\"; for plural counts use base verb — e.g., \"2 children stand\".\n- Include the digit count and at most one clearly visible color or size if visible.\n- Use only concrete, visible facts. Do NOT add proper nouns, place/event names, inferred intentions, emotions, metaphors, or invented facts.\n- Use common nouns; avoid rare or subjective adjectives. No punctuation except an optional single period at the end of Line 2.\n\nUncertainty and fallback rules:\n- If you cannot produce a compliant 6–12 word caption without adding uncertain attributes, produce a short fallback caption of 2–3 words (format: \"<main noun> <location>\" or \"image unclear\"). In this fallback case Line 1 may still list visible tags.\n- If even a short factual fallback is impossible, Line 1 may contain tags only and Line 2 must be \"image unclear\".\n- Always prefer a shorter accurate caption over a longer speculative one.\n\nSelf-check before output (you must perform these checks):\n1. Line count = 2.\n2. Line 1: ≤6 comma-separated tokens, first token = \"<noun> <digit>\", all lower-case, no forbidden items.\n3. Line 2: 6–12 words (or 2–3 word fallback), main object first, correct verb morphology, contains digit count if action present.\n4. No proper nouns or invented facts.\n5. No punctuation except commas in Line 1 and optional final period on Line 2.\nIf any check fails, replace Line 2 with the fallback \"image unclear\" (or only Line 2 \"image unclear\" if tags cannot be produced).\n\nPositive examples (follow exactly):\nchild 1, couch, red\n1 child sits on couch near a window.\n\ncar 2, street, small, blue\n2 cars wait at crosswalk near curb.\n\ndog 1, ball, grass, brown\n1 dog chases ball on grass near path.\n\nAmbiguous image example (fallback):\ngroup, person 3\ngroup of people\n\nNegative examples (do NOT follow):\n- Do not write: \"people celebrating at London 2012 welcome desk.\"\n- Do not include: \"a woman probably preparing food\" (inference).\n- Do not exceed 12 words or omit the digit count for the main object.\n\nStrictly follow these rules to produce concise, literal, and visually grounded captions that avoid hallucination.",
+  "prompt_id": "textgrad_3ff1e48f7c",
+  "split_csv": "data/splits/flickr30k_main_seed1_val.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24/step_01/val/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24/step_01/val/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24/step_01/val/scores.csv",
+  "summary": {
+    "n": 150,
+    "mean_clip": 0.2796642203132311,
+    "mean_siglip": 0.16055777980014682,
+    "mean_caption_len": 14.786666666666667,
+    "generic_rate": 0.0,
+    "mean_delta_clip": -0.04490122800072034,
+    "mean_delta_siglip": -0.038282765888919434,
+    "clip_win_rate": 0.08,
+    "siglip_win_rate": 0.18333333333333332
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_007385",
+      "caption": "person 1, person 2, person 3, person 4, person 5, person 6, person 7, person 8, person 9, person 10, person 11, person 12, person 13, person 14, person 1",
+      "clip_score": 0.2062693834304809,
+      "siglip_score": 0.0138990143314003,
+      "delta_clip": -0.1625874638557434,
+      "delta_siglip": -0.1610294124111534
+    },
+    {
+      "image_id": "flickr30k_test_023554",
+      "caption": "person 2, person, car, purple, black\n1 person stands beside another person near street",
+      "clip_score": 0.2230084240436554,
+      "siglip_score": 0.0479543283581733,
+      "delta_clip": -0.1612359583377838,
+      "delta_siglip": -0.1952755674719811
+    },
+    {
+      "image_id": "flickr30k_test_009512",
+      "caption": "person 5, tent, man, red, small\n5 people stand near blue tent on artificial grass.",
+      "clip_score": 0.2348199784755706,
+      "siglip_score": 0.0348094142973423,
+      "delta_clip": -0.14437177777290353,
+      "delta_siglip": -0.1535812579095363
+    },
+    {
+      "image_id": "flickr30k_test_016590",
+      "caption": "person 1, umbrella, backpack, blue, white\n1 person stands near fountain with umbrella",
+      "clip_score": 0.2383917272090912,
+      "siglip_score": 0.1378140598535537,
+      "delta_clip": -0.12619361281394953,
+      "delta_siglip": -0.0883847177028656
+    },
+    {
+      "image_id": "flickr30k_test_001063",
+      "caption": "person 1, couch, window, green, olive\n1 person sits on couch near window wearing green.",
+      "clip_score": 0.2230368554592132,
+      "siglip_score": 0.1191069036722183,
+      "delta_clip": -0.11698436737060552,
+      "delta_siglip": -0.1168746650218963
+    },
+    {
+      "image_id": "flickr30k_test_023317",
+      "caption": "person 1, hat, bag, blue, pink\n1 person stands at guest services counter wearing pink hat",
+      "clip_score": 0.274437814950943,
+      "siglip_score": 0.1924796998500824,
+      "delta_clip": -0.11671009659767151,
+      "delta_siglip": -0.025908857583999606
+    },
+    {
+      "image_id": "flickr30k_test_011250",
+      "caption": "child 2, airplane, tape, red, small\n2 children stand on grass near yellow tape",
+      "clip_score": 0.296833336353302,
+      "siglip_score": 0.2600502371788025,
+      "delta_clip": -0.1157604455947876,
+      "delta_siglip": 0.0395346134901047
+    },
+    {
+      "image_id": "flickr30k_test_016590",
+      "caption": "person 1, umbrella, backpack, blue, white\n1 person stands near fountain with umbrella",
+      "clip_score": 0.2383917272090912,
+      "siglip_score": 0.1378140598535537,
+      "delta_clip": -0.11426377296447754,
+      "delta_siglip": -0.0910989046096802
+    },
+    {
+      "image_id": "flickr30k_test_003587",
+      "caption": "person 1, cap, glasses, black, red\n1 person wears cap and glasses while seated",
+      "clip_score": 0.2538425624370575,
+      "siglip_score": 0.1492115259170532,
+      "delta_clip": -0.1114443838596344,
+      "delta_siglip": -0.11509254574775699
+    },
+    {
+      "image_id": "flickr30k_test_000585",
+      "caption": "crane 1, person, bench, yellow, red\n1 crane stands near group of people near building.",
+      "clip_score": 0.2263703942298889,
+      "siglip_score": 0.1793822050094604,
+      "delta_clip": -0.1106313765048981,
+      "delta_siglip": -0.0285526514053345
+    },
+    {
+      "image_id": "flickr30k_test_004235",
+      "caption": "person 1, phone, trash can, black, white\n1 person talks on phone while sitting on bench",
+      "clip_score": 0.2806128263473511,
+      "siglip_score": 0.125652402639389,
+      "delta_clip": -0.10932201147079462,
+      "delta_siglip": -0.1607432067394257
+    },
+    {
+      "image_id": "flickr30k_test_017698",
+      "caption": "person 1, building, hat, white, military uniform\n1 person stands in front of building wearing white hat",
+      "clip_score": 0.2437944710254669,
+      "siglip_score": 0.1590443849563598,
+      "delta_clip": -0.10769179463386538,
+      "delta_siglip": -0.10099548101425176
+    }
+  ]
+}

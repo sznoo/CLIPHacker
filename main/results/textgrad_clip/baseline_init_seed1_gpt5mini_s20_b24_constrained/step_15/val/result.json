@@ -1,0 +1,117 @@
+{
+  "prompt": "Generate exactly one short, literal, factual caption (one grammatically correct sentence) describing only visible content in the image. Output exactly one sentence only — no extra text. Total words: 8–14 (prefer 9–12). Follow these prioritized rules (apply in order):\n\n1) Subject selection: choose the subject that maximizes a simple visibility score combining normalized area and detector confidence, with a strong bonus if the subject enables one or more visible high‑signal tokens (see rule 3). If scores tie, prefer the larger area. Prefer a detected person only when that person scores near the top and provides discriminative tokens.\n\n2) Visibility (safety): treat a detection as usable if its visibility score is meaningfully positive (use area% and detector_confidence together) and it meets a small minimum (very small detections should be ignored). Do not invent attributes not supported by detections.\n\n3) High‑signal tokens (definition and placement): high‑signal tokens = visible colors or patterns, concrete multiword classes (e.g., \"stop sign\", \"double‑decker bus\"), clear Arabic numerals, clothing/accessory terms, or short readable text/logos (1–3 tokens). Require at least one high‑signal token within the first 3 content words (a single leading article does not count). If two distinct high‑signal tokens are clearly visible, include both within the first 4 content words unless grammar absolutely prevents it.\n\n4) OCR/text copying: allow copying short readable text/logos (1–3 tokens) only when OCR_confidence ≥ 0.55 and OCR_bbox_area ≥ 0.5% (or otherwise clearly legible). Never copy phone numbers or runs of ≥5 consecutive digits. Do not copy unreadable or low‑confidence text.\n\n5) Second object allowance: you may append one compact post‑nominal prepositional or participial phrase (one relation only, e.g., \"by market stall\", \"on sidewalk\") if that second short phrase adds a distinct high‑signal token. No stacked relations or long descriptive chains.\n\n6) Wording, modifiers, verbs, and length: prefer starting with a high‑signal modifier plus class (e.g., \"red bicycle\", \"two dogs\", \"striped shirt\") when natural, but a leading article is acceptable if it yields more natural grammar. Use present‑tense, concise S V (+ O) sentences. Prefer specific, concrete verbs when action is visible; use \"is/are\" only when no clear action can be inferred.\n\n7) Numbers and formatting: use Arabic numerals for visible counts that meet visibility/OCR rules. Keep captions dense with concrete tokens and minimal function words.\n\n8) Safety and literalness: do not invent unseen attributes, emotions, intentions, or dialogue. Do not hallucinate unreadable text. If no high‑signal token meets the thresholds, select the next best visible candidate that provides at least one high‑signal token, but never violate visibility or OCR safety rules.\n\nFinal constraints: one sentence only, 8–14 words, literal description of visible content, follow the visibility and OCR guidance above, do not output fallback phrases, and do not add any extra commentary.",
+  "prompt_id": "textgrad_2c3cead2e3",
+  "split_csv": "data/splits/flickr30k_main_seed1_val.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_15/val/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_15/val/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_15/val/scores.csv",
+  "summary": {
+    "n": 150,
+    "mean_clip": 0.31964064021905264,
+    "mean_siglip": 0.19054656520485877,
+    "mean_caption_len": 12.373333333333333,
+    "generic_rate": 0.04666666666666667,
+    "mean_delta_clip": -0.004924808094898864,
+    "mean_delta_siglip": -0.00829398048420747,
+    "clip_win_rate": 0.44333333333333336,
+    "siglip_win_rate": 0.38
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_011250",
+      "caption": "Two children stand in grass near yellow caution tape.",
+      "clip_score": 0.2847816944122314,
+      "siglip_score": 0.2097965031862259,
+      "delta_clip": -0.1278120875358582,
+      "delta_siglip": -0.010719120502471896
+    },
+    {
+      "image_id": "flickr30k_test_011250",
+      "caption": "Two children stand in grass near yellow caution tape.",
+      "clip_score": 0.2847816944122314,
+      "siglip_score": 0.2097965031862259,
+      "delta_clip": -0.0878410935401917,
+      "delta_siglip": -0.038544282317161505
+    },
+    {
+      "image_id": "flickr30k_test_026753",
+      "caption": "Man in black shirt with \"LOVE\" text grinds rail on inline skates.",
+      "clip_score": 0.248860627412796,
+      "siglip_score": 0.1859456598758697,
+      "delta_clip": -0.08273062109947202,
+      "delta_siglip": 0.028404653072357205
+    },
+    {
+      "image_id": "flickr30k_test_011286",
+      "caption": "Three people in orange shorts walk along rocky riverbank.",
+      "clip_score": 0.2790911793708801,
+      "siglip_score": 0.1892420947551727,
+      "delta_clip": -0.07866442203521729,
+      "delta_siglip": -0.03584381937980649
+    },
+    {
+      "image_id": "flickr30k_test_026753",
+      "caption": "Man in black shirt with \"LOVE\" text grinds rail on inline skates.",
+      "clip_score": 0.248860627412796,
+      "siglip_score": 0.1859456598758697,
+      "delta_clip": -0.0749353468418121,
+      "delta_siglip": -0.034994378685951205
+    },
+    {
+      "image_id": "flickr30k_test_003587",
+      "caption": "Man wearing black cap and jacket with visible logos and number 3.",
+      "clip_score": 0.2916092276573181,
+      "siglip_score": 0.2373426854610443,
+      "delta_clip": -0.07367771863937378,
+      "delta_siglip": -0.02696138620376587
+    },
+    {
+      "image_id": "flickr30k_test_006161",
+      "caption": "Woman in green vest and straw hat sweeps sidewalk near crowd.",
+      "clip_score": 0.2672992348670959,
+      "siglip_score": 0.2018737345933914,
+      "delta_clip": -0.07068267464637762,
+      "delta_siglip": -0.042466029524803106
+    },
+    {
+      "image_id": "flickr30k_test_013019",
+      "caption": "Two people walk through a leaf-covered forest path.",
+      "clip_score": 0.2684128880500793,
+      "siglip_score": 0.159890741109848,
+      "delta_clip": -0.057488143444061335,
+      "delta_siglip": -0.038878127932548495
+    },
+    {
+      "image_id": "flickr30k_test_000051",
+      "caption": "Man in white uniform with \"J.K. LEE\" text kneels on red mat.",
+      "clip_score": 0.3120312690734863,
+      "siglip_score": 0.1737297773361206,
+      "delta_clip": -0.05658042430877691,
+      "delta_siglip": -0.012443765997886602
+    },
+    {
+      "image_id": "flickr30k_test_002727",
+      "caption": "Man in green floral shirt smiles at camera near \"KIRIN\" sign.",
+      "clip_score": 0.2795144319534302,
+      "siglip_score": 0.217430979013443,
+      "delta_clip": -0.056332319974899236,
+      "delta_siglip": -0.05675104260444641
+    },
+    {
+      "image_id": "flickr30k_test_016590",
+      "caption": "A woman in a colorful striped shawl sells goods under a blue-and-white umbrella.",
+      "clip_score": 0.310174286365509,
+      "siglip_score": 0.195881575345993,
+      "delta_clip": -0.05441105365753174,
+      "delta_siglip": -0.030317202210426303
+    },
+    {
+      "image_id": "flickr30k_test_014144",
+      "caption": "Man in dark uniform grinds metal near lockers, sparks flying.",
+      "clip_score": 0.3076149821281433,
+      "siglip_score": 0.2296902239322662,
+      "delta_clip": -0.05398845672607416,
+      "delta_siglip": -0.0011389255523681918
+    }
+  ]
+}

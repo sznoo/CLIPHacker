@@ -1,0 +1,117 @@
+{
+  "prompt": "Output exactly two lines only.\n\nLine 1 (tags) — required format and rules:\n- Provide exactly 2–5 comma-separated tokens (no punctuation except commas). First token = main object (lower-case common noun), optionally with a visually certain count immediately after the noun (digit or word). Examples: \"child\", \"child 2\", \"person one\".\n- At least 2 tokens must be nouns (including the main noun). At most 1 token may be a visible attribute (color or size). Do NOT include verbs, proper nouns, brand names, inferred facts, emotions, events, or dates.\n- Use only lower-case common nouns and simple adjectives (dog, child, car, red, small). No articles in tags. No repeated words or near-synonyms — deduplicate and prefer the most specific single noun (e.g., choose \"child\" not \"person, child\").\n- Order tags by salience (most discriminative first). Prefer compact, high-information nouns over long exhaustive lists.\n\nLine 2 (caption) — required format and rules:\n- One factual short sentence in present simple or present progressive of 7–14 words, OR a valid 2–3 word fallback caption (main noun + short location, e.g., \"child sidewalk\") if a compliant 7–14 word caption would require guessing. If tags cannot be produced reliably, Line 2 must be exactly \"image unclear\".\n- Place the main noun within positions 1–3 of the sentence. If a visually certain numeric count is shown in Line 1, reflect it in the caption and use correct verb morphology: singular -> third-person singular verb (adds -s), plural -> base verb (e.g., \"1 child stands\", \"2 children stand\").\n- Include at most one clearly visible color or size in the caption and at most one simple spatial relation/preposition (on, in, near, by, in front of, behind). Use only concrete, directly visible facts. Do NOT add proper nouns, intentions, emotions, or invented facts.\n- No punctuation except an optional single period at the end.\n\nHarmonization and anti-hallucination:\n- Ensure lexical reinforcement: prefer at least two exact token overlaps between Line 1 and Line 2 (noun or attribute). If only one overlap is possible, ensure it is the main noun. Overlap strongly improves alignment.\n- Prefer omission over guessing: if a property (count, color, relation) is not clearly visible, omit it rather than invent it.\n- If you cannot produce a compliant caption without adding uncertain attributes, produce the 2–3 word fallback (main noun + location) or \"image unclear\" as specified above.\n\nCandidate generation and (required) reranking:\n- Internally generate N = 3 candidate compliant outputs (each candidate = Line1 tags + Line2 caption obeying rules). Score and select the best candidate before output.\n- If a CLIP scorer is available, use it to rerank candidates. If not available, use this proxy score:\n  proxy_score = 5*(main-noun overlap) + 3*(each additional exact overlap) + 2*(visible attribute overlap) - 2*(duplicates collapsed penalty) - 1*(each tag beyond 3).\n  Higher score wins. Break ties by preferring more overlaps, then shorter tag lists.\n\nDeterministic self-checks (must pass before returning output):\n1. Deduplicate tags; ensure 2–5 comma-separated tokens, all lower-case, nouns/adjectives only, ≤1 attribute.\n2. Ensure Line 2 length = 7–14 words OR valid 2–3 word fallback OR exactly \"image unclear\".\n3. Ensure at least one exact token overlap between tags and caption; prefer ≥2 overlaps.\n4. If Line 1 includes a numeric count, ensure caption verb morphology matches that count.\n5. No forbidden items (proper nouns, inferred facts); no punctuation except commas in Line 1 and optional final period in Line 2.\nIf any check fails, replace Line 2 with \"image unclear\". If tags cannot be produced reliably, return only tags you can trust (2–5 tokens) and Line 2 = \"image unclear\".\n\nPractical guidance:\n- Keep tags compact and discriminative (2–4 nouns is ideal). A single clear color or size is allowed only when obvious.\n- Avoid listing many small objects; instead choose the most salient objects that distinguish the image.\n- When uncertain about count, color, or relation, omit them from both tags and caption.\n\nPositive examples (correct):\n- Example A:\n  Line1: child, blanket, red\n  Line2: child sits on blanket holding a red toy.\n  (main noun early; two overlaps: child, blanket; one visible attribute red)\n- Example B:\n  Line1: dog 2, ball\n  Line2: 2 dogs play near a ball on grass.\n  (numeric count reflected; correct plural verb form; overlaps: dog, ball)\n\nNegative examples (common errors and fixes):\n- Bad: \"person, person, person, car, red, red\" + \"person stands by car.\"\n  Fix: deduplicate and reduce tags to \"person, car, red\"; ensure 2–5 tokens.\n- Bad: Line1 \"child 2, dog\" + Line2 \"child stands near dog\"\n  Fix: If Line1 uses \"child 2\", caption must read \"2 children stand near dog\" (plural verb and noun form).\n\nImplementation checklist to append inside the prompt:\n- Generate 3 candidates, apply proxy/CLIP rerank, run self-checks 1–5, output the top candidate if it passes; otherwise output tags you can trust and Line 2 = \"image unclear\". The VLM must follow the two-line output format exactly.",
+  "prompt_id": "textgrad_fc3d51810c",
+  "split_csv": "data/splits/flickr30k_main_seed1_train.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24/step_04/train/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24/step_04/train/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24/step_04/train/scores.csv",
+  "summary": {
+    "n": 24,
+    "mean_clip": 0.29818814682463807,
+    "mean_siglip": 0.170820040628314,
+    "mean_caption_len": 13.208333333333334,
+    "generic_rate": 0.0,
+    "mean_delta_clip": -0.025158703948060676,
+    "mean_delta_siglip": -0.021642414542535942,
+    "clip_win_rate": 0.20833333333333334,
+    "siglip_win_rate": 0.3333333333333333
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_024011",
+      "caption": "dancer, person, car, red\n\ndancers perform on street near car with red accents.",
+      "clip_score": 0.244353249669075,
+      "siglip_score": 0.1124126836657524,
+      "delta_clip": -0.1371011584997177,
+      "delta_siglip": -0.06018932908773421
+    },
+    {
+      "image_id": "flickr30k_test_027768",
+      "caption": "person, blanket, red\nperson holds a blanket while wearing a red sweatshirt.",
+      "clip_score": 0.2546728551387787,
+      "siglip_score": 0.1156054586172103,
+      "delta_clip": -0.0875150859355926,
+      "delta_siglip": -0.1162118613719941
+    },
+    {
+      "image_id": "flickr30k_test_028178",
+      "caption": "man, trumpet, tree, red\nman plays trumpet near tree with red attire.",
+      "clip_score": 0.3019858002662658,
+      "siglip_score": 0.1699735522270202,
+      "delta_clip": -0.0857392549514771,
+      "delta_siglip": -0.05470278859138489
+    },
+    {
+      "image_id": "flickr30k_test_015736",
+      "caption": "dog, water, white, brown\ndog walks in shallow water reflecting on surface.",
+      "clip_score": 0.2877599000930786,
+      "siglip_score": 0.189198836684227,
+      "delta_clip": -0.0599856972694397,
+      "delta_siglip": -0.020571544766426003
+    },
+    {
+      "image_id": "flickr30k_test_021750",
+      "caption": "person, person, bag, container, white\ntwo people hug while holding bags and white containers",
+      "clip_score": 0.2648239731788635,
+      "siglip_score": 0.1701046973466873,
+      "delta_clip": -0.05911195278167719,
+      "delta_siglip": 0.0032294690608977994
+    },
+    {
+      "image_id": "flickr30k_test_012029",
+      "caption": "person, boat, temple, water\npeople stand on boat near temple in water",
+      "clip_score": 0.3149585127830505,
+      "siglip_score": 0.1384304016828537,
+      "delta_clip": -0.03622627258300781,
+      "delta_siglip": -0.0031844526529312134
+    },
+    {
+      "image_id": "flickr30k_test_015474",
+      "caption": "boat, person, water, building, paddle\nperson rows boat in muddy water near wooden buildings",
+      "clip_score": 0.2949564456939697,
+      "siglip_score": 0.1364799886941909,
+      "delta_clip": -0.03382697701454157,
+      "delta_siglip": -0.03428061306476601
+    },
+    {
+      "image_id": "flickr30k_test_002067",
+      "caption": "child, guitar, person, chair, sidewalk\nchild stands on sidewalk near guitar and people sitting in chairs",
+      "clip_score": 0.3066612482070923,
+      "siglip_score": 0.2551424503326416,
+      "delta_clip": -0.0273282527923584,
+      "delta_siglip": 0.024472966790199308
+    },
+    {
+      "image_id": "flickr30k_test_000928",
+      "caption": "person, food, jacket, red\nperson holds food while another person in red jacket eats nearby.",
+      "clip_score": 0.2663270831108093,
+      "siglip_score": 0.1261118501424789,
+      "delta_clip": -0.026907384395599365,
+      "delta_siglip": -0.039961546659469604
+    },
+    {
+      "image_id": "flickr30k_test_024978",
+      "caption": "person, car, bench, wall\nperson sits on bench near blue car against weathered wall",
+      "clip_score": 0.3098441362380981,
+      "siglip_score": 0.2516956925392151,
+      "delta_clip": -0.024281173944473322,
+      "delta_siglip": 0.006644815206527793
+    },
+    {
+      "image_id": "flickr30k_test_000069",
+      "caption": "car, person, red, light\nperson stands near red car with glowing lights on sidewalk",
+      "clip_score": 0.3084500432014465,
+      "siglip_score": 0.133593201637268,
+      "delta_clip": -0.020309746265411432,
+      "delta_siglip": -0.04578600823879239
+    },
+    {
+      "image_id": "flickr30k_test_013637",
+      "caption": "surfer, wave, board, blue\n\nsurfer rides wave on blue board in ocean.",
+      "clip_score": 0.2851234972476959,
+      "siglip_score": 0.1111503168940544,
+      "delta_clip": -0.018132805824279785,
+      "delta_siglip": -0.057055957615375505
+    }
+  ]
+}

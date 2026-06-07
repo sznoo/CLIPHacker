@@ -1,0 +1,117 @@
+{
+  "prompt": "Generate exactly one short, literal, factual caption (one grammatically correct sentence) describing only visible content in the image. Output exactly one sentence only—no extra text. Total words: 8–14.\n\nKey definitions\n- High‑signal token = a visible color/pattern; a concrete, specific object class (prefer multiword classes like \"stop sign\", \"fire hydrant\", \"rolling metal door\"); a clear Arabic numeral; a clothing/accessory; or legible text/logo copied exactly when it meets the OCR rules below.\n- Content words = all words except a single leading article (a/an/the) if present.\n\nVisibility and OCR (deterministic)\n- An object is \"clearly visible\" if area ≥1.5% of image OR (area ≥0.8% AND detector_confidence ≥0.45).\n- Copy legible text/logo exactly only if OCR_confidence ≥0.60 AND OCR_bbox_area ≥1.5% AND OCR_token_count ≤6 AND the text contains no run of ≥5 consecutive digits and does not match phone‑number patterns. When allowed, prefer copying the text/logo token directly (no wrapper) and place it early; if a wrapper is required for grammar, use the shortest form (e.g., shirt NIKE or shirt \"NIKE\").\n- Treat counts/digits as visible only if digits meet the OCR/visibility rules above. Use Arabic numerals.\n\nSalience and subject selection (deterministic)\n- Salience = 0.5*(area_norm) + 0.3*(detector_confidence) + 0.15*(center_score) + 0.05*(local_contrast). If area >40% of image, multiply its area_norm by 0.8 (not 0.5) before computing Salience; if a large-area candidate has detector_confidence ≥0.60 or substantially higher local_contrast, allow it to remain competitive (foreground rescue).\n- Choose the subject with highest salience. If two candidates are within 5% salience, prefer the one that yields more distinct high‑signal tokens early (color, multiword class, accessory, number, or short OCR token).\n\nPlacement and high‑signal token rules (deterministic)\n- First content token must be a high‑signal token (color/multiword class/number/text) unless impossible. Require at least one high‑signal token within the first 2 content words. Allow exactly one deterministic exception only if grammaticality is impossible; in that case the token must be within the first 4 content words.\n- If two distinct high‑signal tokens are clearly visible, require both within the first 4 content words unless that makes the sentence ungrammatical; otherwise place one before the verb and the other immediately after it.\n- Do not precede the first high‑signal token with verbs or extraneous function words (omit or drop the leading article if it delays high‑signal tokens).\n- When a visible numeral/count meets visibility rules, use an Arabic numeral and place it early (within first 2–4 content words).\n\nClass, wording and modifier constraints\n- Start with a concise noun phrase: prefer [Color/Number/Multword‑class] + [class]. Prefer multiword concrete classes when available.\n- Use present‑tense, concise S + V (+ O) sentences and common collocations (\"X holds Y\", \"X sits on Y\", \"X leans against Y\").\n- Limit modifiers: at most one pre‑nominal adjective (color/pattern/accessory) and at most one short post‑nominal prepositional phrase or one compact participial phrase. Allow one compact extra descriptor overall. Avoid subordinate clauses and stacked prepositional phrases.\n- Aim for noun‑dense captions with concrete tokens early; minimize function words that delay concrete tokens.\n\nOCR/token formatting notes\n- Prefer direct inclusion of short OCR tokens (e.g., shirt NIKE, sign STOP) without extra wrapper words when OCR rules are met. If quotes are required for clarity, keep them minimal; avoid verbose wrappers like \"sign reading\" unless necessary for grammar. Do not copy phone numbers or long digit sequences.\n\nTemplates and micro‑patterns (use these as patterns, not literal fill)\n- [Color] [multiword_class] [verb] [object] → \"Red double-decker bus passes street.\"\n- [Numeral] [multiword_class] [verb] [modifier] → \"3 yellow school buses stop at corner.\"\n- [multiword_class] [OCR_TEXT] [verb] [object] → \"Shirt NIKE worn by young man.\"\n\nExamples (follow these styles; do not output these examples)\n- Good: \"Young woman in red coat holds black umbrella.\"\n- Good: \"White stop sign beside brick building.\"\n- Good (OCR): \"Shirt NIKE worn by man.\"\n- Bad: \"There is a group of people sitting at a table while others stand and talk.\" (too generic/long)\n- Bad: \"Man leans on sign with 212-625-9212 printed.\" (do not copy phone numbers / low‑confidence OCR)\n\nDeterministic tie‑breakers and limits\n- When subjects tie, prefer the subject that yields more distinct high‑signal tokens early.\n- Limit caption length to 8–14 total words. Aim for ~9–12 content words when possible.\n- Enforce the visibility/OCR thresholds strictly. Do not invent unseen attributes or guess unreadable text.\n\nFinal output rule reminder: produce exactly one one‑sentence caption, no extra text, within 8–14 words, following the deterministic visibility, OCR, salience, placement, and syntax rules above.",
+  "prompt_id": "textgrad_8617f977b2",
+  "split_csv": "data/splits/flickr30k_main_seed1_train.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_12/train/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_12/train/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_12/train/scores.csv",
+  "summary": {
+    "n": 24,
+    "mean_clip": 0.3084437611202399,
+    "mean_siglip": 0.18797597289085388,
+    "mean_caption_len": 10.416666666666666,
+    "generic_rate": 0.0,
+    "mean_delta_clip": -0.01279249787330629,
+    "mean_delta_siglip": -0.001189887834091969,
+    "clip_win_rate": 0.375,
+    "siglip_win_rate": 0.4166666666666667
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_018651",
+      "caption": "Man in straw hat leans against wall beside bicycle with fruit baskets.",
+      "clip_score": 0.3193446397781372,
+      "siglip_score": 0.1873761713504791,
+      "delta_clip": -0.08287903666496277,
+      "delta_siglip": -0.009167507290840093
+    },
+    {
+      "image_id": "flickr30k_test_003075",
+      "caption": "Child in blue raincoat walks through puddle.",
+      "clip_score": 0.3093432188034057,
+      "siglip_score": 0.140347421169281,
+      "delta_clip": -0.06121158599853521,
+      "delta_siglip": -0.0792025476694107
+    },
+    {
+      "image_id": "flickr30k_test_028178",
+      "caption": "Man in red shirt plays trumpet under lit tree.",
+      "clip_score": 0.3334274291992187,
+      "siglip_score": 0.2100497931241989,
+      "delta_clip": -0.054297626018524225,
+      "delta_siglip": -0.014626547694206182
+    },
+    {
+      "image_id": "flickr30k_test_005524",
+      "caption": "Girl in white shirt blows balloon tied with string.",
+      "clip_score": 0.2497254610061645,
+      "siglip_score": 0.1973558962345123,
+      "delta_clip": -0.05198568105697632,
+      "delta_siglip": 0.017807990312576294
+    },
+    {
+      "image_id": "flickr30k_test_003536",
+      "caption": "Boy in gray beanie holds white paper near tree.",
+      "clip_score": 0.3072206377983093,
+      "siglip_score": 0.1850327849388122,
+      "delta_clip": -0.03507012128829956,
+      "delta_siglip": -0.011937946081161499
+    },
+    {
+      "image_id": "flickr30k_test_012897",
+      "caption": "Woman in blue shirt paints on canvas outdoors.",
+      "clip_score": 0.3200858831405639,
+      "siglip_score": 0.1790287345647812,
+      "delta_clip": -0.03071445226669317,
+      "delta_siglip": -0.0017001181840896051
+    },
+    {
+      "image_id": "flickr30k_test_030218",
+      "caption": "Man in brown jacket plays flute on sidewalk.",
+      "clip_score": 0.3264931440353393,
+      "siglip_score": 0.2120612412691116,
+      "delta_clip": -0.027602255344390925,
+      "delta_siglip": -0.010544881224632291
+    },
+    {
+      "image_id": "flickr30k_test_001002",
+      "caption": "Man in red hat and maroon jacket sits on colorful blankets holding a sword.",
+      "clip_score": 0.3341533541679382,
+      "siglip_score": 0.1555686146020889,
+      "delta_clip": -0.02475756406784063,
+      "delta_siglip": -0.076612189412117
+    },
+    {
+      "image_id": "flickr30k_test_000833",
+      "caption": "Boy in blue shorts holds paddle near water.",
+      "clip_score": 0.2798798680305481,
+      "siglip_score": 0.1464465111494064,
+      "delta_clip": -0.023797214031219482,
+      "delta_siglip": -0.039079114794731085
+    },
+    {
+      "image_id": "flickr30k_test_023784",
+      "caption": "Smiling woman in blue vest stands among bags and boxes.",
+      "clip_score": 0.3018074929714203,
+      "siglip_score": 0.1823360919952392,
+      "delta_clip": -0.02293893694877619,
+      "delta_siglip": -0.03566133975982669
+    },
+    {
+      "image_id": "flickr30k_test_022178",
+      "caption": "Man in striped shirt sits on stool reading newspaper near fruit stand.",
+      "clip_score": 0.2985804378986358,
+      "siglip_score": 0.1775969415903091,
+      "delta_clip": -0.0223177969455719,
+      "delta_siglip": -0.0109915882349014
+    },
+    {
+      "image_id": "flickr30k_test_008358",
+      "caption": "Red goalkeeper in jersey number one dives across grassy field.",
+      "clip_score": 0.3372859358787536,
+      "siglip_score": 0.1984191387891769,
+      "delta_clip": -0.0208274126052857,
+      "delta_siglip": -0.0030926913022994995
+    }
+  ]
+}

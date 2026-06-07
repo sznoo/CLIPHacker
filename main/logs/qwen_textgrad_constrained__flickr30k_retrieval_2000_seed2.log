@@ -1,0 +1,15 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Split:       flickr30k_retrieval_2000_seed2
+Run ID:      qwen_textgrad_constrained__flickr30k_retrieval_2000_seed2
+Images:      2000
+Prompts:     1
+Tasks:       2000
+Existing:    0
+Missing:     2000
+Fetching 4 files:   0%|          | 0/4 [00:00<?, ?it/s]Fetching 4 files: 100%|██████████| 4/4 [00:00<00:00, 20336.02it/s]
+/home/jinwoo/.conda/envs/cliphacker/lib/python3.11/site-packages/torch/cuda/__init__.py:716: UserWarning: Can't initialize NVML
+  warnings.warn("Can't initialize NVML")
+/home/jinwoo/.conda/envs/cliphacker/lib/python3.11/site-packages/torch/cuda/__init__.py:905: UserWarning: CUDA initialization: CUDA unknown error - this may be due to an incorrectly set up environment, e.g. changing env variable CUDA_VISIBLE_DEVICES after program start. Setting the available devices to be zero. (Triggered internally at ../c10/cuda/CUDAFunctions.cpp:108.)
+  r = torch._C._cuda_getDeviceCount() if nvml_count < 0 else nvml_count
+Loading weights:   0%|          | 0/750 [00:00<?, ?it/s]Loading weights: 100%|██████████| 750/750 [00:00<00:00, 9671.07it/s]
+Generating captions:   0%|          | 0/2000 [00:00<?, ?it/s]

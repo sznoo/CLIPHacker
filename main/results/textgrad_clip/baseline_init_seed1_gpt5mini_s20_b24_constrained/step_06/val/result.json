@@ -1,0 +1,117 @@
+{
+  "prompt": "Output exactly one short, literal, factual sentence (8–20 words) describing only visible content in the image. Do not add labels, examples, lists, annotations, explanations, or any extra text—one sentence only.\n\nDefinitions and counting\n- A single leading article (a/an/the) and punctuation do not count as content words when computing \"first N content words.\"\n- Treat a hyphenated color‑class cluster (e.g., \"white-and-brown dog\") as a single attribute+noun cluster for positional rules. Treat slashes or compound nouns similarly when they form one visual token.\n- High‑signal tokens = visible color or pattern, a concrete specific object class (use the most specific multiword class available), a clear Arabic numeral count (digits), clothing/accessory, or legible text/logo copied exactly as seen.\n\nPrimary constraints (must)\n1. Early high‑signal tokens:\n   - If two high‑signal tokens are clearly visible, both must appear within the first three content words.\n   - Otherwise at least one high‑signal token must appear within the first two content words.\n2. Color/pattern adjacency:\n   - Any visible color/pattern adjective must appear immediately before its noun with no intervening words or commas (e.g., \"red bicycle\"). Use \"noun with [attribute]\" only if the attribute cannot legally appear within the required early content words.\n3. Specific class requirement:\n   - Use the most specific visible concrete class (multiword when available, e.g., \"electric guitar\", \"police car\"). Never use generic placeholders such as \"object\", \"item\", or \"instrument.\" Use \"person\" only when no more specific role/class is confidently visible.\n4. Counts and legible text:\n   - Use Arabic numerals (digits) for clear counts and place any numeral within the first three content words.\n   - If any legible text or logo is confidently readable, copy it exactly (including visible case) and place it within the first five content words.\n5. Syntax and style:\n   - Prefer a short present‑tense sentence (subject + verb) as the default form. A bare noun phrase (no verb) is allowed only when a verb would prevent meeting the early high‑signal requirements.\n6. Spatial connectors:\n   - Allow at most one short spatial connector (\"next to\", \"on\", \"near\", \"in front of\") and only when it disambiguates the primary subject’s relation to a nearby object or surface. Do not stack connectors or use commas to push high‑signal tokens later.\n7. Deterministic primary subject selection:\n   - Choose the primary subject deterministically: prefer centermost → largest → highest‑contrast → object with a visible attribute (color/number/logo). If tied, prefer the item with the most legible text/logo.\n8. Conservative fallbacks and prohibited inferences:\n   - If a specific class, color, or text is not confidently visible, use a conservative, generic safe term (e.g., \"person\", \"vehicle\", \"building\") rather than guessing. Never infer unseen attributes such as age, emotion, intent, relationships, or otherwise invent specifics.\n9. Punctuation and token positioning:\n   - Commas, parentheticals, or additional punctuation may not be used to delay required early high‑signal tokens. Hyphens and compound forms count as described above.\n10. Length guidance:\n   - Follow the 8–20 total words limit while aiming for about 10–14 content words to include multiple discriminative tokens.\n\nExamples of forbidden choices: do not output generic templates like \"There is...\" when a more specific subject is visible; do not output invented attributes or unverifiable labels.\n\nOutput exactly one short sentence only—no extra text.",
+  "prompt_id": "textgrad_8d6b4a6a56",
+  "split_csv": "data/splits/flickr30k_main_seed1_val.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_06/val/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_06/val/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_06/val/scores.csv",
+  "summary": {
+    "n": 150,
+    "mean_clip": 0.32080695241689683,
+    "mean_siglip": 0.19184640874465306,
+    "mean_caption_len": 13.76,
+    "generic_rate": 0.21333333333333335,
+    "mean_delta_clip": -0.003758495897054675,
+    "mean_delta_siglip": -0.006994136944413188,
+    "clip_win_rate": 0.44,
+    "siglip_win_rate": 0.4033333333333333
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_011250",
+      "caption": "Two children stand near yellow caution tape on grassy field under blue sky.",
+      "clip_score": 0.3163377642631531,
+      "siglip_score": 0.2215333729982376,
+      "delta_clip": -0.09625601768493652,
+      "delta_siglip": 0.0010177493095398227
+    },
+    {
+      "image_id": "flickr30k_test_026513",
+      "caption": "Person in yellow jacket operates camera near person in blue jacket under umbrella.",
+      "clip_score": 0.3285637497901916,
+      "siglip_score": 0.2279933243989944,
+      "delta_clip": -0.07411026954650879,
+      "delta_siglip": -0.03202535212039953
+    },
+    {
+      "image_id": "flickr30k_test_015890",
+      "caption": "Person in white shirt with red \"Spirit H\" logo performs BMX trick mid-air above concrete ramp.",
+      "clip_score": 0.2667246162891388,
+      "siglip_score": 0.1799745559692382,
+      "delta_clip": -0.07356387376785278,
+      "delta_siglip": 0.005364120006561196
+    },
+    {
+      "image_id": "flickr30k_test_018677",
+      "caption": "A man and woman stand on wooden stairs holding plates near a wall with framed art.",
+      "clip_score": 0.2687012553215027,
+      "siglip_score": 0.2066097110509872,
+      "delta_clip": -0.0696321427822113,
+      "delta_siglip": -0.006120279431343106
+    },
+    {
+      "image_id": "flickr30k_test_003587",
+      "caption": "Man wearing black cap with number 3 and black jacket with Coca-Cola logo.",
+      "clip_score": 0.2984161376953125,
+      "siglip_score": 0.2060475051403045,
+      "delta_clip": -0.0668708086013794,
+      "delta_siglip": -0.05825656652450567
+    },
+    {
+      "image_id": "flickr30k_test_016590",
+      "caption": "A person in colorful traditional clothing stands near a blue-and-white umbrella on a stone walkway.",
+      "clip_score": 0.2992397844791412,
+      "siglip_score": 0.1433298289775848,
+      "delta_clip": -0.06534555554389954,
+      "delta_siglip": -0.08286894857883448
+    },
+    {
+      "image_id": "flickr30k_test_013019",
+      "caption": "Two people walk on a leaf-covered path through a wooded area.",
+      "clip_score": 0.2649159431457519,
+      "siglip_score": 0.1757114082574844,
+      "delta_clip": -0.06098508834838873,
+      "delta_siglip": -0.02305746078491208
+    },
+    {
+      "image_id": "flickr30k_test_026753",
+      "caption": "A person wearing a black t-shirt with \"LOVE\" text grinds a metal rail on inline skates.",
+      "clip_score": 0.2708554565906524,
+      "siglip_score": 0.1993549764156341,
+      "delta_clip": -0.0607357919216156,
+      "delta_siglip": 0.04181396961212161
+    },
+    {
+      "image_id": "flickr30k_test_006537",
+      "caption": "Person in orange vest walks on platform near \"KILBURN\" sign.",
+      "clip_score": 0.3308019042015075,
+      "siglip_score": 0.2778300046920776,
+      "delta_clip": -0.060678958892822266,
+      "delta_siglip": 0.06012675166130069
+    },
+    {
+      "image_id": "flickr30k_test_008177",
+      "caption": "Three women walk on a street with people and tents in the background.",
+      "clip_score": 0.2933401465415954,
+      "siglip_score": 0.1711809337139129,
+      "delta_clip": -0.058553069829940796,
+      "delta_siglip": -0.04128134250640869
+    },
+    {
+      "image_id": "flickr30k_test_011250",
+      "caption": "Two children stand near yellow caution tape on grassy field under blue sky.",
+      "clip_score": 0.3163377642631531,
+      "siglip_score": 0.2215333729982376,
+      "delta_clip": -0.05628502368927002,
+      "delta_siglip": -0.026807412505149786
+    },
+    {
+      "image_id": "flickr30k_test_021240",
+      "caption": "Two people stand near a tree in front of a stone building with a planter.",
+      "clip_score": 0.2788791060447693,
+      "siglip_score": 0.171890839934349,
+      "delta_clip": -0.05521377921104431,
+      "delta_siglip": -0.0570039302110672
+    }
+  ]
+}

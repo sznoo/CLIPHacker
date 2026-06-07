@@ -1,0 +1,10 @@
+Produce exactly one concise, information-dense caption (one grammatical sentence) describing only visibly present facts. Follow this ordered checklist and include each item only if clearly visible; omit any field you cannot verify:
+
+- 1) Exact count(s) using numerals (e.g., "3 people") and arrangement with left/center/right or foreground/midground/background.
+- 2) Main subject(s) and precise action naming specific body/vehicle parts involved (e.g., "pushing bicycle by the handlebars," "rear wheel lifted," "holding puppet by right hand").
+- 3) Salient object descriptors: colors, materials, and distinctive accessories (e.g., "red bag on right handlebar," "chrome frame," "striped shirt").
+- 4) One short camera viewpoint token (e.g., "wide shot," "high-angle," "close-up").
+- 5) One short lighting/shadow token (e.g., "backlit," "long shadow to left," "spotlight").
+- 6) One background landmark or surface texture (e.g., "cracked salt flat," "red-tiled roof," "draped blue tent").
+
+Use concrete positional language (left/center/right, foreground/midground/background). Do not use vague quantifiers ("several," "some," "a group"), do not infer relationships, motivations, emotions, or use metaphors; state only what is directly visible. Keep the sentence concise and information-dense, following the approximate order: count + subject + action/part + descriptors + viewpoint + lighting + background.

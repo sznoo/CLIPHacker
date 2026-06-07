@@ -1,0 +1,117 @@
+{
+  "prompt": "Output exactly two lines only.\n\nLine 1 (tags) — required format and rules:\n- Provide 2–5 comma-separated tokens (no punctuation except commas). Prefer exactly 3 tags when visually possible: main noun first, then 1–2 highly discriminative co-objects. You may append a visually certain count immediately after the main noun (digit or word), e.g., \"child\", \"child 2\", \"person one\".\n- Tokens must be lower-case common nouns or single-word simple adjectives used only as visible attributes (dog, child, car, red, small). Multiword object phrases that denote a single visual object are allowed as a single token if visually fused (e.g., \"wine bottle\" or \"traffic light\").\n- At least 2 tokens must be nouns (including the main noun). At most 1 token may be a visible attribute (color/size). Do NOT include verbs, proper nouns, brand names, inferred facts, emotions, events, or dates.\n- Avoid generic person terms (\"person\",\"people\",\"man\",\"woman\") when a more specific, visually plausible noun is available (prefer \"child\", \"bicyclist\", \"trumpet\", \"wine bottle\"). Deduplicate; no repeated words or near-synonyms.\n- Order tags by salience (most discriminative first). Prefer compact, high-information nouns (2–4 tokens ideal).\n\nLine 2 (caption) — required format and hard rules:\n- Either (A) one factual short sentence in present simple or present progressive of 7–14 words, OR (B) a 2–3 word fallback caption (main noun + short visible location, e.g., \"child sidewalk\") if a compliant 7–14 word caption would require guessing. If tags cannot be produced reliably, Line 2 must be exactly \"image unclear\".\n- The main noun from Line 1 must appear verbatim in token positions 1–3 of Line 2 (hard requirement). If Line 1 includes a numeric count, reflect it in the caption with correct morphology: singular -> third-person singular verb (adds -s), plural -> base verb and plural noun form (e.g., \"1 child stands\", \"2 children stand\").\n- Include at most one clearly visible color or size and at most one simple spatial relation/preposition (on, in, near, by, in front of, behind). Use only concrete, directly visible facts. Do NOT add proper nouns, intentions, emotions, or invented facts.\n- No punctuation except an optional single period at the end of the sentence.\n\nLexical reinforcement and anti-hallucination (HARD CONSTRAINTS):\n- Require at least 2 exact token overlaps between Line 1 and Line 2 (nouns or attributes). This overlap requirement must be satisfied during candidate construction for every non-fallback candidate; do not rely on post-hoc fixes. If two reliable overlaps cannot be produced, output the 2–3 word fallback (main noun + visible location) or, if tags cannot be trusted, output \"image unclear\".\n- If an attribute appears in tags, it must appear verbatim in the caption. Never add an attribute in the caption that is not present in tags.\n- Only include a color/size when visually certain. If attribute inclusion is based on detector/segmentation output, require confidence >60% of object pixels or top detection confidence; otherwise omit the attribute.\n- Forbidden: proper nouns, inferred facts, emotions, dates, brand names; no punctuation except allowed commas in Line 1 and optional final period in Line 2.\n\nCandidate generation, systematic variation, and reranking (required):\n- Internally generate N = 6 diverse compliant candidates before returning output. Force at least two exact overlaps when constructing each non-fallback candidate. If a candidate cannot meet overlap requirements without guessing, produce the fallback candidate instead.\n- Controlled candidate templates (use deterministic templates and prefer detector-proposed nouns when available):\n  1) main noun + most discriminative co-object (high overlap) -> \"[main noun] [verb] [preposition] [co-object]\" or \"[main noun] with [co-object] on [location]\".\n  2) main noun + visible attribute (if confident) -> \"[main noun] [verb] [attribute] [co-object]\".\n  3) main noun + spatial relation + salient object -> \"[main noun] [verb] [preposition] [object]\".\n  4) count-aware variant if numeric count visible -> \"[count] [main-noun plural] [verb] [preposition] [object]\".\n  5) compact 2–3 word fallback -> \"[main noun] [location]\".\n  6) alternate high-overlap specific noun choice or adjacency variant -> \"[main noun][co-object adjacent phrase] [verb] [preposition] [object]\".\n- Ensure at least two exact token overlaps (nouns or attribute tokens) are included in each constructed non-fallback candidate. Use adjacency (main noun next to co-object) when possible because phrase matches improve CLIP alignment.\n\nProxy scoring & reranking:\n- If a CLIP scorer is available: normalize CLIP scores (min-max or z-score across candidates) and normalized proxy scores, then compute final_score = 0.9 * normalized_CLIP + 0.1 * normalized_proxy. Select the top candidate that passes self-checks.\n- If CLIP unavailable: compute proxy_score for each candidate with updated weights to better mimic CLIP sensitivity:\n  proxy_score = 10*(main-noun overlap: 1 if main noun verbatim appears in caption else 0)\n               + 8*(each additional exact overlap)\n               + 5*(visible-attribute overlap present)\n               + positional_bonus (+3 if main noun at position 1, +1 if at position 2–3)\n               - 8*(generic-noun penalty if any tag ∈ {person, people, man, woman} used when a more specific noun is reliably visible)\n               - 3*(duplicates-collapsed penalty)\n               - 4*(each tag beyond 3)\n               - 1*(each caption word beyond 12)\n- Normalize proxy_score across candidates (min-max or z-score) before combining or selecting top candidate. Break ties by: more exact overlaps, fewer tags, main noun at position 1.\n\nDeterministic self-checks (must pass before returning output):\n1. Tags: 2–5 comma-separated tokens, all lower-case nouns/adjectives only, ≤1 attribute, deduplicated.\n2. Caption: 7–14 words OR valid 2–3 word fallback OR exactly \"image unclear\".\n3. Overlap: ≥2 exact token overlaps between Line 1 and Line 2. If not met, candidate invalid.\n4. Main noun position: main noun verbatim appears at token position 1–3 in the caption.\n5. Count/morphology: if Line 1 has a numeric count, caption morphology must match (pluralization and verb form).\n6. Attribute mirroring: if an attribute appears in tags, the same token must appear verbatim in the caption.\n7. Forbidden content: no proper nouns, inferred facts, emotions; no punctuation except allowed commas in Line 1 and optional final period in Line 2.\n\nFallback and conservatism:\n- If fewer than 2 high-confidence nouns can be produced, use the compact 2–3 word fallback (main noun + visible location) or output Line 2 = \"image unclear\". Be conservative: prefer \"image unclear\" over inventing low-confidence specifics.\n- If no candidate passes self-checks after reranking, output the most reliable tags possible (2–5 tokens) on Line 1 and Line 2 = \"image unclear\".\n\nOperational heuristics (optional but recommended):\n- When available, use a fast object detector/segmenter to propose high-confidence nouns and attributes; prioritize those proposals when building tags and candidates.\n- If CLIP is available, run light lexical search (synonym/plural/attribute inclusion variants) scored by CLIP to pick the top valid candidate.\n- Log cases with large negative delta_clip for later analysis and iterative tuning of generic-noun penalties and attribute confidence thresholds.\n\nOutput requirement reminder:\n- The VLM must follow the two-line output format exactly: Line 1 = tags (2–5 comma-separated tokens, prefer 3), Line 2 = caption (7–14 words) OR 2–3 word fallback OR \"image unclear\". No extra lines or commentary.",
+  "prompt_id": "textgrad_c83b4e34b3",
+  "split_csv": "data/splits/flickr30k_main_seed1_val.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24/step_05/val/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24/step_05/val/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24/step_05/val/scores.csv",
+  "summary": {
+    "n": 150,
+    "mean_clip": 0.2873449614644051,
+    "mean_siglip": 0.1568574491888284,
+    "mean_caption_len": 11.466666666666667,
+    "generic_rate": 0.0,
+    "mean_delta_clip": -0.03722048684954643,
+    "mean_delta_siglip": -0.041983096500237786,
+    "clip_win_rate": 0.11666666666666667,
+    "siglip_win_rate": 0.13
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_011250",
+      "caption": "child, child, yellow tape, grass\ntwo children stand near yellow tape on grass",
+      "clip_score": 0.2597822546958923,
+      "siglip_score": 0.191302552819252,
+      "delta_clip": -0.15281152725219732,
+      "delta_siglip": -0.0292130708694458
+    },
+    {
+      "image_id": "flickr30k_test_007385",
+      "caption": "dancer, frisbee, blue, store\ndancer throws frisbee in front of store",
+      "clip_score": 0.2329906225204467,
+      "siglip_score": 0.0902574583888053,
+      "delta_clip": -0.13586622476577762,
+      "delta_siglip": -0.0846709683537484
+    },
+    {
+      "image_id": "flickr30k_test_026513",
+      "caption": "camera operator, person, yellow, tripod\ncamera operator adjusts equipment near tripod",
+      "clip_score": 0.2673283219337463,
+      "siglip_score": 0.1731640249490738,
+      "delta_clip": -0.1353456974029541,
+      "delta_siglip": -0.08685465157032013
+    },
+    {
+      "image_id": "flickr30k_test_023317",
+      "caption": "woman, hat, bag, guest services\nwoman stands near guest services counter",
+      "clip_score": 0.2689240574836731,
+      "siglip_score": 0.1784942299127578,
+      "delta_clip": -0.1222238540649414,
+      "delta_siglip": -0.03989432752132421
+    },
+    {
+      "image_id": "flickr30k_test_016590",
+      "caption": "child, umbrella, vendor, market\nchild stands near vendor with umbrella in market",
+      "clip_score": 0.2458704113960266,
+      "siglip_score": 0.1175683662295341,
+      "delta_clip": -0.1187149286270141,
+      "delta_siglip": -0.1086304113268852
+    },
+    {
+      "image_id": "flickr30k_test_011250",
+      "caption": "child, child, yellow tape, grass\ntwo children stand near yellow tape on grass",
+      "clip_score": 0.2597822546958923,
+      "siglip_score": 0.191302552819252,
+      "delta_clip": -0.11284053325653082,
+      "delta_siglip": -0.05703823268413541
+    },
+    {
+      "image_id": "flickr30k_test_023900",
+      "caption": "person, food stall, utiah\nperson stands in front of food stall with utiah",
+      "clip_score": 0.2489938288927078,
+      "siglip_score": 0.2007856667041778,
+      "delta_clip": -0.11281280219554898,
+      "delta_siglip": -0.09002995491027838
+    },
+    {
+      "image_id": "flickr30k_test_025473",
+      "caption": "person, tree, pavement\nperson stands on pavement near tree",
+      "clip_score": 0.213096797466278,
+      "siglip_score": 0.0681280791759491,
+      "delta_clip": -0.10912919044494632,
+      "delta_siglip": -0.16141092777252192
+    },
+    {
+      "image_id": "flickr30k_test_016590",
+      "caption": "child, umbrella, vendor, market\nchild stands near vendor with umbrella in market",
+      "clip_score": 0.2458704113960266,
+      "siglip_score": 0.1175683662295341,
+      "delta_clip": -0.10678508877754211,
+      "delta_siglip": -0.1113445982336998
+    },
+    {
+      "image_id": "flickr30k_test_011286",
+      "caption": "person, rock, river, orange\nthree people walk on rocks near river",
+      "clip_score": 0.2516435384750366,
+      "siglip_score": 0.1733220219612121,
+      "delta_clip": -0.10611206293106079,
+      "delta_siglip": -0.05176389217376709
+    },
+    {
+      "image_id": "flickr30k_test_003587",
+      "caption": "man, jacket, cap, number 3\nman wearing jacket and cap with number 3 on it",
+      "clip_score": 0.2620662450790405,
+      "siglip_score": 0.1805573850870132,
+      "delta_clip": -0.10322070121765137,
+      "delta_siglip": -0.08374668657779699
+    },
+    {
+      "image_id": "flickr30k_test_023023",
+      "caption": "people, umbrella, child, stool\npeople sit under umbrella near child on stool",
+      "clip_score": 0.2245822995901107,
+      "siglip_score": 0.1525454968214035,
+      "delta_clip": -0.09897042810916909,
+      "delta_siglip": -0.06705053150653839
+    }
+  ]
+}

@@ -1,0 +1,142 @@
+{
+  "prompt": "Output exactly one concise, information‑dense caption: a single grammatical sentence composed of comma‑separated short phrases. Produce only that one sentence and nothing else.\n\nAssembly order (emit in this order; append only one token per slot unless slot allows multiple):\n1) Subject group(s) and high‑value anchor/prop (0–3 groups; must appear first).\n2) Micro‑action / contact (use exact micro‑templates below).\n3) Fine class (verified label or dataset lexicon fallback).\n4) Clothing / clear pose / orientation (emit only when MEDIUM/HIGH verified).\n5) Up to two anchors/signage (only if verified; otherwise use neutral positional fallback tokens).\n6) Spatial/cropping/depth token (only if verified).\n\nVerification bands and safe emission\n- Use detectors/geometry/segmentation/motion/OCR/saliency to map evidence to HIGH / MEDIUM / LOW.\n- HIGH: emit the verified token exactly from the detector.\n- MEDIUM: emit only tokens from the curated MEDIUM whitelists below.\n- LOW: emit conservative, neutral fallback tokens (examples: \"storefront behind\", \"boats moored beside\", \"object on table\", \"painted metal shutter\").\n\nMicro‑action / contact template rules\n- HIGH: exact template \"left|right [hand|foot|part] [strong‑verb] [object]\" (e.g., \"right hand holding basket\").\n- MEDIUM: allow a constrained dynamic verb whitelist when supported by complementary evidence (motion_confidence or segmentation + saliency). MEDIUM verb whitelist (examples): jumping, pawing, clearing, showing, speaking, holding, carrying, pushing, pulling.\n- LOW: conservative fallback \"[part] near [object]\" (e.g., \"right hand near object\").\n- Never use hedges or speculative wording; always use the strict template form.\n\nFirst‑words requirement (robust)\n- The first 6–8 words must contain the subject group token (or a plural fallback noun) and either a HIGH anchor OR a MEDIUM anchor from the MEDIUM anchor whitelist. If no such anchor appears by the 8th word, emit the plural fallback subject token first and include anchors later as positional fallbacks.\n\nCount and numeric rules\n- Emit digits only when count is HIGH verified by geometry/segmentation or detector_count_confidence ≥ 0.70. Otherwise use plural fallback nouns (people/dogs/vehicles/group of people). Do not append qualifiers.\n\nFine‑class, anchors, and MEDIUM whitelists (use MEDIUM items only when evidence is MEDIUM)\n- Expand MEDIUM fine‑class whitelist to include: boat, canoe, shrine/temple, ghats/steps, children/children group, performer/chorus line, vendor/produce stand, parade participant.\n- Expand MEDIUM anchor whitelist to include: marquee, boats/canopies, flagpole, ladder, bicycle/two‑wheeled vehicle, hedgerow/trees.\n- If LOW, use neutral fallbacks; never invent specific unverified props.\n\nSpatial relations and formation tokens\n- When geometry/segmentation is reliable, emit explicit spatial tokens (left/right/center/foreground/background, alongside/moored beside, flanking, seated group watching). Make spatial phrases MEDIUM‑eligible from a short whitelist.\n\nOCR / signage handling\n- HIGH OCR: quote exact text (counts toward length).\n- MEDIUM OCR: allow low‑risk signage descriptors and short high‑confidence partial reads (single words or up to 6 visible letters) only when OCR_confidence ≥ MEDIUM and saliency is high; do not invent or complete partial brand names.\n- LOW: emit positional signage fallbacks (e.g., \"marquee above\", \"large red sign upper right\").\n\nSaliency tie‑breaking and selection\n- When multiple VERIFIED candidates compete, prefer by saliency: text > large object/prop > face > large color patch/clothing. Bias toward anchors that are highly salient even if detector confidence is MEDIUM.\n\nPruning, compression, and length control\n- Target length: 10–16 words. Hard cap: 20 words. Allow up to +2 words beyond target only when including both a HIGH‑verified fine class and a HIGH‑verified anchor.\n- Pruning priority (apply deterministically when over cap):\n   1) Compress adjective chains into compact noun phrases.\n   2) Remove lighting/reflection descriptors first.\n   3) Remove object state/material next.\n   4) Remove background/ancillary context last.\n- Never remove tokens from slots 1–3 (subject, micro‑action, fine class). Preserve MEDIUM tokens in slots 1–3 when present.\n- Continue pruning until within cap. If still over cap, construct a minimal safe caption that uses available HIGH or MEDIUM tokens (prefer MEDIUM anchors/fine classes over generic fallbacks).\n\nDe‑duplication and normalization\n- Collapse exact repeated phrases and repeated tokens. Merge adjective chains (e.g., \"rustic wooden facade\"). Prohibit repeating the same phrase.\n\nAnti‑hallucination absolutes\n- Never invent brand names, partial/completed text, ages, emotions, intentions, or unsupported attributes. Do not add hedges. When verification is insufficient, use the prescribed neutral fallbacks. If a MID‑confidence token is available, prefer enumerated MEDIUM whitelist tokens rather than free adjectives.\n\nFinal validator (must pass)\n- One grammatical sentence of comma‑separated short phrases.\n- Length within caps.\n- First 6–8 words include subject or plural fallback plus a HIGH or MEDIUM anchor.\n- No hedges, no invented brands/text, no duplicated phrases.\n- Only allowed MEDIUM tokens are emitted under MEDIUM band.\n- If validator would fail, emit a minimal safe caption constructed from available HIGH or MEDIUM tokens (subject plural fallback if necessary), using neutral positional fallbacks and preserving any MEDIUM fine class or anchor evidence.\n\nPreferred micro‑templates (use when slots permit; adapt to verification):\n- \"1 woman center foreground, right hand holding basket, shrine behind.\"\n- \"group of performers center left, chorus line stretching across crosswalk, marquee above.\"\n- \"two dogs left foreground, small white dog mid‑air at passenger window, woman leaning out.\"\n\nProduce only the single validated sentence as the final caption.",
+  "prompt_id": "textgrad_373f741d6f",
+  "split_csv": "data/splits/flickr30k_main_seed1_val.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal/step_17/val/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal/step_17/val/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal/step_17/val/scores.csv",
+  "data_root": "data",
+  "summary": {
+    "n": 150,
+    "mean_clip": 0.3044842724998792,
+    "mean_siglip": 0.197646574229002,
+    "mean_caption_len": 20.88,
+    "generic_rate": 0.0,
+    "mean_delta_clip": -0.020081175814072292,
+    "mean_delta_siglip": -0.0011939714600642532,
+    "clip_win_rate": 0.24,
+    "siglip_win_rate": 0.4633333333333333
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_028445",
+      "image_relpath": "images/flickr30k/flickr30k_test_028445.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_028445.jpg",
+      "caption": "man with mustache center foreground, right hand holding blue mesh laundry basket, red pickup truck parked right, building behind.",
+      "clip_score": 0.2325663864612579,
+      "siglip_score": 0.1609482020139694,
+      "delta_clip": -0.1348071396350861,
+      "delta_siglip": -0.05608837306499481
+    },
+    {
+      "image_id": "flickr30k_test_028445",
+      "image_relpath": "images/flickr30k/flickr30k_test_028445.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_028445.jpg",
+      "caption": "man with mustache center foreground, right hand holding blue mesh laundry basket, red pickup truck parked right, building behind.",
+      "clip_score": 0.2325663864612579,
+      "siglip_score": 0.1609482020139694,
+      "delta_clip": -0.1270975172519684,
+      "delta_siglip": -0.060400113463401794
+    },
+    {
+      "image_id": "flickr30k_test_023900",
+      "image_relpath": "images/flickr30k/flickr30k_test_023900.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_023900.jpg",
+      "caption": "Vendor right foreground, right hand holding skewers, utiah stall sign illuminated behind.",
+      "clip_score": 0.2510506510734558,
+      "siglip_score": 0.2678958177566528,
+      "delta_clip": -0.11075598001480097,
+      "delta_siglip": -0.0229198038578034
+    },
+    {
+      "image_id": "flickr30k_test_012572",
+      "image_relpath": "images/flickr30k/flickr30k_test_012572.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_012572.jpg",
+      "caption": "woman center foreground, right hand near zipper, purple knit beanie, Domino’s Pizza sign upper left.",
+      "clip_score": 0.2896475493907928,
+      "siglip_score": 0.2537424862384796,
+      "delta_clip": -0.10014432668685919,
+      "delta_siglip": -0.03890234231948847
+    },
+    {
+      "image_id": "flickr30k_test_011250",
+      "image_relpath": "images/flickr30k/flickr30k_test_011250.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_011250.jpg",
+      "caption": "Two children center foreground, right hand holding each other, grassy field with yellow caution tape, airplane visible distant background.",
+      "clip_score": 0.3196046054363251,
+      "siglip_score": 0.2764444351196289,
+      "delta_clip": -0.09298917651176453,
+      "delta_siglip": 0.05592881143093112
+    },
+    {
+      "image_id": "flickr30k_test_016835",
+      "image_relpath": "images/flickr30k/flickr30k_test_016835.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_016835.jpg",
+      "caption": "performer center foreground, right foot near flaming torch, black hat and checkered shirt, crowd seated watching, street sign reading Front St E above.",
+      "clip_score": 0.2920698225498199,
+      "siglip_score": 0.2033956497907638,
+      "delta_clip": -0.09096571803092962,
+      "delta_siglip": -0.03749735653400421
+    },
+    {
+      "image_id": "flickr30k_test_013546",
+      "image_relpath": "images/flickr30k/flickr30k_test_013546.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_013546.jpg",
+      "caption": "child center foreground, right foot near metal rail, playground equipment beneath, trees blurred background.",
+      "clip_score": 0.2882833480834961,
+      "siglip_score": 0.139752447605133,
+      "delta_clip": -0.0887848436832428,
+      "delta_siglip": -0.0696769058704376
+    },
+    {
+      "image_id": "flickr30k_test_026513",
+      "image_relpath": "images/flickr30k/flickr30k_test_026513.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_026513.jpg",
+      "caption": "Film crew operating camera equipment under umbrella, cameraman adjusting lens, assistant holding gear, director observing, potted plants and building facade in background.",
+      "clip_score": 0.3142831027507782,
+      "siglip_score": 0.1797659546136856,
+      "delta_clip": -0.08839091658592219,
+      "delta_siglip": -0.08025272190570831
+    },
+    {
+      "image_id": "flickr30k_test_016715",
+      "image_relpath": "images/flickr30k/flickr30k_test_016715.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_016715.jpg",
+      "caption": "woman center foreground, right hand holding hoe, field behind, patterned dress, standing near wooden post.",
+      "clip_score": 0.2736323773860931,
+      "siglip_score": 0.1299071460962295,
+      "delta_clip": -0.0867996513843537,
+      "delta_siglip": -0.060573682188987704
+    },
+    {
+      "image_id": "flickr30k_test_022056",
+      "image_relpath": "images/flickr30k/flickr30k_test_022056.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_022056.jpg",
+      "caption": "children group center foreground, boy in green shirt holding hands behind head, seated group watching, marquee above, bookstore shelves behind.",
+      "clip_score": 0.2677896618843078,
+      "siglip_score": 0.2080891728401184,
+      "delta_clip": -0.0841504037380219,
+      "delta_siglip": -0.027732208371162387
+    },
+    {
+      "image_id": "flickr30k_test_022222",
+      "image_relpath": "images/flickr30k/flickr30k_test_022222.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_022222.jpg",
+      "caption": "man standing left foreground, right hand near mouth, vendor cart covered green tarp, broom leaning beside, van blurred background.",
+      "clip_score": 0.3026253581047058,
+      "siglip_score": 0.1899313330650329,
+      "delta_clip": -0.08113753795623779,
+      "delta_siglip": -0.05022454261779791
+    },
+    {
+      "image_id": "flickr30k_test_006537",
+      "image_relpath": "images/flickr30k/flickr30k_test_006537.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_006537.jpg",
+      "caption": "Worker in orange vest walks toward train, holding clipboard, Kilburn station sign visible, yellow train on right track, platform wet from rain.",
+      "clip_score": 0.3120205104351043,
+      "siglip_score": 0.2460841685533523,
+      "delta_clip": -0.07946035265922546,
+      "delta_siglip": 0.028380915522575406
+    }
+  ]
+}

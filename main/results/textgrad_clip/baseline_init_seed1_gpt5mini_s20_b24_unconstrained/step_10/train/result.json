@@ -1,0 +1,117 @@
+{
+  "prompt": "Output exactly two lines only.\n\nLine 1 — tags (format rules)\n- 2–5 comma-separated lower-case tokens (prefer exactly 3). No punctuation except commas.\n- Tokens should be visible concrete nouns or a single visible adjective (color/size) as the sole attribute token. Multiword fused objects (e.g., \"traffic light\", \"wine bottle\") may count as one token.\n- Required pre-filtering & canonicalization (assume an external or prior step): map detector/classifier labels to canonical, high‑coverage visual nouns (prefer COCO/Visual Genome/CLIP-common classes). Filter out non-nouns and convert multiword labels to canonical fused nouns when appropriate (e.g., \"welcome sign\" → \"sign\"; \"sofa\" → \"couch\"). Only accept attribute tokens (colors/sizes) if the attribute detector confidence ≥ attribute_confidence_threshold (default 75%; tune 60/70/75).\n- Allow lemmatized/canonical matches: tokens may be normalized (plural→singular, synonyms→canonical class) for matching with captions. Synonyms are allowed only if they map back to a canonical tag via the mapping step.\n- Deduplicate tokens; order by visual discriminativeness (most distinctive / likely recognized by CLIP/classifiers first). Prefer fine‑grained nouns (e.g., \"trumpet\" over \"man\" when reliable).\n- If fewer than two high-confidence specific nouns are available after filtering, prefer the compact fallback (Line 2 Option B) or output \"image unclear\".\n- Forbidden tokens in Line 1: meta/instruction words, tooling vocabulary (prompt, detectors, thresholds, score, clip, siglip, example, etc.), proper nouns, brand names, dates, events, emotions, or inferred identities.\n\nLine 2 — caption (format rules)\n- Option A (preferred): one factual short sentence (9–12 words) in present simple or simple progressive that contains one clear visual verb or a concrete spatial relation.\n- Option B (fallback): a 2–3 word phrase (main noun + visible location) when a compliant 9–12 word caption would require guessing.\n- If tags cannot be produced reliably, output exactly: image unclear\n- The main noun from Line 1 must appear in Line 2 in canonical/lemmatized form. To allow more natural phrasing, the caption may start with either: \"<main_noun> ...\" or \"the <main_noun> ...\" or have the main noun within the first two tokens.\n- Non-fallback captions must have at least two token overlaps with Line 1 in canonical/lemmatized form (one must be the main noun). Every non-determiner noun in Line 2 must correspond to a Line 1 token via the canonicalization mapping; otherwise do not output that caption.\n- Allowed extra words: determiners, prepositions (on, in, near, by, next to, in front of, behind), small conjunctions (and), one optional period at sentence end. No other punctuation.\n- Verbs: require one clear common visual verb or spatial relation. Expanded allowed verbs include common visual actions and simple progressive forms (e.g., sits, stands, lies, holds, carries, walks, rides, leans, looks, points, reads, opens, plays, wears, pushes, pulls, places, covers, is holding, is sitting). Use the simplest verb justified by visible evidence.\n- Attributes: an attribute token in Line 1 must appear verbatim in Line 2. Do not introduce attributes, objects, locations, identities, or inferred facts not present in Line 1 unless supported by high-confidence detectors per the attribute threshold. Prefer omission over guessing.\n\nConservatism and anti-hallucination\n- Forbid proper nouns, emotions, intentions, or speculative inferences. Captions must be strictly visually verifiable from Line 1 tokens and high-confidence detections.\n- If attribute confidence is below the configured threshold, omit the attribute.\n- Use multiword compound nouns when the compound detector confidence is high; do not split compounds into unrelated tokens.\n\nOperational note (integrators / generator)\n- This prompt assumes an upstream pre-filtering/canonicalization step (POS filter, mapping to canonical classes, confidence thresholds). Tune attribute_confidence_threshold (recommended sweep 60/70/75%) and preferred tag count (2–5).\n- Prefer generating a small set of alternative compliant tag sets (e.g., up to 3 variants) when label confidence is ambiguous so a downstream CLIP reranker can choose the best candidate.\n- Keep candidate generation, CLIP reranking, and final selection outside this prompt. The frozen VLM should follow the concise visual rules above.\n\nStrictly follow the Line 1 / Line 2 rules above. If no valid caption candidate passes these checks, return Line 2 = \"image unclear\".",
+  "prompt_id": "textgrad_420af965c9",
+  "split_csv": "data/splits/flickr30k_main_seed1_train.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24/step_10/train/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24/step_10/train/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24/step_10/train/scores.csv",
+  "summary": {
+    "n": 24,
+    "mean_clip": 0.27943376762171585,
+    "mean_siglip": 0.15371858763198054,
+    "mean_caption_len": 8.625,
+    "generic_rate": 0.0,
+    "mean_delta_clip": -0.04688771193226179,
+    "mean_delta_siglip": -0.04111488132427136,
+    "clip_win_rate": 0.08333333333333333,
+    "siglip_win_rate": 0.08333333333333333
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_018651",
+      "caption": "man sits near bicycle\nman sits near bicycle",
+      "clip_score": 0.2366848140954971,
+      "siglip_score": 0.103866308927536,
+      "delta_clip": -0.16553886234760287,
+      "delta_siglip": -0.0926773697137832
+    },
+    {
+      "image_id": "flickr30k_test_001002",
+      "caption": "person sits on blanket\nperson sits on blanket",
+      "clip_score": 0.2320712506771087,
+      "siglip_score": 0.0847098231315612,
+      "delta_clip": -0.1268396675586701,
+      "delta_siglip": -0.1474709808826447
+    },
+    {
+      "image_id": "flickr30k_test_016046",
+      "caption": "people sit around table\npeople sit around table",
+      "clip_score": 0.2241425812244415,
+      "siglip_score": 0.0920281112194061,
+      "delta_clip": -0.1133483946323395,
+      "delta_siglip": -0.0669654309749603
+    },
+    {
+      "image_id": "flickr30k_test_021782",
+      "caption": "sign\nman leans on sign",
+      "clip_score": 0.2421069592237472,
+      "siglip_score": 0.1701503098011016,
+      "delta_clip": -0.0973411351442337,
+      "delta_siglip": -0.03087493777275091
+    },
+    {
+      "image_id": "flickr30k_test_029272",
+      "caption": "dancer, crowd, stage\ndancer jumps on stage in front of crowd",
+      "clip_score": 0.257610023021698,
+      "siglip_score": 0.1457073837518692,
+      "delta_clip": -0.08131223917007441,
+      "delta_siglip": -0.038783952593803406
+    },
+    {
+      "image_id": "flickr30k_test_030685",
+      "caption": "man holds cup\nman stands near wall",
+      "clip_score": 0.2735918462276459,
+      "siglip_score": 0.1267507523298263,
+      "delta_clip": -0.06581559777259821,
+      "delta_siglip": -0.1067777425050736
+    },
+    {
+      "image_id": "flickr30k_test_000704",
+      "caption": "man sings into microphone\nman holds microphone near drum",
+      "clip_score": 0.2150529623031616,
+      "siglip_score": 0.1380471438169479,
+      "delta_clip": -0.061823606491088895,
+      "delta_siglip": -0.021966129541397095
+    },
+    {
+      "image_id": "flickr30k_test_024978",
+      "caption": "man sits on bench\nman sits on bench in alley",
+      "clip_score": 0.2740874886512756,
+      "siglip_score": 0.1904306411743164,
+      "delta_clip": -0.06003782153129583,
+      "delta_siglip": -0.05462023615837089
+    },
+    {
+      "image_id": "flickr30k_test_014728",
+      "caption": "people gather around large sphere\npeople stand near large sphere",
+      "clip_score": 0.2666131258010864,
+      "siglip_score": 0.1883676797151565,
+      "delta_clip": -0.05002120137214655,
+      "delta_siglip": -0.029756516218185397
+    },
+    {
+      "image_id": "flickr30k_test_030218",
+      "caption": "man plays flute\nman stands on sidewalk",
+      "clip_score": 0.3077456653118133,
+      "siglip_score": 0.2163836508989334,
+      "delta_clip": -0.046349734067916926,
+      "delta_siglip": -0.006222471594810486
+    },
+    {
+      "image_id": "flickr30k_test_025508",
+      "caption": "person\nperson flipping in desert",
+      "clip_score": 0.3199912309646606,
+      "siglip_score": 0.2039306461811065,
+      "delta_clip": -0.04568767547607422,
+      "delta_siglip": 0.009447664022445623
+    },
+    {
+      "image_id": "flickr30k_test_018945",
+      "caption": "runners leap over hurdles\nathletes sprint past hurdles",
+      "clip_score": 0.3051490485668182,
+      "siglip_score": 0.1599818170070648,
+      "delta_clip": -0.04013639688491821,
+      "delta_siglip": -0.04626759886741641
+    }
+  ]
+}

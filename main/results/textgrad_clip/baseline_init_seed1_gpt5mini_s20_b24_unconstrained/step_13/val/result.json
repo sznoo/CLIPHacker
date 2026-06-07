@@ -1,0 +1,117 @@
+{
+  "prompt": "Output exactly one candidate by default. Only produce multiple candidates (2–3) if and only if the integrator guarantees an external CLIP reranker. When multiple candidates are allowed, produce up to three deterministic variants created only by changing the Line 1 tag set or by selecting alternate CLIP-preferred surface synonyms for the same canonical_id(s); do not introduce free-form wording differences. Each candidate must be exactly two lines (Line 1 = comma-separated tags; Line 2 = caption). Separate candidates with a single blank line. If you cannot produce a reliable candidate under the verifier's checks, output exactly: image unclear.",
+  "prompt_id": "textgrad_28c4a246dd",
+  "split_csv": "data/splits/flickr30k_main_seed1_val.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24/step_13/val/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24/step_13/val/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24/step_13/val/scores.csv",
+  "summary": {
+    "n": 150,
+    "mean_clip": 0.30123659869035085,
+    "mean_siglip": 0.18254110738635063,
+    "mean_caption_len": 29.173333333333332,
+    "generic_rate": 0.02,
+    "mean_delta_clip": -0.023328849623600646,
+    "mean_delta_siglip": -0.016299438302715612,
+    "clip_win_rate": 0.24,
+    "siglip_win_rate": 0.32
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_011250",
+      "caption": "two boys standing in grass near yellow caution tape, one holding the other's hand\ntwo young boys standing in a grassy field with a yellow caution tape behind them, one boy holding the other's hand",
+      "clip_score": 0.3013603091239929,
+      "siglip_score": 0.2011416107416153,
+      "delta_clip": -0.11123347282409668,
+      "delta_siglip": -0.019374012947082492
+    },
+    {
+      "image_id": "flickr30k_test_017698",
+      "caption": "military, soldiers, civilians, outdoor, group, helmet, uniform, building, standing, interaction, training, community, event, people, crowd, daylight, rural, architecture, window, hat, notebook, discussion, presentation, education, learning, safety, gear, construction, site, gathering, engagement, cooperation",
+      "clip_score": 0.2468331754207611,
+      "siglip_score": 0.2295825183391571,
+      "delta_clip": -0.10465309023857117,
+      "delta_siglip": -0.030457347631454468
+    },
+    {
+      "image_id": "flickr30k_test_021517",
+      "caption": "image unclear",
+      "clip_score": 0.1969617307186126,
+      "siglip_score": -0.0417941100895404,
+      "delta_clip": -0.10296183824539193,
+      "delta_siglip": -0.2257884629070758
+    },
+    {
+      "image_id": "flickr30k_test_026513",
+      "caption": "film crew, outdoor shoot, camera equipment, rain gear, tripod, umbrella, documentary, production team, behind the scenes\n\nfilm crew, outdoor shoot, camera equipment, rain gear, tripod, umbrella, documentary, production team, behind the scenes",
+      "clip_score": 0.3017168045043945,
+      "siglip_score": 0.2164766490459442,
+      "delta_clip": -0.10095721483230591,
+      "delta_siglip": -0.04354202747344971
+    },
+    {
+      "image_id": "flickr30k_test_021517",
+      "caption": "image unclear",
+      "clip_score": 0.1969617307186126,
+      "siglip_score": -0.0417941100895404,
+      "delta_clip": -0.09649530053138741,
+      "delta_siglip": -0.1821557916700839
+    },
+    {
+      "image_id": "flickr30k_test_026364",
+      "caption": "teacher, students, classroom, learning, education, children, reading, writing, pencil, desk, window, pink, book, map, engaged, focused, guidance, instruction, school, activity, collaborative, educational, learning environment, teacher-student interaction, classroom setting, educational activity, children learning, teacher assisting,",
+      "clip_score": 0.2286012917757034,
+      "siglip_score": 0.1845695972442627,
+      "delta_clip": -0.09641496837139132,
+      "delta_siglip": 0.005463853478431702
+    },
+    {
+      "image_id": "flickr30k_test_000546",
+      "caption": "dog,heather,landscape,nature,animal,field,flowers,walking,scenic,open,green,white,cloudy,forest,tree,grass,meadow,pet,exploring,adventure,outdoors,summer,day,peaceful,serene,floral,wool,",
+      "clip_score": 0.2680546641349792,
+      "siglip_score": 0.1246263235807418,
+      "delta_clip": -0.09603548049926763,
+      "delta_siglip": -0.0558028519153595
+    },
+    {
+      "image_id": "flickr30k_test_014144",
+      "caption": "grinder, sparks, man, workshop, metal, cutting, safety_glasses, industrial, tool, sparks_flying, worker, grinding, metalworking, sparks_emitting, sparks_around, sparks_in_air, sparks_from_grinder, sparks_from_tool, sparks_from_cutting, sparks_from_metal, sparks",
+      "clip_score": 0.2681941390037536,
+      "siglip_score": 0.1074091345071792,
+      "delta_clip": -0.09340929985046387,
+      "delta_siglip": -0.1234200149774552
+    },
+    {
+      "image_id": "flickr30k_test_013546",
+      "caption": "child, playground, motion blur, spinning, outdoor, safety rail, blue and yellow, hand holding rail, young boy, jacket, sneakers, trees, sky, blurred background, active play, amusement, park equipment, metal structure, dynamic movement, candid shot, childhood, fun, adventure, family outing, summer day",
+      "clip_score": 0.2883754968643188,
+      "siglip_score": 0.1991729438304901,
+      "delta_clip": -0.0886926949024201,
+      "delta_siglip": -0.010256409645080483
+    },
+    {
+      "image_id": "flickr30k_test_028445",
+      "caption": "man, bicycle, laundry basket, outdoors, casual, mustache, blue, mesh, pickup truck, residential, sunny, riding, clothes, utility, leisure, daytime, vehicle, street, driveway, lawn, trees, building, RV, red, truck, bike, basket, laundry, folding, mesh, blue",
+      "clip_score": 0.2814186513423919,
+      "siglip_score": 0.2199441492557525,
+      "delta_clip": -0.08595487475395208,
+      "delta_siglip": 0.0029075741767883023
+    },
+    {
+      "image_id": "flickr30k_test_026119",
+      "caption": "man, bathroom, toothbrush, toothpaste, robe, bubble, shower, tiles, mirror, holding, brushing, teeth, orange, blue, bottle, white, bathtub, soap, sink, faucet, towel, wall, tile, showerhead, shower curtain, soap dispenser, soap dish, soap bar, soap",
+      "clip_score": 0.2726577520370483,
+      "siglip_score": 0.1811985671520233,
+      "delta_clip": -0.08415031433105474,
+      "delta_siglip": -0.005388811230659513
+    },
+    {
+      "image_id": "flickr30k_test_017698",
+      "caption": "military, soldiers, civilians, outdoor, group, helmet, uniform, building, standing, interaction, training, community, event, people, crowd, daylight, rural, architecture, window, hat, notebook, discussion, presentation, education, learning, safety, gear, construction, site, gathering, engagement, cooperation",
+      "clip_score": 0.2468331754207611,
+      "siglip_score": 0.2295825183391571,
+      "delta_clip": -0.08302256464958191,
+      "delta_siglip": -0.035655438899993896
+    }
+  ]
+}

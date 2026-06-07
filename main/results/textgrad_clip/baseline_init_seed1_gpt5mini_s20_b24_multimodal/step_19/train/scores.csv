@@ -1,0 +1,1777 @@
+split_id,method_id,run_id,order,dataset_index,image_id,image_relpath,reference_captions,prompt_id,prompt_name,prompt_text,caption,candidate_id,selected,model,temperature,top_p,max_new_tokens,generation_config,clip_score,siglip_score,caption_len,generic_flag
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_29727dbd0c,2,27768,flickr30k_test_027768,images/flickr30k/flickr30k_test_027768.jpg,"[""The redheaded girl giggles happily as she swings her pillow at her opponent during a recent pillow fight."", ""A lady in a red shirt with red-hair laugh while throwing a pillow over her left shoulder."", ""A woman with red-hair swings a pillow and laughs."", ""A young redheaded woman laughs at something."", ""A redhead girl in a pillow fight.""]",textgrad_29727dbd0c,TextGrad Step 19,"Produce exactly one concise, information‑dense caption: a single grammatical sentence composed of comma‑separated short phrases. Produce only that one sentence and nothing else.
+
+Output structure (emit in this order; slots 1–3 are mandatory and protected from pruning):
+1) Subject group(s) and one HIGH or MEDIUM anchor/prop or, if no MEDIUM/HIGH anchor exists, a neutral positional anchor fallback (0–3 subject groups; must appear first).
+2) Micro‑action / contact using strict templates (always emit one): 
+   - HIGH evidence: exact form ""left|right [hand|foot|part] [strong‑verb] [object]"" (e.g., ""right hand holding basket"").
+   - MEDIUM evidence: use one verb from the whitelist {jumping, pawing, clearing, showing, speaking, holding, carrying, pushing, pulling, strumming, leaning}.
+   - LOW evidence: fallback ""[part] near [object]"" (e.g., ""right hand near object"").
+   Never hedge or omit this slot.
+3) Fine class (verified label or dataset lexicon token; if no verified fine class, use a safe plural fallback such as ""people/dogs/vehicles/vendor stand"").
+4) Clothing / clear pose / orientation — include only when MEDIUM/HIGH verified.
+5) Up to two anchors/signage (only if MEDIUM/HIGH verified; otherwise use neutral positional fallback tokens such as ""marquee above"", ""storefront behind"").
+6) Spatial/cropping/depth token if verified.
+
+Verification bands and numeric thresholds (use detector outputs where available):
+- HIGH: OCR_confidence ≥ 0.85 OR segmentation_iou ≥ 0.75 OR motion_confidence ≥ 0.85.
+- MEDIUM: OCR_confidence ≥ 0.50 OR segmentation_iou ≥ 0.40 OR motion_confidence ≥ 0.60 OR detector_count_confidence ≥ 0.70.
+- LOW: otherwise.
+- Digit counts: emit digits only if detector_count_confidence ≥ 0.70; otherwise use plural fallback nouns.
+
+OCR and signage rules:
+- If OCR is HIGH: emit exact quoted text (quote counts toward length).
+- If OCR is MEDIUM and saliency is high: emit at most one short quoted token (single word or ≤6 characters); do not invent or complete partial names.
+- If OCR is LOW: use a neutral positional anchor fallback (e.g., ""marquee above"", ""large sign upper right"").
+
+First‑words requirement:
+- The first 6–8 words must contain the subject group token (or a plural fallback noun) and a HIGH anchor OR a MEDIUM anchor from the MEDIUM anchor whitelist. If this fails, the caption must be auto‑rewritten into the minimal safe form: plural subject fallback + neutral anchor fallback + micro‑action LOW fallback + fine‑class fallback, all within the first 8 words.
+
+Saliency tie‑breaking and selection:
+- When multiple candidates are present, prefer in order: 1) OCR text, 2) large prop/signage, 3) face/people, 4) large color patch/clothing. Chosen anchor must appear early (within first 6–8 words).
+
+MEDIUM whitelist (emit these exact tokens only under MEDIUM):
+- Fine classes: boat, canoe, shrine/temple, ghats/steps, children, performer, vendor, vendor stand, parade participant.
+- Anchors: marquee, boats, canopies, flagpole, ladder, bicycle, hedgerow, trees.
+- Clothing tokens allowed under MEDIUM: ""navy sweater"", ""red patterned dress"", ""white blouse"".
+
+Pruning, compression, and length control:
+- Target length: 10–16 words. Hard cap: 20 words. Allow +2 words beyond target when EITHER a HIGH anchor OR a HIGH fine class is present.
+- Pruning priority (apply deterministically until within cap):
+   1) Compress adjective chains into compact noun phrases.
+   2) Remove lighting/reflection descriptors first.
+   3) Remove object state/material next.
+   4) Remove background/ancillary context last.
+- NEVER remove or prune tokens from slots 1–3. Preserve MEDIUM tokens in slots 1–3 when present. If still over cap, construct a minimal safe caption that preserves any HIGH/MEDIUM tokens in slots 1–3 and uses neutral fallbacks elsewhere.
+
+Anti‑hallucination absolutes:
+- Do not invent brand names, partial/complete text, ages, emotions, intentions, or unsupported attributes.
+- No hedges, qualifiers, or speculative language.
+- When verification is LOW, use prescribed neutral fallbacks (e.g., ""storefront behind"", ""marquee above"", ""object on table"", ""group of people"").
+
+Final validator (must pass before emitting):
+- One grammatical sentence of comma‑separated short phrases.
+- Length within caps and target rules.
+- First 6–8 words include subject token (or plural fallback) plus a HIGH or MEDIUM anchor (or neutral anchor fallback if no MEDIUM/HIGH).
+- Micro‑action slot present and follows template rules.
+- No hedges, no invented brands/text, no duplicated phrases.
+- Only allowed MEDIUM tokens are emitted under MEDIUM band.
+- If validator would fail, emit the deterministic minimal safe caption described above.
+
+Short positive example (ideal):
+- ""group of people, right hand holding red shopping bag, storefront behind, marquee above.""
+
+Short negative example (avoid):
+- ""Several people maybe near a building with an unclear sign and someone possibly holding something.""
+
+Machine‑readable checklist to append internally (for validation):
+- OCR → include if HIGH/MEDIUM; quote only if HIGH (MEDIUM only one short token ≤6 chars).
+- Micro‑action → always emit (HIGH template or MEDIUM whitelist or LOW fallback).
+- Anchor/text → must appear within first 8 words if MEDIUM/HIGH, else include neutral anchor fallback early.
+- Counts → digits only if detector_count_confidence ≥ 0.70.
+- Prune per priority; never prune slots 1–3.
+- If validation fails → auto‑rewrite to minimal safe caption template.
+
+Adhere strictly to these rules when generating the single final caption.","woman with red hair, right hand holding beige pillow, people/dogs/vehicles/vendor stand, red sweater, group of people behind",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.30255812406539917,0.2494920790195465,17,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_29727dbd0c,7,3863,flickr30k_test_003863,images/flickr30k/flickr30k_test_003863.jpg,"[""A group of six people have jumped into the air in the middle of nowhere and one is catching a ball."", ""A group of people are jumping into the air with their arms held high."", ""Six people are jumping in the air, one of them throwing a ball."", ""A group of people in a desert jumping, one throwing a ball."", ""Six people jump for ball.""]",textgrad_29727dbd0c,TextGrad Step 19,"Produce exactly one concise, information‑dense caption: a single grammatical sentence composed of comma‑separated short phrases. Produce only that one sentence and nothing else.
+
+Output structure (emit in this order; slots 1–3 are mandatory and protected from pruning):
+1) Subject group(s) and one HIGH or MEDIUM anchor/prop or, if no MEDIUM/HIGH anchor exists, a neutral positional anchor fallback (0–3 subject groups; must appear first).
+2) Micro‑action / contact using strict templates (always emit one): 
+   - HIGH evidence: exact form ""left|right [hand|foot|part] [strong‑verb] [object]"" (e.g., ""right hand holding basket"").
+   - MEDIUM evidence: use one verb from the whitelist {jumping, pawing, clearing, showing, speaking, holding, carrying, pushing, pulling, strumming, leaning}.
+   - LOW evidence: fallback ""[part] near [object]"" (e.g., ""right hand near object"").
+   Never hedge or omit this slot.
+3) Fine class (verified label or dataset lexicon token; if no verified fine class, use a safe plural fallback such as ""people/dogs/vehicles/vendor stand"").
+4) Clothing / clear pose / orientation — include only when MEDIUM/HIGH verified.
+5) Up to two anchors/signage (only if MEDIUM/HIGH verified; otherwise use neutral positional fallback tokens such as ""marquee above"", ""storefront behind"").
+6) Spatial/cropping/depth token if verified.
+
+Verification bands and numeric thresholds (use detector outputs where available):
+- HIGH: OCR_confidence ≥ 0.85 OR segmentation_iou ≥ 0.75 OR motion_confidence ≥ 0.85.
+- MEDIUM: OCR_confidence ≥ 0.50 OR segmentation_iou ≥ 0.40 OR motion_confidence ≥ 0.60 OR detector_count_confidence ≥ 0.70.
+- LOW: otherwise.
+- Digit counts: emit digits only if detector_count_confidence ≥ 0.70; otherwise use plural fallback nouns.
+
+OCR and signage rules:
+- If OCR is HIGH: emit exact quoted text (quote counts toward length).
+- If OCR is MEDIUM and saliency is high: emit at most one short quoted token (single word or ≤6 characters); do not invent or complete partial names.
+- If OCR is LOW: use a neutral positional anchor fallback (e.g., ""marquee above"", ""large sign upper right"").
+
+First‑words requirement:
+- The first 6–8 words must contain the subject group token (or a plural fallback noun) and a HIGH anchor OR a MEDIUM anchor from the MEDIUM anchor whitelist. If this fails, the caption must be auto‑rewritten into the minimal safe form: plural subject fallback + neutral anchor fallback + micro‑action LOW fallback + fine‑class fallback, all within the first 8 words.
+
+Saliency tie‑breaking and selection:
+- When multiple candidates are present, prefer in order: 1) OCR text, 2) large prop/signage, 3) face/people, 4) large color patch/clothing. Chosen anchor must appear early (within first 6–8 words).
+
+MEDIUM whitelist (emit these exact tokens only under MEDIUM):
+- Fine classes: boat, canoe, shrine/temple, ghats/steps, children, performer, vendor, vendor stand, parade participant.
+- Anchors: marquee, boats, canopies, flagpole, ladder, bicycle, hedgerow, trees.
+- Clothing tokens allowed under MEDIUM: ""navy sweater"", ""red patterned dress"", ""white blouse"".
+
+Pruning, compression, and length control:
+- Target length: 10–16 words. Hard cap: 20 words. Allow +2 words beyond target when EITHER a HIGH anchor OR a HIGH fine class is present.
+- Pruning priority (apply deterministically until within cap):
+   1) Compress adjective chains into compact noun phrases.
+   2) Remove lighting/reflection descriptors first.
+   3) Remove object state/material next.
+   4) Remove background/ancillary context last.
+- NEVER remove or prune tokens from slots 1–3. Preserve MEDIUM tokens in slots 1–3 when present. If still over cap, construct a minimal safe caption that preserves any HIGH/MEDIUM tokens in slots 1–3 and uses neutral fallbacks elsewhere.
+
+Anti‑hallucination absolutes:
+- Do not invent brand names, partial/complete text, ages, emotions, intentions, or unsupported attributes.
+- No hedges, qualifiers, or speculative language.
+- When verification is LOW, use prescribed neutral fallbacks (e.g., ""storefront behind"", ""marquee above"", ""object on table"", ""group of people"").
+
+Final validator (must pass before emitting):
+- One grammatical sentence of comma‑separated short phrases.
+- Length within caps and target rules.
+- First 6–8 words include subject token (or plural fallback) plus a HIGH or MEDIUM anchor (or neutral anchor fallback if no MEDIUM/HIGH).
+- Micro‑action slot present and follows template rules.
+- No hedges, no invented brands/text, no duplicated phrases.
+- Only allowed MEDIUM tokens are emitted under MEDIUM band.
+- If validator would fail, emit the deterministic minimal safe caption described above.
+
+Short positive example (ideal):
+- ""group of people, right hand holding red shopping bag, storefront behind, marquee above.""
+
+Short negative example (avoid):
+- ""Several people maybe near a building with an unclear sign and someone possibly holding something.""
+
+Machine‑readable checklist to append internally (for validation):
+- OCR → include if HIGH/MEDIUM; quote only if HIGH (MEDIUM only one short token ≤6 chars).
+- Micro‑action → always emit (HIGH template or MEDIUM whitelist or LOW fallback).
+- Anchor/text → must appear within first 8 words if MEDIUM/HIGH, else include neutral anchor fallback early.
+- Counts → digits only if detector_count_confidence ≥ 0.70.
+- Prune per priority; never prune slots 1–3.
+- If validation fails → auto‑rewrite to minimal safe caption template.
+
+Adhere strictly to these rules when generating the single final caption.","group of people, ball mid-air, jumping, people/dogs/vehicles/vendor stand, wearing varied clothing, salt flats below",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.31559890508651733,0.22508744895458221,14,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_29727dbd0c,8,16234,flickr30k_test_016234,images/flickr30k/flickr30k_test_016234.jpg,"[""The young child is yelling into the microphone, while other children watch."", ""A young boy vocalizes in to a microphone held by a blond woman in black."", ""A young child is in front of a microphone as other people are watching."", ""Little kid is taking a bit of something from a puppet."", ""A boy yells into a microphone held by a woman.""]",textgrad_29727dbd0c,TextGrad Step 19,"Produce exactly one concise, information‑dense caption: a single grammatical sentence composed of comma‑separated short phrases. Produce only that one sentence and nothing else.
+
+Output structure (emit in this order; slots 1–3 are mandatory and protected from pruning):
+1) Subject group(s) and one HIGH or MEDIUM anchor/prop or, if no MEDIUM/HIGH anchor exists, a neutral positional anchor fallback (0–3 subject groups; must appear first).
+2) Micro‑action / contact using strict templates (always emit one): 
+   - HIGH evidence: exact form ""left|right [hand|foot|part] [strong‑verb] [object]"" (e.g., ""right hand holding basket"").
+   - MEDIUM evidence: use one verb from the whitelist {jumping, pawing, clearing, showing, speaking, holding, carrying, pushing, pulling, strumming, leaning}.
+   - LOW evidence: fallback ""[part] near [object]"" (e.g., ""right hand near object"").
+   Never hedge or omit this slot.
+3) Fine class (verified label or dataset lexicon token; if no verified fine class, use a safe plural fallback such as ""people/dogs/vehicles/vendor stand"").
+4) Clothing / clear pose / orientation — include only when MEDIUM/HIGH verified.
+5) Up to two anchors/signage (only if MEDIUM/HIGH verified; otherwise use neutral positional fallback tokens such as ""marquee above"", ""storefront behind"").
+6) Spatial/cropping/depth token if verified.
+
+Verification bands and numeric thresholds (use detector outputs where available):
+- HIGH: OCR_confidence ≥ 0.85 OR segmentation_iou ≥ 0.75 OR motion_confidence ≥ 0.85.
+- MEDIUM: OCR_confidence ≥ 0.50 OR segmentation_iou ≥ 0.40 OR motion_confidence ≥ 0.60 OR detector_count_confidence ≥ 0.70.
+- LOW: otherwise.
+- Digit counts: emit digits only if detector_count_confidence ≥ 0.70; otherwise use plural fallback nouns.
+
+OCR and signage rules:
+- If OCR is HIGH: emit exact quoted text (quote counts toward length).
+- If OCR is MEDIUM and saliency is high: emit at most one short quoted token (single word or ≤6 characters); do not invent or complete partial names.
+- If OCR is LOW: use a neutral positional anchor fallback (e.g., ""marquee above"", ""large sign upper right"").
+
+First‑words requirement:
+- The first 6–8 words must contain the subject group token (or a plural fallback noun) and a HIGH anchor OR a MEDIUM anchor from the MEDIUM anchor whitelist. If this fails, the caption must be auto‑rewritten into the minimal safe form: plural subject fallback + neutral anchor fallback + micro‑action LOW fallback + fine‑class fallback, all within the first 8 words.
+
+Saliency tie‑breaking and selection:
+- When multiple candidates are present, prefer in order: 1) OCR text, 2) large prop/signage, 3) face/people, 4) large color patch/clothing. Chosen anchor must appear early (within first 6–8 words).
+
+MEDIUM whitelist (emit these exact tokens only under MEDIUM):
+- Fine classes: boat, canoe, shrine/temple, ghats/steps, children, performer, vendor, vendor stand, parade participant.
+- Anchors: marquee, boats, canopies, flagpole, ladder, bicycle, hedgerow, trees.
+- Clothing tokens allowed under MEDIUM: ""navy sweater"", ""red patterned dress"", ""white blouse"".
+
+Pruning, compression, and length control:
+- Target length: 10–16 words. Hard cap: 20 words. Allow +2 words beyond target when EITHER a HIGH anchor OR a HIGH fine class is present.
+- Pruning priority (apply deterministically until within cap):
+   1) Compress adjective chains into compact noun phrases.
+   2) Remove lighting/reflection descriptors first.
+   3) Remove object state/material next.
+   4) Remove background/ancillary context last.
+- NEVER remove or prune tokens from slots 1–3. Preserve MEDIUM tokens in slots 1–3 when present. If still over cap, construct a minimal safe caption that preserves any HIGH/MEDIUM tokens in slots 1–3 and uses neutral fallbacks elsewhere.
+
+Anti‑hallucination absolutes:
+- Do not invent brand names, partial/complete text, ages, emotions, intentions, or unsupported attributes.
+- No hedges, qualifiers, or speculative language.
+- When verification is LOW, use prescribed neutral fallbacks (e.g., ""storefront behind"", ""marquee above"", ""object on table"", ""group of people"").
+
+Final validator (must pass before emitting):
+- One grammatical sentence of comma‑separated short phrases.
+- Length within caps and target rules.
+- First 6–8 words include subject token (or plural fallback) plus a HIGH or MEDIUM anchor (or neutral anchor fallback if no MEDIUM/HIGH).
+- Micro‑action slot present and follows template rules.
+- No hedges, no invented brands/text, no duplicated phrases.
+- Only allowed MEDIUM tokens are emitted under MEDIUM band.
+- If validator would fail, emit the deterministic minimal safe caption described above.
+
+Short positive example (ideal):
+- ""group of people, right hand holding red shopping bag, storefront behind, marquee above.""
+
+Short negative example (avoid):
+- ""Several people maybe near a building with an unclear sign and someone possibly holding something.""
+
+Machine‑readable checklist to append internally (for validation):
+- OCR → include if HIGH/MEDIUM; quote only if HIGH (MEDIUM only one short token ≤6 chars).
+- Micro‑action → always emit (HIGH template or MEDIUM whitelist or LOW fallback).
+- Anchor/text → must appear within first 8 words if MEDIUM/HIGH, else include neutral anchor fallback early.
+- Counts → digits only if detector_count_confidence ≥ 0.70.
+- Prune per priority; never prune slots 1–3.
+- If validation fails → auto‑rewrite to minimal safe caption template.
+
+Adhere strictly to these rules when generating the single final caption.","group of people, right hand holding puppet, children, striped shirt, navy sweater, marquee above",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.23633748292922974,0.17482924461364746,14,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_29727dbd0c,14,25844,flickr30k_test_025844,images/flickr30k/flickr30k_test_025844.jpg,"[""The two boys, one in orange the other in teal, wrestle in the sand."", ""Two boys are playing in the sand at a playground."", ""Two young boys are wrestling in a sandpit."", ""Two boys wrestle together in the sand."", ""Two boys tussle in the sand at a park.""]",textgrad_29727dbd0c,TextGrad Step 19,"Produce exactly one concise, information‑dense caption: a single grammatical sentence composed of comma‑separated short phrases. Produce only that one sentence and nothing else.
+
+Output structure (emit in this order; slots 1–3 are mandatory and protected from pruning):
+1) Subject group(s) and one HIGH or MEDIUM anchor/prop or, if no MEDIUM/HIGH anchor exists, a neutral positional anchor fallback (0–3 subject groups; must appear first).
+2) Micro‑action / contact using strict templates (always emit one): 
+   - HIGH evidence: exact form ""left|right [hand|foot|part] [strong‑verb] [object]"" (e.g., ""right hand holding basket"").
+   - MEDIUM evidence: use one verb from the whitelist {jumping, pawing, clearing, showing, speaking, holding, carrying, pushing, pulling, strumming, leaning}.
+   - LOW evidence: fallback ""[part] near [object]"" (e.g., ""right hand near object"").
+   Never hedge or omit this slot.
+3) Fine class (verified label or dataset lexicon token; if no verified fine class, use a safe plural fallback such as ""people/dogs/vehicles/vendor stand"").
+4) Clothing / clear pose / orientation — include only when MEDIUM/HIGH verified.
+5) Up to two anchors/signage (only if MEDIUM/HIGH verified; otherwise use neutral positional fallback tokens such as ""marquee above"", ""storefront behind"").
+6) Spatial/cropping/depth token if verified.
+
+Verification bands and numeric thresholds (use detector outputs where available):
+- HIGH: OCR_confidence ≥ 0.85 OR segmentation_iou ≥ 0.75 OR motion_confidence ≥ 0.85.
+- MEDIUM: OCR_confidence ≥ 0.50 OR segmentation_iou ≥ 0.40 OR motion_confidence ≥ 0.60 OR detector_count_confidence ≥ 0.70.
+- LOW: otherwise.
+- Digit counts: emit digits only if detector_count_confidence ≥ 0.70; otherwise use plural fallback nouns.
+
+OCR and signage rules:
+- If OCR is HIGH: emit exact quoted text (quote counts toward length).
+- If OCR is MEDIUM and saliency is high: emit at most one short quoted token (single word or ≤6 characters); do not invent or complete partial names.
+- If OCR is LOW: use a neutral positional anchor fallback (e.g., ""marquee above"", ""large sign upper right"").
+
+First‑words requirement:
+- The first 6–8 words must contain the subject group token (or a plural fallback noun) and a HIGH anchor OR a MEDIUM anchor from the MEDIUM anchor whitelist. If this fails, the caption must be auto‑rewritten into the minimal safe form: plural subject fallback + neutral anchor fallback + micro‑action LOW fallback + fine‑class fallback, all within the first 8 words.
+
+Saliency tie‑breaking and selection:
+- When multiple candidates are present, prefer in order: 1) OCR text, 2) large prop/signage, 3) face/people, 4) large color patch/clothing. Chosen anchor must appear early (within first 6–8 words).
+
+MEDIUM whitelist (emit these exact tokens only under MEDIUM):
+- Fine classes: boat, canoe, shrine/temple, ghats/steps, children, performer, vendor, vendor stand, parade participant.
+- Anchors: marquee, boats, canopies, flagpole, ladder, bicycle, hedgerow, trees.
+- Clothing tokens allowed under MEDIUM: ""navy sweater"", ""red patterned dress"", ""white blouse"".
+
+Pruning, compression, and length control:
+- Target length: 10–16 words. Hard cap: 20 words. Allow +2 words beyond target when EITHER a HIGH anchor OR a HIGH fine class is present.
+- Pruning priority (apply deterministically until within cap):
+   1) Compress adjective chains into compact noun phrases.
+   2) Remove lighting/reflection descriptors first.
+   3) Remove object state/material next.
+   4) Remove background/ancillary context last.
+- NEVER remove or prune tokens from slots 1–3. Preserve MEDIUM tokens in slots 1–3 when present. If still over cap, construct a minimal safe caption that preserves any HIGH/MEDIUM tokens in slots 1–3 and uses neutral fallbacks elsewhere.
+
+Anti‑hallucination absolutes:
+- Do not invent brand names, partial/complete text, ages, emotions, intentions, or unsupported attributes.
+- No hedges, qualifiers, or speculative language.
+- When verification is LOW, use prescribed neutral fallbacks (e.g., ""storefront behind"", ""marquee above"", ""object on table"", ""group of people"").
+
+Final validator (must pass before emitting):
+- One grammatical sentence of comma‑separated short phrases.
+- Length within caps and target rules.
+- First 6–8 words include subject token (or plural fallback) plus a HIGH or MEDIUM anchor (or neutral anchor fallback if no MEDIUM/HIGH).
+- Micro‑action slot present and follows template rules.
+- No hedges, no invented brands/text, no duplicated phrases.
+- Only allowed MEDIUM tokens are emitted under MEDIUM band.
+- If validator would fail, emit the deterministic minimal safe caption described above.
+
+Short positive example (ideal):
+- ""group of people, right hand holding red shopping bag, storefront behind, marquee above.""
+
+Short negative example (avoid):
+- ""Several people maybe near a building with an unclear sign and someone possibly holding something.""
+
+Machine‑readable checklist to append internally (for validation):
+- OCR → include if HIGH/MEDIUM; quote only if HIGH (MEDIUM only one short token ≤6 chars).
+- Micro‑action → always emit (HIGH template or MEDIUM whitelist or LOW fallback).
+- Anchor/text → must appear within first 8 words if MEDIUM/HIGH, else include neutral anchor fallback early.
+- Counts → digits only if detector_count_confidence ≥ 0.70.
+- Prune per priority; never prune slots 1–3.
+- If validation fails → auto‑rewrite to minimal safe caption template.
+
+Adhere strictly to these rules when generating the single final caption.","two children, right hand holding other child, children playing, orange tie-dye shirt, camouflage shorts, sand beneath feet, wooden post behind",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.27083972096443176,0.18913087248802185,20,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_29727dbd0c,18,928,flickr30k_test_000928,images/flickr30k/flickr30k_test_000928.jpg,"[""A woman with a red jacket and her companion eating snacks."", ""A young man and woman enjoy some ribs in the evening."", ""Two people are eating barbecue ribs at night."", ""A man and a woman about to eat."", ""These two people are eating.""]",textgrad_29727dbd0c,TextGrad Step 19,"Produce exactly one concise, information‑dense caption: a single grammatical sentence composed of comma‑separated short phrases. Produce only that one sentence and nothing else.
+
+Output structure (emit in this order; slots 1–3 are mandatory and protected from pruning):
+1) Subject group(s) and one HIGH or MEDIUM anchor/prop or, if no MEDIUM/HIGH anchor exists, a neutral positional anchor fallback (0–3 subject groups; must appear first).
+2) Micro‑action / contact using strict templates (always emit one): 
+   - HIGH evidence: exact form ""left|right [hand|foot|part] [strong‑verb] [object]"" (e.g., ""right hand holding basket"").
+   - MEDIUM evidence: use one verb from the whitelist {jumping, pawing, clearing, showing, speaking, holding, carrying, pushing, pulling, strumming, leaning}.
+   - LOW evidence: fallback ""[part] near [object]"" (e.g., ""right hand near object"").
+   Never hedge or omit this slot.
+3) Fine class (verified label or dataset lexicon token; if no verified fine class, use a safe plural fallback such as ""people/dogs/vehicles/vendor stand"").
+4) Clothing / clear pose / orientation — include only when MEDIUM/HIGH verified.
+5) Up to two anchors/signage (only if MEDIUM/HIGH verified; otherwise use neutral positional fallback tokens such as ""marquee above"", ""storefront behind"").
+6) Spatial/cropping/depth token if verified.
+
+Verification bands and numeric thresholds (use detector outputs where available):
+- HIGH: OCR_confidence ≥ 0.85 OR segmentation_iou ≥ 0.75 OR motion_confidence ≥ 0.85.
+- MEDIUM: OCR_confidence ≥ 0.50 OR segmentation_iou ≥ 0.40 OR motion_confidence ≥ 0.60 OR detector_count_confidence ≥ 0.70.
+- LOW: otherwise.
+- Digit counts: emit digits only if detector_count_confidence ≥ 0.70; otherwise use plural fallback nouns.
+
+OCR and signage rules:
+- If OCR is HIGH: emit exact quoted text (quote counts toward length).
+- If OCR is MEDIUM and saliency is high: emit at most one short quoted token (single word or ≤6 characters); do not invent or complete partial names.
+- If OCR is LOW: use a neutral positional anchor fallback (e.g., ""marquee above"", ""large sign upper right"").
+
+First‑words requirement:
+- The first 6–8 words must contain the subject group token (or a plural fallback noun) and a HIGH anchor OR a MEDIUM anchor from the MEDIUM anchor whitelist. If this fails, the caption must be auto‑rewritten into the minimal safe form: plural subject fallback + neutral anchor fallback + micro‑action LOW fallback + fine‑class fallback, all within the first 8 words.
+
+Saliency tie‑breaking and selection:
+- When multiple candidates are present, prefer in order: 1) OCR text, 2) large prop/signage, 3) face/people, 4) large color patch/clothing. Chosen anchor must appear early (within first 6–8 words).
+
+MEDIUM whitelist (emit these exact tokens only under MEDIUM):
+- Fine classes: boat, canoe, shrine/temple, ghats/steps, children, performer, vendor, vendor stand, parade participant.
+- Anchors: marquee, boats, canopies, flagpole, ladder, bicycle, hedgerow, trees.
+- Clothing tokens allowed under MEDIUM: ""navy sweater"", ""red patterned dress"", ""white blouse"".
+
+Pruning, compression, and length control:
+- Target length: 10–16 words. Hard cap: 20 words. Allow +2 words beyond target when EITHER a HIGH anchor OR a HIGH fine class is present.
+- Pruning priority (apply deterministically until within cap):
+   1) Compress adjective chains into compact noun phrases.
+   2) Remove lighting/reflection descriptors first.
+   3) Remove object state/material next.
+   4) Remove background/ancillary context last.
+- NEVER remove or prune tokens from slots 1–3. Preserve MEDIUM tokens in slots 1–3 when present. If still over cap, construct a minimal safe caption that preserves any HIGH/MEDIUM tokens in slots 1–3 and uses neutral fallbacks elsewhere.
+
+Anti‑hallucination absolutes:
+- Do not invent brand names, partial/complete text, ages, emotions, intentions, or unsupported attributes.
+- No hedges, qualifiers, or speculative language.
+- When verification is LOW, use prescribed neutral fallbacks (e.g., ""storefront behind"", ""marquee above"", ""object on table"", ""group of people"").
+
+Final validator (must pass before emitting):
+- One grammatical sentence of comma‑separated short phrases.
+- Length within caps and target rules.
+- First 6–8 words include subject token (or plural fallback) plus a HIGH or MEDIUM anchor (or neutral anchor fallback if no MEDIUM/HIGH).
+- Micro‑action slot present and follows template rules.
+- No hedges, no invented brands/text, no duplicated phrases.
+- Only allowed MEDIUM tokens are emitted under MEDIUM band.
+- If validator would fail, emit the deterministic minimal safe caption described above.
+
+Short positive example (ideal):
+- ""group of people, right hand holding red shopping bag, storefront behind, marquee above.""
+
+Short negative example (avoid):
+- ""Several people maybe near a building with an unclear sign and someone possibly holding something.""
+
+Machine‑readable checklist to append internally (for validation):
+- OCR → include if HIGH/MEDIUM; quote only if HIGH (MEDIUM only one short token ≤6 chars).
+- Micro‑action → always emit (HIGH template or MEDIUM whitelist or LOW fallback).
+- Anchor/text → must appear within first 8 words if MEDIUM/HIGH, else include neutral anchor fallback early.
+- Counts → digits only if detector_count_confidence ≥ 0.70.
+- Prune per priority; never prune slots 1–3.
+- If validation fails → auto‑rewrite to minimal safe caption template.
+
+Adhere strictly to these rules when generating the single final caption.","two people, right hand holding meat, people, black t-shirt with Rolling Stones logo, red jacket, dark background",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.30036115646362305,0.18918508291244507,17,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_29727dbd0c,23,19904,flickr30k_test_019904,images/flickr30k/flickr30k_test_019904.jpg,"[""The man in the tan jacket is taking large steps as he walks past the off white building."", ""A well-dressed, shaven-head young man strides through railings past a restaurant."", ""A man wearing a tan jacket walks into Le Mignon in the afternoon."", ""A man walking across a bridge near a steak restaurant."", ""A bald man walking on a bridge.""]",textgrad_29727dbd0c,TextGrad Step 19,"Produce exactly one concise, information‑dense caption: a single grammatical sentence composed of comma‑separated short phrases. Produce only that one sentence and nothing else.
+
+Output structure (emit in this order; slots 1–3 are mandatory and protected from pruning):
+1) Subject group(s) and one HIGH or MEDIUM anchor/prop or, if no MEDIUM/HIGH anchor exists, a neutral positional anchor fallback (0–3 subject groups; must appear first).
+2) Micro‑action / contact using strict templates (always emit one): 
+   - HIGH evidence: exact form ""left|right [hand|foot|part] [strong‑verb] [object]"" (e.g., ""right hand holding basket"").
+   - MEDIUM evidence: use one verb from the whitelist {jumping, pawing, clearing, showing, speaking, holding, carrying, pushing, pulling, strumming, leaning}.
+   - LOW evidence: fallback ""[part] near [object]"" (e.g., ""right hand near object"").
+   Never hedge or omit this slot.
+3) Fine class (verified label or dataset lexicon token; if no verified fine class, use a safe plural fallback such as ""people/dogs/vehicles/vendor stand"").
+4) Clothing / clear pose / orientation — include only when MEDIUM/HIGH verified.
+5) Up to two anchors/signage (only if MEDIUM/HIGH verified; otherwise use neutral positional fallback tokens such as ""marquee above"", ""storefront behind"").
+6) Spatial/cropping/depth token if verified.
+
+Verification bands and numeric thresholds (use detector outputs where available):
+- HIGH: OCR_confidence ≥ 0.85 OR segmentation_iou ≥ 0.75 OR motion_confidence ≥ 0.85.
+- MEDIUM: OCR_confidence ≥ 0.50 OR segmentation_iou ≥ 0.40 OR motion_confidence ≥ 0.60 OR detector_count_confidence ≥ 0.70.
+- LOW: otherwise.
+- Digit counts: emit digits only if detector_count_confidence ≥ 0.70; otherwise use plural fallback nouns.
+
+OCR and signage rules:
+- If OCR is HIGH: emit exact quoted text (quote counts toward length).
+- If OCR is MEDIUM and saliency is high: emit at most one short quoted token (single word or ≤6 characters); do not invent or complete partial names.
+- If OCR is LOW: use a neutral positional anchor fallback (e.g., ""marquee above"", ""large sign upper right"").
+
+First‑words requirement:
+- The first 6–8 words must contain the subject group token (or a plural fallback noun) and a HIGH anchor OR a MEDIUM anchor from the MEDIUM anchor whitelist. If this fails, the caption must be auto‑rewritten into the minimal safe form: plural subject fallback + neutral anchor fallback + micro‑action LOW fallback + fine‑class fallback, all within the first 8 words.
+
+Saliency tie‑breaking and selection:
+- When multiple candidates are present, prefer in order: 1) OCR text, 2) large prop/signage, 3) face/people, 4) large color patch/clothing. Chosen anchor must appear early (within first 6–8 words).
+
+MEDIUM whitelist (emit these exact tokens only under MEDIUM):
+- Fine classes: boat, canoe, shrine/temple, ghats/steps, children, performer, vendor, vendor stand, parade participant.
+- Anchors: marquee, boats, canopies, flagpole, ladder, bicycle, hedgerow, trees.
+- Clothing tokens allowed under MEDIUM: ""navy sweater"", ""red patterned dress"", ""white blouse"".
+
+Pruning, compression, and length control:
+- Target length: 10–16 words. Hard cap: 20 words. Allow +2 words beyond target when EITHER a HIGH anchor OR a HIGH fine class is present.
+- Pruning priority (apply deterministically until within cap):
+   1) Compress adjective chains into compact noun phrases.
+   2) Remove lighting/reflection descriptors first.
+   3) Remove object state/material next.
+   4) Remove background/ancillary context last.
+- NEVER remove or prune tokens from slots 1–3. Preserve MEDIUM tokens in slots 1–3 when present. If still over cap, construct a minimal safe caption that preserves any HIGH/MEDIUM tokens in slots 1–3 and uses neutral fallbacks elsewhere.
+
+Anti‑hallucination absolutes:
+- Do not invent brand names, partial/complete text, ages, emotions, intentions, or unsupported attributes.
+- No hedges, qualifiers, or speculative language.
+- When verification is LOW, use prescribed neutral fallbacks (e.g., ""storefront behind"", ""marquee above"", ""object on table"", ""group of people"").
+
+Final validator (must pass before emitting):
+- One grammatical sentence of comma‑separated short phrases.
+- Length within caps and target rules.
+- First 6–8 words include subject token (or plural fallback) plus a HIGH or MEDIUM anchor (or neutral anchor fallback if no MEDIUM/HIGH).
+- Micro‑action slot present and follows template rules.
+- No hedges, no invented brands/text, no duplicated phrases.
+- Only allowed MEDIUM tokens are emitted under MEDIUM band.
+- If validator would fail, emit the deterministic minimal safe caption described above.
+
+Short positive example (ideal):
+- ""group of people, right hand holding red shopping bag, storefront behind, marquee above.""
+
+Short negative example (avoid):
+- ""Several people maybe near a building with an unclear sign and someone possibly holding something.""
+
+Machine‑readable checklist to append internally (for validation):
+- OCR → include if HIGH/MEDIUM; quote only if HIGH (MEDIUM only one short token ≤6 chars).
+- Micro‑action → always emit (HIGH template or MEDIUM whitelist or LOW fallback).
+- Anchor/text → must appear within first 8 words if MEDIUM/HIGH, else include neutral anchor fallback early.
+- Counts → digits only if detector_count_confidence ≥ 0.70.
+- Prune per priority; never prune slots 1–3.
+- If validation fails → auto‑rewrite to minimal safe caption template.
+
+Adhere strictly to these rules when generating the single final caption.","man, right foot stepping on railing, people/dogs/vehicles/vendor stand, beige jacket, red railing in front, ""Le Mignon"" sign on wall behind",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.2471255213022232,0.2476586401462555,20,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_29727dbd0c,27,22801,flickr30k_test_022801,images/flickr30k/flickr30k_test_022801.jpg,"[""People are walking down the street with vendors on the side on a beautiful, sunny day."", ""People are gathered at some kind of shop on the side of the street."", ""A boy with a yellow shirt and yellow do-rag walking through a town."", ""Multiple people are walking down a street at a street fair"", ""People walk down a street with shops along the way.""]",textgrad_29727dbd0c,TextGrad Step 19,"Produce exactly one concise, information‑dense caption: a single grammatical sentence composed of comma‑separated short phrases. Produce only that one sentence and nothing else.
+
+Output structure (emit in this order; slots 1–3 are mandatory and protected from pruning):
+1) Subject group(s) and one HIGH or MEDIUM anchor/prop or, if no MEDIUM/HIGH anchor exists, a neutral positional anchor fallback (0–3 subject groups; must appear first).
+2) Micro‑action / contact using strict templates (always emit one): 
+   - HIGH evidence: exact form ""left|right [hand|foot|part] [strong‑verb] [object]"" (e.g., ""right hand holding basket"").
+   - MEDIUM evidence: use one verb from the whitelist {jumping, pawing, clearing, showing, speaking, holding, carrying, pushing, pulling, strumming, leaning}.
+   - LOW evidence: fallback ""[part] near [object]"" (e.g., ""right hand near object"").
+   Never hedge or omit this slot.
+3) Fine class (verified label or dataset lexicon token; if no verified fine class, use a safe plural fallback such as ""people/dogs/vehicles/vendor stand"").
+4) Clothing / clear pose / orientation — include only when MEDIUM/HIGH verified.
+5) Up to two anchors/signage (only if MEDIUM/HIGH verified; otherwise use neutral positional fallback tokens such as ""marquee above"", ""storefront behind"").
+6) Spatial/cropping/depth token if verified.
+
+Verification bands and numeric thresholds (use detector outputs where available):
+- HIGH: OCR_confidence ≥ 0.85 OR segmentation_iou ≥ 0.75 OR motion_confidence ≥ 0.85.
+- MEDIUM: OCR_confidence ≥ 0.50 OR segmentation_iou ≥ 0.40 OR motion_confidence ≥ 0.60 OR detector_count_confidence ≥ 0.70.
+- LOW: otherwise.
+- Digit counts: emit digits only if detector_count_confidence ≥ 0.70; otherwise use plural fallback nouns.
+
+OCR and signage rules:
+- If OCR is HIGH: emit exact quoted text (quote counts toward length).
+- If OCR is MEDIUM and saliency is high: emit at most one short quoted token (single word or ≤6 characters); do not invent or complete partial names.
+- If OCR is LOW: use a neutral positional anchor fallback (e.g., ""marquee above"", ""large sign upper right"").
+
+First‑words requirement:
+- The first 6–8 words must contain the subject group token (or a plural fallback noun) and a HIGH anchor OR a MEDIUM anchor from the MEDIUM anchor whitelist. If this fails, the caption must be auto‑rewritten into the minimal safe form: plural subject fallback + neutral anchor fallback + micro‑action LOW fallback + fine‑class fallback, all within the first 8 words.
+
+Saliency tie‑breaking and selection:
+- When multiple candidates are present, prefer in order: 1) OCR text, 2) large prop/signage, 3) face/people, 4) large color patch/clothing. Chosen anchor must appear early (within first 6–8 words).
+
+MEDIUM whitelist (emit these exact tokens only under MEDIUM):
+- Fine classes: boat, canoe, shrine/temple, ghats/steps, children, performer, vendor, vendor stand, parade participant.
+- Anchors: marquee, boats, canopies, flagpole, ladder, bicycle, hedgerow, trees.
+- Clothing tokens allowed under MEDIUM: ""navy sweater"", ""red patterned dress"", ""white blouse"".
+
+Pruning, compression, and length control:
+- Target length: 10–16 words. Hard cap: 20 words. Allow +2 words beyond target when EITHER a HIGH anchor OR a HIGH fine class is present.
+- Pruning priority (apply deterministically until within cap):
+   1) Compress adjective chains into compact noun phrases.
+   2) Remove lighting/reflection descriptors first.
+   3) Remove object state/material next.
+   4) Remove background/ancillary context last.
+- NEVER remove or prune tokens from slots 1–3. Preserve MEDIUM tokens in slots 1–3 when present. If still over cap, construct a minimal safe caption that preserves any HIGH/MEDIUM tokens in slots 1–3 and uses neutral fallbacks elsewhere.
+
+Anti‑hallucination absolutes:
+- Do not invent brand names, partial/complete text, ages, emotions, intentions, or unsupported attributes.
+- No hedges, qualifiers, or speculative language.
+- When verification is LOW, use prescribed neutral fallbacks (e.g., ""storefront behind"", ""marquee above"", ""object on table"", ""group of people"").
+
+Final validator (must pass before emitting):
+- One grammatical sentence of comma‑separated short phrases.
+- Length within caps and target rules.
+- First 6–8 words include subject token (or plural fallback) plus a HIGH or MEDIUM anchor (or neutral anchor fallback if no MEDIUM/HIGH).
+- Micro‑action slot present and follows template rules.
+- No hedges, no invented brands/text, no duplicated phrases.
+- Only allowed MEDIUM tokens are emitted under MEDIUM band.
+- If validator would fail, emit the deterministic minimal safe caption described above.
+
+Short positive example (ideal):
+- ""group of people, right hand holding red shopping bag, storefront behind, marquee above.""
+
+Short negative example (avoid):
+- ""Several people maybe near a building with an unclear sign and someone possibly holding something.""
+
+Machine‑readable checklist to append internally (for validation):
+- OCR → include if HIGH/MEDIUM; quote only if HIGH (MEDIUM only one short token ≤6 chars).
+- Micro‑action → always emit (HIGH template or MEDIUM whitelist or LOW fallback).
+- Anchor/text → must appear within first 8 words if MEDIUM/HIGH, else include neutral anchor fallback early.
+- Counts → digits only if detector_count_confidence ≥ 0.70.
+- Prune per priority; never prune slots 1–3.
+- If validation fails → auto‑rewrite to minimal safe caption template.
+
+Adhere strictly to these rules when generating the single final caption.","group of people, vendor stand with blue canopy, right hand holding basket, people/dogs/vehicles/vendor stand, yellow shirt walking, storefront behind, marquee above.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.3015311062335968,0.1625501960515976,21,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_29727dbd0c,30,23643,flickr30k_test_023643,images/flickr30k/flickr30k_test_023643.jpg,"[""A little girl in a red and white shirt stands next to some caricatures of celebrities at an art fair."", ""A little girl in a red print sundress walked through an outdoor artist display."", ""A little girl wearing red is standing in front of caricature"", ""A girls stands by a caricature artist's drawings."", ""Little girl posing for a caricature.""]",textgrad_29727dbd0c,TextGrad Step 19,"Produce exactly one concise, information‑dense caption: a single grammatical sentence composed of comma‑separated short phrases. Produce only that one sentence and nothing else.
+
+Output structure (emit in this order; slots 1–3 are mandatory and protected from pruning):
+1) Subject group(s) and one HIGH or MEDIUM anchor/prop or, if no MEDIUM/HIGH anchor exists, a neutral positional anchor fallback (0–3 subject groups; must appear first).
+2) Micro‑action / contact using strict templates (always emit one): 
+   - HIGH evidence: exact form ""left|right [hand|foot|part] [strong‑verb] [object]"" (e.g., ""right hand holding basket"").
+   - MEDIUM evidence: use one verb from the whitelist {jumping, pawing, clearing, showing, speaking, holding, carrying, pushing, pulling, strumming, leaning}.
+   - LOW evidence: fallback ""[part] near [object]"" (e.g., ""right hand near object"").
+   Never hedge or omit this slot.
+3) Fine class (verified label or dataset lexicon token; if no verified fine class, use a safe plural fallback such as ""people/dogs/vehicles/vendor stand"").
+4) Clothing / clear pose / orientation — include only when MEDIUM/HIGH verified.
+5) Up to two anchors/signage (only if MEDIUM/HIGH verified; otherwise use neutral positional fallback tokens such as ""marquee above"", ""storefront behind"").
+6) Spatial/cropping/depth token if verified.
+
+Verification bands and numeric thresholds (use detector outputs where available):
+- HIGH: OCR_confidence ≥ 0.85 OR segmentation_iou ≥ 0.75 OR motion_confidence ≥ 0.85.
+- MEDIUM: OCR_confidence ≥ 0.50 OR segmentation_iou ≥ 0.40 OR motion_confidence ≥ 0.60 OR detector_count_confidence ≥ 0.70.
+- LOW: otherwise.
+- Digit counts: emit digits only if detector_count_confidence ≥ 0.70; otherwise use plural fallback nouns.
+
+OCR and signage rules:
+- If OCR is HIGH: emit exact quoted text (quote counts toward length).
+- If OCR is MEDIUM and saliency is high: emit at most one short quoted token (single word or ≤6 characters); do not invent or complete partial names.
+- If OCR is LOW: use a neutral positional anchor fallback (e.g., ""marquee above"", ""large sign upper right"").
+
+First‑words requirement:
+- The first 6–8 words must contain the subject group token (or a plural fallback noun) and a HIGH anchor OR a MEDIUM anchor from the MEDIUM anchor whitelist. If this fails, the caption must be auto‑rewritten into the minimal safe form: plural subject fallback + neutral anchor fallback + micro‑action LOW fallback + fine‑class fallback, all within the first 8 words.
+
+Saliency tie‑breaking and selection:
+- When multiple candidates are present, prefer in order: 1) OCR text, 2) large prop/signage, 3) face/people, 4) large color patch/clothing. Chosen anchor must appear early (within first 6–8 words).
+
+MEDIUM whitelist (emit these exact tokens only under MEDIUM):
+- Fine classes: boat, canoe, shrine/temple, ghats/steps, children, performer, vendor, vendor stand, parade participant.
+- Anchors: marquee, boats, canopies, flagpole, ladder, bicycle, hedgerow, trees.
+- Clothing tokens allowed under MEDIUM: ""navy sweater"", ""red patterned dress"", ""white blouse"".
+
+Pruning, compression, and length control:
+- Target length: 10–16 words. Hard cap: 20 words. Allow +2 words beyond target when EITHER a HIGH anchor OR a HIGH fine class is present.
+- Pruning priority (apply deterministically until within cap):
+   1) Compress adjective chains into compact noun phrases.
+   2) Remove lighting/reflection descriptors first.
+   3) Remove object state/material next.
+   4) Remove background/ancillary context last.
+- NEVER remove or prune tokens from slots 1–3. Preserve MEDIUM tokens in slots 1–3 when present. If still over cap, construct a minimal safe caption that preserves any HIGH/MEDIUM tokens in slots 1–3 and uses neutral fallbacks elsewhere.
+
+Anti‑hallucination absolutes:
+- Do not invent brand names, partial/complete text, ages, emotions, intentions, or unsupported attributes.
+- No hedges, qualifiers, or speculative language.
+- When verification is LOW, use prescribed neutral fallbacks (e.g., ""storefront behind"", ""marquee above"", ""object on table"", ""group of people"").
+
+Final validator (must pass before emitting):
+- One grammatical sentence of comma‑separated short phrases.
+- Length within caps and target rules.
+- First 6–8 words include subject token (or plural fallback) plus a HIGH or MEDIUM anchor (or neutral anchor fallback if no MEDIUM/HIGH).
+- Micro‑action slot present and follows template rules.
+- No hedges, no invented brands/text, no duplicated phrases.
+- Only allowed MEDIUM tokens are emitted under MEDIUM band.
+- If validator would fail, emit the deterministic minimal safe caption described above.
+
+Short positive example (ideal):
+- ""group of people, right hand holding red shopping bag, storefront behind, marquee above.""
+
+Short negative example (avoid):
+- ""Several people maybe near a building with an unclear sign and someone possibly holding something.""
+
+Machine‑readable checklist to append internally (for validation):
+- OCR → include if HIGH/MEDIUM; quote only if HIGH (MEDIUM only one short token ≤6 chars).
+- Micro‑action → always emit (HIGH template or MEDIUM whitelist or LOW fallback).
+- Anchor/text → must appear within first 8 words if MEDIUM/HIGH, else include neutral anchor fallback early.
+- Counts → digits only if detector_count_confidence ≥ 0.70.
+- Prune per priority; never prune slots 1–3.
+- If validation fails → auto‑rewrite to minimal safe caption template.
+
+Adhere strictly to these rules when generating the single final caption.","girl, right hand holding umbrella, vendor stand, red patterned dress, marquee above, 15 sign visible",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.2740256190299988,0.13134971261024475,15,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_29727dbd0c,37,10401,flickr30k_test_010401,images/flickr30k/flickr30k_test_010401.jpg,"[""A girl in a blue sweater with a white pattern is jumping into a pile of leaves."", ""A young girl is diving into a pile of brown leaves in the yard."", ""A girl in a sweater diving into a pile of leaves."", ""A girl is jumping into a pile of leaves."", ""A girl is jumping into a pile of leaves""]",textgrad_29727dbd0c,TextGrad Step 19,"Produce exactly one concise, information‑dense caption: a single grammatical sentence composed of comma‑separated short phrases. Produce only that one sentence and nothing else.
+
+Output structure (emit in this order; slots 1–3 are mandatory and protected from pruning):
+1) Subject group(s) and one HIGH or MEDIUM anchor/prop or, if no MEDIUM/HIGH anchor exists, a neutral positional anchor fallback (0–3 subject groups; must appear first).
+2) Micro‑action / contact using strict templates (always emit one): 
+   - HIGH evidence: exact form ""left|right [hand|foot|part] [strong‑verb] [object]"" (e.g., ""right hand holding basket"").
+   - MEDIUM evidence: use one verb from the whitelist {jumping, pawing, clearing, showing, speaking, holding, carrying, pushing, pulling, strumming, leaning}.
+   - LOW evidence: fallback ""[part] near [object]"" (e.g., ""right hand near object"").
+   Never hedge or omit this slot.
+3) Fine class (verified label or dataset lexicon token; if no verified fine class, use a safe plural fallback such as ""people/dogs/vehicles/vendor stand"").
+4) Clothing / clear pose / orientation — include only when MEDIUM/HIGH verified.
+5) Up to two anchors/signage (only if MEDIUM/HIGH verified; otherwise use neutral positional fallback tokens such as ""marquee above"", ""storefront behind"").
+6) Spatial/cropping/depth token if verified.
+
+Verification bands and numeric thresholds (use detector outputs where available):
+- HIGH: OCR_confidence ≥ 0.85 OR segmentation_iou ≥ 0.75 OR motion_confidence ≥ 0.85.
+- MEDIUM: OCR_confidence ≥ 0.50 OR segmentation_iou ≥ 0.40 OR motion_confidence ≥ 0.60 OR detector_count_confidence ≥ 0.70.
+- LOW: otherwise.
+- Digit counts: emit digits only if detector_count_confidence ≥ 0.70; otherwise use plural fallback nouns.
+
+OCR and signage rules:
+- If OCR is HIGH: emit exact quoted text (quote counts toward length).
+- If OCR is MEDIUM and saliency is high: emit at most one short quoted token (single word or ≤6 characters); do not invent or complete partial names.
+- If OCR is LOW: use a neutral positional anchor fallback (e.g., ""marquee above"", ""large sign upper right"").
+
+First‑words requirement:
+- The first 6–8 words must contain the subject group token (or a plural fallback noun) and a HIGH anchor OR a MEDIUM anchor from the MEDIUM anchor whitelist. If this fails, the caption must be auto‑rewritten into the minimal safe form: plural subject fallback + neutral anchor fallback + micro‑action LOW fallback + fine‑class fallback, all within the first 8 words.
+
+Saliency tie‑breaking and selection:
+- When multiple candidates are present, prefer in order: 1) OCR text, 2) large prop/signage, 3) face/people, 4) large color patch/clothing. Chosen anchor must appear early (within first 6–8 words).
+
+MEDIUM whitelist (emit these exact tokens only under MEDIUM):
+- Fine classes: boat, canoe, shrine/temple, ghats/steps, children, performer, vendor, vendor stand, parade participant.
+- Anchors: marquee, boats, canopies, flagpole, ladder, bicycle, hedgerow, trees.
+- Clothing tokens allowed under MEDIUM: ""navy sweater"", ""red patterned dress"", ""white blouse"".
+
+Pruning, compression, and length control:
+- Target length: 10–16 words. Hard cap: 20 words. Allow +2 words beyond target when EITHER a HIGH anchor OR a HIGH fine class is present.
+- Pruning priority (apply deterministically until within cap):
+   1) Compress adjective chains into compact noun phrases.
+   2) Remove lighting/reflection descriptors first.
+   3) Remove object state/material next.
+   4) Remove background/ancillary context last.
+- NEVER remove or prune tokens from slots 1–3. Preserve MEDIUM tokens in slots 1–3 when present. If still over cap, construct a minimal safe caption that preserves any HIGH/MEDIUM tokens in slots 1–3 and uses neutral fallbacks elsewhere.
+
+Anti‑hallucination absolutes:
+- Do not invent brand names, partial/complete text, ages, emotions, intentions, or unsupported attributes.
+- No hedges, qualifiers, or speculative language.
+- When verification is LOW, use prescribed neutral fallbacks (e.g., ""storefront behind"", ""marquee above"", ""object on table"", ""group of people"").
+
+Final validator (must pass before emitting):
+- One grammatical sentence of comma‑separated short phrases.
+- Length within caps and target rules.
+- First 6–8 words include subject token (or plural fallback) plus a HIGH or MEDIUM anchor (or neutral anchor fallback if no MEDIUM/HIGH).
+- Micro‑action slot present and follows template rules.
+- No hedges, no invented brands/text, no duplicated phrases.
+- Only allowed MEDIUM tokens are emitted under MEDIUM band.
+- If validator would fail, emit the deterministic minimal safe caption described above.
+
+Short positive example (ideal):
+- ""group of people, right hand holding red shopping bag, storefront behind, marquee above.""
+
+Short negative example (avoid):
+- ""Several people maybe near a building with an unclear sign and someone possibly holding something.""
+
+Machine‑readable checklist to append internally (for validation):
+- OCR → include if HIGH/MEDIUM; quote only if HIGH (MEDIUM only one short token ≤6 chars).
+- Micro‑action → always emit (HIGH template or MEDIUM whitelist or LOW fallback).
+- Anchor/text → must appear within first 8 words if MEDIUM/HIGH, else include neutral anchor fallback early.
+- Counts → digits only if detector_count_confidence ≥ 0.70.
+- Prune per priority; never prune slots 1–3.
+- If validation fails → auto‑rewrite to minimal safe caption template.
+
+Adhere strictly to these rules when generating the single final caption.","girl, jumping, pile of leaves, children, navy sweater with white collar, trees behind",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.313178688287735,0.22145050764083862,13,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_29727dbd0c,42,17741,flickr30k_test_017741,images/flickr30k/flickr30k_test_017741.jpg,"[""Two people sit on a bench overlooking a vast amount of windows."", ""Two people sitting on a bench in front of a large window."", ""Two people sitting looking at a glass wall."", ""Two people are siting on a black bench."", ""Two women sitting on a bench.""]",textgrad_29727dbd0c,TextGrad Step 19,"Produce exactly one concise, information‑dense caption: a single grammatical sentence composed of comma‑separated short phrases. Produce only that one sentence and nothing else.
+
+Output structure (emit in this order; slots 1–3 are mandatory and protected from pruning):
+1) Subject group(s) and one HIGH or MEDIUM anchor/prop or, if no MEDIUM/HIGH anchor exists, a neutral positional anchor fallback (0–3 subject groups; must appear first).
+2) Micro‑action / contact using strict templates (always emit one): 
+   - HIGH evidence: exact form ""left|right [hand|foot|part] [strong‑verb] [object]"" (e.g., ""right hand holding basket"").
+   - MEDIUM evidence: use one verb from the whitelist {jumping, pawing, clearing, showing, speaking, holding, carrying, pushing, pulling, strumming, leaning}.
+   - LOW evidence: fallback ""[part] near [object]"" (e.g., ""right hand near object"").
+   Never hedge or omit this slot.
+3) Fine class (verified label or dataset lexicon token; if no verified fine class, use a safe plural fallback such as ""people/dogs/vehicles/vendor stand"").
+4) Clothing / clear pose / orientation — include only when MEDIUM/HIGH verified.
+5) Up to two anchors/signage (only if MEDIUM/HIGH verified; otherwise use neutral positional fallback tokens such as ""marquee above"", ""storefront behind"").
+6) Spatial/cropping/depth token if verified.
+
+Verification bands and numeric thresholds (use detector outputs where available):
+- HIGH: OCR_confidence ≥ 0.85 OR segmentation_iou ≥ 0.75 OR motion_confidence ≥ 0.85.
+- MEDIUM: OCR_confidence ≥ 0.50 OR segmentation_iou ≥ 0.40 OR motion_confidence ≥ 0.60 OR detector_count_confidence ≥ 0.70.
+- LOW: otherwise.
+- Digit counts: emit digits only if detector_count_confidence ≥ 0.70; otherwise use plural fallback nouns.
+
+OCR and signage rules:
+- If OCR is HIGH: emit exact quoted text (quote counts toward length).
+- If OCR is MEDIUM and saliency is high: emit at most one short quoted token (single word or ≤6 characters); do not invent or complete partial names.
+- If OCR is LOW: use a neutral positional anchor fallback (e.g., ""marquee above"", ""large sign upper right"").
+
+First‑words requirement:
+- The first 6–8 words must contain the subject group token (or a plural fallback noun) and a HIGH anchor OR a MEDIUM anchor from the MEDIUM anchor whitelist. If this fails, the caption must be auto‑rewritten into the minimal safe form: plural subject fallback + neutral anchor fallback + micro‑action LOW fallback + fine‑class fallback, all within the first 8 words.
+
+Saliency tie‑breaking and selection:
+- When multiple candidates are present, prefer in order: 1) OCR text, 2) large prop/signage, 3) face/people, 4) large color patch/clothing. Chosen anchor must appear early (within first 6–8 words).
+
+MEDIUM whitelist (emit these exact tokens only under MEDIUM):
+- Fine classes: boat, canoe, shrine/temple, ghats/steps, children, performer, vendor, vendor stand, parade participant.
+- Anchors: marquee, boats, canopies, flagpole, ladder, bicycle, hedgerow, trees.
+- Clothing tokens allowed under MEDIUM: ""navy sweater"", ""red patterned dress"", ""white blouse"".
+
+Pruning, compression, and length control:
+- Target length: 10–16 words. Hard cap: 20 words. Allow +2 words beyond target when EITHER a HIGH anchor OR a HIGH fine class is present.
+- Pruning priority (apply deterministically until within cap):
+   1) Compress adjective chains into compact noun phrases.
+   2) Remove lighting/reflection descriptors first.
+   3) Remove object state/material next.
+   4) Remove background/ancillary context last.
+- NEVER remove or prune tokens from slots 1–3. Preserve MEDIUM tokens in slots 1–3 when present. If still over cap, construct a minimal safe caption that preserves any HIGH/MEDIUM tokens in slots 1–3 and uses neutral fallbacks elsewhere.
+
+Anti‑hallucination absolutes:
+- Do not invent brand names, partial/complete text, ages, emotions, intentions, or unsupported attributes.
+- No hedges, qualifiers, or speculative language.
+- When verification is LOW, use prescribed neutral fallbacks (e.g., ""storefront behind"", ""marquee above"", ""object on table"", ""group of people"").
+
+Final validator (must pass before emitting):
+- One grammatical sentence of comma‑separated short phrases.
+- Length within caps and target rules.
+- First 6–8 words include subject token (or plural fallback) plus a HIGH or MEDIUM anchor (or neutral anchor fallback if no MEDIUM/HIGH).
+- Micro‑action slot present and follows template rules.
+- No hedges, no invented brands/text, no duplicated phrases.
+- Only allowed MEDIUM tokens are emitted under MEDIUM band.
+- If validator would fail, emit the deterministic minimal safe caption described above.
+
+Short positive example (ideal):
+- ""group of people, right hand holding red shopping bag, storefront behind, marquee above.""
+
+Short negative example (avoid):
+- ""Several people maybe near a building with an unclear sign and someone possibly holding something.""
+
+Machine‑readable checklist to append internally (for validation):
+- OCR → include if HIGH/MEDIUM; quote only if HIGH (MEDIUM only one short token ≤6 chars).
+- Micro‑action → always emit (HIGH template or MEDIUM whitelist or LOW fallback).
+- Anchor/text → must appear within first 8 words if MEDIUM/HIGH, else include neutral anchor fallback early.
+- Counts → digits only if detector_count_confidence ≥ 0.70.
+- Prune per priority; never prune slots 1–3.
+- If validation fails → auto‑rewrite to minimal safe caption template.
+
+Adhere strictly to these rules when generating the single final caption.","two people, sitting side by side on bench, left hand near bag, people/dogs/vehicles/vendor stand, both facing window, large glass panels behind",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.2348196655511856,0.17458544671535492,21,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_29727dbd0c,56,16246,flickr30k_test_016246,images/flickr30k/flickr30k_test_016246.jpg,"[""A child is holding a bunch of balloons in front of their face."", ""A child holding balloons that cover their face."", ""A little boy holds many inflated balloons."", ""Child carrying a bouquet of balloons."", ""A young child carrying many balloons.""]",textgrad_29727dbd0c,TextGrad Step 19,"Produce exactly one concise, information‑dense caption: a single grammatical sentence composed of comma‑separated short phrases. Produce only that one sentence and nothing else.
+
+Output structure (emit in this order; slots 1–3 are mandatory and protected from pruning):
+1) Subject group(s) and one HIGH or MEDIUM anchor/prop or, if no MEDIUM/HIGH anchor exists, a neutral positional anchor fallback (0–3 subject groups; must appear first).
+2) Micro‑action / contact using strict templates (always emit one): 
+   - HIGH evidence: exact form ""left|right [hand|foot|part] [strong‑verb] [object]"" (e.g., ""right hand holding basket"").
+   - MEDIUM evidence: use one verb from the whitelist {jumping, pawing, clearing, showing, speaking, holding, carrying, pushing, pulling, strumming, leaning}.
+   - LOW evidence: fallback ""[part] near [object]"" (e.g., ""right hand near object"").
+   Never hedge or omit this slot.
+3) Fine class (verified label or dataset lexicon token; if no verified fine class, use a safe plural fallback such as ""people/dogs/vehicles/vendor stand"").
+4) Clothing / clear pose / orientation — include only when MEDIUM/HIGH verified.
+5) Up to two anchors/signage (only if MEDIUM/HIGH verified; otherwise use neutral positional fallback tokens such as ""marquee above"", ""storefront behind"").
+6) Spatial/cropping/depth token if verified.
+
+Verification bands and numeric thresholds (use detector outputs where available):
+- HIGH: OCR_confidence ≥ 0.85 OR segmentation_iou ≥ 0.75 OR motion_confidence ≥ 0.85.
+- MEDIUM: OCR_confidence ≥ 0.50 OR segmentation_iou ≥ 0.40 OR motion_confidence ≥ 0.60 OR detector_count_confidence ≥ 0.70.
+- LOW: otherwise.
+- Digit counts: emit digits only if detector_count_confidence ≥ 0.70; otherwise use plural fallback nouns.
+
+OCR and signage rules:
+- If OCR is HIGH: emit exact quoted text (quote counts toward length).
+- If OCR is MEDIUM and saliency is high: emit at most one short quoted token (single word or ≤6 characters); do not invent or complete partial names.
+- If OCR is LOW: use a neutral positional anchor fallback (e.g., ""marquee above"", ""large sign upper right"").
+
+First‑words requirement:
+- The first 6–8 words must contain the subject group token (or a plural fallback noun) and a HIGH anchor OR a MEDIUM anchor from the MEDIUM anchor whitelist. If this fails, the caption must be auto‑rewritten into the minimal safe form: plural subject fallback + neutral anchor fallback + micro‑action LOW fallback + fine‑class fallback, all within the first 8 words.
+
+Saliency tie‑breaking and selection:
+- When multiple candidates are present, prefer in order: 1) OCR text, 2) large prop/signage, 3) face/people, 4) large color patch/clothing. Chosen anchor must appear early (within first 6–8 words).
+
+MEDIUM whitelist (emit these exact tokens only under MEDIUM):
+- Fine classes: boat, canoe, shrine/temple, ghats/steps, children, performer, vendor, vendor stand, parade participant.
+- Anchors: marquee, boats, canopies, flagpole, ladder, bicycle, hedgerow, trees.
+- Clothing tokens allowed under MEDIUM: ""navy sweater"", ""red patterned dress"", ""white blouse"".
+
+Pruning, compression, and length control:
+- Target length: 10–16 words. Hard cap: 20 words. Allow +2 words beyond target when EITHER a HIGH anchor OR a HIGH fine class is present.
+- Pruning priority (apply deterministically until within cap):
+   1) Compress adjective chains into compact noun phrases.
+   2) Remove lighting/reflection descriptors first.
+   3) Remove object state/material next.
+   4) Remove background/ancillary context last.
+- NEVER remove or prune tokens from slots 1–3. Preserve MEDIUM tokens in slots 1–3 when present. If still over cap, construct a minimal safe caption that preserves any HIGH/MEDIUM tokens in slots 1–3 and uses neutral fallbacks elsewhere.
+
+Anti‑hallucination absolutes:
+- Do not invent brand names, partial/complete text, ages, emotions, intentions, or unsupported attributes.
+- No hedges, qualifiers, or speculative language.
+- When verification is LOW, use prescribed neutral fallbacks (e.g., ""storefront behind"", ""marquee above"", ""object on table"", ""group of people"").
+
+Final validator (must pass before emitting):
+- One grammatical sentence of comma‑separated short phrases.
+- Length within caps and target rules.
+- First 6–8 words include subject token (or plural fallback) plus a HIGH or MEDIUM anchor (or neutral anchor fallback if no MEDIUM/HIGH).
+- Micro‑action slot present and follows template rules.
+- No hedges, no invented brands/text, no duplicated phrases.
+- Only allowed MEDIUM tokens are emitted under MEDIUM band.
+- If validator would fail, emit the deterministic minimal safe caption described above.
+
+Short positive example (ideal):
+- ""group of people, right hand holding red shopping bag, storefront behind, marquee above.""
+
+Short negative example (avoid):
+- ""Several people maybe near a building with an unclear sign and someone possibly holding something.""
+
+Machine‑readable checklist to append internally (for validation):
+- OCR → include if HIGH/MEDIUM; quote only if HIGH (MEDIUM only one short token ≤6 chars).
+- Micro‑action → always emit (HIGH template or MEDIUM whitelist or LOW fallback).
+- Anchor/text → must appear within first 8 words if MEDIUM/HIGH, else include neutral anchor fallback early.
+- Counts → digits only if detector_count_confidence ≥ 0.70.
+- Prune per priority; never prune slots 1–3.
+- If validation fails → auto‑rewrite to minimal safe caption template.
+
+Adhere strictly to these rules when generating the single final caption.","child, right hand carrying colorful balloons, vendor, blue shorts, flip flops, motorcycles behind",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.3159310817718506,0.22836825251579285,13,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_29727dbd0c,59,11327,flickr30k_test_011327,images/flickr30k/flickr30k_test_011327.jpg,"[""An elephant is carrying something in its trunk and is covered by some bright-colored fabric."", ""An elephant draped in red, blue and gold fabric walking on a stone path."", ""An elephant wearing a red and blue scarf walks along the brick road."", ""An elephant wearing a colorful drap carrying foliage in his trunk."", ""An elephant wearing red and blue fabric holds grass in his trunk.""]",textgrad_29727dbd0c,TextGrad Step 19,"Produce exactly one concise, information‑dense caption: a single grammatical sentence composed of comma‑separated short phrases. Produce only that one sentence and nothing else.
+
+Output structure (emit in this order; slots 1–3 are mandatory and protected from pruning):
+1) Subject group(s) and one HIGH or MEDIUM anchor/prop or, if no MEDIUM/HIGH anchor exists, a neutral positional anchor fallback (0–3 subject groups; must appear first).
+2) Micro‑action / contact using strict templates (always emit one): 
+   - HIGH evidence: exact form ""left|right [hand|foot|part] [strong‑verb] [object]"" (e.g., ""right hand holding basket"").
+   - MEDIUM evidence: use one verb from the whitelist {jumping, pawing, clearing, showing, speaking, holding, carrying, pushing, pulling, strumming, leaning}.
+   - LOW evidence: fallback ""[part] near [object]"" (e.g., ""right hand near object"").
+   Never hedge or omit this slot.
+3) Fine class (verified label or dataset lexicon token; if no verified fine class, use a safe plural fallback such as ""people/dogs/vehicles/vendor stand"").
+4) Clothing / clear pose / orientation — include only when MEDIUM/HIGH verified.
+5) Up to two anchors/signage (only if MEDIUM/HIGH verified; otherwise use neutral positional fallback tokens such as ""marquee above"", ""storefront behind"").
+6) Spatial/cropping/depth token if verified.
+
+Verification bands and numeric thresholds (use detector outputs where available):
+- HIGH: OCR_confidence ≥ 0.85 OR segmentation_iou ≥ 0.75 OR motion_confidence ≥ 0.85.
+- MEDIUM: OCR_confidence ≥ 0.50 OR segmentation_iou ≥ 0.40 OR motion_confidence ≥ 0.60 OR detector_count_confidence ≥ 0.70.
+- LOW: otherwise.
+- Digit counts: emit digits only if detector_count_confidence ≥ 0.70; otherwise use plural fallback nouns.
+
+OCR and signage rules:
+- If OCR is HIGH: emit exact quoted text (quote counts toward length).
+- If OCR is MEDIUM and saliency is high: emit at most one short quoted token (single word or ≤6 characters); do not invent or complete partial names.
+- If OCR is LOW: use a neutral positional anchor fallback (e.g., ""marquee above"", ""large sign upper right"").
+
+First‑words requirement:
+- The first 6–8 words must contain the subject group token (or a plural fallback noun) and a HIGH anchor OR a MEDIUM anchor from the MEDIUM anchor whitelist. If this fails, the caption must be auto‑rewritten into the minimal safe form: plural subject fallback + neutral anchor fallback + micro‑action LOW fallback + fine‑class fallback, all within the first 8 words.
+
+Saliency tie‑breaking and selection:
+- When multiple candidates are present, prefer in order: 1) OCR text, 2) large prop/signage, 3) face/people, 4) large color patch/clothing. Chosen anchor must appear early (within first 6–8 words).
+
+MEDIUM whitelist (emit these exact tokens only under MEDIUM):
+- Fine classes: boat, canoe, shrine/temple, ghats/steps, children, performer, vendor, vendor stand, parade participant.
+- Anchors: marquee, boats, canopies, flagpole, ladder, bicycle, hedgerow, trees.
+- Clothing tokens allowed under MEDIUM: ""navy sweater"", ""red patterned dress"", ""white blouse"".
+
+Pruning, compression, and length control:
+- Target length: 10–16 words. Hard cap: 20 words. Allow +2 words beyond target when EITHER a HIGH anchor OR a HIGH fine class is present.
+- Pruning priority (apply deterministically until within cap):
+   1) Compress adjective chains into compact noun phrases.
+   2) Remove lighting/reflection descriptors first.
+   3) Remove object state/material next.
+   4) Remove background/ancillary context last.
+- NEVER remove or prune tokens from slots 1–3. Preserve MEDIUM tokens in slots 1–3 when present. If still over cap, construct a minimal safe caption that preserves any HIGH/MEDIUM tokens in slots 1–3 and uses neutral fallbacks elsewhere.
+
+Anti‑hallucination absolutes:
+- Do not invent brand names, partial/complete text, ages, emotions, intentions, or unsupported attributes.
+- No hedges, qualifiers, or speculative language.
+- When verification is LOW, use prescribed neutral fallbacks (e.g., ""storefront behind"", ""marquee above"", ""object on table"", ""group of people"").
+
+Final validator (must pass before emitting):
+- One grammatical sentence of comma‑separated short phrases.
+- Length within caps and target rules.
+- First 6–8 words include subject token (or plural fallback) plus a HIGH or MEDIUM anchor (or neutral anchor fallback if no MEDIUM/HIGH).
+- Micro‑action slot present and follows template rules.
+- No hedges, no invented brands/text, no duplicated phrases.
+- Only allowed MEDIUM tokens are emitted under MEDIUM band.
+- If validator would fail, emit the deterministic minimal safe caption described above.
+
+Short positive example (ideal):
+- ""group of people, right hand holding red shopping bag, storefront behind, marquee above.""
+
+Short negative example (avoid):
+- ""Several people maybe near a building with an unclear sign and someone possibly holding something.""
+
+Machine‑readable checklist to append internally (for validation):
+- OCR → include if HIGH/MEDIUM; quote only if HIGH (MEDIUM only one short token ≤6 chars).
+- Micro‑action → always emit (HIGH template or MEDIUM whitelist or LOW fallback).
+- Anchor/text → must appear within first 8 words if MEDIUM/HIGH, else include neutral anchor fallback early.
+- Counts → digits only if detector_count_confidence ≥ 0.70.
+- Prune per priority; never prune slots 1–3.
+- If validation fails → auto‑rewrite to minimal safe caption template.
+
+Adhere strictly to these rules when generating the single final caption.","elephant, right foot stepping on green leaves, people/dogs/vehicles/vendor stand, red and blue cloth draped over back, other elephants behind, ground paved with bricks",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.31129342317581177,0.1876428723335266,23,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_29727dbd0c,64,15060,flickr30k_test_015060,images/flickr30k/flickr30k_test_015060.jpg,"[""A man in black with a helmet is water rafting in a green canoe."", ""A kayaker in a green boat paddles through the rapids."", ""One man in a green kayak paddling through the water."", ""This man is kayaking in whitewater."", ""A kayaker gets wet in the rapids.""]",textgrad_29727dbd0c,TextGrad Step 19,"Produce exactly one concise, information‑dense caption: a single grammatical sentence composed of comma‑separated short phrases. Produce only that one sentence and nothing else.
+
+Output structure (emit in this order; slots 1–3 are mandatory and protected from pruning):
+1) Subject group(s) and one HIGH or MEDIUM anchor/prop or, if no MEDIUM/HIGH anchor exists, a neutral positional anchor fallback (0–3 subject groups; must appear first).
+2) Micro‑action / contact using strict templates (always emit one): 
+   - HIGH evidence: exact form ""left|right [hand|foot|part] [strong‑verb] [object]"" (e.g., ""right hand holding basket"").
+   - MEDIUM evidence: use one verb from the whitelist {jumping, pawing, clearing, showing, speaking, holding, carrying, pushing, pulling, strumming, leaning}.
+   - LOW evidence: fallback ""[part] near [object]"" (e.g., ""right hand near object"").
+   Never hedge or omit this slot.
+3) Fine class (verified label or dataset lexicon token; if no verified fine class, use a safe plural fallback such as ""people/dogs/vehicles/vendor stand"").
+4) Clothing / clear pose / orientation — include only when MEDIUM/HIGH verified.
+5) Up to two anchors/signage (only if MEDIUM/HIGH verified; otherwise use neutral positional fallback tokens such as ""marquee above"", ""storefront behind"").
+6) Spatial/cropping/depth token if verified.
+
+Verification bands and numeric thresholds (use detector outputs where available):
+- HIGH: OCR_confidence ≥ 0.85 OR segmentation_iou ≥ 0.75 OR motion_confidence ≥ 0.85.
+- MEDIUM: OCR_confidence ≥ 0.50 OR segmentation_iou ≥ 0.40 OR motion_confidence ≥ 0.60 OR detector_count_confidence ≥ 0.70.
+- LOW: otherwise.
+- Digit counts: emit digits only if detector_count_confidence ≥ 0.70; otherwise use plural fallback nouns.
+
+OCR and signage rules:
+- If OCR is HIGH: emit exact quoted text (quote counts toward length).
+- If OCR is MEDIUM and saliency is high: emit at most one short quoted token (single word or ≤6 characters); do not invent or complete partial names.
+- If OCR is LOW: use a neutral positional anchor fallback (e.g., ""marquee above"", ""large sign upper right"").
+
+First‑words requirement:
+- The first 6–8 words must contain the subject group token (or a plural fallback noun) and a HIGH anchor OR a MEDIUM anchor from the MEDIUM anchor whitelist. If this fails, the caption must be auto‑rewritten into the minimal safe form: plural subject fallback + neutral anchor fallback + micro‑action LOW fallback + fine‑class fallback, all within the first 8 words.
+
+Saliency tie‑breaking and selection:
+- When multiple candidates are present, prefer in order: 1) OCR text, 2) large prop/signage, 3) face/people, 4) large color patch/clothing. Chosen anchor must appear early (within first 6–8 words).
+
+MEDIUM whitelist (emit these exact tokens only under MEDIUM):
+- Fine classes: boat, canoe, shrine/temple, ghats/steps, children, performer, vendor, vendor stand, parade participant.
+- Anchors: marquee, boats, canopies, flagpole, ladder, bicycle, hedgerow, trees.
+- Clothing tokens allowed under MEDIUM: ""navy sweater"", ""red patterned dress"", ""white blouse"".
+
+Pruning, compression, and length control:
+- Target length: 10–16 words. Hard cap: 20 words. Allow +2 words beyond target when EITHER a HIGH anchor OR a HIGH fine class is present.
+- Pruning priority (apply deterministically until within cap):
+   1) Compress adjective chains into compact noun phrases.
+   2) Remove lighting/reflection descriptors first.
+   3) Remove object state/material next.
+   4) Remove background/ancillary context last.
+- NEVER remove or prune tokens from slots 1–3. Preserve MEDIUM tokens in slots 1–3 when present. If still over cap, construct a minimal safe caption that preserves any HIGH/MEDIUM tokens in slots 1–3 and uses neutral fallbacks elsewhere.
+
+Anti‑hallucination absolutes:
+- Do not invent brand names, partial/complete text, ages, emotions, intentions, or unsupported attributes.
+- No hedges, qualifiers, or speculative language.
+- When verification is LOW, use prescribed neutral fallbacks (e.g., ""storefront behind"", ""marquee above"", ""object on table"", ""group of people"").
+
+Final validator (must pass before emitting):
+- One grammatical sentence of comma‑separated short phrases.
+- Length within caps and target rules.
+- First 6–8 words include subject token (or plural fallback) plus a HIGH or MEDIUM anchor (or neutral anchor fallback if no MEDIUM/HIGH).
+- Micro‑action slot present and follows template rules.
+- No hedges, no invented brands/text, no duplicated phrases.
+- Only allowed MEDIUM tokens are emitted under MEDIUM band.
+- If validator would fail, emit the deterministic minimal safe caption described above.
+
+Short positive example (ideal):
+- ""group of people, right hand holding red shopping bag, storefront behind, marquee above.""
+
+Short negative example (avoid):
+- ""Several people maybe near a building with an unclear sign and someone possibly holding something.""
+
+Machine‑readable checklist to append internally (for validation):
+- OCR → include if HIGH/MEDIUM; quote only if HIGH (MEDIUM only one short token ≤6 chars).
+- Micro‑action → always emit (HIGH template or MEDIUM whitelist or LOW fallback).
+- Anchor/text → must appear within first 8 words if MEDIUM/HIGH, else include neutral anchor fallback early.
+- Counts → digits only if detector_count_confidence ≥ 0.70.
+- Prune per priority; never prune slots 1–3.
+- If validation fails → auto‑rewrite to minimal safe caption template.
+
+Adhere strictly to these rules when generating the single final caption.","kayaker in green kayak, right hand holding paddle, person in black helmet and jacket, water splashing around, rocks behind.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.3323253393173218,0.17393982410430908,19,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_29727dbd0c,73,21046,flickr30k_test_021046,images/flickr30k/flickr30k_test_021046.jpg,"[""A man and a woman are seated, holding reading materials, while he looks into the camera and she looks down into her partly rolled-up magazine."", ""A young man and woman sit beside each other on the subway train."", ""A man and a woman are reading while riding the subway."", ""A man and woman riding on a subway car."", ""Several people sit on the subway.""]",textgrad_29727dbd0c,TextGrad Step 19,"Produce exactly one concise, information‑dense caption: a single grammatical sentence composed of comma‑separated short phrases. Produce only that one sentence and nothing else.
+
+Output structure (emit in this order; slots 1–3 are mandatory and protected from pruning):
+1) Subject group(s) and one HIGH or MEDIUM anchor/prop or, if no MEDIUM/HIGH anchor exists, a neutral positional anchor fallback (0–3 subject groups; must appear first).
+2) Micro‑action / contact using strict templates (always emit one): 
+   - HIGH evidence: exact form ""left|right [hand|foot|part] [strong‑verb] [object]"" (e.g., ""right hand holding basket"").
+   - MEDIUM evidence: use one verb from the whitelist {jumping, pawing, clearing, showing, speaking, holding, carrying, pushing, pulling, strumming, leaning}.
+   - LOW evidence: fallback ""[part] near [object]"" (e.g., ""right hand near object"").
+   Never hedge or omit this slot.
+3) Fine class (verified label or dataset lexicon token; if no verified fine class, use a safe plural fallback such as ""people/dogs/vehicles/vendor stand"").
+4) Clothing / clear pose / orientation — include only when MEDIUM/HIGH verified.
+5) Up to two anchors/signage (only if MEDIUM/HIGH verified; otherwise use neutral positional fallback tokens such as ""marquee above"", ""storefront behind"").
+6) Spatial/cropping/depth token if verified.
+
+Verification bands and numeric thresholds (use detector outputs where available):
+- HIGH: OCR_confidence ≥ 0.85 OR segmentation_iou ≥ 0.75 OR motion_confidence ≥ 0.85.
+- MEDIUM: OCR_confidence ≥ 0.50 OR segmentation_iou ≥ 0.40 OR motion_confidence ≥ 0.60 OR detector_count_confidence ≥ 0.70.
+- LOW: otherwise.
+- Digit counts: emit digits only if detector_count_confidence ≥ 0.70; otherwise use plural fallback nouns.
+
+OCR and signage rules:
+- If OCR is HIGH: emit exact quoted text (quote counts toward length).
+- If OCR is MEDIUM and saliency is high: emit at most one short quoted token (single word or ≤6 characters); do not invent or complete partial names.
+- If OCR is LOW: use a neutral positional anchor fallback (e.g., ""marquee above"", ""large sign upper right"").
+
+First‑words requirement:
+- The first 6–8 words must contain the subject group token (or a plural fallback noun) and a HIGH anchor OR a MEDIUM anchor from the MEDIUM anchor whitelist. If this fails, the caption must be auto‑rewritten into the minimal safe form: plural subject fallback + neutral anchor fallback + micro‑action LOW fallback + fine‑class fallback, all within the first 8 words.
+
+Saliency tie‑breaking and selection:
+- When multiple candidates are present, prefer in order: 1) OCR text, 2) large prop/signage, 3) face/people, 4) large color patch/clothing. Chosen anchor must appear early (within first 6–8 words).
+
+MEDIUM whitelist (emit these exact tokens only under MEDIUM):
+- Fine classes: boat, canoe, shrine/temple, ghats/steps, children, performer, vendor, vendor stand, parade participant.
+- Anchors: marquee, boats, canopies, flagpole, ladder, bicycle, hedgerow, trees.
+- Clothing tokens allowed under MEDIUM: ""navy sweater"", ""red patterned dress"", ""white blouse"".
+
+Pruning, compression, and length control:
+- Target length: 10–16 words. Hard cap: 20 words. Allow +2 words beyond target when EITHER a HIGH anchor OR a HIGH fine class is present.
+- Pruning priority (apply deterministically until within cap):
+   1) Compress adjective chains into compact noun phrases.
+   2) Remove lighting/reflection descriptors first.
+   3) Remove object state/material next.
+   4) Remove background/ancillary context last.
+- NEVER remove or prune tokens from slots 1–3. Preserve MEDIUM tokens in slots 1–3 when present. If still over cap, construct a minimal safe caption that preserves any HIGH/MEDIUM tokens in slots 1–3 and uses neutral fallbacks elsewhere.
+
+Anti‑hallucination absolutes:
+- Do not invent brand names, partial/complete text, ages, emotions, intentions, or unsupported attributes.
+- No hedges, qualifiers, or speculative language.
+- When verification is LOW, use prescribed neutral fallbacks (e.g., ""storefront behind"", ""marquee above"", ""object on table"", ""group of people"").
+
+Final validator (must pass before emitting):
+- One grammatical sentence of comma‑separated short phrases.
+- Length within caps and target rules.
+- First 6–8 words include subject token (or plural fallback) plus a HIGH or MEDIUM anchor (or neutral anchor fallback if no MEDIUM/HIGH).
+- Micro‑action slot present and follows template rules.
+- No hedges, no invented brands/text, no duplicated phrases.
+- Only allowed MEDIUM tokens are emitted under MEDIUM band.
+- If validator would fail, emit the deterministic minimal safe caption described above.
+
+Short positive example (ideal):
+- ""group of people, right hand holding red shopping bag, storefront behind, marquee above.""
+
+Short negative example (avoid):
+- ""Several people maybe near a building with an unclear sign and someone possibly holding something.""
+
+Machine‑readable checklist to append internally (for validation):
+- OCR → include if HIGH/MEDIUM; quote only if HIGH (MEDIUM only one short token ≤6 chars).
+- Micro‑action → always emit (HIGH template or MEDIUM whitelist or LOW fallback).
+- Anchor/text → must appear within first 8 words if MEDIUM/HIGH, else include neutral anchor fallback early.
+- Counts → digits only if detector_count_confidence ≥ 0.70.
+- Prune per priority; never prune slots 1–3.
+- If validation fails → auto‑rewrite to minimal safe caption template.
+
+Adhere strictly to these rules when generating the single final caption.","man, woman, right hand holding paper, people, green shirt, yellow hoodie, 21000 sign above",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.2775130271911621,0.1029089093208313,14,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_29727dbd0c,75,6091,flickr30k_test_006091,images/flickr30k/flickr30k_test_006091.jpg,"[""A little girl is sitting on the counter dangling one foot in the sink whilst holding a dish jet washer."", ""A young girl wearing red sunglasses sits near a sink and holds the faucet."", ""A little girl wearing sunglasses puts her feet into the kitchen sink."", ""A young, barefoot girl in red sunglasses plays in a sink."", ""A little girl plays with a faucet.""]",textgrad_29727dbd0c,TextGrad Step 19,"Produce exactly one concise, information‑dense caption: a single grammatical sentence composed of comma‑separated short phrases. Produce only that one sentence and nothing else.
+
+Output structure (emit in this order; slots 1–3 are mandatory and protected from pruning):
+1) Subject group(s) and one HIGH or MEDIUM anchor/prop or, if no MEDIUM/HIGH anchor exists, a neutral positional anchor fallback (0–3 subject groups; must appear first).
+2) Micro‑action / contact using strict templates (always emit one): 
+   - HIGH evidence: exact form ""left|right [hand|foot|part] [strong‑verb] [object]"" (e.g., ""right hand holding basket"").
+   - MEDIUM evidence: use one verb from the whitelist {jumping, pawing, clearing, showing, speaking, holding, carrying, pushing, pulling, strumming, leaning}.
+   - LOW evidence: fallback ""[part] near [object]"" (e.g., ""right hand near object"").
+   Never hedge or omit this slot.
+3) Fine class (verified label or dataset lexicon token; if no verified fine class, use a safe plural fallback such as ""people/dogs/vehicles/vendor stand"").
+4) Clothing / clear pose / orientation — include only when MEDIUM/HIGH verified.
+5) Up to two anchors/signage (only if MEDIUM/HIGH verified; otherwise use neutral positional fallback tokens such as ""marquee above"", ""storefront behind"").
+6) Spatial/cropping/depth token if verified.
+
+Verification bands and numeric thresholds (use detector outputs where available):
+- HIGH: OCR_confidence ≥ 0.85 OR segmentation_iou ≥ 0.75 OR motion_confidence ≥ 0.85.
+- MEDIUM: OCR_confidence ≥ 0.50 OR segmentation_iou ≥ 0.40 OR motion_confidence ≥ 0.60 OR detector_count_confidence ≥ 0.70.
+- LOW: otherwise.
+- Digit counts: emit digits only if detector_count_confidence ≥ 0.70; otherwise use plural fallback nouns.
+
+OCR and signage rules:
+- If OCR is HIGH: emit exact quoted text (quote counts toward length).
+- If OCR is MEDIUM and saliency is high: emit at most one short quoted token (single word or ≤6 characters); do not invent or complete partial names.
+- If OCR is LOW: use a neutral positional anchor fallback (e.g., ""marquee above"", ""large sign upper right"").
+
+First‑words requirement:
+- The first 6–8 words must contain the subject group token (or a plural fallback noun) and a HIGH anchor OR a MEDIUM anchor from the MEDIUM anchor whitelist. If this fails, the caption must be auto‑rewritten into the minimal safe form: plural subject fallback + neutral anchor fallback + micro‑action LOW fallback + fine‑class fallback, all within the first 8 words.
+
+Saliency tie‑breaking and selection:
+- When multiple candidates are present, prefer in order: 1) OCR text, 2) large prop/signage, 3) face/people, 4) large color patch/clothing. Chosen anchor must appear early (within first 6–8 words).
+
+MEDIUM whitelist (emit these exact tokens only under MEDIUM):
+- Fine classes: boat, canoe, shrine/temple, ghats/steps, children, performer, vendor, vendor stand, parade participant.
+- Anchors: marquee, boats, canopies, flagpole, ladder, bicycle, hedgerow, trees.
+- Clothing tokens allowed under MEDIUM: ""navy sweater"", ""red patterned dress"", ""white blouse"".
+
+Pruning, compression, and length control:
+- Target length: 10–16 words. Hard cap: 20 words. Allow +2 words beyond target when EITHER a HIGH anchor OR a HIGH fine class is present.
+- Pruning priority (apply deterministically until within cap):
+   1) Compress adjective chains into compact noun phrases.
+   2) Remove lighting/reflection descriptors first.
+   3) Remove object state/material next.
+   4) Remove background/ancillary context last.
+- NEVER remove or prune tokens from slots 1–3. Preserve MEDIUM tokens in slots 1–3 when present. If still over cap, construct a minimal safe caption that preserves any HIGH/MEDIUM tokens in slots 1–3 and uses neutral fallbacks elsewhere.
+
+Anti‑hallucination absolutes:
+- Do not invent brand names, partial/complete text, ages, emotions, intentions, or unsupported attributes.
+- No hedges, qualifiers, or speculative language.
+- When verification is LOW, use prescribed neutral fallbacks (e.g., ""storefront behind"", ""marquee above"", ""object on table"", ""group of people"").
+
+Final validator (must pass before emitting):
+- One grammatical sentence of comma‑separated short phrases.
+- Length within caps and target rules.
+- First 6–8 words include subject token (or plural fallback) plus a HIGH or MEDIUM anchor (or neutral anchor fallback if no MEDIUM/HIGH).
+- Micro‑action slot present and follows template rules.
+- No hedges, no invented brands/text, no duplicated phrases.
+- Only allowed MEDIUM tokens are emitted under MEDIUM band.
+- If validator would fail, emit the deterministic minimal safe caption described above.
+
+Short positive example (ideal):
+- ""group of people, right hand holding red shopping bag, storefront behind, marquee above.""
+
+Short negative example (avoid):
+- ""Several people maybe near a building with an unclear sign and someone possibly holding something.""
+
+Machine‑readable checklist to append internally (for validation):
+- OCR → include if HIGH/MEDIUM; quote only if HIGH (MEDIUM only one short token ≤6 chars).
+- Micro‑action → always emit (HIGH template or MEDIUM whitelist or LOW fallback).
+- Anchor/text → must appear within first 8 words if MEDIUM/HIGH, else include neutral anchor fallback early.
+- Counts → digits only if detector_count_confidence ≥ 0.70.
+- Prune per priority; never prune slots 1–3.
+- If validation fails → auto‑rewrite to minimal safe caption template.
+
+Adhere strictly to these rules when generating the single final caption.","child, right foot near faucet, children, pink shirt, blue cap, barefoot on counter, kitchen sink behind",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.3516768217086792,0.17397204041481018,16,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_29727dbd0c,80,3961,flickr30k_test_003961,images/flickr30k/flickr30k_test_003961.jpg,"[""A woman, viewed through a window, sits at a restaurant table and puts down a red shopping bag."", ""A woman is sitting at a table and looking into her American Girl Place shopping bag."", ""A woman places her red shopping bag down as she sits down to a table."", ""An older woman in a white shirt holds a red bag behind some glass."", ""Woman seen through window at restaurant.""]",textgrad_29727dbd0c,TextGrad Step 19,"Produce exactly one concise, information‑dense caption: a single grammatical sentence composed of comma‑separated short phrases. Produce only that one sentence and nothing else.
+
+Output structure (emit in this order; slots 1–3 are mandatory and protected from pruning):
+1) Subject group(s) and one HIGH or MEDIUM anchor/prop or, if no MEDIUM/HIGH anchor exists, a neutral positional anchor fallback (0–3 subject groups; must appear first).
+2) Micro‑action / contact using strict templates (always emit one): 
+   - HIGH evidence: exact form ""left|right [hand|foot|part] [strong‑verb] [object]"" (e.g., ""right hand holding basket"").
+   - MEDIUM evidence: use one verb from the whitelist {jumping, pawing, clearing, showing, speaking, holding, carrying, pushing, pulling, strumming, leaning}.
+   - LOW evidence: fallback ""[part] near [object]"" (e.g., ""right hand near object"").
+   Never hedge or omit this slot.
+3) Fine class (verified label or dataset lexicon token; if no verified fine class, use a safe plural fallback such as ""people/dogs/vehicles/vendor stand"").
+4) Clothing / clear pose / orientation — include only when MEDIUM/HIGH verified.
+5) Up to two anchors/signage (only if MEDIUM/HIGH verified; otherwise use neutral positional fallback tokens such as ""marquee above"", ""storefront behind"").
+6) Spatial/cropping/depth token if verified.
+
+Verification bands and numeric thresholds (use detector outputs where available):
+- HIGH: OCR_confidence ≥ 0.85 OR segmentation_iou ≥ 0.75 OR motion_confidence ≥ 0.85.
+- MEDIUM: OCR_confidence ≥ 0.50 OR segmentation_iou ≥ 0.40 OR motion_confidence ≥ 0.60 OR detector_count_confidence ≥ 0.70.
+- LOW: otherwise.
+- Digit counts: emit digits only if detector_count_confidence ≥ 0.70; otherwise use plural fallback nouns.
+
+OCR and signage rules:
+- If OCR is HIGH: emit exact quoted text (quote counts toward length).
+- If OCR is MEDIUM and saliency is high: emit at most one short quoted token (single word or ≤6 characters); do not invent or complete partial names.
+- If OCR is LOW: use a neutral positional anchor fallback (e.g., ""marquee above"", ""large sign upper right"").
+
+First‑words requirement:
+- The first 6–8 words must contain the subject group token (or a plural fallback noun) and a HIGH anchor OR a MEDIUM anchor from the MEDIUM anchor whitelist. If this fails, the caption must be auto‑rewritten into the minimal safe form: plural subject fallback + neutral anchor fallback + micro‑action LOW fallback + fine‑class fallback, all within the first 8 words.
+
+Saliency tie‑breaking and selection:
+- When multiple candidates are present, prefer in order: 1) OCR text, 2) large prop/signage, 3) face/people, 4) large color patch/clothing. Chosen anchor must appear early (within first 6–8 words).
+
+MEDIUM whitelist (emit these exact tokens only under MEDIUM):
+- Fine classes: boat, canoe, shrine/temple, ghats/steps, children, performer, vendor, vendor stand, parade participant.
+- Anchors: marquee, boats, canopies, flagpole, ladder, bicycle, hedgerow, trees.
+- Clothing tokens allowed under MEDIUM: ""navy sweater"", ""red patterned dress"", ""white blouse"".
+
+Pruning, compression, and length control:
+- Target length: 10–16 words. Hard cap: 20 words. Allow +2 words beyond target when EITHER a HIGH anchor OR a HIGH fine class is present.
+- Pruning priority (apply deterministically until within cap):
+   1) Compress adjective chains into compact noun phrases.
+   2) Remove lighting/reflection descriptors first.
+   3) Remove object state/material next.
+   4) Remove background/ancillary context last.
+- NEVER remove or prune tokens from slots 1–3. Preserve MEDIUM tokens in slots 1–3 when present. If still over cap, construct a minimal safe caption that preserves any HIGH/MEDIUM tokens in slots 1–3 and uses neutral fallbacks elsewhere.
+
+Anti‑hallucination absolutes:
+- Do not invent brand names, partial/complete text, ages, emotions, intentions, or unsupported attributes.
+- No hedges, qualifiers, or speculative language.
+- When verification is LOW, use prescribed neutral fallbacks (e.g., ""storefront behind"", ""marquee above"", ""object on table"", ""group of people"").
+
+Final validator (must pass before emitting):
+- One grammatical sentence of comma‑separated short phrases.
+- Length within caps and target rules.
+- First 6–8 words include subject token (or plural fallback) plus a HIGH or MEDIUM anchor (or neutral anchor fallback if no MEDIUM/HIGH).
+- Micro‑action slot present and follows template rules.
+- No hedges, no invented brands/text, no duplicated phrases.
+- Only allowed MEDIUM tokens are emitted under MEDIUM band.
+- If validator would fail, emit the deterministic minimal safe caption described above.
+
+Short positive example (ideal):
+- ""group of people, right hand holding red shopping bag, storefront behind, marquee above.""
+
+Short negative example (avoid):
+- ""Several people maybe near a building with an unclear sign and someone possibly holding something.""
+
+Machine‑readable checklist to append internally (for validation):
+- OCR → include if HIGH/MEDIUM; quote only if HIGH (MEDIUM only one short token ≤6 chars).
+- Micro‑action → always emit (HIGH template or MEDIUM whitelist or LOW fallback).
+- Anchor/text → must appear within first 8 words if MEDIUM/HIGH, else include neutral anchor fallback early.
+- Counts → digits only if detector_count_confidence ≥ 0.70.
+- Prune per priority; never prune slots 1–3.
+- If validation fails → auto‑rewrite to minimal safe caption template.
+
+Adhere strictly to these rules when generating the single final caption.","woman, right hand holding red shopping bag, American Girl Place bag, white blouse, flag behind, window view",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.3151138722896576,0.15996015071868896,17,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_29727dbd0c,88,16636,flickr30k_test_016636,images/flickr30k/flickr30k_test_016636.jpg,"[""A young girl in a blue skirt, walking down a stony path."", ""Little girl in blue skirt standing by big gray rock."", ""A little girl with blue dress comes home from school"", ""A small girl is going to the school."", ""A young child standing by rocks.""]",textgrad_29727dbd0c,TextGrad Step 19,"Produce exactly one concise, information‑dense caption: a single grammatical sentence composed of comma‑separated short phrases. Produce only that one sentence and nothing else.
+
+Output structure (emit in this order; slots 1–3 are mandatory and protected from pruning):
+1) Subject group(s) and one HIGH or MEDIUM anchor/prop or, if no MEDIUM/HIGH anchor exists, a neutral positional anchor fallback (0–3 subject groups; must appear first).
+2) Micro‑action / contact using strict templates (always emit one): 
+   - HIGH evidence: exact form ""left|right [hand|foot|part] [strong‑verb] [object]"" (e.g., ""right hand holding basket"").
+   - MEDIUM evidence: use one verb from the whitelist {jumping, pawing, clearing, showing, speaking, holding, carrying, pushing, pulling, strumming, leaning}.
+   - LOW evidence: fallback ""[part] near [object]"" (e.g., ""right hand near object"").
+   Never hedge or omit this slot.
+3) Fine class (verified label or dataset lexicon token; if no verified fine class, use a safe plural fallback such as ""people/dogs/vehicles/vendor stand"").
+4) Clothing / clear pose / orientation — include only when MEDIUM/HIGH verified.
+5) Up to two anchors/signage (only if MEDIUM/HIGH verified; otherwise use neutral positional fallback tokens such as ""marquee above"", ""storefront behind"").
+6) Spatial/cropping/depth token if verified.
+
+Verification bands and numeric thresholds (use detector outputs where available):
+- HIGH: OCR_confidence ≥ 0.85 OR segmentation_iou ≥ 0.75 OR motion_confidence ≥ 0.85.
+- MEDIUM: OCR_confidence ≥ 0.50 OR segmentation_iou ≥ 0.40 OR motion_confidence ≥ 0.60 OR detector_count_confidence ≥ 0.70.
+- LOW: otherwise.
+- Digit counts: emit digits only if detector_count_confidence ≥ 0.70; otherwise use plural fallback nouns.
+
+OCR and signage rules:
+- If OCR is HIGH: emit exact quoted text (quote counts toward length).
+- If OCR is MEDIUM and saliency is high: emit at most one short quoted token (single word or ≤6 characters); do not invent or complete partial names.
+- If OCR is LOW: use a neutral positional anchor fallback (e.g., ""marquee above"", ""large sign upper right"").
+
+First‑words requirement:
+- The first 6–8 words must contain the subject group token (or a plural fallback noun) and a HIGH anchor OR a MEDIUM anchor from the MEDIUM anchor whitelist. If this fails, the caption must be auto‑rewritten into the minimal safe form: plural subject fallback + neutral anchor fallback + micro‑action LOW fallback + fine‑class fallback, all within the first 8 words.
+
+Saliency tie‑breaking and selection:
+- When multiple candidates are present, prefer in order: 1) OCR text, 2) large prop/signage, 3) face/people, 4) large color patch/clothing. Chosen anchor must appear early (within first 6–8 words).
+
+MEDIUM whitelist (emit these exact tokens only under MEDIUM):
+- Fine classes: boat, canoe, shrine/temple, ghats/steps, children, performer, vendor, vendor stand, parade participant.
+- Anchors: marquee, boats, canopies, flagpole, ladder, bicycle, hedgerow, trees.
+- Clothing tokens allowed under MEDIUM: ""navy sweater"", ""red patterned dress"", ""white blouse"".
+
+Pruning, compression, and length control:
+- Target length: 10–16 words. Hard cap: 20 words. Allow +2 words beyond target when EITHER a HIGH anchor OR a HIGH fine class is present.
+- Pruning priority (apply deterministically until within cap):
+   1) Compress adjective chains into compact noun phrases.
+   2) Remove lighting/reflection descriptors first.
+   3) Remove object state/material next.
+   4) Remove background/ancillary context last.
+- NEVER remove or prune tokens from slots 1–3. Preserve MEDIUM tokens in slots 1–3 when present. If still over cap, construct a minimal safe caption that preserves any HIGH/MEDIUM tokens in slots 1–3 and uses neutral fallbacks elsewhere.
+
+Anti‑hallucination absolutes:
+- Do not invent brand names, partial/complete text, ages, emotions, intentions, or unsupported attributes.
+- No hedges, qualifiers, or speculative language.
+- When verification is LOW, use prescribed neutral fallbacks (e.g., ""storefront behind"", ""marquee above"", ""object on table"", ""group of people"").
+
+Final validator (must pass before emitting):
+- One grammatical sentence of comma‑separated short phrases.
+- Length within caps and target rules.
+- First 6–8 words include subject token (or plural fallback) plus a HIGH or MEDIUM anchor (or neutral anchor fallback if no MEDIUM/HIGH).
+- Micro‑action slot present and follows template rules.
+- No hedges, no invented brands/text, no duplicated phrases.
+- Only allowed MEDIUM tokens are emitted under MEDIUM band.
+- If validator would fail, emit the deterministic minimal safe caption described above.
+
+Short positive example (ideal):
+- ""group of people, right hand holding red shopping bag, storefront behind, marquee above.""
+
+Short negative example (avoid):
+- ""Several people maybe near a building with an unclear sign and someone possibly holding something.""
+
+Machine‑readable checklist to append internally (for validation):
+- OCR → include if HIGH/MEDIUM; quote only if HIGH (MEDIUM only one short token ≤6 chars).
+- Micro‑action → always emit (HIGH template or MEDIUM whitelist or LOW fallback).
+- Anchor/text → must appear within first 8 words if MEDIUM/HIGH, else include neutral anchor fallback early.
+- Counts → digits only if detector_count_confidence ≥ 0.70.
+- Prune per priority; never prune slots 1–3.
+- If validation fails → auto‑rewrite to minimal safe caption template.
+
+Adhere strictly to these rules when generating the single final caption.","girl, right hand holding orange bowl, children, pink sweater, blue skirt, backpack on back, rocky path ahead",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.330039918422699,0.1875864863395691,17,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_29727dbd0c,90,29824,flickr30k_test_029824,images/flickr30k/flickr30k_test_029824.jpg,"[""A woman stands behind a display table advertising the London 2012 Olympics in front of a sign reading, \""Bienvenus Welcome.\"""", ""A female worker is standing behind a table that says London 2012 above the Olympic rings."", ""A young woman is standing behind an information stall at the 2012 London Olympic Games."", ""Woman posing in her booth during the London 2012 olympics"", ""The olympic official is smiling for the camera""]",textgrad_29727dbd0c,TextGrad Step 19,"Produce exactly one concise, information‑dense caption: a single grammatical sentence composed of comma‑separated short phrases. Produce only that one sentence and nothing else.
+
+Output structure (emit in this order; slots 1–3 are mandatory and protected from pruning):
+1) Subject group(s) and one HIGH or MEDIUM anchor/prop or, if no MEDIUM/HIGH anchor exists, a neutral positional anchor fallback (0–3 subject groups; must appear first).
+2) Micro‑action / contact using strict templates (always emit one): 
+   - HIGH evidence: exact form ""left|right [hand|foot|part] [strong‑verb] [object]"" (e.g., ""right hand holding basket"").
+   - MEDIUM evidence: use one verb from the whitelist {jumping, pawing, clearing, showing, speaking, holding, carrying, pushing, pulling, strumming, leaning}.
+   - LOW evidence: fallback ""[part] near [object]"" (e.g., ""right hand near object"").
+   Never hedge or omit this slot.
+3) Fine class (verified label or dataset lexicon token; if no verified fine class, use a safe plural fallback such as ""people/dogs/vehicles/vendor stand"").
+4) Clothing / clear pose / orientation — include only when MEDIUM/HIGH verified.
+5) Up to two anchors/signage (only if MEDIUM/HIGH verified; otherwise use neutral positional fallback tokens such as ""marquee above"", ""storefront behind"").
+6) Spatial/cropping/depth token if verified.
+
+Verification bands and numeric thresholds (use detector outputs where available):
+- HIGH: OCR_confidence ≥ 0.85 OR segmentation_iou ≥ 0.75 OR motion_confidence ≥ 0.85.
+- MEDIUM: OCR_confidence ≥ 0.50 OR segmentation_iou ≥ 0.40 OR motion_confidence ≥ 0.60 OR detector_count_confidence ≥ 0.70.
+- LOW: otherwise.
+- Digit counts: emit digits only if detector_count_confidence ≥ 0.70; otherwise use plural fallback nouns.
+
+OCR and signage rules:
+- If OCR is HIGH: emit exact quoted text (quote counts toward length).
+- If OCR is MEDIUM and saliency is high: emit at most one short quoted token (single word or ≤6 characters); do not invent or complete partial names.
+- If OCR is LOW: use a neutral positional anchor fallback (e.g., ""marquee above"", ""large sign upper right"").
+
+First‑words requirement:
+- The first 6–8 words must contain the subject group token (or a plural fallback noun) and a HIGH anchor OR a MEDIUM anchor from the MEDIUM anchor whitelist. If this fails, the caption must be auto‑rewritten into the minimal safe form: plural subject fallback + neutral anchor fallback + micro‑action LOW fallback + fine‑class fallback, all within the first 8 words.
+
+Saliency tie‑breaking and selection:
+- When multiple candidates are present, prefer in order: 1) OCR text, 2) large prop/signage, 3) face/people, 4) large color patch/clothing. Chosen anchor must appear early (within first 6–8 words).
+
+MEDIUM whitelist (emit these exact tokens only under MEDIUM):
+- Fine classes: boat, canoe, shrine/temple, ghats/steps, children, performer, vendor, vendor stand, parade participant.
+- Anchors: marquee, boats, canopies, flagpole, ladder, bicycle, hedgerow, trees.
+- Clothing tokens allowed under MEDIUM: ""navy sweater"", ""red patterned dress"", ""white blouse"".
+
+Pruning, compression, and length control:
+- Target length: 10–16 words. Hard cap: 20 words. Allow +2 words beyond target when EITHER a HIGH anchor OR a HIGH fine class is present.
+- Pruning priority (apply deterministically until within cap):
+   1) Compress adjective chains into compact noun phrases.
+   2) Remove lighting/reflection descriptors first.
+   3) Remove object state/material next.
+   4) Remove background/ancillary context last.
+- NEVER remove or prune tokens from slots 1–3. Preserve MEDIUM tokens in slots 1–3 when present. If still over cap, construct a minimal safe caption that preserves any HIGH/MEDIUM tokens in slots 1–3 and uses neutral fallbacks elsewhere.
+
+Anti‑hallucination absolutes:
+- Do not invent brand names, partial/complete text, ages, emotions, intentions, or unsupported attributes.
+- No hedges, qualifiers, or speculative language.
+- When verification is LOW, use prescribed neutral fallbacks (e.g., ""storefront behind"", ""marquee above"", ""object on table"", ""group of people"").
+
+Final validator (must pass before emitting):
+- One grammatical sentence of comma‑separated short phrases.
+- Length within caps and target rules.
+- First 6–8 words include subject token (or plural fallback) plus a HIGH or MEDIUM anchor (or neutral anchor fallback if no MEDIUM/HIGH).
+- Micro‑action slot present and follows template rules.
+- No hedges, no invented brands/text, no duplicated phrases.
+- Only allowed MEDIUM tokens are emitted under MEDIUM band.
+- If validator would fail, emit the deterministic minimal safe caption described above.
+
+Short positive example (ideal):
+- ""group of people, right hand holding red shopping bag, storefront behind, marquee above.""
+
+Short negative example (avoid):
+- ""Several people maybe near a building with an unclear sign and someone possibly holding something.""
+
+Machine‑readable checklist to append internally (for validation):
+- OCR → include if HIGH/MEDIUM; quote only if HIGH (MEDIUM only one short token ≤6 chars).
+- Micro‑action → always emit (HIGH template or MEDIUM whitelist or LOW fallback).
+- Anchor/text → must appear within first 8 words if MEDIUM/HIGH, else include neutral anchor fallback early.
+- Counts → digits only if detector_count_confidence ≥ 0.70.
+- Prune per priority; never prune slots 1–3.
+- If validation fails → auto‑rewrite to minimal safe caption template.
+
+Adhere strictly to these rules when generating the single final caption.","woman, right hand holding badge, vendor stand, navy polo shirt, ""Bienvenue Welcome"" sign above, London 2012 logo on table",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.3348391354084015,0.20443204045295715,19,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_29727dbd0c,94,9311,flickr30k_test_009311,images/flickr30k/flickr30k_test_009311.jpg,"[""A toddler plays in a water fountain with his mouth open and ready for a drink."", ""A baby sticking out his tonge while looking at a spraying water fountain."", ""A baby trying to catch water from a fountain in his mouth"", ""A small boy is playing at a water fountain"", ""A baby reaching into a water fountain.""]",textgrad_29727dbd0c,TextGrad Step 19,"Produce exactly one concise, information‑dense caption: a single grammatical sentence composed of comma‑separated short phrases. Produce only that one sentence and nothing else.
+
+Output structure (emit in this order; slots 1–3 are mandatory and protected from pruning):
+1) Subject group(s) and one HIGH or MEDIUM anchor/prop or, if no MEDIUM/HIGH anchor exists, a neutral positional anchor fallback (0–3 subject groups; must appear first).
+2) Micro‑action / contact using strict templates (always emit one): 
+   - HIGH evidence: exact form ""left|right [hand|foot|part] [strong‑verb] [object]"" (e.g., ""right hand holding basket"").
+   - MEDIUM evidence: use one verb from the whitelist {jumping, pawing, clearing, showing, speaking, holding, carrying, pushing, pulling, strumming, leaning}.
+   - LOW evidence: fallback ""[part] near [object]"" (e.g., ""right hand near object"").
+   Never hedge or omit this slot.
+3) Fine class (verified label or dataset lexicon token; if no verified fine class, use a safe plural fallback such as ""people/dogs/vehicles/vendor stand"").
+4) Clothing / clear pose / orientation — include only when MEDIUM/HIGH verified.
+5) Up to two anchors/signage (only if MEDIUM/HIGH verified; otherwise use neutral positional fallback tokens such as ""marquee above"", ""storefront behind"").
+6) Spatial/cropping/depth token if verified.
+
+Verification bands and numeric thresholds (use detector outputs where available):
+- HIGH: OCR_confidence ≥ 0.85 OR segmentation_iou ≥ 0.75 OR motion_confidence ≥ 0.85.
+- MEDIUM: OCR_confidence ≥ 0.50 OR segmentation_iou ≥ 0.40 OR motion_confidence ≥ 0.60 OR detector_count_confidence ≥ 0.70.
+- LOW: otherwise.
+- Digit counts: emit digits only if detector_count_confidence ≥ 0.70; otherwise use plural fallback nouns.
+
+OCR and signage rules:
+- If OCR is HIGH: emit exact quoted text (quote counts toward length).
+- If OCR is MEDIUM and saliency is high: emit at most one short quoted token (single word or ≤6 characters); do not invent or complete partial names.
+- If OCR is LOW: use a neutral positional anchor fallback (e.g., ""marquee above"", ""large sign upper right"").
+
+First‑words requirement:
+- The first 6–8 words must contain the subject group token (or a plural fallback noun) and a HIGH anchor OR a MEDIUM anchor from the MEDIUM anchor whitelist. If this fails, the caption must be auto‑rewritten into the minimal safe form: plural subject fallback + neutral anchor fallback + micro‑action LOW fallback + fine‑class fallback, all within the first 8 words.
+
+Saliency tie‑breaking and selection:
+- When multiple candidates are present, prefer in order: 1) OCR text, 2) large prop/signage, 3) face/people, 4) large color patch/clothing. Chosen anchor must appear early (within first 6–8 words).
+
+MEDIUM whitelist (emit these exact tokens only under MEDIUM):
+- Fine classes: boat, canoe, shrine/temple, ghats/steps, children, performer, vendor, vendor stand, parade participant.
+- Anchors: marquee, boats, canopies, flagpole, ladder, bicycle, hedgerow, trees.
+- Clothing tokens allowed under MEDIUM: ""navy sweater"", ""red patterned dress"", ""white blouse"".
+
+Pruning, compression, and length control:
+- Target length: 10–16 words. Hard cap: 20 words. Allow +2 words beyond target when EITHER a HIGH anchor OR a HIGH fine class is present.
+- Pruning priority (apply deterministically until within cap):
+   1) Compress adjective chains into compact noun phrases.
+   2) Remove lighting/reflection descriptors first.
+   3) Remove object state/material next.
+   4) Remove background/ancillary context last.
+- NEVER remove or prune tokens from slots 1–3. Preserve MEDIUM tokens in slots 1–3 when present. If still over cap, construct a minimal safe caption that preserves any HIGH/MEDIUM tokens in slots 1–3 and uses neutral fallbacks elsewhere.
+
+Anti‑hallucination absolutes:
+- Do not invent brand names, partial/complete text, ages, emotions, intentions, or unsupported attributes.
+- No hedges, qualifiers, or speculative language.
+- When verification is LOW, use prescribed neutral fallbacks (e.g., ""storefront behind"", ""marquee above"", ""object on table"", ""group of people"").
+
+Final validator (must pass before emitting):
+- One grammatical sentence of comma‑separated short phrases.
+- Length within caps and target rules.
+- First 6–8 words include subject token (or plural fallback) plus a HIGH or MEDIUM anchor (or neutral anchor fallback if no MEDIUM/HIGH).
+- Micro‑action slot present and follows template rules.
+- No hedges, no invented brands/text, no duplicated phrases.
+- Only allowed MEDIUM tokens are emitted under MEDIUM band.
+- If validator would fail, emit the deterministic minimal safe caption described above.
+
+Short positive example (ideal):
+- ""group of people, right hand holding red shopping bag, storefront behind, marquee above.""
+
+Short negative example (avoid):
+- ""Several people maybe near a building with an unclear sign and someone possibly holding something.""
+
+Machine‑readable checklist to append internally (for validation):
+- OCR → include if HIGH/MEDIUM; quote only if HIGH (MEDIUM only one short token ≤6 chars).
+- Micro‑action → always emit (HIGH template or MEDIUM whitelist or LOW fallback).
+- Anchor/text → must appear within first 8 words if MEDIUM/HIGH, else include neutral anchor fallback early.
+- Counts → digits only if detector_count_confidence ≥ 0.70.
+- Prune per priority; never prune slots 1–3.
+- If validation fails → auto‑rewrite to minimal safe caption template.
+
+Adhere strictly to these rules when generating the single final caption.","child, tongue out, leaning on fountain edge, children, light-colored shirt, water spraying nearby, trees behind",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.3129255175590515,0.170347660779953,15,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_29727dbd0c,96,28917,flickr30k_test_028917,images/flickr30k/flickr30k_test_028917.jpg,"[""Two basketball players one in black and red and one in blue and white playing a game with the ref and crowd in the background."", ""A basketball player wearing white dribbles the ball, while being guarded by another player in a black uniform."", ""Two male basketball players are playing a competitive game while the referee is standing behind watching."", ""Two men playing in a basketball game against each other."", ""A small image used to signify a broken web image link""]",textgrad_29727dbd0c,TextGrad Step 19,"Produce exactly one concise, information‑dense caption: a single grammatical sentence composed of comma‑separated short phrases. Produce only that one sentence and nothing else.
+
+Output structure (emit in this order; slots 1–3 are mandatory and protected from pruning):
+1) Subject group(s) and one HIGH or MEDIUM anchor/prop or, if no MEDIUM/HIGH anchor exists, a neutral positional anchor fallback (0–3 subject groups; must appear first).
+2) Micro‑action / contact using strict templates (always emit one): 
+   - HIGH evidence: exact form ""left|right [hand|foot|part] [strong‑verb] [object]"" (e.g., ""right hand holding basket"").
+   - MEDIUM evidence: use one verb from the whitelist {jumping, pawing, clearing, showing, speaking, holding, carrying, pushing, pulling, strumming, leaning}.
+   - LOW evidence: fallback ""[part] near [object]"" (e.g., ""right hand near object"").
+   Never hedge or omit this slot.
+3) Fine class (verified label or dataset lexicon token; if no verified fine class, use a safe plural fallback such as ""people/dogs/vehicles/vendor stand"").
+4) Clothing / clear pose / orientation — include only when MEDIUM/HIGH verified.
+5) Up to two anchors/signage (only if MEDIUM/HIGH verified; otherwise use neutral positional fallback tokens such as ""marquee above"", ""storefront behind"").
+6) Spatial/cropping/depth token if verified.
+
+Verification bands and numeric thresholds (use detector outputs where available):
+- HIGH: OCR_confidence ≥ 0.85 OR segmentation_iou ≥ 0.75 OR motion_confidence ≥ 0.85.
+- MEDIUM: OCR_confidence ≥ 0.50 OR segmentation_iou ≥ 0.40 OR motion_confidence ≥ 0.60 OR detector_count_confidence ≥ 0.70.
+- LOW: otherwise.
+- Digit counts: emit digits only if detector_count_confidence ≥ 0.70; otherwise use plural fallback nouns.
+
+OCR and signage rules:
+- If OCR is HIGH: emit exact quoted text (quote counts toward length).
+- If OCR is MEDIUM and saliency is high: emit at most one short quoted token (single word or ≤6 characters); do not invent or complete partial names.
+- If OCR is LOW: use a neutral positional anchor fallback (e.g., ""marquee above"", ""large sign upper right"").
+
+First‑words requirement:
+- The first 6–8 words must contain the subject group token (or a plural fallback noun) and a HIGH anchor OR a MEDIUM anchor from the MEDIUM anchor whitelist. If this fails, the caption must be auto‑rewritten into the minimal safe form: plural subject fallback + neutral anchor fallback + micro‑action LOW fallback + fine‑class fallback, all within the first 8 words.
+
+Saliency tie‑breaking and selection:
+- When multiple candidates are present, prefer in order: 1) OCR text, 2) large prop/signage, 3) face/people, 4) large color patch/clothing. Chosen anchor must appear early (within first 6–8 words).
+
+MEDIUM whitelist (emit these exact tokens only under MEDIUM):
+- Fine classes: boat, canoe, shrine/temple, ghats/steps, children, performer, vendor, vendor stand, parade participant.
+- Anchors: marquee, boats, canopies, flagpole, ladder, bicycle, hedgerow, trees.
+- Clothing tokens allowed under MEDIUM: ""navy sweater"", ""red patterned dress"", ""white blouse"".
+
+Pruning, compression, and length control:
+- Target length: 10–16 words. Hard cap: 20 words. Allow +2 words beyond target when EITHER a HIGH anchor OR a HIGH fine class is present.
+- Pruning priority (apply deterministically until within cap):
+   1) Compress adjective chains into compact noun phrases.
+   2) Remove lighting/reflection descriptors first.
+   3) Remove object state/material next.
+   4) Remove background/ancillary context last.
+- NEVER remove or prune tokens from slots 1–3. Preserve MEDIUM tokens in slots 1–3 when present. If still over cap, construct a minimal safe caption that preserves any HIGH/MEDIUM tokens in slots 1–3 and uses neutral fallbacks elsewhere.
+
+Anti‑hallucination absolutes:
+- Do not invent brand names, partial/complete text, ages, emotions, intentions, or unsupported attributes.
+- No hedges, qualifiers, or speculative language.
+- When verification is LOW, use prescribed neutral fallbacks (e.g., ""storefront behind"", ""marquee above"", ""object on table"", ""group of people"").
+
+Final validator (must pass before emitting):
+- One grammatical sentence of comma‑separated short phrases.
+- Length within caps and target rules.
+- First 6–8 words include subject token (or plural fallback) plus a HIGH or MEDIUM anchor (or neutral anchor fallback if no MEDIUM/HIGH).
+- Micro‑action slot present and follows template rules.
+- No hedges, no invented brands/text, no duplicated phrases.
+- Only allowed MEDIUM tokens are emitted under MEDIUM band.
+- If validator would fail, emit the deterministic minimal safe caption described above.
+
+Short positive example (ideal):
+- ""group of people, right hand holding red shopping bag, storefront behind, marquee above.""
+
+Short negative example (avoid):
+- ""Several people maybe near a building with an unclear sign and someone possibly holding something.""
+
+Machine‑readable checklist to append internally (for validation):
+- OCR → include if HIGH/MEDIUM; quote only if HIGH (MEDIUM only one short token ≤6 chars).
+- Micro‑action → always emit (HIGH template or MEDIUM whitelist or LOW fallback).
+- Anchor/text → must appear within first 8 words if MEDIUM/HIGH, else include neutral anchor fallback early.
+- Counts → digits only if detector_count_confidence ≥ 0.70.
+- Prune per priority; never prune slots 1–3.
+- If validation fails → auto‑rewrite to minimal safe caption template.
+
+Adhere strictly to these rules when generating the single final caption.","basketball players, right hand holding ball, dribbling, people/dogs/vehicles/vendor stand, white jersey with blue trim, black jersey with red trim, blue curtain behind",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.24593308568000793,0.15224993228912354,22,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_29727dbd0c,105,15736,flickr30k_test_015736,images/flickr30k/flickr30k_test_015736.jpg,"[""A brown and white dog trots across shallow water with his mouth open."", ""A greyhound walks in the rain through a large puddle."", ""A white and brown dog is walking through the water."", ""A brown spotted dog walks in shallow water."", ""The dog walks through the water.""]",textgrad_29727dbd0c,TextGrad Step 19,"Produce exactly one concise, information‑dense caption: a single grammatical sentence composed of comma‑separated short phrases. Produce only that one sentence and nothing else.
+
+Output structure (emit in this order; slots 1–3 are mandatory and protected from pruning):
+1) Subject group(s) and one HIGH or MEDIUM anchor/prop or, if no MEDIUM/HIGH anchor exists, a neutral positional anchor fallback (0–3 subject groups; must appear first).
+2) Micro‑action / contact using strict templates (always emit one): 
+   - HIGH evidence: exact form ""left|right [hand|foot|part] [strong‑verb] [object]"" (e.g., ""right hand holding basket"").
+   - MEDIUM evidence: use one verb from the whitelist {jumping, pawing, clearing, showing, speaking, holding, carrying, pushing, pulling, strumming, leaning}.
+   - LOW evidence: fallback ""[part] near [object]"" (e.g., ""right hand near object"").
+   Never hedge or omit this slot.
+3) Fine class (verified label or dataset lexicon token; if no verified fine class, use a safe plural fallback such as ""people/dogs/vehicles/vendor stand"").
+4) Clothing / clear pose / orientation — include only when MEDIUM/HIGH verified.
+5) Up to two anchors/signage (only if MEDIUM/HIGH verified; otherwise use neutral positional fallback tokens such as ""marquee above"", ""storefront behind"").
+6) Spatial/cropping/depth token if verified.
+
+Verification bands and numeric thresholds (use detector outputs where available):
+- HIGH: OCR_confidence ≥ 0.85 OR segmentation_iou ≥ 0.75 OR motion_confidence ≥ 0.85.
+- MEDIUM: OCR_confidence ≥ 0.50 OR segmentation_iou ≥ 0.40 OR motion_confidence ≥ 0.60 OR detector_count_confidence ≥ 0.70.
+- LOW: otherwise.
+- Digit counts: emit digits only if detector_count_confidence ≥ 0.70; otherwise use plural fallback nouns.
+
+OCR and signage rules:
+- If OCR is HIGH: emit exact quoted text (quote counts toward length).
+- If OCR is MEDIUM and saliency is high: emit at most one short quoted token (single word or ≤6 characters); do not invent or complete partial names.
+- If OCR is LOW: use a neutral positional anchor fallback (e.g., ""marquee above"", ""large sign upper right"").
+
+First‑words requirement:
+- The first 6–8 words must contain the subject group token (or a plural fallback noun) and a HIGH anchor OR a MEDIUM anchor from the MEDIUM anchor whitelist. If this fails, the caption must be auto‑rewritten into the minimal safe form: plural subject fallback + neutral anchor fallback + micro‑action LOW fallback + fine‑class fallback, all within the first 8 words.
+
+Saliency tie‑breaking and selection:
+- When multiple candidates are present, prefer in order: 1) OCR text, 2) large prop/signage, 3) face/people, 4) large color patch/clothing. Chosen anchor must appear early (within first 6–8 words).
+
+MEDIUM whitelist (emit these exact tokens only under MEDIUM):
+- Fine classes: boat, canoe, shrine/temple, ghats/steps, children, performer, vendor, vendor stand, parade participant.
+- Anchors: marquee, boats, canopies, flagpole, ladder, bicycle, hedgerow, trees.
+- Clothing tokens allowed under MEDIUM: ""navy sweater"", ""red patterned dress"", ""white blouse"".
+
+Pruning, compression, and length control:
+- Target length: 10–16 words. Hard cap: 20 words. Allow +2 words beyond target when EITHER a HIGH anchor OR a HIGH fine class is present.
+- Pruning priority (apply deterministically until within cap):
+   1) Compress adjective chains into compact noun phrases.
+   2) Remove lighting/reflection descriptors first.
+   3) Remove object state/material next.
+   4) Remove background/ancillary context last.
+- NEVER remove or prune tokens from slots 1–3. Preserve MEDIUM tokens in slots 1–3 when present. If still over cap, construct a minimal safe caption that preserves any HIGH/MEDIUM tokens in slots 1–3 and uses neutral fallbacks elsewhere.
+
+Anti‑hallucination absolutes:
+- Do not invent brand names, partial/complete text, ages, emotions, intentions, or unsupported attributes.
+- No hedges, qualifiers, or speculative language.
+- When verification is LOW, use prescribed neutral fallbacks (e.g., ""storefront behind"", ""marquee above"", ""object on table"", ""group of people"").
+
+Final validator (must pass before emitting):
+- One grammatical sentence of comma‑separated short phrases.
+- Length within caps and target rules.
+- First 6–8 words include subject token (or plural fallback) plus a HIGH or MEDIUM anchor (or neutral anchor fallback if no MEDIUM/HIGH).
+- Micro‑action slot present and follows template rules.
+- No hedges, no invented brands/text, no duplicated phrases.
+- Only allowed MEDIUM tokens are emitted under MEDIUM band.
+- If validator would fail, emit the deterministic minimal safe caption described above.
+
+Short positive example (ideal):
+- ""group of people, right hand holding red shopping bag, storefront behind, marquee above.""
+
+Short negative example (avoid):
+- ""Several people maybe near a building with an unclear sign and someone possibly holding something.""
+
+Machine‑readable checklist to append internally (for validation):
+- OCR → include if HIGH/MEDIUM; quote only if HIGH (MEDIUM only one short token ≤6 chars).
+- Micro‑action → always emit (HIGH template or MEDIUM whitelist or LOW fallback).
+- Anchor/text → must appear within first 8 words if MEDIUM/HIGH, else include neutral anchor fallback early.
+- Counts → digits only if detector_count_confidence ≥ 0.70.
+- Prune per priority; never prune slots 1–3.
+- If validation fails → auto‑rewrite to minimal safe caption template.
+
+Adhere strictly to these rules when generating the single final caption.","dog, right foot stepping in water, dog, wearing collar, standing in shallow water",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.3121631145477295,0.13512709736824036,13,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_29727dbd0c,109,13247,flickr30k_test_013247,images/flickr30k/flickr30k_test_013247.jpg,"[""Several men walk in front of a building marked 'Bass Pro Shops Outdoor World'."", ""People are walking outside the entrance to Bass Pro Shops Outdoor World."", ""People walking in front of the Outdoor World store."", ""A white-haired man is walking out of a store."", ""People outside of an Outdoor World shop.""]",textgrad_29727dbd0c,TextGrad Step 19,"Produce exactly one concise, information‑dense caption: a single grammatical sentence composed of comma‑separated short phrases. Produce only that one sentence and nothing else.
+
+Output structure (emit in this order; slots 1–3 are mandatory and protected from pruning):
+1) Subject group(s) and one HIGH or MEDIUM anchor/prop or, if no MEDIUM/HIGH anchor exists, a neutral positional anchor fallback (0–3 subject groups; must appear first).
+2) Micro‑action / contact using strict templates (always emit one): 
+   - HIGH evidence: exact form ""left|right [hand|foot|part] [strong‑verb] [object]"" (e.g., ""right hand holding basket"").
+   - MEDIUM evidence: use one verb from the whitelist {jumping, pawing, clearing, showing, speaking, holding, carrying, pushing, pulling, strumming, leaning}.
+   - LOW evidence: fallback ""[part] near [object]"" (e.g., ""right hand near object"").
+   Never hedge or omit this slot.
+3) Fine class (verified label or dataset lexicon token; if no verified fine class, use a safe plural fallback such as ""people/dogs/vehicles/vendor stand"").
+4) Clothing / clear pose / orientation — include only when MEDIUM/HIGH verified.
+5) Up to two anchors/signage (only if MEDIUM/HIGH verified; otherwise use neutral positional fallback tokens such as ""marquee above"", ""storefront behind"").
+6) Spatial/cropping/depth token if verified.
+
+Verification bands and numeric thresholds (use detector outputs where available):
+- HIGH: OCR_confidence ≥ 0.85 OR segmentation_iou ≥ 0.75 OR motion_confidence ≥ 0.85.
+- MEDIUM: OCR_confidence ≥ 0.50 OR segmentation_iou ≥ 0.40 OR motion_confidence ≥ 0.60 OR detector_count_confidence ≥ 0.70.
+- LOW: otherwise.
+- Digit counts: emit digits only if detector_count_confidence ≥ 0.70; otherwise use plural fallback nouns.
+
+OCR and signage rules:
+- If OCR is HIGH: emit exact quoted text (quote counts toward length).
+- If OCR is MEDIUM and saliency is high: emit at most one short quoted token (single word or ≤6 characters); do not invent or complete partial names.
+- If OCR is LOW: use a neutral positional anchor fallback (e.g., ""marquee above"", ""large sign upper right"").
+
+First‑words requirement:
+- The first 6–8 words must contain the subject group token (or a plural fallback noun) and a HIGH anchor OR a MEDIUM anchor from the MEDIUM anchor whitelist. If this fails, the caption must be auto‑rewritten into the minimal safe form: plural subject fallback + neutral anchor fallback + micro‑action LOW fallback + fine‑class fallback, all within the first 8 words.
+
+Saliency tie‑breaking and selection:
+- When multiple candidates are present, prefer in order: 1) OCR text, 2) large prop/signage, 3) face/people, 4) large color patch/clothing. Chosen anchor must appear early (within first 6–8 words).
+
+MEDIUM whitelist (emit these exact tokens only under MEDIUM):
+- Fine classes: boat, canoe, shrine/temple, ghats/steps, children, performer, vendor, vendor stand, parade participant.
+- Anchors: marquee, boats, canopies, flagpole, ladder, bicycle, hedgerow, trees.
+- Clothing tokens allowed under MEDIUM: ""navy sweater"", ""red patterned dress"", ""white blouse"".
+
+Pruning, compression, and length control:
+- Target length: 10–16 words. Hard cap: 20 words. Allow +2 words beyond target when EITHER a HIGH anchor OR a HIGH fine class is present.
+- Pruning priority (apply deterministically until within cap):
+   1) Compress adjective chains into compact noun phrases.
+   2) Remove lighting/reflection descriptors first.
+   3) Remove object state/material next.
+   4) Remove background/ancillary context last.
+- NEVER remove or prune tokens from slots 1–3. Preserve MEDIUM tokens in slots 1–3 when present. If still over cap, construct a minimal safe caption that preserves any HIGH/MEDIUM tokens in slots 1–3 and uses neutral fallbacks elsewhere.
+
+Anti‑hallucination absolutes:
+- Do not invent brand names, partial/complete text, ages, emotions, intentions, or unsupported attributes.
+- No hedges, qualifiers, or speculative language.
+- When verification is LOW, use prescribed neutral fallbacks (e.g., ""storefront behind"", ""marquee above"", ""object on table"", ""group of people"").
+
+Final validator (must pass before emitting):
+- One grammatical sentence of comma‑separated short phrases.
+- Length within caps and target rules.
+- First 6–8 words include subject token (or plural fallback) plus a HIGH or MEDIUM anchor (or neutral anchor fallback if no MEDIUM/HIGH).
+- Micro‑action slot present and follows template rules.
+- No hedges, no invented brands/text, no duplicated phrases.
+- Only allowed MEDIUM tokens are emitted under MEDIUM band.
+- If validator would fail, emit the deterministic minimal safe caption described above.
+
+Short positive example (ideal):
+- ""group of people, right hand holding red shopping bag, storefront behind, marquee above.""
+
+Short negative example (avoid):
+- ""Several people maybe near a building with an unclear sign and someone possibly holding something.""
+
+Machine‑readable checklist to append internally (for validation):
+- OCR → include if HIGH/MEDIUM; quote only if HIGH (MEDIUM only one short token ≤6 chars).
+- Micro‑action → always emit (HIGH template or MEDIUM whitelist or LOW fallback).
+- Anchor/text → must appear within first 8 words if MEDIUM/HIGH, else include neutral anchor fallback early.
+- Counts → digits only if detector_count_confidence ≥ 0.70.
+- Prune per priority; never prune slots 1–3.
+- If validation fails → auto‑rewrite to minimal safe caption template.
+
+Adhere strictly to these rules when generating the single final caption.","group of people, left hand holding shopping bag, people/dogs/vehicles/vendor stand, wearing casual clothes, marquee above, flagpole behind",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.1958114504814148,0.062071382999420166,17,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_29727dbd0c,112,5669,flickr30k_test_005669,images/flickr30k/flickr30k_test_005669.jpg,"[""Several young people adults sit around while a middle-eastern band prepares to play keyboard, drums, violin and a mandolin."", ""An audience listens to a band play as colorful lights light the scene."", ""A man playing an instrument while others sit at a table and watch."", ""A small band performing for people in a nightclub."", ""A group of people enjoying an intimate concert.""]",textgrad_29727dbd0c,TextGrad Step 19,"Produce exactly one concise, information‑dense caption: a single grammatical sentence composed of comma‑separated short phrases. Produce only that one sentence and nothing else.
+
+Output structure (emit in this order; slots 1–3 are mandatory and protected from pruning):
+1) Subject group(s) and one HIGH or MEDIUM anchor/prop or, if no MEDIUM/HIGH anchor exists, a neutral positional anchor fallback (0–3 subject groups; must appear first).
+2) Micro‑action / contact using strict templates (always emit one): 
+   - HIGH evidence: exact form ""left|right [hand|foot|part] [strong‑verb] [object]"" (e.g., ""right hand holding basket"").
+   - MEDIUM evidence: use one verb from the whitelist {jumping, pawing, clearing, showing, speaking, holding, carrying, pushing, pulling, strumming, leaning}.
+   - LOW evidence: fallback ""[part] near [object]"" (e.g., ""right hand near object"").
+   Never hedge or omit this slot.
+3) Fine class (verified label or dataset lexicon token; if no verified fine class, use a safe plural fallback such as ""people/dogs/vehicles/vendor stand"").
+4) Clothing / clear pose / orientation — include only when MEDIUM/HIGH verified.
+5) Up to two anchors/signage (only if MEDIUM/HIGH verified; otherwise use neutral positional fallback tokens such as ""marquee above"", ""storefront behind"").
+6) Spatial/cropping/depth token if verified.
+
+Verification bands and numeric thresholds (use detector outputs where available):
+- HIGH: OCR_confidence ≥ 0.85 OR segmentation_iou ≥ 0.75 OR motion_confidence ≥ 0.85.
+- MEDIUM: OCR_confidence ≥ 0.50 OR segmentation_iou ≥ 0.40 OR motion_confidence ≥ 0.60 OR detector_count_confidence ≥ 0.70.
+- LOW: otherwise.
+- Digit counts: emit digits only if detector_count_confidence ≥ 0.70; otherwise use plural fallback nouns.
+
+OCR and signage rules:
+- If OCR is HIGH: emit exact quoted text (quote counts toward length).
+- If OCR is MEDIUM and saliency is high: emit at most one short quoted token (single word or ≤6 characters); do not invent or complete partial names.
+- If OCR is LOW: use a neutral positional anchor fallback (e.g., ""marquee above"", ""large sign upper right"").
+
+First‑words requirement:
+- The first 6–8 words must contain the subject group token (or a plural fallback noun) and a HIGH anchor OR a MEDIUM anchor from the MEDIUM anchor whitelist. If this fails, the caption must be auto‑rewritten into the minimal safe form: plural subject fallback + neutral anchor fallback + micro‑action LOW fallback + fine‑class fallback, all within the first 8 words.
+
+Saliency tie‑breaking and selection:
+- When multiple candidates are present, prefer in order: 1) OCR text, 2) large prop/signage, 3) face/people, 4) large color patch/clothing. Chosen anchor must appear early (within first 6–8 words).
+
+MEDIUM whitelist (emit these exact tokens only under MEDIUM):
+- Fine classes: boat, canoe, shrine/temple, ghats/steps, children, performer, vendor, vendor stand, parade participant.
+- Anchors: marquee, boats, canopies, flagpole, ladder, bicycle, hedgerow, trees.
+- Clothing tokens allowed under MEDIUM: ""navy sweater"", ""red patterned dress"", ""white blouse"".
+
+Pruning, compression, and length control:
+- Target length: 10–16 words. Hard cap: 20 words. Allow +2 words beyond target when EITHER a HIGH anchor OR a HIGH fine class is present.
+- Pruning priority (apply deterministically until within cap):
+   1) Compress adjective chains into compact noun phrases.
+   2) Remove lighting/reflection descriptors first.
+   3) Remove object state/material next.
+   4) Remove background/ancillary context last.
+- NEVER remove or prune tokens from slots 1–3. Preserve MEDIUM tokens in slots 1–3 when present. If still over cap, construct a minimal safe caption that preserves any HIGH/MEDIUM tokens in slots 1–3 and uses neutral fallbacks elsewhere.
+
+Anti‑hallucination absolutes:
+- Do not invent brand names, partial/complete text, ages, emotions, intentions, or unsupported attributes.
+- No hedges, qualifiers, or speculative language.
+- When verification is LOW, use prescribed neutral fallbacks (e.g., ""storefront behind"", ""marquee above"", ""object on table"", ""group of people"").
+
+Final validator (must pass before emitting):
+- One grammatical sentence of comma‑separated short phrases.
+- Length within caps and target rules.
+- First 6–8 words include subject token (or plural fallback) plus a HIGH or MEDIUM anchor (or neutral anchor fallback if no MEDIUM/HIGH).
+- Micro‑action slot present and follows template rules.
+- No hedges, no invented brands/text, no duplicated phrases.
+- Only allowed MEDIUM tokens are emitted under MEDIUM band.
+- If validator would fail, emit the deterministic minimal safe caption described above.
+
+Short positive example (ideal):
+- ""group of people, right hand holding red shopping bag, storefront behind, marquee above.""
+
+Short negative example (avoid):
+- ""Several people maybe near a building with an unclear sign and someone possibly holding something.""
+
+Machine‑readable checklist to append internally (for validation):
+- OCR → include if HIGH/MEDIUM; quote only if HIGH (MEDIUM only one short token ≤6 chars).
+- Micro‑action → always emit (HIGH template or MEDIUM whitelist or LOW fallback).
+- Anchor/text → must appear within first 8 words if MEDIUM/HIGH, else include neutral anchor fallback early.
+- Counts → digits only if detector_count_confidence ≥ 0.70.
+- Prune per priority; never prune slots 1–3.
+- If validation fails → auto‑rewrite to minimal safe caption template.
+
+Adhere strictly to these rules when generating the single final caption.","audience, right hand holding cup, people, dark clothing, stage behind",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.27896225452423096,0.11410507559776306,10,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_29727dbd0c,137,10109,flickr30k_test_010109,images/flickr30k/flickr30k_test_010109.jpg,"[""A group of Asians with baskets of produce are squatting in a vegetable market."", ""Several people are picking through crops at an urban market."", ""Two people cleaning greens in the sunset."", ""Women are on business selling vegetables."", ""Two Asians with green leafy vegetables.""]",textgrad_29727dbd0c,TextGrad Step 19,"Produce exactly one concise, information‑dense caption: a single grammatical sentence composed of comma‑separated short phrases. Produce only that one sentence and nothing else.
+
+Output structure (emit in this order; slots 1–3 are mandatory and protected from pruning):
+1) Subject group(s) and one HIGH or MEDIUM anchor/prop or, if no MEDIUM/HIGH anchor exists, a neutral positional anchor fallback (0–3 subject groups; must appear first).
+2) Micro‑action / contact using strict templates (always emit one): 
+   - HIGH evidence: exact form ""left|right [hand|foot|part] [strong‑verb] [object]"" (e.g., ""right hand holding basket"").
+   - MEDIUM evidence: use one verb from the whitelist {jumping, pawing, clearing, showing, speaking, holding, carrying, pushing, pulling, strumming, leaning}.
+   - LOW evidence: fallback ""[part] near [object]"" (e.g., ""right hand near object"").
+   Never hedge or omit this slot.
+3) Fine class (verified label or dataset lexicon token; if no verified fine class, use a safe plural fallback such as ""people/dogs/vehicles/vendor stand"").
+4) Clothing / clear pose / orientation — include only when MEDIUM/HIGH verified.
+5) Up to two anchors/signage (only if MEDIUM/HIGH verified; otherwise use neutral positional fallback tokens such as ""marquee above"", ""storefront behind"").
+6) Spatial/cropping/depth token if verified.
+
+Verification bands and numeric thresholds (use detector outputs where available):
+- HIGH: OCR_confidence ≥ 0.85 OR segmentation_iou ≥ 0.75 OR motion_confidence ≥ 0.85.
+- MEDIUM: OCR_confidence ≥ 0.50 OR segmentation_iou ≥ 0.40 OR motion_confidence ≥ 0.60 OR detector_count_confidence ≥ 0.70.
+- LOW: otherwise.
+- Digit counts: emit digits only if detector_count_confidence ≥ 0.70; otherwise use plural fallback nouns.
+
+OCR and signage rules:
+- If OCR is HIGH: emit exact quoted text (quote counts toward length).
+- If OCR is MEDIUM and saliency is high: emit at most one short quoted token (single word or ≤6 characters); do not invent or complete partial names.
+- If OCR is LOW: use a neutral positional anchor fallback (e.g., ""marquee above"", ""large sign upper right"").
+
+First‑words requirement:
+- The first 6–8 words must contain the subject group token (or a plural fallback noun) and a HIGH anchor OR a MEDIUM anchor from the MEDIUM anchor whitelist. If this fails, the caption must be auto‑rewritten into the minimal safe form: plural subject fallback + neutral anchor fallback + micro‑action LOW fallback + fine‑class fallback, all within the first 8 words.
+
+Saliency tie‑breaking and selection:
+- When multiple candidates are present, prefer in order: 1) OCR text, 2) large prop/signage, 3) face/people, 4) large color patch/clothing. Chosen anchor must appear early (within first 6–8 words).
+
+MEDIUM whitelist (emit these exact tokens only under MEDIUM):
+- Fine classes: boat, canoe, shrine/temple, ghats/steps, children, performer, vendor, vendor stand, parade participant.
+- Anchors: marquee, boats, canopies, flagpole, ladder, bicycle, hedgerow, trees.
+- Clothing tokens allowed under MEDIUM: ""navy sweater"", ""red patterned dress"", ""white blouse"".
+
+Pruning, compression, and length control:
+- Target length: 10–16 words. Hard cap: 20 words. Allow +2 words beyond target when EITHER a HIGH anchor OR a HIGH fine class is present.
+- Pruning priority (apply deterministically until within cap):
+   1) Compress adjective chains into compact noun phrases.
+   2) Remove lighting/reflection descriptors first.
+   3) Remove object state/material next.
+   4) Remove background/ancillary context last.
+- NEVER remove or prune tokens from slots 1–3. Preserve MEDIUM tokens in slots 1–3 when present. If still over cap, construct a minimal safe caption that preserves any HIGH/MEDIUM tokens in slots 1–3 and uses neutral fallbacks elsewhere.
+
+Anti‑hallucination absolutes:
+- Do not invent brand names, partial/complete text, ages, emotions, intentions, or unsupported attributes.
+- No hedges, qualifiers, or speculative language.
+- When verification is LOW, use prescribed neutral fallbacks (e.g., ""storefront behind"", ""marquee above"", ""object on table"", ""group of people"").
+
+Final validator (must pass before emitting):
+- One grammatical sentence of comma‑separated short phrases.
+- Length within caps and target rules.
+- First 6–8 words include subject token (or plural fallback) plus a HIGH or MEDIUM anchor (or neutral anchor fallback if no MEDIUM/HIGH).
+- Micro‑action slot present and follows template rules.
+- No hedges, no invented brands/text, no duplicated phrases.
+- Only allowed MEDIUM tokens are emitted under MEDIUM band.
+- If validator would fail, emit the deterministic minimal safe caption described above.
+
+Short positive example (ideal):
+- ""group of people, right hand holding red shopping bag, storefront behind, marquee above.""
+
+Short negative example (avoid):
+- ""Several people maybe near a building with an unclear sign and someone possibly holding something.""
+
+Machine‑readable checklist to append internally (for validation):
+- OCR → include if HIGH/MEDIUM; quote only if HIGH (MEDIUM only one short token ≤6 chars).
+- Micro‑action → always emit (HIGH template or MEDIUM whitelist or LOW fallback).
+- Anchor/text → must appear within first 8 words if MEDIUM/HIGH, else include neutral anchor fallback early.
+- Counts → digits only if detector_count_confidence ≥ 0.70.
+- Prune per priority; never prune slots 1–3.
+- If validation fails → auto‑rewrite to minimal safe caption template.
+
+Adhere strictly to these rules when generating the single final caption.","two women, right hand holding basket, vendor stand, conical hats, baskets of leafy greens, ground-level view",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.3263867497444153,0.2053254097700119,16,False

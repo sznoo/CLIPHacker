@@ -1,0 +1,117 @@
+{
+  "prompt": "Output exactly two lines only.\n\nLine 1 — tags (format rules)\n- 2–5 comma-separated lower-case tokens (prefer exactly 3). No punctuation except commas.\n- Tokens must be visible nouns or a single visible adjective (color/size). Multiword fused objects (e.g., \"traffic light\", \"wine bottle\") may count as one token.\n- At least two tokens must be concrete, specific nouns. Avoid generic tokens like \"person\"/\"people\" or \"object\" unless no fine-grained detector/confident classifier label is available.\n- Deduplicate tokens; order by visual salience (most discriminative first). Prefer fine-grained nouns likely to be recognized by classifiers/CLIP (e.g., \"trumpet\" rather than \"man\" when reliable).\n- Attributes (color/size) allowed only as the sole attribute token and only if detector confidence ≥ tunable_threshold (recommend 60–75%; default 75%). Otherwise omit attributes.\n- Forbidden tokens: never output meta/instruction words or tooling vocabulary (e.g., prompt, detectors, thresholds, length, caption, tags, line, template, score, clip, siglip, example). Never output proper nouns, brand names, dates, events, or emotions.\n\nLine 2 — caption (format rules)\n- Option A (preferred): one factual short sentence in present simple/progressive of 9–12 words that includes one simple verb or a spatial phrase. Option B (fallback): a 2–3 word phrase (main noun + visible location) when a compliant 9–12 word caption would require guessing. If tags cannot be produced reliably, output exactly: image unclear\n- The main noun from Line 1 must be the first word of Line 2.\n- Non-fallback captions must have at least two exact token overlaps with Line 1 (one must be the main noun). Every non-determiner noun in Line 2 must appear verbatim in Line 1; otherwise do not output that caption.\n- Allowed extra words: determiners, prepositions (on, in, near, by, next to, in front of, behind), one optional period at sentence end. No other punctuation.\n- Require one clear, common visual verb or a spatial relation in non-fallback captions (allowed verbs — common visual verbs: sits, stands, holds, plays, carries, walks, rides, leans, looks, points, reads, opens). Use the simplest verb that fits the visual evidence.\n- Do not introduce attributes, objects, locations, identities, or inferred facts that are not present in Line 1 unless supported by a high-confidence detector per the attribute threshold. Prefer omission over guessing.\n\nConservatism and anti-hallucination\n- If fewer than two high-confidence specific nouns are available, produce the compact fallback or output \"image unclear\".\n- If an attribute token appears in Line 1, it must appear verbatim in Line 2. If attribute confidence is below the configured threshold, omit it.\n- Enforce exact noun correspondence: every noun in Line 2 must be present verbatim in Line 1.\n\nOperational note (for system integrators)\n- Keep candidate generation, scoring, CLIP reranking, and grammar/number checks outside this prompt. The VLM should only follow the concise visual rules above.\n- Tunable knobs: preferred tag count (2–5, default 3), attribute_confidence_threshold (recommended sweep 60/70/75%), and target caption length (9–12 recommended). Small ablations help find the best mean_clip tradeoff.\n- Mild generator hint: prefer visually discriminative nouns that classifiers/CLIP represent well.\n\nCompact exemplars (each block = two output lines)\nPositive (correct)\ntrumpet,man,street\ntrumpet man is playing loudly on the street by parked cars.\n\ndog,rooftop,people\ndog sits near people on the rooftop terrace above the street.\n\nman,accordion,car\naccordion,man,car\naccordion man plays beside the parked car on the curb.\n\nNegative (incorrect → corrected)\nman,hat,flag\nman waves flag at parade.    <!-- BAD: introduces \"parade\" not in tags -->\nman,hat,flag\nman waves flag near the hat.  <!-- GOOD: uses only tag nouns -->\n\nchild,bicycle,park\nchild rides red bicycle in park.  <!-- BAD: introduces attribute \"red\" not in tags -->\nchild,bicycle,park\nchild rides bicycle in the park.  <!-- GOOD: no unsupported attribute -->\n\nperson,bench,tree\nperson sits in Central Park.  <!-- BAD: uses proper noun -->\nperson,bench,tree\nperson sits on the bench by the tree.  <!-- GOOD: uses only tag nouns -->\n\nStrictly follow the Line 1 / Line 2 rules above. If no valid caption candidate passes these checks, return Line 2 = \"image unclear\".",
+  "prompt_id": "textgrad_ffd30bbb54",
+  "split_csv": "data/splits/flickr30k_main_seed1_train.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24/step_09/train/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24/step_09/train/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24/step_09/train/scores.csv",
+  "summary": {
+    "n": 24,
+    "mean_clip": 0.28086100704967976,
+    "mean_siglip": 0.16342420844982064,
+    "mean_caption_len": 9.958333333333334,
+    "generic_rate": 0.0,
+    "mean_delta_clip": -0.046317530795931816,
+    "mean_delta_siglip": -0.023272661492228508,
+    "clip_win_rate": 0.08333333333333333,
+    "siglip_win_rate": 0.2916666666666667
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_029824",
+      "caption": "welcome,desk,sign\nwelcome sign sits on the desk in front of the person.",
+      "clip_score": 0.2311095893383026,
+      "siglip_score": 0.109155461192131,
+      "delta_clip": -0.1605457067489624,
+      "delta_siglip": -0.1368509978055954
+    },
+    {
+      "image_id": "flickr30k_test_021782",
+      "caption": "sign,man,street\nman leans on sign near the street.",
+      "clip_score": 0.225900799036026,
+      "siglip_score": 0.1653104126453399,
+      "delta_clip": -0.1135472953319549,
+      "delta_siglip": -0.0357148349285126
+    },
+    {
+      "image_id": "flickr30k_test_022801",
+      "caption": "umbrella,table,street\numbrella shades table on the street.",
+      "clip_score": 0.1938360631465912,
+      "siglip_score": 0.1269893944263458,
+      "delta_clip": -0.11117309331893921,
+      "delta_siglip": -0.07132858037948611
+    },
+    {
+      "image_id": "flickr30k_test_022494",
+      "caption": "ladder,man,brick\nman holds ladder near brick wall on wooden path.",
+      "clip_score": 0.2734593152999878,
+      "siglip_score": 0.1890448927879333,
+      "delta_clip": -0.08765879273414612,
+      "delta_siglip": -0.026659980416297913
+    },
+    {
+      "image_id": "flickr30k_test_000069",
+      "caption": "red car,man,street\nred car stands near man on the street.",
+      "clip_score": 0.2489389032125473,
+      "siglip_score": 0.1256851553916931,
+      "delta_clip": -0.07982088625431061,
+      "delta_siglip": -0.053694054484367315
+    },
+    {
+      "image_id": "flickr30k_test_014348",
+      "caption": "baseball bat,player,field\nplayer swings baseball bat on the field.",
+      "clip_score": 0.2157204151153564,
+      "siglip_score": 0.1128865033388137,
+      "delta_clip": -0.0764356255531311,
+      "delta_siglip": -0.042617067694664
+    },
+    {
+      "image_id": "flickr30k_test_009311",
+      "caption": "child,water, fountain\nchild leans on fountain with water spraying nearby.",
+      "clip_score": 0.2669792473316192,
+      "siglip_score": 0.1707430928945541,
+      "delta_clip": -0.06358236074447637,
+      "delta_siglip": 0.003064781427383423
+    },
+    {
+      "image_id": "flickr30k_test_015378",
+      "caption": "hat,man,bag\nman in hat holds bag near cardboard boxes.",
+      "clip_score": 0.2438775151968002,
+      "siglip_score": 0.1419188678264618,
+      "delta_clip": -0.06056846678256991,
+      "delta_siglip": -0.0945401787757873
+    },
+    {
+      "image_id": "flickr30k_test_027728",
+      "caption": "diver,water,boat\ndiver stands in the water near the boat.",
+      "clip_score": 0.2619592845439911,
+      "siglip_score": 0.1151912584900856,
+      "delta_clip": -0.057478696107864324,
+      "delta_siglip": -0.014122702181339208
+    },
+    {
+      "image_id": "flickr30k_test_024935",
+      "caption": "man,cone,street\nman stands near orange cone on the street.",
+      "clip_score": 0.2140018790960312,
+      "siglip_score": 0.0959299653768539,
+      "delta_clip": -0.056939199566841125,
+      "delta_siglip": -0.0540419965982437
+    },
+    {
+      "image_id": "flickr30k_test_006091",
+      "caption": "child, sink, kitchen\nchild sits on sink edge in kitchen with water running.",
+      "clip_score": 0.331780195236206,
+      "siglip_score": 0.1935845613479614,
+      "delta_clip": -0.053192198276519775,
+      "delta_siglip": -0.04959659278392789
+    },
+    {
+      "image_id": "flickr30k_test_005582",
+      "caption": "dog,car,people\ndog jumps toward car window near people.",
+      "clip_score": 0.3054536879062652,
+      "siglip_score": 0.1945618540048599,
+      "delta_clip": -0.0488345623016358,
+      "delta_siglip": 0.01822766661643979
+    }
+  ]
+}

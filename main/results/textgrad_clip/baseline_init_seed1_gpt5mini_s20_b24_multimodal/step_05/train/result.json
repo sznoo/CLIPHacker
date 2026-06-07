@@ -1,0 +1,142 @@
+{
+  "prompt": "Output exactly one concise, information‑dense caption: a single grammatical sentence of comma‑separated short phrases. Use digits for counts; do not infer, hedge, paraphrase, or add anything not visually present. Output nothing else.\n\nRequired phrase ordering (include an item only if visually verifiable; omit unverifiable items). Aim for ≤30 words; allow up to +10% length only to include a fully legible quoted text string or one necessary part‑level relation/background anchor.\n\n1) Start with: [digit] + subject noun(s) + spatial anchor.\n   - Deterministic spatial rule: compute subject centroid x; if x < 0.33 → \"left\"; if 0.33 ≤ x ≤ 0.66 → \"center\"; if x > 0.66 → \"right\".\n   - If subject width >60% image width, emit \"center\" regardless of centroid.\n   - If >5% of subject area lies outside image, append \"partially cropped at [top|bottom|left|right]\".\n   - Add depth token [foreground|midground|background] only if clear from overlap/relative scale; otherwise omit.\n\n2) Immediately after, include exactly one visible micro‑action/part phrase if any of these verifiable cues is present: visible limb‑object contact, object held in hand, visible deformation/pressure, object midair/off ground, clear gaze at a visible object, or motion blur on a limb. Use one of these templates only:\n   - \"[hand] [verb] [object]\" (e.g., \"right hand holding pole\")\n   - \"holding [object] with [hand]\" (e.g., \"holding violin with chin and right hand\")\n   - \"[body_part] [verb] [structure/object]\" (e.g., \"left foot on pedal\")\n   If none apply, include exactly \"no-action-visible\".\n\n3) Then include up to 1–3 high‑signal descriptor(s) chosen by strict priority (pick highest‑ranked verifiable candidates, break ties lexicographically):\n   A) Legible text — transcribe exact string only if every character is clearly readable; include it in quotes and localize (e.g., \"'LOEWE' on lower sill at left\").\n   B) Reflection/surface condition (e.g., \"wet pavement with reflections\", \"glass reflections\").\n   C) Material/texture (e.g., \"rusted metal\", \"woven straw\").\n   D) Distinctive accessory (e.g., \"white hard hat\", \"red pennant\").\n   E) Color (e.g., \"red sweatshirt\").\n   - Enforce ≤3 descriptors; if none verifiable, omit descriptors.\n\n4) If a person/object clearly interacts with another object/structure, include exactly one concise part‑level relation phrase using the template: \"[part] [verb] [object/structure]\" (e.g., \"right hand holding pole\", \"rear wheel off ground\"). Include this only if contact/displacement is visually evident.\n\n5) Optionally include exactly one viewpoint token when obvious: {close-up, medium, wide, high-angle, low-angle}.\n\n6) Optionally include exactly one lighting token when obvious: {backlit, front-lit, rim-lit, long-shadow-left, long-shadow-right}.\n\n7) If a clear background anchor is visible, append one concise background noun phrase (single phrase, e.g., \"storefront window\", \"stone embankment\", \"Radio City marquee\"). Omit if no clear anchor.\n\nReflections vs. behind‑glass rule\n- If an element appears doubled, reversed, or overlayed on the glass plane without 3D occlusion → label as \"reflections\".\n- If objects clearly sit on the far side of the glass (shelf, mannequin, handbags) → label as \"on display behind glass\" or \"behind glass\".\n- If uncertain, omit both.\n\nTwo‑pass verification (must run before emitting):\na) Transcribe quoted text only if every character is readable; otherwise drop text token.\nb) Include a digit count only if each instance is clearly visible and ≥50% unobstructed; otherwise omit count.\nc) Include depth only if overlap/relative scale is unambiguous.\nd) Include \"partially cropped\" only if >5% of subject area is outside image.\ne) Drop any token failing verification and recheck sentence for grammaticality.\n\nBrevity & prioritization\n- If length limits force removal, prioritize tokens in this order: legible text → part‑level relation → background anchor → descriptors → viewpoint → lighting.\n- Use compact, active, factual phrasing and concrete nouns. Do not infer ages, emotions, roles, intent, or unseen attributes. Do not use vague quantifiers (\"several\",\"many\") — use digits only when clear.\n\nStyle constraints\n- Single sentence, comma‑separated short phrases, no tags, no lists, no extra lines.\n- Use canonical labels (e.g., \"storefront window\", \"center\"), consistent punctuation for quoted text.\n\nCanonical good examples (follow exact output format):\n- \"1 child left foreground, reaching toward storefront window, right hand touching glass, 'LOEWE' on lower sill at left, glass reflections, storefront window behind.\"\n- \"1 woman center foreground, holding violin with chin and right hand, open instrument case on ground, medium, tiled underground passage behind.\"\n- \"1 surfer center midground, crouching on surfboard, sharp turn with spray arc behind, sunlit green wave face, low-angle, ocean behind.\"\n- \"5 dancers center foreground, standing in long line across crosswalk, red and white striped costumes, Radio City marquee above, street behind.\"\n\nFollow these rules exactly to produce one precise caption.",
+  "prompt_id": "textgrad_53a1516f54",
+  "split_csv": "data/splits/flickr30k_main_seed1_train.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal/step_05/train/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal/step_05/train/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal/step_05/train/scores.csv",
+  "data_root": "data",
+  "summary": {
+    "n": 24,
+    "mean_clip": 0.29718199868996936,
+    "mean_siglip": 0.19978654198348522,
+    "mean_caption_len": 21.791666666666668,
+    "generic_rate": 0.0,
+    "mean_delta_clip": -0.023968228449424128,
+    "mean_delta_siglip": 0.01764776495595774,
+    "clip_win_rate": 0.20833333333333334,
+    "siglip_win_rate": 0.75
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_018651",
+      "image_relpath": "images/flickr30k/flickr30k_test_018651.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_018651.jpg",
+      "caption": "1 man center foreground, right hand holding bicycle handlebar, wearing straw hat, gray jacket, blue shirt, oranges in woven baskets, red bicycle midground, \"COIFFURE ET BARBIER\" on glass behind, long-shadow-right, brick wall behind.",
+      "clip_score": 0.2980697453022003,
+      "siglip_score": 0.1830297261476516,
+      "delta_clip": -0.10415393114089966,
+      "delta_siglip": -0.013513952493667603
+    },
+    {
+      "image_id": "flickr30k_test_024011",
+      "image_relpath": "images/flickr30k/flickr30k_test_024011.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_024011.jpg",
+      "caption": "12 dancers center foreground, standing in long line across crosswalk, red and white striped costumes, no-action-visible, Radio City marquee above, street behind.",
+      "clip_score": 0.2860372066497803,
+      "siglip_score": 0.2054961919784546,
+      "delta_clip": -0.09541720151901245,
+      "delta_siglip": 0.032894179224967984
+    },
+    {
+      "image_id": "flickr30k_test_030218",
+      "image_relpath": "images/flickr30k/flickr30k_test_030218.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_030218.jpg",
+      "caption": "1 man left foreground, holding flute with right hand, gray jacket, blue jeans, brown shoes, sidewalk with white tiles, pedestrians in background.",
+      "clip_score": 0.2617121338844299,
+      "siglip_score": 0.2310004085302353,
+      "delta_clip": -0.09238326549530035,
+      "delta_siglip": 0.008394286036491394
+    },
+    {
+      "image_id": "flickr30k_test_018116",
+      "image_relpath": "images/flickr30k/flickr30k_test_018116.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_018116.jpg",
+      "caption": "1 man center foreground, right hand holding tool, working on gold piece, gold leaf on newspaper, concrete floor background, high-angle.",
+      "clip_score": 0.2521993517875671,
+      "siglip_score": 0.195929080247879,
+      "delta_clip": -0.07584419846534729,
+      "delta_siglip": 0.0420846343040466
+    },
+    {
+      "image_id": "flickr30k_test_013247",
+      "image_relpath": "images/flickr30k/flickr30k_test_013247.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_013247.jpg",
+      "caption": "1 building center midground, \"Bass Pro Shops\" and \"Outdoor World\" signage visible, rusted metal facade, no-action-visible, stone embankment behind.",
+      "clip_score": 0.281832605600357,
+      "siglip_score": 0.1748141199350357,
+      "delta_clip": -0.05753698945045471,
+      "delta_siglip": 0.023623585700988797
+    },
+    {
+      "image_id": "flickr30k_test_025138",
+      "image_relpath": "images/flickr30k/flickr30k_test_025138.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_025138.jpg",
+      "caption": "4 people center foreground, right hand holding railing, black beanie, dark jacket, dark hoodie, glasses, overcast sky behind, stone embankment behind.",
+      "clip_score": 0.2343321740627288,
+      "siglip_score": 0.1828915923833847,
+      "delta_clip": -0.046988189220428495,
+      "delta_siglip": 0.03428336977958679
+    },
+    {
+      "image_id": "flickr30k_test_000069",
+      "image_relpath": "images/flickr30k/flickr30k_test_000069.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_000069.jpg",
+      "caption": "1 man center foreground, no-action-visible, red inflatable sculpture, street lamp right, building facade behind.",
+      "clip_score": 0.2837766706943512,
+      "siglip_score": 0.144885778427124,
+      "delta_clip": -0.044983118772506714,
+      "delta_siglip": -0.03449343144893641
+    },
+    {
+      "image_id": "flickr30k_test_017741",
+      "image_relpath": "images/flickr30k/flickr30k_test_017741.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_017741.jpg",
+      "caption": "2 people center foreground, no-action-visible, seated on bench, glass reflections, large window behind.",
+      "clip_score": 0.2812938094139099,
+      "siglip_score": 0.2177237868309021,
+      "delta_clip": -0.038083016872406006,
+      "delta_siglip": -0.024445891380310003
+    },
+    {
+      "image_id": "flickr30k_test_000969",
+      "image_relpath": "images/flickr30k/flickr30k_test_000969.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_000969.jpg",
+      "caption": "1 person center foreground, left hand raised midair, green glow on skin, wooden table with beer glasses, dim ambient lighting, framed artwork on wood-paneled wall behind.",
+      "clip_score": 0.2639686465263366,
+      "siglip_score": 0.1752632409334182,
+      "delta_clip": -0.03214916586875921,
+      "delta_siglip": 0.022960349917411804
+    },
+    {
+      "image_id": "flickr30k_test_021351",
+      "image_relpath": "images/flickr30k/flickr30k_test_021351.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_021351.jpg",
+      "caption": "1 woman center foreground, holding violin with chin and right hand, black outfit, no-action-visible, abstract paintings on display behind, tiled underground passage behind.",
+      "clip_score": 0.3144428133964538,
+      "siglip_score": 0.2660448849201202,
+      "delta_clip": -0.030926853418350275,
+      "delta_siglip": 0.03381328284740448
+    },
+    {
+      "image_id": "flickr30k_test_012773",
+      "image_relpath": "images/flickr30k/flickr30k_test_012773.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_012773.jpg",
+      "caption": "1 man left foreground, right hand raised, blue jeans, brown belt, no-action-visible, Amnesty International banner background, stage lights above.",
+      "clip_score": 0.2681435644626617,
+      "siglip_score": 0.2055141329765319,
+      "delta_clip": -0.018591254949569702,
+      "delta_siglip": 0.025671631097793496
+    },
+    {
+      "image_id": "flickr30k_test_017983",
+      "image_relpath": "images/flickr30k/flickr30k_test_017983.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_017983.jpg",
+      "caption": "1 woman center foreground, holding sword with right hand, yellow kimono with red accents, no-action-visible, crowd seated on ground behind, trees behind.",
+      "clip_score": 0.3283579051494598,
+      "siglip_score": 0.1682603657245636,
+      "delta_clip": -0.014104008674621638,
+      "delta_siglip": -0.0651254951953888
+    }
+  ]
+}

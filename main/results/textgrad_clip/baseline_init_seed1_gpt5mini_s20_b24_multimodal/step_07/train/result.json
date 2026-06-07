@@ -1,0 +1,142 @@
+{
+  "prompt": "Output exactly one concise, information‑dense caption: a single grammatical sentence composed of comma‑separated short phrases. Produce only that one sentence (no lists, tags, JSON, logs, or extra lines). Use digits for counts only when each instance is clearly visible and separable; do not infer, hedge, or invent unseen attributes.\n\nGeneral structure and group allowance\n- Allow 1–3 clearly separable subject groups in prominence order. For each group, emit: [digit] + subject noun(s) + spatial anchor. Include a group only if it passes per-group verification (see \"Group inclusion\" below). Keep overall brevity; include a secondary group only if it occupies ≥20% of the main subject area or is visually prominent.\n\nSpatial anchor and grouping rules\n- Compute a centroid per subject/group. If centroid x < 0.33 → \"left\"; if 0.33 ≤ x ≤ 0.66 → \"center\"; if x > 0.66 → \"right\".\n- If a subject width >50% of image width, emit \"center\" for that subject.\n- If >5% of subject area lies outside image, append \"partially cropped at [top|bottom|left|right]\".\n- Add depth token [foreground|midground|background] only if overlap/relative scale unambiguously indicates depth.\n- In multi‑group scenes compute centroid per group rather than collapsing to a single centroid.\n\nMicro‑action and contact (strict, verbized)\n- Include exactly one micro‑action phrase only if clear functional contact/use is visually evident (visible limb‑object contact, instrument at mouth, object midair, visible deformation/pressure, motion blur on a limb, or clear gaze at a visible object).\n- The micro‑action must be verbized (e.g., \"right hand inserting screwdriver\", \"left hand holding leash\"). Do not use passive or vague forms like \"with\" unless required by a template (\"holding [object] with [hand]\").\n- Contact verification: assert contact only if bounding‑box intersection ≥10–15% of the smaller bbox OR visible pixel overlap/segmentation adjacency OR clear edge adjacency; otherwise drop micro‑action.\n- If contact is verified, immediately include exactly one part‑level relation using the template \"[part] [verb] [object/structure]\" (e.g., \"right hand holding pole\", \"rear wheel off ground\"). If no verified contact, omit both micro‑action and part‑level relation.\n\nDescriptor selection and priority (≤3 descriptors)\n- Choose up to 1–3 high‑signal descriptors after the subject/micro‑action/part relation. Priority (highest → lowest):\n  1) Discriminative prop or part‑level prop (weigh these first: open instrument case, woven baskets with fruit, satellite dish, marquee).\n  2) Precise object class (prefer \"moped\", \"cargo bike\", \"surveillance camera\", \"bicycle with basket\" over generic labels).\n  3) Fully legible text (transcribe exact string only if every character is clearly readable).\n  4) Material/texture (rusted metal, woven straw).\n  5) Color (red sweatshirt).\n  6) Reflection/surface condition (wet pavement with reflections).\n- Enforce ≤3 descriptors; if none pass verification, omit descriptors.\n\nViewpoint, lighting, background anchor (optional but preferred)\n- Optionally include at most one viewpoint token when obvious: {close-up, medium, wide, high-angle, low-angle}.\n- Optionally include at most one lighting token when obvious: {backlit, front-lit, rim-lit, long-shadow-left, long-shadow-right}.\n- If a clear background anchor is visible (occupies ≥5% image area or is a distinct structure), append one concise background noun phrase (e.g., \"storefront window\", \"stone embankment\", \"parapet with satellite dishes\"). If no clear anchor, omit.\n\nReflections vs. behind‑glass (procedural)\n- If an element appears doubled, reversed, or overlayed on the glass plane without 3D occlusion → label as \"reflections\".\n- If objects clearly sit on the far side of glass with supporting occlusion by a display plane (shelves, mannequins, items behind visible glass frame) → label as \"on display behind glass\" or \"behind glass\".\n- If uncertain, omit both.\n\nTwo‑pass verification (mandatory)\n1) Propose tokens for each slot (groups, micro‑action, part relation, descriptors, viewpoint, lighting, background).\n2) Verify tokens with these numeric checks:\n   - Count: include a digit only if each instance is ≥50% unobstructed and separable.\n   - Object class: require classifier confidence >0.60 OR top-label margin >0.15; if confidence scores are unavailable, require multiple visual cues or distinctive parts before asserting a fine class.\n   - Contact: require bbox overlap ≥10–15% of smaller bbox OR segmentation adjacency/clear pixel overlap.\n   - Text: transcribe quoted text only if each character is clearly readable at ≳8pt equivalent and high contrast; otherwise use a position/label descriptor (e.g., \"marquee above\").\n3) If any token fails verification, drop it and recheck grammaticality. Always ensure the final sentence remains grammatical after any drops.\n\nMandatory checks to improve grounding\n- If any discriminative prop or verified part‑level relation exists per the verification rules, the caption must include at least one such token (pick the highest‑priority verified token).\n- If two or more verified subjects are present and any clear interaction (handing, facing, next to, gaze) or relative placement is unambiguous, include a short inter‑subject relation token (e.g., \"facing\", \"handing\", \"next to\").\n\nPose/orientation and object state (when unambiguous)\n- When clearly visible, include one brief orientation token for subjects: {facing camera, turned away, leaning over, crouching, walking toward camera}.\n- When object state is visibly informative, include one object‑state descriptor: {open instrument case, exposed gears, wet reflective surface, broken panel}.\n\nBrevity and trimming priorities\n- Aim for ≤30 words; allow up to +10% length only to include a fully legible quoted text string or one necessary part‑level relation/background anchor.\n- If trimming is required, prioritize tokens to keep in this order (highest→lowest): discriminative prop → part‑level relation/contact → precise object class → background anchor → fully legible text → material/texture → viewpoint → lighting → color → reflection.\n- Prefer compact, active phrasing (verb + noun) and concrete nouns. Do not infer ages, emotions, intentions, or unseen attributes. Do not use vague quantifiers (\"several\") — use digits only when verified.\n\nNegative rules (must obey)\n- Do not output a generic label if a more specific, visually supported label is available.\n- Do not state exact counts when verification fails.\n- Do not emit micro‑action claims (e.g., \"holding\") unless contact is clearly verified.\n- Do not invent text or partial transcriptions; only transcribe when fully legible.\n\nCanonical compact templates (follow format; these are templates to emulate)\n- \"1 child left foreground, right hand inserting screwdriver, right hand touching mechanism, open metal case on table, medium, workshop bench behind.\"\n- \"2 men center foreground, facing each other, left man handing packet, brown woven basket with fruit, low parapet with satellite dishes behind.\"\n- \"1 dog right foreground, walking left, long legs and tucked waist, wet pavement with reflections, low-angle, street behind.\"\n\nFinal note\n- Maintain the single‑sentence, comma‑separated output style exactly. Verify tokens via the two‑pass checks and ensure at least one discriminative prop or part relation is present when visually supported. Prioritize concrete objects, actions, and verified relations to maximize visual grounding in a single concise caption.",
+  "prompt_id": "textgrad_abd1b866e9",
+  "split_csv": "data/splits/flickr30k_main_seed1_train.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal/step_07/train/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal/step_07/train/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal/step_07/train/scores.csv",
+  "data_root": "data",
+  "summary": {
+    "n": 24,
+    "mean_clip": 0.301612784465154,
+    "mean_siglip": 0.19234460716446236,
+    "mean_caption_len": 26.333333333333332,
+    "generic_rate": 0.0,
+    "mean_delta_clip": -0.015685143570105236,
+    "mean_delta_siglip": 0.0009703555454810553,
+    "clip_win_rate": 0.2916666666666667,
+    "siglip_win_rate": 0.5833333333333334
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_030024",
+      "image_relpath": "images/flickr30k/flickr30k_test_030024.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_030024.jpg",
+      "caption": "1 man center foreground, right hand holding wine glass, white tablecloth with bottles and glasses, 2 men right midground, one facing camera, one turned away, white pillar and framed window background.",
+      "clip_score": 0.2355445921421051,
+      "siglip_score": 0.1927897930145263,
+      "delta_clip": -0.0669268667697906,
+      "delta_siglip": 0.008574500679969815
+    },
+    {
+      "image_id": "flickr30k_test_010401",
+      "image_relpath": "images/flickr30k/flickr30k_test_010401.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_010401.jpg",
+      "caption": "1 girl center foreground, mid-air above leaf pile, arms outstretched, wearing blue sweater with white collar, green tree left, silver van background.",
+      "clip_score": 0.2696329057216644,
+      "siglip_score": 0.2193012833595276,
+      "delta_clip": -0.066138356924057,
+      "delta_siglip": 0.0371257364749909
+    },
+    {
+      "image_id": "flickr30k_test_013247",
+      "image_relpath": "images/flickr30k/flickr30k_test_013247.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_013247.jpg",
+      "caption": "Three people center foreground, walking toward camera, 1 man in green shirt left, 1 man in blue jacket center, 1 man in blue shirt right, \"Outdoor World\" sign above, rustic building with \"Bass Pro Shops\" marquee, cloudy sky background.",
+      "clip_score": 0.281578004360199,
+      "siglip_score": 0.1868013441562652,
+      "delta_clip": -0.05779159069061274,
+      "delta_siglip": 0.035610809922218295
+    },
+    {
+      "image_id": "flickr30k_test_009311",
+      "image_relpath": "images/flickr30k/flickr30k_test_009311.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_009311.jpg",
+      "caption": "1 child center foreground, tongue out, leaning over fountain edge, water spraying in front, light blue shirt, green foliage background.",
+      "clip_score": 0.2875787019729614,
+      "siglip_score": 0.1832392811775207,
+      "delta_clip": -0.042982906103134155,
+      "delta_siglip": 0.015560969710350009
+    },
+    {
+      "image_id": "flickr30k_test_000403",
+      "image_relpath": "images/flickr30k/flickr30k_test_000403.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_000403.jpg",
+      "caption": "1 child center foreground, mid-air above bed, bare feet, navy shorts, facing right; 1 man right foreground, standing, arms crossed, wearing orange shirt and blue shorts, facing left; lamp left midground, white bedspread left foreground, green bedspread right foreground, curtains right background.",
+      "clip_score": 0.2618559896945953,
+      "siglip_score": 0.1702283918857574,
+      "delta_clip": -0.03730747103691101,
+      "delta_siglip": -0.078813835978508
+    },
+    {
+      "image_id": "flickr30k_test_015474",
+      "image_relpath": "images/flickr30k/flickr30k_test_015474.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_015474.jpg",
+      "caption": "1 person left foreground, paddling wooden boat, holding paddle with right hand, wearing orange shirt, 1 person center midground, paddling wooden boat, holding paddle with right hand, wearing white hat and red pants, 1 person right midground, standing on wooden platform, holding pole, wearing white hat,",
+      "clip_score": 0.2959010004997253,
+      "siglip_score": 0.1226536929607391,
+      "delta_clip": -0.03288242220878601,
+      "delta_siglip": -0.048106908798217815
+    },
+    {
+      "image_id": "flickr30k_test_014594",
+      "image_relpath": "images/flickr30k/flickr30k_test_014594.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_014594.jpg",
+      "caption": "1 jockey center foreground, riding brown horse, horse mid-air clearing wooden fence, green trees background.",
+      "clip_score": 0.3045517802238464,
+      "siglip_score": 0.1892638206481933,
+      "delta_clip": -0.0325003862380982,
+      "delta_siglip": -0.0047697722911834994
+    },
+    {
+      "image_id": "flickr30k_test_012491",
+      "image_relpath": "images/flickr30k/flickr30k_test_012491.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_012491.jpg",
+      "caption": "1 cyclist right midground, balancing on bicycle, rear wheel off ground, yellow cargo train car with graffiti, clear blue sky background.",
+      "clip_score": 0.3266290128231048,
+      "siglip_score": 0.1965044140815735,
+      "delta_clip": -0.02440464496612549,
+      "delta_siglip": -0.01472340524196622
+    },
+    {
+      "image_id": "flickr30k_test_017289",
+      "image_relpath": "images/flickr30k/flickr30k_test_017289.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_017289.jpg",
+      "caption": "1 man center foreground, holding mop handle, wearing navy sweatshirt and cap, wooden floor beneath, mirror reflecting another person left, white wall and doorframe right.",
+      "clip_score": 0.3112020492553711,
+      "siglip_score": 0.1852140575647354,
+      "delta_clip": -0.022860586643218994,
+      "delta_siglip": 0.027877181768417414
+    },
+    {
+      "image_id": "flickr30k_test_012278",
+      "image_relpath": "images/flickr30k/flickr30k_test_012278.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_012278.jpg",
+      "caption": "Three men center midground, seated on cushions, one holding a cup, another gesturing, satellite dish left, goat right foreground, stone wall background.",
+      "clip_score": 0.277611643075943,
+      "siglip_score": 0.144228994846344,
+      "delta_clip": -0.0203249454498291,
+      "delta_siglip": -0.0627187490463256
+    },
+    {
+      "image_id": "flickr30k_test_023641",
+      "image_relpath": "images/flickr30k/flickr30k_test_023641.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_023641.jpg",
+      "caption": "1 woman center foreground, walking toward camera, wearing pink-striped shirt and red shoes, wet cobblestone pavement, group of people seated right midground, trees overhead, buildings background.",
+      "clip_score": 0.3185373544692993,
+      "siglip_score": 0.1959080994129181,
+      "delta_clip": -0.019705653190612793,
+      "delta_siglip": 0.01626996695995339
+    },
+    {
+      "image_id": "flickr30k_test_023712",
+      "image_relpath": "images/flickr30k/flickr30k_test_023712.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_023712.jpg",
+      "caption": "1 man center foreground, playing violin, right hand holding bow, left hand on fingerboard, maroon shirt, jeans, stage rigging behind.",
+      "clip_score": 0.2725573182106018,
+      "siglip_score": 0.200585663318634,
+      "delta_clip": -0.01790648698806757,
+      "delta_siglip": 0.045955762267112704
+    }
+  ]
+}

@@ -1,0 +1,117 @@
+{
+  "prompt": "Write exactly one literal, factual sentence (8–14 words) describing only visible content in the image. Preferred concise template: Primary subject + one or two high‑signal attribute(s) + action/pose + location/nearby object. High‑signal attributes = specific object type (e.g., fountain, electric guitar), visible color/pattern, clear count (two, three), clothing/accessory, or legible text/logo. Require at least one high‑signal token and permit a second when clearly visible. Place at least one high‑signal token within the first three words (e.g., subject immediately followed by attribute: “woman red bicycle …”). Keep attribute and noun adjacent (prefer “red bicycle” not “bicycle that is red”) and favor compact, noun‑rich phrasing; avoid filler words and adverbs. If text/logo is legible, include the exact text verbatim as a high‑signal token and place it early when natural. Use exact numerals when each item is fully visible; if >3 or indistinct use “several”; if uncertain, omit counts. Do not infer unseen attributes (age, emotion, relationships, intent) and do not use figurative, evaluative, or subjective language. Use “person” if gender or age is unclear; use “man,” “woman,” or “child” only when clearly visible. Output exactly one short sentence only — no labels, examples, lists, or extra text.",
+  "prompt_id": "textgrad_16745112b6",
+  "split_csv": "data/splits/flickr30k_main_seed1_val.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_02/val/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_02/val/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_02/val/scores.csv",
+  "summary": {
+    "n": 150,
+    "mean_clip": 0.3082889681061109,
+    "mean_siglip": 0.18291113759080568,
+    "mean_caption_len": 10.433333333333334,
+    "generic_rate": 0.0,
+    "mean_delta_clip": -0.016276480207840602,
+    "mean_delta_siglip": -0.015929408098260565,
+    "clip_win_rate": 0.31666666666666665,
+    "siglip_win_rate": 0.31
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_011250",
+      "caption": "Two children stand near yellow caution tape on grassy field.",
+      "clip_score": 0.2994362413883209,
+      "siglip_score": 0.2241139411926269,
+      "delta_clip": -0.11315754055976868,
+      "delta_siglip": 0.0035983175039291104
+    },
+    {
+      "image_id": "flickr30k_test_026513",
+      "caption": "Man in blue jacket walks near camera crew and tripod.",
+      "clip_score": 0.2976137399673462,
+      "siglip_score": 0.2158140391111374,
+      "delta_clip": -0.10506027936935419,
+      "delta_siglip": -0.04420463740825653
+    },
+    {
+      "image_id": "flickr30k_test_006851",
+      "caption": "Two men in camouflage uniforms hold a green sign reading \"KEEPING US SAFE FOR\".",
+      "clip_score": 0.2880098819732666,
+      "siglip_score": 0.1729962676763534,
+      "delta_clip": -0.10468325018882751,
+      "delta_siglip": -0.08424524962902069
+    },
+    {
+      "image_id": "flickr30k_test_006548",
+      "caption": "Brent Oak station sign with red circle and blue text.",
+      "clip_score": 0.2579885125160217,
+      "siglip_score": 0.1398564279079437,
+      "delta_clip": -0.09242680668830872,
+      "delta_siglip": -0.04181848466396329
+    },
+    {
+      "image_id": "flickr30k_test_023900",
+      "caption": "Man in dark shirt holds skewers near \"UTIAH\" sign.",
+      "clip_score": 0.2704358100891113,
+      "siglip_score": 0.2483092993497848,
+      "delta_clip": -0.09137082099914551,
+      "delta_siglip": -0.04250632226467138
+    },
+    {
+      "image_id": "flickr30k_test_016590",
+      "caption": "Woman in colorful skirt stands near fountain with umbrella.",
+      "clip_score": 0.2747002840042114,
+      "siglip_score": 0.115743413567543,
+      "delta_clip": -0.08988505601882929,
+      "delta_siglip": -0.11045536398887629
+    },
+    {
+      "image_id": "flickr30k_test_006548",
+      "caption": "Brent Oak station sign with red circle and blue text.",
+      "clip_score": 0.2579885125160217,
+      "siglip_score": 0.1398564279079437,
+      "delta_clip": -0.0898586511611939,
+      "delta_siglip": -0.0775220245122909
+    },
+    {
+      "image_id": "flickr30k_test_016590",
+      "caption": "Woman in colorful skirt stands near fountain with umbrella.",
+      "clip_score": 0.2747002840042114,
+      "siglip_score": 0.115743413567543,
+      "delta_clip": -0.0779552161693573,
+      "delta_siglip": -0.11316955089569089
+    },
+    {
+      "image_id": "flickr30k_test_018166",
+      "caption": "Woman with black umbrella walks near parked cars.",
+      "clip_score": 0.2578595280647278,
+      "siglip_score": 0.1473480463027954,
+      "delta_clip": -0.07617264986038202,
+      "delta_siglip": -0.12324482202529907
+    },
+    {
+      "image_id": "flickr30k_test_006537",
+      "caption": "Man in orange vest walks toward train at Kilburn station.",
+      "clip_score": 0.316172182559967,
+      "siglip_score": 0.2381199896335601,
+      "delta_clip": -0.07530868053436279,
+      "delta_siglip": 0.020416736602783203
+    },
+    {
+      "image_id": "flickr30k_test_011250",
+      "caption": "Two children stand near yellow caution tape on grassy field.",
+      "clip_score": 0.2994362413883209,
+      "siglip_score": 0.2241139411926269,
+      "delta_clip": -0.07318654656410217,
+      "delta_siglip": -0.024226844310760498
+    },
+    {
+      "image_id": "flickr30k_test_008305",
+      "caption": "Woman with bicycle near parked white van on cobblestone street.",
+      "clip_score": 0.2264973372220993,
+      "siglip_score": 0.0851657837629318,
+      "delta_clip": -0.07303585112094879,
+      "delta_siglip": -0.0698024332523346
+    }
+  ]
+}

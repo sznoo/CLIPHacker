@@ -1,0 +1,15 @@
+{
+  "step": -1,
+  "feedback_mode": "textual",
+  "old_prompt": null,
+  "new_prompt": "Write a caption for this image.",
+  "feedback_instruction": null,
+  "textgrad_loss_text": null,
+  "train_summary": null,
+  "val_summary": null,
+  "train_selection_score": null,
+  "val_selection_score": 0.0,
+  "best_val_before_step": null,
+  "improved": true,
+  "note": "initial prompt included as candidate"
+}

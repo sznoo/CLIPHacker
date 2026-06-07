@@ -1,0 +1,817 @@
+split_id,method_id,run_id,order,dataset_index,image_id,image_relpath,reference_captions,prompt_id,prompt_name,prompt_text,caption,candidate_id,selected,model,temperature,top_p,max_new_tokens,generation_config,clip_score,siglip_score,caption_len,generic_flag
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_8d6b4a6a56,11,15474,flickr30k_test_015474,images/flickr30k/flickr30k_test_015474.jpg,"[""Three Vietnamese women paddle their boats along the river market in the morning."", ""Three boaters paddle their produce to the market in a Vietnamese fishing village."", ""Villagers paddling their boats to their destination."", ""Canoes travel across the water along side buildings."", ""The people are delivering goods by boat""]",textgrad_8d6b4a6a56,TextGrad Step 7,"Output exactly one short, literal, factual sentence (8–20 words) describing only visible content in the image. Do not add labels, examples, lists, annotations, explanations, or any extra text—one sentence only.
+
+Definitions and counting
+- A single leading article (a/an/the) and punctuation do not count as content words when computing ""first N content words.""
+- Treat a hyphenated color‑class cluster (e.g., ""white-and-brown dog"") as a single attribute+noun cluster for positional rules. Treat slashes or compound nouns similarly when they form one visual token.
+- High‑signal tokens = visible color or pattern, a concrete specific object class (use the most specific multiword class available), a clear Arabic numeral count (digits), clothing/accessory, or legible text/logo copied exactly as seen.
+
+Primary constraints (must)
+1. Early high‑signal tokens:
+   - If two high‑signal tokens are clearly visible, both must appear within the first three content words.
+   - Otherwise at least one high‑signal token must appear within the first two content words.
+2. Color/pattern adjacency:
+   - Any visible color/pattern adjective must appear immediately before its noun with no intervening words or commas (e.g., ""red bicycle""). Use ""noun with [attribute]"" only if the attribute cannot legally appear within the required early content words.
+3. Specific class requirement:
+   - Use the most specific visible concrete class (multiword when available, e.g., ""electric guitar"", ""police car""). Never use generic placeholders such as ""object"", ""item"", or ""instrument."" Use ""person"" only when no more specific role/class is confidently visible.
+4. Counts and legible text:
+   - Use Arabic numerals (digits) for clear counts and place any numeral within the first three content words.
+   - If any legible text or logo is confidently readable, copy it exactly (including visible case) and place it within the first five content words.
+5. Syntax and style:
+   - Prefer a short present‑tense sentence (subject + verb) as the default form. A bare noun phrase (no verb) is allowed only when a verb would prevent meeting the early high‑signal requirements.
+6. Spatial connectors:
+   - Allow at most one short spatial connector (""next to"", ""on"", ""near"", ""in front of"") and only when it disambiguates the primary subject’s relation to a nearby object or surface. Do not stack connectors or use commas to push high‑signal tokens later.
+7. Deterministic primary subject selection:
+   - Choose the primary subject deterministically: prefer centermost → largest → highest‑contrast → object with a visible attribute (color/number/logo). If tied, prefer the item with the most legible text/logo.
+8. Conservative fallbacks and prohibited inferences:
+   - If a specific class, color, or text is not confidently visible, use a conservative, generic safe term (e.g., ""person"", ""vehicle"", ""building"") rather than guessing. Never infer unseen attributes such as age, emotion, intent, relationships, or otherwise invent specifics.
+9. Punctuation and token positioning:
+   - Commas, parentheticals, or additional punctuation may not be used to delay required early high‑signal tokens. Hyphens and compound forms count as described above.
+10. Length guidance:
+   - Follow the 8–20 total words limit while aiming for about 10–14 content words to include multiple discriminative tokens.
+
+Examples of forbidden choices: do not output generic templates like ""There is..."" when a more specific subject is visible; do not output invented attributes or unverifiable labels.
+
+Output exactly one short sentence only—no extra text.","Three people row wooden boats near a riverside shop with ""DUNG ANH"" sign.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.31323039531707764,0.18444344401359558,13,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_8d6b4a6a56,28,14594,flickr30k_test_014594,images/flickr30k/flickr30k_test_014594.jpg,"[""A person aquestrian horse jumping over a wooden fence."", ""A horse and rider jumping a small fence."", ""A horse and rider jump over a fence."", ""A horse jumps over a wooden fence."", ""A jockey on a horse jumps a fence.""]",textgrad_8d6b4a6a56,TextGrad Step 7,"Output exactly one short, literal, factual sentence (8–20 words) describing only visible content in the image. Do not add labels, examples, lists, annotations, explanations, or any extra text—one sentence only.
+
+Definitions and counting
+- A single leading article (a/an/the) and punctuation do not count as content words when computing ""first N content words.""
+- Treat a hyphenated color‑class cluster (e.g., ""white-and-brown dog"") as a single attribute+noun cluster for positional rules. Treat slashes or compound nouns similarly when they form one visual token.
+- High‑signal tokens = visible color or pattern, a concrete specific object class (use the most specific multiword class available), a clear Arabic numeral count (digits), clothing/accessory, or legible text/logo copied exactly as seen.
+
+Primary constraints (must)
+1. Early high‑signal tokens:
+   - If two high‑signal tokens are clearly visible, both must appear within the first three content words.
+   - Otherwise at least one high‑signal token must appear within the first two content words.
+2. Color/pattern adjacency:
+   - Any visible color/pattern adjective must appear immediately before its noun with no intervening words or commas (e.g., ""red bicycle""). Use ""noun with [attribute]"" only if the attribute cannot legally appear within the required early content words.
+3. Specific class requirement:
+   - Use the most specific visible concrete class (multiword when available, e.g., ""electric guitar"", ""police car""). Never use generic placeholders such as ""object"", ""item"", or ""instrument."" Use ""person"" only when no more specific role/class is confidently visible.
+4. Counts and legible text:
+   - Use Arabic numerals (digits) for clear counts and place any numeral within the first three content words.
+   - If any legible text or logo is confidently readable, copy it exactly (including visible case) and place it within the first five content words.
+5. Syntax and style:
+   - Prefer a short present‑tense sentence (subject + verb) as the default form. A bare noun phrase (no verb) is allowed only when a verb would prevent meeting the early high‑signal requirements.
+6. Spatial connectors:
+   - Allow at most one short spatial connector (""next to"", ""on"", ""near"", ""in front of"") and only when it disambiguates the primary subject’s relation to a nearby object or surface. Do not stack connectors or use commas to push high‑signal tokens later.
+7. Deterministic primary subject selection:
+   - Choose the primary subject deterministically: prefer centermost → largest → highest‑contrast → object with a visible attribute (color/number/logo). If tied, prefer the item with the most legible text/logo.
+8. Conservative fallbacks and prohibited inferences:
+   - If a specific class, color, or text is not confidently visible, use a conservative, generic safe term (e.g., ""person"", ""vehicle"", ""building"") rather than guessing. Never infer unseen attributes such as age, emotion, intent, relationships, or otherwise invent specifics.
+9. Punctuation and token positioning:
+   - Commas, parentheticals, or additional punctuation may not be used to delay required early high‑signal tokens. Hyphens and compound forms count as described above.
+10. Length guidance:
+   - Follow the 8–20 total words limit while aiming for about 10–14 content words to include multiple discriminative tokens.
+
+Examples of forbidden choices: do not output generic templates like ""There is..."" when a more specific subject is visible; do not output invented attributes or unverifiable labels.
+
+Output exactly one short sentence only—no extra text.",Jockey in green-and-black jacket rides brown horse over wooden fence.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.31846529245376587,0.18112310767173767,10,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_8d6b4a6a56,32,7496,flickr30k_test_007496,images/flickr30k/flickr30k_test_007496.jpg,"[""Two men wearing hats play accordions while standing between two burgundy and black pre-World War II automobiles."", ""Two accordion players in period costumes perform between two maroon-colored antique cars."", ""Two old men with hats are standing in between cars with their accordions."", ""Two men between 2 classic cars playing accordions."", ""Two men playing music and displaying old cars.""]",textgrad_8d6b4a6a56,TextGrad Step 7,"Output exactly one short, literal, factual sentence (8–20 words) describing only visible content in the image. Do not add labels, examples, lists, annotations, explanations, or any extra text—one sentence only.
+
+Definitions and counting
+- A single leading article (a/an/the) and punctuation do not count as content words when computing ""first N content words.""
+- Treat a hyphenated color‑class cluster (e.g., ""white-and-brown dog"") as a single attribute+noun cluster for positional rules. Treat slashes or compound nouns similarly when they form one visual token.
+- High‑signal tokens = visible color or pattern, a concrete specific object class (use the most specific multiword class available), a clear Arabic numeral count (digits), clothing/accessory, or legible text/logo copied exactly as seen.
+
+Primary constraints (must)
+1. Early high‑signal tokens:
+   - If two high‑signal tokens are clearly visible, both must appear within the first three content words.
+   - Otherwise at least one high‑signal token must appear within the first two content words.
+2. Color/pattern adjacency:
+   - Any visible color/pattern adjective must appear immediately before its noun with no intervening words or commas (e.g., ""red bicycle""). Use ""noun with [attribute]"" only if the attribute cannot legally appear within the required early content words.
+3. Specific class requirement:
+   - Use the most specific visible concrete class (multiword when available, e.g., ""electric guitar"", ""police car""). Never use generic placeholders such as ""object"", ""item"", or ""instrument."" Use ""person"" only when no more specific role/class is confidently visible.
+4. Counts and legible text:
+   - Use Arabic numerals (digits) for clear counts and place any numeral within the first three content words.
+   - If any legible text or logo is confidently readable, copy it exactly (including visible case) and place it within the first five content words.
+5. Syntax and style:
+   - Prefer a short present‑tense sentence (subject + verb) as the default form. A bare noun phrase (no verb) is allowed only when a verb would prevent meeting the early high‑signal requirements.
+6. Spatial connectors:
+   - Allow at most one short spatial connector (""next to"", ""on"", ""near"", ""in front of"") and only when it disambiguates the primary subject’s relation to a nearby object or surface. Do not stack connectors or use commas to push high‑signal tokens later.
+7. Deterministic primary subject selection:
+   - Choose the primary subject deterministically: prefer centermost → largest → highest‑contrast → object with a visible attribute (color/number/logo). If tied, prefer the item with the most legible text/logo.
+8. Conservative fallbacks and prohibited inferences:
+   - If a specific class, color, or text is not confidently visible, use a conservative, generic safe term (e.g., ""person"", ""vehicle"", ""building"") rather than guessing. Never infer unseen attributes such as age, emotion, intent, relationships, or otherwise invent specifics.
+9. Punctuation and token positioning:
+   - Commas, parentheticals, or additional punctuation may not be used to delay required early high‑signal tokens. Hyphens and compound forms count as described above.
+10. Length guidance:
+   - Follow the 8–20 total words limit while aiming for about 10–14 content words to include multiple discriminative tokens.
+
+Examples of forbidden choices: do not output generic templates like ""There is..."" when a more specific subject is visible; do not output invented attributes or unverifiable labels.
+
+Output exactly one short sentence only—no extra text.",Two men play accordions next to vintage cars with license plate 6ZE 638.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.3061479926109314,0.23461012542247772,13,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_8d6b4a6a56,37,10401,flickr30k_test_010401,images/flickr30k/flickr30k_test_010401.jpg,"[""A girl in a blue sweater with a white pattern is jumping into a pile of leaves."", ""A young girl is diving into a pile of brown leaves in the yard."", ""A girl in a sweater diving into a pile of leaves."", ""A girl is jumping into a pile of leaves."", ""A girl is jumping into a pile of leaves""]",textgrad_8d6b4a6a56,TextGrad Step 7,"Output exactly one short, literal, factual sentence (8–20 words) describing only visible content in the image. Do not add labels, examples, lists, annotations, explanations, or any extra text—one sentence only.
+
+Definitions and counting
+- A single leading article (a/an/the) and punctuation do not count as content words when computing ""first N content words.""
+- Treat a hyphenated color‑class cluster (e.g., ""white-and-brown dog"") as a single attribute+noun cluster for positional rules. Treat slashes or compound nouns similarly when they form one visual token.
+- High‑signal tokens = visible color or pattern, a concrete specific object class (use the most specific multiword class available), a clear Arabic numeral count (digits), clothing/accessory, or legible text/logo copied exactly as seen.
+
+Primary constraints (must)
+1. Early high‑signal tokens:
+   - If two high‑signal tokens are clearly visible, both must appear within the first three content words.
+   - Otherwise at least one high‑signal token must appear within the first two content words.
+2. Color/pattern adjacency:
+   - Any visible color/pattern adjective must appear immediately before its noun with no intervening words or commas (e.g., ""red bicycle""). Use ""noun with [attribute]"" only if the attribute cannot legally appear within the required early content words.
+3. Specific class requirement:
+   - Use the most specific visible concrete class (multiword when available, e.g., ""electric guitar"", ""police car""). Never use generic placeholders such as ""object"", ""item"", or ""instrument."" Use ""person"" only when no more specific role/class is confidently visible.
+4. Counts and legible text:
+   - Use Arabic numerals (digits) for clear counts and place any numeral within the first three content words.
+   - If any legible text or logo is confidently readable, copy it exactly (including visible case) and place it within the first five content words.
+5. Syntax and style:
+   - Prefer a short present‑tense sentence (subject + verb) as the default form. A bare noun phrase (no verb) is allowed only when a verb would prevent meeting the early high‑signal requirements.
+6. Spatial connectors:
+   - Allow at most one short spatial connector (""next to"", ""on"", ""near"", ""in front of"") and only when it disambiguates the primary subject’s relation to a nearby object or surface. Do not stack connectors or use commas to push high‑signal tokens later.
+7. Deterministic primary subject selection:
+   - Choose the primary subject deterministically: prefer centermost → largest → highest‑contrast → object with a visible attribute (color/number/logo). If tied, prefer the item with the most legible text/logo.
+8. Conservative fallbacks and prohibited inferences:
+   - If a specific class, color, or text is not confidently visible, use a conservative, generic safe term (e.g., ""person"", ""vehicle"", ""building"") rather than guessing. Never infer unseen attributes such as age, emotion, intent, relationships, or otherwise invent specifics.
+9. Punctuation and token positioning:
+   - Commas, parentheticals, or additional punctuation may not be used to delay required early high‑signal tokens. Hyphens and compound forms count as described above.
+10. Length guidance:
+   - Follow the 8–20 total words limit while aiming for about 10–14 content words to include multiple discriminative tokens.
+
+Examples of forbidden choices: do not output generic templates like ""There is..."" when a more specific subject is visible; do not output invented attributes or unverifiable labels.
+
+Output exactly one short sentence only—no extra text.",A person in a blue sweater jumps toward a pile of autumn leaves.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.3477786183357239,0.18341636657714844,13,True
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_8d6b4a6a56,40,833,flickr30k_test_000833,images/flickr30k/flickr30k_test_000833.jpg,"[""A beach scene with three boys in swim shorts each holding paddle ball racquets but no ball in sight."", ""Kids play a game of ball with paddles at the water's edge at the beach."", ""Three children are playing paddle ball on the beach."", ""Three boys play with paddles on the beach."", ""Several children playing on a beach.""]",textgrad_8d6b4a6a56,TextGrad Step 7,"Output exactly one short, literal, factual sentence (8–20 words) describing only visible content in the image. Do not add labels, examples, lists, annotations, explanations, or any extra text—one sentence only.
+
+Definitions and counting
+- A single leading article (a/an/the) and punctuation do not count as content words when computing ""first N content words.""
+- Treat a hyphenated color‑class cluster (e.g., ""white-and-brown dog"") as a single attribute+noun cluster for positional rules. Treat slashes or compound nouns similarly when they form one visual token.
+- High‑signal tokens = visible color or pattern, a concrete specific object class (use the most specific multiword class available), a clear Arabic numeral count (digits), clothing/accessory, or legible text/logo copied exactly as seen.
+
+Primary constraints (must)
+1. Early high‑signal tokens:
+   - If two high‑signal tokens are clearly visible, both must appear within the first three content words.
+   - Otherwise at least one high‑signal token must appear within the first two content words.
+2. Color/pattern adjacency:
+   - Any visible color/pattern adjective must appear immediately before its noun with no intervening words or commas (e.g., ""red bicycle""). Use ""noun with [attribute]"" only if the attribute cannot legally appear within the required early content words.
+3. Specific class requirement:
+   - Use the most specific visible concrete class (multiword when available, e.g., ""electric guitar"", ""police car""). Never use generic placeholders such as ""object"", ""item"", or ""instrument."" Use ""person"" only when no more specific role/class is confidently visible.
+4. Counts and legible text:
+   - Use Arabic numerals (digits) for clear counts and place any numeral within the first three content words.
+   - If any legible text or logo is confidently readable, copy it exactly (including visible case) and place it within the first five content words.
+5. Syntax and style:
+   - Prefer a short present‑tense sentence (subject + verb) as the default form. A bare noun phrase (no verb) is allowed only when a verb would prevent meeting the early high‑signal requirements.
+6. Spatial connectors:
+   - Allow at most one short spatial connector (""next to"", ""on"", ""near"", ""in front of"") and only when it disambiguates the primary subject’s relation to a nearby object or surface. Do not stack connectors or use commas to push high‑signal tokens later.
+7. Deterministic primary subject selection:
+   - Choose the primary subject deterministically: prefer centermost → largest → highest‑contrast → object with a visible attribute (color/number/logo). If tied, prefer the item with the most legible text/logo.
+8. Conservative fallbacks and prohibited inferences:
+   - If a specific class, color, or text is not confidently visible, use a conservative, generic safe term (e.g., ""person"", ""vehicle"", ""building"") rather than guessing. Never infer unseen attributes such as age, emotion, intent, relationships, or otherwise invent specifics.
+9. Punctuation and token positioning:
+   - Commas, parentheticals, or additional punctuation may not be used to delay required early high‑signal tokens. Hyphens and compound forms count as described above.
+10. Length guidance:
+   - Follow the 8–20 total words limit while aiming for about 10–14 content words to include multiple discriminative tokens.
+
+Examples of forbidden choices: do not output generic templates like ""There is..."" when a more specific subject is visible; do not output invented attributes or unverifiable labels.
+
+Output exactly one short sentence only—no extra text.",Three boys play paddle ball on a beach with frisbees and paddles.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.32201236486434937,0.20749256014823914,12,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_8d6b4a6a56,41,21284,flickr30k_test_021284,images/flickr30k/flickr30k_test_021284.jpg,"[""A group of men in black suits and black hats are standing along a parade route."", ""A group of Hasidic Jews stand amidst a crowd adjacent to a busy city street."", ""Bearded men wearing black gather together outside of a religious service."", ""People in black hats gathered together downtown."", ""Many jewish men in a city.""]",textgrad_8d6b4a6a56,TextGrad Step 7,"Output exactly one short, literal, factual sentence (8–20 words) describing only visible content in the image. Do not add labels, examples, lists, annotations, explanations, or any extra text—one sentence only.
+
+Definitions and counting
+- A single leading article (a/an/the) and punctuation do not count as content words when computing ""first N content words.""
+- Treat a hyphenated color‑class cluster (e.g., ""white-and-brown dog"") as a single attribute+noun cluster for positional rules. Treat slashes or compound nouns similarly when they form one visual token.
+- High‑signal tokens = visible color or pattern, a concrete specific object class (use the most specific multiword class available), a clear Arabic numeral count (digits), clothing/accessory, or legible text/logo copied exactly as seen.
+
+Primary constraints (must)
+1. Early high‑signal tokens:
+   - If two high‑signal tokens are clearly visible, both must appear within the first three content words.
+   - Otherwise at least one high‑signal token must appear within the first two content words.
+2. Color/pattern adjacency:
+   - Any visible color/pattern adjective must appear immediately before its noun with no intervening words or commas (e.g., ""red bicycle""). Use ""noun with [attribute]"" only if the attribute cannot legally appear within the required early content words.
+3. Specific class requirement:
+   - Use the most specific visible concrete class (multiword when available, e.g., ""electric guitar"", ""police car""). Never use generic placeholders such as ""object"", ""item"", or ""instrument."" Use ""person"" only when no more specific role/class is confidently visible.
+4. Counts and legible text:
+   - Use Arabic numerals (digits) for clear counts and place any numeral within the first three content words.
+   - If any legible text or logo is confidently readable, copy it exactly (including visible case) and place it within the first five content words.
+5. Syntax and style:
+   - Prefer a short present‑tense sentence (subject + verb) as the default form. A bare noun phrase (no verb) is allowed only when a verb would prevent meeting the early high‑signal requirements.
+6. Spatial connectors:
+   - Allow at most one short spatial connector (""next to"", ""on"", ""near"", ""in front of"") and only when it disambiguates the primary subject’s relation to a nearby object or surface. Do not stack connectors or use commas to push high‑signal tokens later.
+7. Deterministic primary subject selection:
+   - Choose the primary subject deterministically: prefer centermost → largest → highest‑contrast → object with a visible attribute (color/number/logo). If tied, prefer the item with the most legible text/logo.
+8. Conservative fallbacks and prohibited inferences:
+   - If a specific class, color, or text is not confidently visible, use a conservative, generic safe term (e.g., ""person"", ""vehicle"", ""building"") rather than guessing. Never infer unseen attributes such as age, emotion, intent, relationships, or otherwise invent specifics.
+9. Punctuation and token positioning:
+   - Commas, parentheticals, or additional punctuation may not be used to delay required early high‑signal tokens. Hyphens and compound forms count as described above.
+10. Length guidance:
+   - Follow the 8–20 total words limit while aiming for about 10–14 content words to include multiple discriminative tokens.
+
+Examples of forbidden choices: do not output generic templates like ""There is..."" when a more specific subject is visible; do not output invented attributes or unverifiable labels.
+
+Output exactly one short sentence only—no extra text.",A group of people wearing black hats and coats gather near a barricade with Palestinian flags.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.29716628789901733,0.20510849356651306,16,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_8d6b4a6a56,46,12491,flickr30k_test_012491,images/flickr30k/flickr30k_test_012491.jpg,"[""A person is in the air while riding his bicycle on top of the train on a clear blue sky day."", ""A person is jumping over a train car while on their bicycle."", ""A person on a bicycle moving across the top of a train."", ""A man on a bmx bike jumps over a train"", ""A man jumps train cars with his bike.""]",textgrad_8d6b4a6a56,TextGrad Step 7,"Output exactly one short, literal, factual sentence (8–20 words) describing only visible content in the image. Do not add labels, examples, lists, annotations, explanations, or any extra text—one sentence only.
+
+Definitions and counting
+- A single leading article (a/an/the) and punctuation do not count as content words when computing ""first N content words.""
+- Treat a hyphenated color‑class cluster (e.g., ""white-and-brown dog"") as a single attribute+noun cluster for positional rules. Treat slashes or compound nouns similarly when they form one visual token.
+- High‑signal tokens = visible color or pattern, a concrete specific object class (use the most specific multiword class available), a clear Arabic numeral count (digits), clothing/accessory, or legible text/logo copied exactly as seen.
+
+Primary constraints (must)
+1. Early high‑signal tokens:
+   - If two high‑signal tokens are clearly visible, both must appear within the first three content words.
+   - Otherwise at least one high‑signal token must appear within the first two content words.
+2. Color/pattern adjacency:
+   - Any visible color/pattern adjective must appear immediately before its noun with no intervening words or commas (e.g., ""red bicycle""). Use ""noun with [attribute]"" only if the attribute cannot legally appear within the required early content words.
+3. Specific class requirement:
+   - Use the most specific visible concrete class (multiword when available, e.g., ""electric guitar"", ""police car""). Never use generic placeholders such as ""object"", ""item"", or ""instrument."" Use ""person"" only when no more specific role/class is confidently visible.
+4. Counts and legible text:
+   - Use Arabic numerals (digits) for clear counts and place any numeral within the first three content words.
+   - If any legible text or logo is confidently readable, copy it exactly (including visible case) and place it within the first five content words.
+5. Syntax and style:
+   - Prefer a short present‑tense sentence (subject + verb) as the default form. A bare noun phrase (no verb) is allowed only when a verb would prevent meeting the early high‑signal requirements.
+6. Spatial connectors:
+   - Allow at most one short spatial connector (""next to"", ""on"", ""near"", ""in front of"") and only when it disambiguates the primary subject’s relation to a nearby object or surface. Do not stack connectors or use commas to push high‑signal tokens later.
+7. Deterministic primary subject selection:
+   - Choose the primary subject deterministically: prefer centermost → largest → highest‑contrast → object with a visible attribute (color/number/logo). If tied, prefer the item with the most legible text/logo.
+8. Conservative fallbacks and prohibited inferences:
+   - If a specific class, color, or text is not confidently visible, use a conservative, generic safe term (e.g., ""person"", ""vehicle"", ""building"") rather than guessing. Never infer unseen attributes such as age, emotion, intent, relationships, or otherwise invent specifics.
+9. Punctuation and token positioning:
+   - Commas, parentheticals, or additional punctuation may not be used to delay required early high‑signal tokens. Hyphens and compound forms count as described above.
+10. Length guidance:
+   - Follow the 8–20 total words limit while aiming for about 10–14 content words to include multiple discriminative tokens.
+
+Examples of forbidden choices: do not output generic templates like ""There is..."" when a more specific subject is visible; do not output invented attributes or unverifiable labels.
+
+Output exactly one short sentence only—no extra text.","Person on bicycle above brown train car with graffiti and ""CHWX 396160"" visible.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.322822242975235,0.18080177903175354,13,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_8d6b4a6a56,51,951,flickr30k_test_000951,images/flickr30k/flickr30k_test_000951.jpg,"[""A person wearing a hat and carrying a knapsack walks uphill on a sand dune under a dark, cloudy sky and leaves the only visible footprints behind."", ""A man with a shoulder bag walking in the desert on sand with footprints behind him and the horizon with many stormy clouds."", ""A man walking in the desert wearing a hat, khaki shirt and shorts and very dark sky ahead of him."", ""One man is walking across a desert right into an approaching storm."", ""A man wandering in the desert as the clouds roll in.""]",textgrad_8d6b4a6a56,TextGrad Step 7,"Output exactly one short, literal, factual sentence (8–20 words) describing only visible content in the image. Do not add labels, examples, lists, annotations, explanations, or any extra text—one sentence only.
+
+Definitions and counting
+- A single leading article (a/an/the) and punctuation do not count as content words when computing ""first N content words.""
+- Treat a hyphenated color‑class cluster (e.g., ""white-and-brown dog"") as a single attribute+noun cluster for positional rules. Treat slashes or compound nouns similarly when they form one visual token.
+- High‑signal tokens = visible color or pattern, a concrete specific object class (use the most specific multiword class available), a clear Arabic numeral count (digits), clothing/accessory, or legible text/logo copied exactly as seen.
+
+Primary constraints (must)
+1. Early high‑signal tokens:
+   - If two high‑signal tokens are clearly visible, both must appear within the first three content words.
+   - Otherwise at least one high‑signal token must appear within the first two content words.
+2. Color/pattern adjacency:
+   - Any visible color/pattern adjective must appear immediately before its noun with no intervening words or commas (e.g., ""red bicycle""). Use ""noun with [attribute]"" only if the attribute cannot legally appear within the required early content words.
+3. Specific class requirement:
+   - Use the most specific visible concrete class (multiword when available, e.g., ""electric guitar"", ""police car""). Never use generic placeholders such as ""object"", ""item"", or ""instrument."" Use ""person"" only when no more specific role/class is confidently visible.
+4. Counts and legible text:
+   - Use Arabic numerals (digits) for clear counts and place any numeral within the first three content words.
+   - If any legible text or logo is confidently readable, copy it exactly (including visible case) and place it within the first five content words.
+5. Syntax and style:
+   - Prefer a short present‑tense sentence (subject + verb) as the default form. A bare noun phrase (no verb) is allowed only when a verb would prevent meeting the early high‑signal requirements.
+6. Spatial connectors:
+   - Allow at most one short spatial connector (""next to"", ""on"", ""near"", ""in front of"") and only when it disambiguates the primary subject’s relation to a nearby object or surface. Do not stack connectors or use commas to push high‑signal tokens later.
+7. Deterministic primary subject selection:
+   - Choose the primary subject deterministically: prefer centermost → largest → highest‑contrast → object with a visible attribute (color/number/logo). If tied, prefer the item with the most legible text/logo.
+8. Conservative fallbacks and prohibited inferences:
+   - If a specific class, color, or text is not confidently visible, use a conservative, generic safe term (e.g., ""person"", ""vehicle"", ""building"") rather than guessing. Never infer unseen attributes such as age, emotion, intent, relationships, or otherwise invent specifics.
+9. Punctuation and token positioning:
+   - Commas, parentheticals, or additional punctuation may not be used to delay required early high‑signal tokens. Hyphens and compound forms count as described above.
+10. Length guidance:
+   - Follow the 8–20 total words limit while aiming for about 10–14 content words to include multiple discriminative tokens.
+
+Examples of forbidden choices: do not output generic templates like ""There is..."" when a more specific subject is visible; do not output invented attributes or unverifiable labels.
+
+Output exactly one short sentence only—no extra text.",Person walks alone across vast sand dunes under dark storm clouds.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.36509039998054504,0.19544090330600739,11,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_8d6b4a6a56,52,17289,flickr30k_test_017289,images/flickr30k/flickr30k_test_017289.jpg,"[""A man wearing a blue sweatshirt and dark baseball cap is sweeping the floor with others watching."", ""One man is using a mop, while two other men watch from the background."", ""A tall looking man wearing a hat is mopping the floor."", ""Guys cleaning the floor with sweeper."", ""A guy in a sweater cleans the floor.""]",textgrad_8d6b4a6a56,TextGrad Step 7,"Output exactly one short, literal, factual sentence (8–20 words) describing only visible content in the image. Do not add labels, examples, lists, annotations, explanations, or any extra text—one sentence only.
+
+Definitions and counting
+- A single leading article (a/an/the) and punctuation do not count as content words when computing ""first N content words.""
+- Treat a hyphenated color‑class cluster (e.g., ""white-and-brown dog"") as a single attribute+noun cluster for positional rules. Treat slashes or compound nouns similarly when they form one visual token.
+- High‑signal tokens = visible color or pattern, a concrete specific object class (use the most specific multiword class available), a clear Arabic numeral count (digits), clothing/accessory, or legible text/logo copied exactly as seen.
+
+Primary constraints (must)
+1. Early high‑signal tokens:
+   - If two high‑signal tokens are clearly visible, both must appear within the first three content words.
+   - Otherwise at least one high‑signal token must appear within the first two content words.
+2. Color/pattern adjacency:
+   - Any visible color/pattern adjective must appear immediately before its noun with no intervening words or commas (e.g., ""red bicycle""). Use ""noun with [attribute]"" only if the attribute cannot legally appear within the required early content words.
+3. Specific class requirement:
+   - Use the most specific visible concrete class (multiword when available, e.g., ""electric guitar"", ""police car""). Never use generic placeholders such as ""object"", ""item"", or ""instrument."" Use ""person"" only when no more specific role/class is confidently visible.
+4. Counts and legible text:
+   - Use Arabic numerals (digits) for clear counts and place any numeral within the first three content words.
+   - If any legible text or logo is confidently readable, copy it exactly (including visible case) and place it within the first five content words.
+5. Syntax and style:
+   - Prefer a short present‑tense sentence (subject + verb) as the default form. A bare noun phrase (no verb) is allowed only when a verb would prevent meeting the early high‑signal requirements.
+6. Spatial connectors:
+   - Allow at most one short spatial connector (""next to"", ""on"", ""near"", ""in front of"") and only when it disambiguates the primary subject’s relation to a nearby object or surface. Do not stack connectors or use commas to push high‑signal tokens later.
+7. Deterministic primary subject selection:
+   - Choose the primary subject deterministically: prefer centermost → largest → highest‑contrast → object with a visible attribute (color/number/logo). If tied, prefer the item with the most legible text/logo.
+8. Conservative fallbacks and prohibited inferences:
+   - If a specific class, color, or text is not confidently visible, use a conservative, generic safe term (e.g., ""person"", ""vehicle"", ""building"") rather than guessing. Never infer unseen attributes such as age, emotion, intent, relationships, or otherwise invent specifics.
+9. Punctuation and token positioning:
+   - Commas, parentheticals, or additional punctuation may not be used to delay required early high‑signal tokens. Hyphens and compound forms count as described above.
+10. Length guidance:
+   - Follow the 8–20 total words limit while aiming for about 10–14 content words to include multiple discriminative tokens.
+
+Examples of forbidden choices: do not output generic templates like ""There is..."" when a more specific subject is visible; do not output invented attributes or unverifiable labels.
+
+Output exactly one short sentence only—no extra text.",Man in blue hoodie and cap mops wooden floor with black-handled mop.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.3306540846824646,0.15082575380802155,12,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_8d6b4a6a56,63,24934,flickr30k_test_024934,images/flickr30k/flickr30k_test_024934.jpg,"[""A man wearing a striped jacket tentatively looking down onto his hands while walking."", ""A man walks along a cobblestone path, next to a large blue wall."", ""A man walking down a brick path next to a blue wall."", ""A lone man walking along side a blue wall."", ""Solitary man walks past blue wall.""]",textgrad_8d6b4a6a56,TextGrad Step 7,"Output exactly one short, literal, factual sentence (8–20 words) describing only visible content in the image. Do not add labels, examples, lists, annotations, explanations, or any extra text—one sentence only.
+
+Definitions and counting
+- A single leading article (a/an/the) and punctuation do not count as content words when computing ""first N content words.""
+- Treat a hyphenated color‑class cluster (e.g., ""white-and-brown dog"") as a single attribute+noun cluster for positional rules. Treat slashes or compound nouns similarly when they form one visual token.
+- High‑signal tokens = visible color or pattern, a concrete specific object class (use the most specific multiword class available), a clear Arabic numeral count (digits), clothing/accessory, or legible text/logo copied exactly as seen.
+
+Primary constraints (must)
+1. Early high‑signal tokens:
+   - If two high‑signal tokens are clearly visible, both must appear within the first three content words.
+   - Otherwise at least one high‑signal token must appear within the first two content words.
+2. Color/pattern adjacency:
+   - Any visible color/pattern adjective must appear immediately before its noun with no intervening words or commas (e.g., ""red bicycle""). Use ""noun with [attribute]"" only if the attribute cannot legally appear within the required early content words.
+3. Specific class requirement:
+   - Use the most specific visible concrete class (multiword when available, e.g., ""electric guitar"", ""police car""). Never use generic placeholders such as ""object"", ""item"", or ""instrument."" Use ""person"" only when no more specific role/class is confidently visible.
+4. Counts and legible text:
+   - Use Arabic numerals (digits) for clear counts and place any numeral within the first three content words.
+   - If any legible text or logo is confidently readable, copy it exactly (including visible case) and place it within the first five content words.
+5. Syntax and style:
+   - Prefer a short present‑tense sentence (subject + verb) as the default form. A bare noun phrase (no verb) is allowed only when a verb would prevent meeting the early high‑signal requirements.
+6. Spatial connectors:
+   - Allow at most one short spatial connector (""next to"", ""on"", ""near"", ""in front of"") and only when it disambiguates the primary subject’s relation to a nearby object or surface. Do not stack connectors or use commas to push high‑signal tokens later.
+7. Deterministic primary subject selection:
+   - Choose the primary subject deterministically: prefer centermost → largest → highest‑contrast → object with a visible attribute (color/number/logo). If tied, prefer the item with the most legible text/logo.
+8. Conservative fallbacks and prohibited inferences:
+   - If a specific class, color, or text is not confidently visible, use a conservative, generic safe term (e.g., ""person"", ""vehicle"", ""building"") rather than guessing. Never infer unseen attributes such as age, emotion, intent, relationships, or otherwise invent specifics.
+9. Punctuation and token positioning:
+   - Commas, parentheticals, or additional punctuation may not be used to delay required early high‑signal tokens. Hyphens and compound forms count as described above.
+10. Length guidance:
+   - Follow the 8–20 total words limit while aiming for about 10–14 content words to include multiple discriminative tokens.
+
+Examples of forbidden choices: do not output generic templates like ""There is..."" when a more specific subject is visible; do not output invented attributes or unverifiable labels.
+
+Output exactly one short sentence only—no extra text.",A person in blue jeans and orange shirt walks on a cobblestone street near a blue wall.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.32702451944351196,0.21228116750717163,17,True
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_8d6b4a6a56,66,30359,flickr30k_test_030359,images/flickr30k/flickr30k_test_030359.jpg,"[""A soccer game with 5 guys in the picture but three of them are about to commence in a three way kick."", ""A group of soccer teammates are fighting over the soccer ball while in a stadium full of supporters."", ""Five young men, three in yellow, one in red and one in white are playing soccer."", ""A soccer player is attempting to score a goal."", ""Guys are play soccer on the field.""]",textgrad_8d6b4a6a56,TextGrad Step 7,"Output exactly one short, literal, factual sentence (8–20 words) describing only visible content in the image. Do not add labels, examples, lists, annotations, explanations, or any extra text—one sentence only.
+
+Definitions and counting
+- A single leading article (a/an/the) and punctuation do not count as content words when computing ""first N content words.""
+- Treat a hyphenated color‑class cluster (e.g., ""white-and-brown dog"") as a single attribute+noun cluster for positional rules. Treat slashes or compound nouns similarly when they form one visual token.
+- High‑signal tokens = visible color or pattern, a concrete specific object class (use the most specific multiword class available), a clear Arabic numeral count (digits), clothing/accessory, or legible text/logo copied exactly as seen.
+
+Primary constraints (must)
+1. Early high‑signal tokens:
+   - If two high‑signal tokens are clearly visible, both must appear within the first three content words.
+   - Otherwise at least one high‑signal token must appear within the first two content words.
+2. Color/pattern adjacency:
+   - Any visible color/pattern adjective must appear immediately before its noun with no intervening words or commas (e.g., ""red bicycle""). Use ""noun with [attribute]"" only if the attribute cannot legally appear within the required early content words.
+3. Specific class requirement:
+   - Use the most specific visible concrete class (multiword when available, e.g., ""electric guitar"", ""police car""). Never use generic placeholders such as ""object"", ""item"", or ""instrument."" Use ""person"" only when no more specific role/class is confidently visible.
+4. Counts and legible text:
+   - Use Arabic numerals (digits) for clear counts and place any numeral within the first three content words.
+   - If any legible text or logo is confidently readable, copy it exactly (including visible case) and place it within the first five content words.
+5. Syntax and style:
+   - Prefer a short present‑tense sentence (subject + verb) as the default form. A bare noun phrase (no verb) is allowed only when a verb would prevent meeting the early high‑signal requirements.
+6. Spatial connectors:
+   - Allow at most one short spatial connector (""next to"", ""on"", ""near"", ""in front of"") and only when it disambiguates the primary subject’s relation to a nearby object or surface. Do not stack connectors or use commas to push high‑signal tokens later.
+7. Deterministic primary subject selection:
+   - Choose the primary subject deterministically: prefer centermost → largest → highest‑contrast → object with a visible attribute (color/number/logo). If tied, prefer the item with the most legible text/logo.
+8. Conservative fallbacks and prohibited inferences:
+   - If a specific class, color, or text is not confidently visible, use a conservative, generic safe term (e.g., ""person"", ""vehicle"", ""building"") rather than guessing. Never infer unseen attributes such as age, emotion, intent, relationships, or otherwise invent specifics.
+9. Punctuation and token positioning:
+   - Commas, parentheticals, or additional punctuation may not be used to delay required early high‑signal tokens. Hyphens and compound forms count as described above.
+10. Length guidance:
+   - Follow the 8–20 total words limit while aiming for about 10–14 content words to include multiple discriminative tokens.
+
+Examples of forbidden choices: do not output generic templates like ""There is..."" when a more specific subject is visible; do not output invented attributes or unverifiable labels.
+
+Output exactly one short sentence only—no extra text.","Goalkeeper in red dives as players in yellow and white compete for ball near ""THAT CALLS FOR A"" sign.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.28629130125045776,0.14648306369781494,19,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_8d6b4a6a56,70,30024,flickr30k_test_030024,images/flickr30k/flickr30k_test_030024.jpg,"[""Several men are sitting around a dinner table having separate conversations."", ""A group of men are sitting at a table talking."", ""A man with gray hair is sitting at a table."", ""Four men are at a dining table."", ""Four men sitting at a table.""]",textgrad_8d6b4a6a56,TextGrad Step 7,"Output exactly one short, literal, factual sentence (8–20 words) describing only visible content in the image. Do not add labels, examples, lists, annotations, explanations, or any extra text—one sentence only.
+
+Definitions and counting
+- A single leading article (a/an/the) and punctuation do not count as content words when computing ""first N content words.""
+- Treat a hyphenated color‑class cluster (e.g., ""white-and-brown dog"") as a single attribute+noun cluster for positional rules. Treat slashes or compound nouns similarly when they form one visual token.
+- High‑signal tokens = visible color or pattern, a concrete specific object class (use the most specific multiword class available), a clear Arabic numeral count (digits), clothing/accessory, or legible text/logo copied exactly as seen.
+
+Primary constraints (must)
+1. Early high‑signal tokens:
+   - If two high‑signal tokens are clearly visible, both must appear within the first three content words.
+   - Otherwise at least one high‑signal token must appear within the first two content words.
+2. Color/pattern adjacency:
+   - Any visible color/pattern adjective must appear immediately before its noun with no intervening words or commas (e.g., ""red bicycle""). Use ""noun with [attribute]"" only if the attribute cannot legally appear within the required early content words.
+3. Specific class requirement:
+   - Use the most specific visible concrete class (multiword when available, e.g., ""electric guitar"", ""police car""). Never use generic placeholders such as ""object"", ""item"", or ""instrument."" Use ""person"" only when no more specific role/class is confidently visible.
+4. Counts and legible text:
+   - Use Arabic numerals (digits) for clear counts and place any numeral within the first three content words.
+   - If any legible text or logo is confidently readable, copy it exactly (including visible case) and place it within the first five content words.
+5. Syntax and style:
+   - Prefer a short present‑tense sentence (subject + verb) as the default form. A bare noun phrase (no verb) is allowed only when a verb would prevent meeting the early high‑signal requirements.
+6. Spatial connectors:
+   - Allow at most one short spatial connector (""next to"", ""on"", ""near"", ""in front of"") and only when it disambiguates the primary subject’s relation to a nearby object or surface. Do not stack connectors or use commas to push high‑signal tokens later.
+7. Deterministic primary subject selection:
+   - Choose the primary subject deterministically: prefer centermost → largest → highest‑contrast → object with a visible attribute (color/number/logo). If tied, prefer the item with the most legible text/logo.
+8. Conservative fallbacks and prohibited inferences:
+   - If a specific class, color, or text is not confidently visible, use a conservative, generic safe term (e.g., ""person"", ""vehicle"", ""building"") rather than guessing. Never infer unseen attributes such as age, emotion, intent, relationships, or otherwise invent specifics.
+9. Punctuation and token positioning:
+   - Commas, parentheticals, or additional punctuation may not be used to delay required early high‑signal tokens. Hyphens and compound forms count as described above.
+10. Length guidance:
+   - Follow the 8–20 total words limit while aiming for about 10–14 content words to include multiple discriminative tokens.
+
+Examples of forbidden choices: do not output generic templates like ""There is..."" when a more specific subject is visible; do not output invented attributes or unverifiable labels.
+
+Output exactly one short sentence only—no extra text.","Four people sit at a table with wine glasses, bottles, and napkins.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.24930906295776367,0.17210981249809265,12,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_8d6b4a6a56,77,23712,flickr30k_test_023712,images/flickr30k/flickr30k_test_023712.jpg,"[""A man in a red shirt plays the violin on stage."", ""A man with long wavy hair, playing the violin."", ""A man eagerly playing the violin on stage."", ""A man with long wavy hair plays to violin."", ""A man plays the violin on stage.""]",textgrad_8d6b4a6a56,TextGrad Step 7,"Output exactly one short, literal, factual sentence (8–20 words) describing only visible content in the image. Do not add labels, examples, lists, annotations, explanations, or any extra text—one sentence only.
+
+Definitions and counting
+- A single leading article (a/an/the) and punctuation do not count as content words when computing ""first N content words.""
+- Treat a hyphenated color‑class cluster (e.g., ""white-and-brown dog"") as a single attribute+noun cluster for positional rules. Treat slashes or compound nouns similarly when they form one visual token.
+- High‑signal tokens = visible color or pattern, a concrete specific object class (use the most specific multiword class available), a clear Arabic numeral count (digits), clothing/accessory, or legible text/logo copied exactly as seen.
+
+Primary constraints (must)
+1. Early high‑signal tokens:
+   - If two high‑signal tokens are clearly visible, both must appear within the first three content words.
+   - Otherwise at least one high‑signal token must appear within the first two content words.
+2. Color/pattern adjacency:
+   - Any visible color/pattern adjective must appear immediately before its noun with no intervening words or commas (e.g., ""red bicycle""). Use ""noun with [attribute]"" only if the attribute cannot legally appear within the required early content words.
+3. Specific class requirement:
+   - Use the most specific visible concrete class (multiword when available, e.g., ""electric guitar"", ""police car""). Never use generic placeholders such as ""object"", ""item"", or ""instrument."" Use ""person"" only when no more specific role/class is confidently visible.
+4. Counts and legible text:
+   - Use Arabic numerals (digits) for clear counts and place any numeral within the first three content words.
+   - If any legible text or logo is confidently readable, copy it exactly (including visible case) and place it within the first five content words.
+5. Syntax and style:
+   - Prefer a short present‑tense sentence (subject + verb) as the default form. A bare noun phrase (no verb) is allowed only when a verb would prevent meeting the early high‑signal requirements.
+6. Spatial connectors:
+   - Allow at most one short spatial connector (""next to"", ""on"", ""near"", ""in front of"") and only when it disambiguates the primary subject’s relation to a nearby object or surface. Do not stack connectors or use commas to push high‑signal tokens later.
+7. Deterministic primary subject selection:
+   - Choose the primary subject deterministically: prefer centermost → largest → highest‑contrast → object with a visible attribute (color/number/logo). If tied, prefer the item with the most legible text/logo.
+8. Conservative fallbacks and prohibited inferences:
+   - If a specific class, color, or text is not confidently visible, use a conservative, generic safe term (e.g., ""person"", ""vehicle"", ""building"") rather than guessing. Never infer unseen attributes such as age, emotion, intent, relationships, or otherwise invent specifics.
+9. Punctuation and token positioning:
+   - Commas, parentheticals, or additional punctuation may not be used to delay required early high‑signal tokens. Hyphens and compound forms count as described above.
+10. Length guidance:
+   - Follow the 8–20 total words limit while aiming for about 10–14 content words to include multiple discriminative tokens.
+
+Examples of forbidden choices: do not output generic templates like ""There is..."" when a more specific subject is visible; do not output invented attributes or unverifiable labels.
+
+Output exactly one short sentence only—no extra text.",Man with curly hair plays violin on stage near black speaker.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.3224179744720459,0.1700538992881775,11,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_8d6b4a6a56,82,10901,flickr30k_test_010901,images/flickr30k/flickr30k_test_010901.jpg,"[""Two children, warmly dressed, are playing in the snow."", ""Two kids playing in the snow in a rural area."", ""Two young children play in the snow."", ""Two young children enjoy the snow."", ""Two children playing in the snow.""]",textgrad_8d6b4a6a56,TextGrad Step 7,"Output exactly one short, literal, factual sentence (8–20 words) describing only visible content in the image. Do not add labels, examples, lists, annotations, explanations, or any extra text—one sentence only.
+
+Definitions and counting
+- A single leading article (a/an/the) and punctuation do not count as content words when computing ""first N content words.""
+- Treat a hyphenated color‑class cluster (e.g., ""white-and-brown dog"") as a single attribute+noun cluster for positional rules. Treat slashes or compound nouns similarly when they form one visual token.
+- High‑signal tokens = visible color or pattern, a concrete specific object class (use the most specific multiword class available), a clear Arabic numeral count (digits), clothing/accessory, or legible text/logo copied exactly as seen.
+
+Primary constraints (must)
+1. Early high‑signal tokens:
+   - If two high‑signal tokens are clearly visible, both must appear within the first three content words.
+   - Otherwise at least one high‑signal token must appear within the first two content words.
+2. Color/pattern adjacency:
+   - Any visible color/pattern adjective must appear immediately before its noun with no intervening words or commas (e.g., ""red bicycle""). Use ""noun with [attribute]"" only if the attribute cannot legally appear within the required early content words.
+3. Specific class requirement:
+   - Use the most specific visible concrete class (multiword when available, e.g., ""electric guitar"", ""police car""). Never use generic placeholders such as ""object"", ""item"", or ""instrument."" Use ""person"" only when no more specific role/class is confidently visible.
+4. Counts and legible text:
+   - Use Arabic numerals (digits) for clear counts and place any numeral within the first three content words.
+   - If any legible text or logo is confidently readable, copy it exactly (including visible case) and place it within the first five content words.
+5. Syntax and style:
+   - Prefer a short present‑tense sentence (subject + verb) as the default form. A bare noun phrase (no verb) is allowed only when a verb would prevent meeting the early high‑signal requirements.
+6. Spatial connectors:
+   - Allow at most one short spatial connector (""next to"", ""on"", ""near"", ""in front of"") and only when it disambiguates the primary subject’s relation to a nearby object or surface. Do not stack connectors or use commas to push high‑signal tokens later.
+7. Deterministic primary subject selection:
+   - Choose the primary subject deterministically: prefer centermost → largest → highest‑contrast → object with a visible attribute (color/number/logo). If tied, prefer the item with the most legible text/logo.
+8. Conservative fallbacks and prohibited inferences:
+   - If a specific class, color, or text is not confidently visible, use a conservative, generic safe term (e.g., ""person"", ""vehicle"", ""building"") rather than guessing. Never infer unseen attributes such as age, emotion, intent, relationships, or otherwise invent specifics.
+9. Punctuation and token positioning:
+   - Commas, parentheticals, or additional punctuation may not be used to delay required early high‑signal tokens. Hyphens and compound forms count as described above.
+10. Length guidance:
+   - Follow the 8–20 total words limit while aiming for about 10–14 content words to include multiple discriminative tokens.
+
+Examples of forbidden choices: do not output generic templates like ""There is..."" when a more specific subject is visible; do not output invented attributes or unverifiable labels.
+
+Output exactly one short sentence only—no extra text.",Two children play in snow near trees at sunset.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.341081440448761,0.19489428400993347,9,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_8d6b4a6a56,84,23641,flickr30k_test_023641,images/flickr30k/flickr30k_test_023641.jpg,"[""There are several people either sitting on benches or walking through what appears to be a brick road with trees coming up from various circular openings in the road."", ""A group of people rest on a park bench underneath the shade of the canopy of trees as a man in a brightly colored pink stripe shirt walks past."", ""A park with trees, people sitting on benches, and people walking."", ""People are walking under trees while other are sitting down."", ""People walking through a watery path.""]",textgrad_8d6b4a6a56,TextGrad Step 7,"Output exactly one short, literal, factual sentence (8–20 words) describing only visible content in the image. Do not add labels, examples, lists, annotations, explanations, or any extra text—one sentence only.
+
+Definitions and counting
+- A single leading article (a/an/the) and punctuation do not count as content words when computing ""first N content words.""
+- Treat a hyphenated color‑class cluster (e.g., ""white-and-brown dog"") as a single attribute+noun cluster for positional rules. Treat slashes or compound nouns similarly when they form one visual token.
+- High‑signal tokens = visible color or pattern, a concrete specific object class (use the most specific multiword class available), a clear Arabic numeral count (digits), clothing/accessory, or legible text/logo copied exactly as seen.
+
+Primary constraints (must)
+1. Early high‑signal tokens:
+   - If two high‑signal tokens are clearly visible, both must appear within the first three content words.
+   - Otherwise at least one high‑signal token must appear within the first two content words.
+2. Color/pattern adjacency:
+   - Any visible color/pattern adjective must appear immediately before its noun with no intervening words or commas (e.g., ""red bicycle""). Use ""noun with [attribute]"" only if the attribute cannot legally appear within the required early content words.
+3. Specific class requirement:
+   - Use the most specific visible concrete class (multiword when available, e.g., ""electric guitar"", ""police car""). Never use generic placeholders such as ""object"", ""item"", or ""instrument."" Use ""person"" only when no more specific role/class is confidently visible.
+4. Counts and legible text:
+   - Use Arabic numerals (digits) for clear counts and place any numeral within the first three content words.
+   - If any legible text or logo is confidently readable, copy it exactly (including visible case) and place it within the first five content words.
+5. Syntax and style:
+   - Prefer a short present‑tense sentence (subject + verb) as the default form. A bare noun phrase (no verb) is allowed only when a verb would prevent meeting the early high‑signal requirements.
+6. Spatial connectors:
+   - Allow at most one short spatial connector (""next to"", ""on"", ""near"", ""in front of"") and only when it disambiguates the primary subject’s relation to a nearby object or surface. Do not stack connectors or use commas to push high‑signal tokens later.
+7. Deterministic primary subject selection:
+   - Choose the primary subject deterministically: prefer centermost → largest → highest‑contrast → object with a visible attribute (color/number/logo). If tied, prefer the item with the most legible text/logo.
+8. Conservative fallbacks and prohibited inferences:
+   - If a specific class, color, or text is not confidently visible, use a conservative, generic safe term (e.g., ""person"", ""vehicle"", ""building"") rather than guessing. Never infer unseen attributes such as age, emotion, intent, relationships, or otherwise invent specifics.
+9. Punctuation and token positioning:
+   - Commas, parentheticals, or additional punctuation may not be used to delay required early high‑signal tokens. Hyphens and compound forms count as described above.
+10. Length guidance:
+   - Follow the 8–20 total words limit while aiming for about 10–14 content words to include multiple discriminative tokens.
+
+Examples of forbidden choices: do not output generic templates like ""There is..."" when a more specific subject is visible; do not output invented attributes or unverifiable labels.
+
+Output exactly one short sentence only—no extra text.",A woman in striped shirt walks on wet cobblestone path under leafy trees.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.2935720682144165,0.17318184673786163,13,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_8d6b4a6a56,85,23304,flickr30k_test_023304,images/flickr30k/flickr30k_test_023304.jpg,"[""A young woman in a pink top holds several shopping bags while walking down a boulevard."", ""A woman in a pink and black short skirted outfit walking with shopping bags."", ""A lady dressed in pink and black walking down a sidewalk carrying packages."", ""A young woman is walking with shopping bags in Hollywood."", ""A well dressed woman is shopping in front of a store.""]",textgrad_8d6b4a6a56,TextGrad Step 7,"Output exactly one short, literal, factual sentence (8–20 words) describing only visible content in the image. Do not add labels, examples, lists, annotations, explanations, or any extra text—one sentence only.
+
+Definitions and counting
+- A single leading article (a/an/the) and punctuation do not count as content words when computing ""first N content words.""
+- Treat a hyphenated color‑class cluster (e.g., ""white-and-brown dog"") as a single attribute+noun cluster for positional rules. Treat slashes or compound nouns similarly when they form one visual token.
+- High‑signal tokens = visible color or pattern, a concrete specific object class (use the most specific multiword class available), a clear Arabic numeral count (digits), clothing/accessory, or legible text/logo copied exactly as seen.
+
+Primary constraints (must)
+1. Early high‑signal tokens:
+   - If two high‑signal tokens are clearly visible, both must appear within the first three content words.
+   - Otherwise at least one high‑signal token must appear within the first two content words.
+2. Color/pattern adjacency:
+   - Any visible color/pattern adjective must appear immediately before its noun with no intervening words or commas (e.g., ""red bicycle""). Use ""noun with [attribute]"" only if the attribute cannot legally appear within the required early content words.
+3. Specific class requirement:
+   - Use the most specific visible concrete class (multiword when available, e.g., ""electric guitar"", ""police car""). Never use generic placeholders such as ""object"", ""item"", or ""instrument."" Use ""person"" only when no more specific role/class is confidently visible.
+4. Counts and legible text:
+   - Use Arabic numerals (digits) for clear counts and place any numeral within the first three content words.
+   - If any legible text or logo is confidently readable, copy it exactly (including visible case) and place it within the first five content words.
+5. Syntax and style:
+   - Prefer a short present‑tense sentence (subject + verb) as the default form. A bare noun phrase (no verb) is allowed only when a verb would prevent meeting the early high‑signal requirements.
+6. Spatial connectors:
+   - Allow at most one short spatial connector (""next to"", ""on"", ""near"", ""in front of"") and only when it disambiguates the primary subject’s relation to a nearby object or surface. Do not stack connectors or use commas to push high‑signal tokens later.
+7. Deterministic primary subject selection:
+   - Choose the primary subject deterministically: prefer centermost → largest → highest‑contrast → object with a visible attribute (color/number/logo). If tied, prefer the item with the most legible text/logo.
+8. Conservative fallbacks and prohibited inferences:
+   - If a specific class, color, or text is not confidently visible, use a conservative, generic safe term (e.g., ""person"", ""vehicle"", ""building"") rather than guessing. Never infer unseen attributes such as age, emotion, intent, relationships, or otherwise invent specifics.
+9. Punctuation and token positioning:
+   - Commas, parentheticals, or additional punctuation may not be used to delay required early high‑signal tokens. Hyphens and compound forms count as described above.
+10. Length guidance:
+   - Follow the 8–20 total words limit while aiming for about 10–14 content words to include multiple discriminative tokens.
+
+Examples of forbidden choices: do not output generic templates like ""There is..."" when a more specific subject is visible; do not output invented attributes or unverifiable labels.
+
+Output exactly one short sentence only—no extra text.",A person in a pink top and black skirt carries pink bags on a paved sidewalk.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.33700037002563477,0.22335244715213776,16,True
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_8d6b4a6a56,94,9311,flickr30k_test_009311,images/flickr30k/flickr30k_test_009311.jpg,"[""A toddler plays in a water fountain with his mouth open and ready for a drink."", ""A baby sticking out his tonge while looking at a spraying water fountain."", ""A baby trying to catch water from a fountain in his mouth"", ""A small boy is playing at a water fountain"", ""A baby reaching into a water fountain.""]",textgrad_8d6b4a6a56,TextGrad Step 7,"Output exactly one short, literal, factual sentence (8–20 words) describing only visible content in the image. Do not add labels, examples, lists, annotations, explanations, or any extra text—one sentence only.
+
+Definitions and counting
+- A single leading article (a/an/the) and punctuation do not count as content words when computing ""first N content words.""
+- Treat a hyphenated color‑class cluster (e.g., ""white-and-brown dog"") as a single attribute+noun cluster for positional rules. Treat slashes or compound nouns similarly when they form one visual token.
+- High‑signal tokens = visible color or pattern, a concrete specific object class (use the most specific multiword class available), a clear Arabic numeral count (digits), clothing/accessory, or legible text/logo copied exactly as seen.
+
+Primary constraints (must)
+1. Early high‑signal tokens:
+   - If two high‑signal tokens are clearly visible, both must appear within the first three content words.
+   - Otherwise at least one high‑signal token must appear within the first two content words.
+2. Color/pattern adjacency:
+   - Any visible color/pattern adjective must appear immediately before its noun with no intervening words or commas (e.g., ""red bicycle""). Use ""noun with [attribute]"" only if the attribute cannot legally appear within the required early content words.
+3. Specific class requirement:
+   - Use the most specific visible concrete class (multiword when available, e.g., ""electric guitar"", ""police car""). Never use generic placeholders such as ""object"", ""item"", or ""instrument."" Use ""person"" only when no more specific role/class is confidently visible.
+4. Counts and legible text:
+   - Use Arabic numerals (digits) for clear counts and place any numeral within the first three content words.
+   - If any legible text or logo is confidently readable, copy it exactly (including visible case) and place it within the first five content words.
+5. Syntax and style:
+   - Prefer a short present‑tense sentence (subject + verb) as the default form. A bare noun phrase (no verb) is allowed only when a verb would prevent meeting the early high‑signal requirements.
+6. Spatial connectors:
+   - Allow at most one short spatial connector (""next to"", ""on"", ""near"", ""in front of"") and only when it disambiguates the primary subject’s relation to a nearby object or surface. Do not stack connectors or use commas to push high‑signal tokens later.
+7. Deterministic primary subject selection:
+   - Choose the primary subject deterministically: prefer centermost → largest → highest‑contrast → object with a visible attribute (color/number/logo). If tied, prefer the item with the most legible text/logo.
+8. Conservative fallbacks and prohibited inferences:
+   - If a specific class, color, or text is not confidently visible, use a conservative, generic safe term (e.g., ""person"", ""vehicle"", ""building"") rather than guessing. Never infer unseen attributes such as age, emotion, intent, relationships, or otherwise invent specifics.
+9. Punctuation and token positioning:
+   - Commas, parentheticals, or additional punctuation may not be used to delay required early high‑signal tokens. Hyphens and compound forms count as described above.
+10. Length guidance:
+   - Follow the 8–20 total words limit while aiming for about 10–14 content words to include multiple discriminative tokens.
+
+Examples of forbidden choices: do not output generic templates like ""There is..."" when a more specific subject is visible; do not output invented attributes or unverifiable labels.
+
+Output exactly one short sentence only—no extra text.","A young child with blonde hair sits near a water fountain, tongue out.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.32137322425842285,0.21293708682060242,13,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_8d6b4a6a56,106,7954,flickr30k_test_007954,images/flickr30k/flickr30k_test_007954.jpg,"[""A girl wearing a pink bathing suit top and sunglasses is playing in the sand next to a boy wearing red swim trunks."", ""A woman and her son play in the sand on a sunny day in the beach."", ""A young boy and girl in swimsuits play in the sand at the beach."", ""Two teenagers at the beach playing in the sand"", ""A boy and girl play with the sand.""]",textgrad_8d6b4a6a56,TextGrad Step 7,"Output exactly one short, literal, factual sentence (8–20 words) describing only visible content in the image. Do not add labels, examples, lists, annotations, explanations, or any extra text—one sentence only.
+
+Definitions and counting
+- A single leading article (a/an/the) and punctuation do not count as content words when computing ""first N content words.""
+- Treat a hyphenated color‑class cluster (e.g., ""white-and-brown dog"") as a single attribute+noun cluster for positional rules. Treat slashes or compound nouns similarly when they form one visual token.
+- High‑signal tokens = visible color or pattern, a concrete specific object class (use the most specific multiword class available), a clear Arabic numeral count (digits), clothing/accessory, or legible text/logo copied exactly as seen.
+
+Primary constraints (must)
+1. Early high‑signal tokens:
+   - If two high‑signal tokens are clearly visible, both must appear within the first three content words.
+   - Otherwise at least one high‑signal token must appear within the first two content words.
+2. Color/pattern adjacency:
+   - Any visible color/pattern adjective must appear immediately before its noun with no intervening words or commas (e.g., ""red bicycle""). Use ""noun with [attribute]"" only if the attribute cannot legally appear within the required early content words.
+3. Specific class requirement:
+   - Use the most specific visible concrete class (multiword when available, e.g., ""electric guitar"", ""police car""). Never use generic placeholders such as ""object"", ""item"", or ""instrument."" Use ""person"" only when no more specific role/class is confidently visible.
+4. Counts and legible text:
+   - Use Arabic numerals (digits) for clear counts and place any numeral within the first three content words.
+   - If any legible text or logo is confidently readable, copy it exactly (including visible case) and place it within the first five content words.
+5. Syntax and style:
+   - Prefer a short present‑tense sentence (subject + verb) as the default form. A bare noun phrase (no verb) is allowed only when a verb would prevent meeting the early high‑signal requirements.
+6. Spatial connectors:
+   - Allow at most one short spatial connector (""next to"", ""on"", ""near"", ""in front of"") and only when it disambiguates the primary subject’s relation to a nearby object or surface. Do not stack connectors or use commas to push high‑signal tokens later.
+7. Deterministic primary subject selection:
+   - Choose the primary subject deterministically: prefer centermost → largest → highest‑contrast → object with a visible attribute (color/number/logo). If tied, prefer the item with the most legible text/logo.
+8. Conservative fallbacks and prohibited inferences:
+   - If a specific class, color, or text is not confidently visible, use a conservative, generic safe term (e.g., ""person"", ""vehicle"", ""building"") rather than guessing. Never infer unseen attributes such as age, emotion, intent, relationships, or otherwise invent specifics.
+9. Punctuation and token positioning:
+   - Commas, parentheticals, or additional punctuation may not be used to delay required early high‑signal tokens. Hyphens and compound forms count as described above.
+10. Length guidance:
+   - Follow the 8–20 total words limit while aiming for about 10–14 content words to include multiple discriminative tokens.
+
+Examples of forbidden choices: do not output generic templates like ""There is..."" when a more specific subject is visible; do not output invented attributes or unverifiable labels.
+
+Output exactly one short sentence only—no extra text.",Two people in swimwear crouch on sandy beach near water's edge.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.2956393361091614,0.16209888458251953,11,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_8d6b4a6a56,108,26129,flickr30k_test_026129,images/flickr30k/flickr30k_test_026129.jpg,"[""Two men skiing up a hill but stopped and pointing at something as they on our their trek."", ""Two men wearing snowshoes stopping to observe something on the ground."", ""Two guys with snowshoes making their way through the woods."", ""Two men in snowshoes tracking the prints of an animal."", ""Two people wearing snowshoes are tracking something.""]",textgrad_8d6b4a6a56,TextGrad Step 7,"Output exactly one short, literal, factual sentence (8–20 words) describing only visible content in the image. Do not add labels, examples, lists, annotations, explanations, or any extra text—one sentence only.
+
+Definitions and counting
+- A single leading article (a/an/the) and punctuation do not count as content words when computing ""first N content words.""
+- Treat a hyphenated color‑class cluster (e.g., ""white-and-brown dog"") as a single attribute+noun cluster for positional rules. Treat slashes or compound nouns similarly when they form one visual token.
+- High‑signal tokens = visible color or pattern, a concrete specific object class (use the most specific multiword class available), a clear Arabic numeral count (digits), clothing/accessory, or legible text/logo copied exactly as seen.
+
+Primary constraints (must)
+1. Early high‑signal tokens:
+   - If two high‑signal tokens are clearly visible, both must appear within the first three content words.
+   - Otherwise at least one high‑signal token must appear within the first two content words.
+2. Color/pattern adjacency:
+   - Any visible color/pattern adjective must appear immediately before its noun with no intervening words or commas (e.g., ""red bicycle""). Use ""noun with [attribute]"" only if the attribute cannot legally appear within the required early content words.
+3. Specific class requirement:
+   - Use the most specific visible concrete class (multiword when available, e.g., ""electric guitar"", ""police car""). Never use generic placeholders such as ""object"", ""item"", or ""instrument."" Use ""person"" only when no more specific role/class is confidently visible.
+4. Counts and legible text:
+   - Use Arabic numerals (digits) for clear counts and place any numeral within the first three content words.
+   - If any legible text or logo is confidently readable, copy it exactly (including visible case) and place it within the first five content words.
+5. Syntax and style:
+   - Prefer a short present‑tense sentence (subject + verb) as the default form. A bare noun phrase (no verb) is allowed only when a verb would prevent meeting the early high‑signal requirements.
+6. Spatial connectors:
+   - Allow at most one short spatial connector (""next to"", ""on"", ""near"", ""in front of"") and only when it disambiguates the primary subject’s relation to a nearby object or surface. Do not stack connectors or use commas to push high‑signal tokens later.
+7. Deterministic primary subject selection:
+   - Choose the primary subject deterministically: prefer centermost → largest → highest‑contrast → object with a visible attribute (color/number/logo). If tied, prefer the item with the most legible text/logo.
+8. Conservative fallbacks and prohibited inferences:
+   - If a specific class, color, or text is not confidently visible, use a conservative, generic safe term (e.g., ""person"", ""vehicle"", ""building"") rather than guessing. Never infer unseen attributes such as age, emotion, intent, relationships, or otherwise invent specifics.
+9. Punctuation and token positioning:
+   - Commas, parentheticals, or additional punctuation may not be used to delay required early high‑signal tokens. Hyphens and compound forms count as described above.
+10. Length guidance:
+   - Follow the 8–20 total words limit while aiming for about 10–14 content words to include multiple discriminative tokens.
+
+Examples of forbidden choices: do not output generic templates like ""There is..."" when a more specific subject is visible; do not output invented attributes or unverifiable labels.
+
+Output exactly one short sentence only—no extra text.",Two people in snowshoes adjust gear near trees in snowy forest.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.3273623585700989,0.18964895606040955,11,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_8d6b4a6a56,109,13247,flickr30k_test_013247,images/flickr30k/flickr30k_test_013247.jpg,"[""Several men walk in front of a building marked 'Bass Pro Shops Outdoor World'."", ""People are walking outside the entrance to Bass Pro Shops Outdoor World."", ""People walking in front of the Outdoor World store."", ""A white-haired man is walking out of a store."", ""People outside of an Outdoor World shop.""]",textgrad_8d6b4a6a56,TextGrad Step 7,"Output exactly one short, literal, factual sentence (8–20 words) describing only visible content in the image. Do not add labels, examples, lists, annotations, explanations, or any extra text—one sentence only.
+
+Definitions and counting
+- A single leading article (a/an/the) and punctuation do not count as content words when computing ""first N content words.""
+- Treat a hyphenated color‑class cluster (e.g., ""white-and-brown dog"") as a single attribute+noun cluster for positional rules. Treat slashes or compound nouns similarly when they form one visual token.
+- High‑signal tokens = visible color or pattern, a concrete specific object class (use the most specific multiword class available), a clear Arabic numeral count (digits), clothing/accessory, or legible text/logo copied exactly as seen.
+
+Primary constraints (must)
+1. Early high‑signal tokens:
+   - If two high‑signal tokens are clearly visible, both must appear within the first three content words.
+   - Otherwise at least one high‑signal token must appear within the first two content words.
+2. Color/pattern adjacency:
+   - Any visible color/pattern adjective must appear immediately before its noun with no intervening words or commas (e.g., ""red bicycle""). Use ""noun with [attribute]"" only if the attribute cannot legally appear within the required early content words.
+3. Specific class requirement:
+   - Use the most specific visible concrete class (multiword when available, e.g., ""electric guitar"", ""police car""). Never use generic placeholders such as ""object"", ""item"", or ""instrument."" Use ""person"" only when no more specific role/class is confidently visible.
+4. Counts and legible text:
+   - Use Arabic numerals (digits) for clear counts and place any numeral within the first three content words.
+   - If any legible text or logo is confidently readable, copy it exactly (including visible case) and place it within the first five content words.
+5. Syntax and style:
+   - Prefer a short present‑tense sentence (subject + verb) as the default form. A bare noun phrase (no verb) is allowed only when a verb would prevent meeting the early high‑signal requirements.
+6. Spatial connectors:
+   - Allow at most one short spatial connector (""next to"", ""on"", ""near"", ""in front of"") and only when it disambiguates the primary subject’s relation to a nearby object or surface. Do not stack connectors or use commas to push high‑signal tokens later.
+7. Deterministic primary subject selection:
+   - Choose the primary subject deterministically: prefer centermost → largest → highest‑contrast → object with a visible attribute (color/number/logo). If tied, prefer the item with the most legible text/logo.
+8. Conservative fallbacks and prohibited inferences:
+   - If a specific class, color, or text is not confidently visible, use a conservative, generic safe term (e.g., ""person"", ""vehicle"", ""building"") rather than guessing. Never infer unseen attributes such as age, emotion, intent, relationships, or otherwise invent specifics.
+9. Punctuation and token positioning:
+   - Commas, parentheticals, or additional punctuation may not be used to delay required early high‑signal tokens. Hyphens and compound forms count as described above.
+10. Length guidance:
+   - Follow the 8–20 total words limit while aiming for about 10–14 content words to include multiple discriminative tokens.
+
+Examples of forbidden choices: do not output generic templates like ""There is..."" when a more specific subject is visible; do not output invented attributes or unverifiable labels.
+
+Output exactly one short sentence only—no extra text.","Outdoor World building with ""Bass Pro Shops"" sign, people walking in front.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.31477656960487366,0.2302912026643753,12,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_8d6b4a6a56,119,24189,flickr30k_test_024189,images/flickr30k/flickr30k_test_024189.jpg,"[""A man and a woman are standing outside of subway with their travel luggage and sleeping bags."", ""Two people are picking up their belongings in front of a Subway."", ""A man and a woman outside subways picking up their belongings."", ""Two kids in odd clothes in front of a subway shop."", ""Man and woman are in front of Subway restaurant.""]",textgrad_8d6b4a6a56,TextGrad Step 7,"Output exactly one short, literal, factual sentence (8–20 words) describing only visible content in the image. Do not add labels, examples, lists, annotations, explanations, or any extra text—one sentence only.
+
+Definitions and counting
+- A single leading article (a/an/the) and punctuation do not count as content words when computing ""first N content words.""
+- Treat a hyphenated color‑class cluster (e.g., ""white-and-brown dog"") as a single attribute+noun cluster for positional rules. Treat slashes or compound nouns similarly when they form one visual token.
+- High‑signal tokens = visible color or pattern, a concrete specific object class (use the most specific multiword class available), a clear Arabic numeral count (digits), clothing/accessory, or legible text/logo copied exactly as seen.
+
+Primary constraints (must)
+1. Early high‑signal tokens:
+   - If two high‑signal tokens are clearly visible, both must appear within the first three content words.
+   - Otherwise at least one high‑signal token must appear within the first two content words.
+2. Color/pattern adjacency:
+   - Any visible color/pattern adjective must appear immediately before its noun with no intervening words or commas (e.g., ""red bicycle""). Use ""noun with [attribute]"" only if the attribute cannot legally appear within the required early content words.
+3. Specific class requirement:
+   - Use the most specific visible concrete class (multiword when available, e.g., ""electric guitar"", ""police car""). Never use generic placeholders such as ""object"", ""item"", or ""instrument."" Use ""person"" only when no more specific role/class is confidently visible.
+4. Counts and legible text:
+   - Use Arabic numerals (digits) for clear counts and place any numeral within the first three content words.
+   - If any legible text or logo is confidently readable, copy it exactly (including visible case) and place it within the first five content words.
+5. Syntax and style:
+   - Prefer a short present‑tense sentence (subject + verb) as the default form. A bare noun phrase (no verb) is allowed only when a verb would prevent meeting the early high‑signal requirements.
+6. Spatial connectors:
+   - Allow at most one short spatial connector (""next to"", ""on"", ""near"", ""in front of"") and only when it disambiguates the primary subject’s relation to a nearby object or surface. Do not stack connectors or use commas to push high‑signal tokens later.
+7. Deterministic primary subject selection:
+   - Choose the primary subject deterministically: prefer centermost → largest → highest‑contrast → object with a visible attribute (color/number/logo). If tied, prefer the item with the most legible text/logo.
+8. Conservative fallbacks and prohibited inferences:
+   - If a specific class, color, or text is not confidently visible, use a conservative, generic safe term (e.g., ""person"", ""vehicle"", ""building"") rather than guessing. Never infer unseen attributes such as age, emotion, intent, relationships, or otherwise invent specifics.
+9. Punctuation and token positioning:
+   - Commas, parentheticals, or additional punctuation may not be used to delay required early high‑signal tokens. Hyphens and compound forms count as described above.
+10. Length guidance:
+   - Follow the 8–20 total words limit while aiming for about 10–14 content words to include multiple discriminative tokens.
+
+Examples of forbidden choices: do not output generic templates like ""There is..."" when a more specific subject is visible; do not output invented attributes or unverifiable labels.
+
+Output exactly one short sentence only—no extra text.",A person in a green shirt bends over a pile of bags on a brick sidewalk near a Subway restaurant.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.3361227810382843,0.22213248908519745,20,True
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_8d6b4a6a56,120,12278,flickr30k_test_012278,images/flickr30k/flickr30k_test_012278.jpg,"[""A group of people sit on a roof near a satellite dish while a young animal drinks from a bowl."", ""Group of people sitting on some chairs on their rooftop with a goat."", ""Some people and a goat are on a rooftop in a middle eastern city."", ""Several people are sitting on a roof in a Middle Eastern city."", ""A family sits on a rooftop watching TV.""]",textgrad_8d6b4a6a56,TextGrad Step 7,"Output exactly one short, literal, factual sentence (8–20 words) describing only visible content in the image. Do not add labels, examples, lists, annotations, explanations, or any extra text—one sentence only.
+
+Definitions and counting
+- A single leading article (a/an/the) and punctuation do not count as content words when computing ""first N content words.""
+- Treat a hyphenated color‑class cluster (e.g., ""white-and-brown dog"") as a single attribute+noun cluster for positional rules. Treat slashes or compound nouns similarly when they form one visual token.
+- High‑signal tokens = visible color or pattern, a concrete specific object class (use the most specific multiword class available), a clear Arabic numeral count (digits), clothing/accessory, or legible text/logo copied exactly as seen.
+
+Primary constraints (must)
+1. Early high‑signal tokens:
+   - If two high‑signal tokens are clearly visible, both must appear within the first three content words.
+   - Otherwise at least one high‑signal token must appear within the first two content words.
+2. Color/pattern adjacency:
+   - Any visible color/pattern adjective must appear immediately before its noun with no intervening words or commas (e.g., ""red bicycle""). Use ""noun with [attribute]"" only if the attribute cannot legally appear within the required early content words.
+3. Specific class requirement:
+   - Use the most specific visible concrete class (multiword when available, e.g., ""electric guitar"", ""police car""). Never use generic placeholders such as ""object"", ""item"", or ""instrument."" Use ""person"" only when no more specific role/class is confidently visible.
+4. Counts and legible text:
+   - Use Arabic numerals (digits) for clear counts and place any numeral within the first three content words.
+   - If any legible text or logo is confidently readable, copy it exactly (including visible case) and place it within the first five content words.
+5. Syntax and style:
+   - Prefer a short present‑tense sentence (subject + verb) as the default form. A bare noun phrase (no verb) is allowed only when a verb would prevent meeting the early high‑signal requirements.
+6. Spatial connectors:
+   - Allow at most one short spatial connector (""next to"", ""on"", ""near"", ""in front of"") and only when it disambiguates the primary subject’s relation to a nearby object or surface. Do not stack connectors or use commas to push high‑signal tokens later.
+7. Deterministic primary subject selection:
+   - Choose the primary subject deterministically: prefer centermost → largest → highest‑contrast → object with a visible attribute (color/number/logo). If tied, prefer the item with the most legible text/logo.
+8. Conservative fallbacks and prohibited inferences:
+   - If a specific class, color, or text is not confidently visible, use a conservative, generic safe term (e.g., ""person"", ""vehicle"", ""building"") rather than guessing. Never infer unseen attributes such as age, emotion, intent, relationships, or otherwise invent specifics.
+9. Punctuation and token positioning:
+   - Commas, parentheticals, or additional punctuation may not be used to delay required early high‑signal tokens. Hyphens and compound forms count as described above.
+10. Length guidance:
+   - Follow the 8–20 total words limit while aiming for about 10–14 content words to include multiple discriminative tokens.
+
+Examples of forbidden choices: do not output generic templates like ""There is..."" when a more specific subject is visible; do not output invented attributes or unverifiable labels.
+
+Output exactly one short sentence only—no extra text.",Three people sit on a rooftop terrace near a black-and-white goat.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.2399216592311859,0.1711556613445282,11,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_8d6b4a6a56,137,10109,flickr30k_test_010109,images/flickr30k/flickr30k_test_010109.jpg,"[""A group of Asians with baskets of produce are squatting in a vegetable market."", ""Several people are picking through crops at an urban market."", ""Two people cleaning greens in the sunset."", ""Women are on business selling vegetables."", ""Two Asians with green leafy vegetables.""]",textgrad_8d6b4a6a56,TextGrad Step 7,"Output exactly one short, literal, factual sentence (8–20 words) describing only visible content in the image. Do not add labels, examples, lists, annotations, explanations, or any extra text—one sentence only.
+
+Definitions and counting
+- A single leading article (a/an/the) and punctuation do not count as content words when computing ""first N content words.""
+- Treat a hyphenated color‑class cluster (e.g., ""white-and-brown dog"") as a single attribute+noun cluster for positional rules. Treat slashes or compound nouns similarly when they form one visual token.
+- High‑signal tokens = visible color or pattern, a concrete specific object class (use the most specific multiword class available), a clear Arabic numeral count (digits), clothing/accessory, or legible text/logo copied exactly as seen.
+
+Primary constraints (must)
+1. Early high‑signal tokens:
+   - If two high‑signal tokens are clearly visible, both must appear within the first three content words.
+   - Otherwise at least one high‑signal token must appear within the first two content words.
+2. Color/pattern adjacency:
+   - Any visible color/pattern adjective must appear immediately before its noun with no intervening words or commas (e.g., ""red bicycle""). Use ""noun with [attribute]"" only if the attribute cannot legally appear within the required early content words.
+3. Specific class requirement:
+   - Use the most specific visible concrete class (multiword when available, e.g., ""electric guitar"", ""police car""). Never use generic placeholders such as ""object"", ""item"", or ""instrument."" Use ""person"" only when no more specific role/class is confidently visible.
+4. Counts and legible text:
+   - Use Arabic numerals (digits) for clear counts and place any numeral within the first three content words.
+   - If any legible text or logo is confidently readable, copy it exactly (including visible case) and place it within the first five content words.
+5. Syntax and style:
+   - Prefer a short present‑tense sentence (subject + verb) as the default form. A bare noun phrase (no verb) is allowed only when a verb would prevent meeting the early high‑signal requirements.
+6. Spatial connectors:
+   - Allow at most one short spatial connector (""next to"", ""on"", ""near"", ""in front of"") and only when it disambiguates the primary subject’s relation to a nearby object or surface. Do not stack connectors or use commas to push high‑signal tokens later.
+7. Deterministic primary subject selection:
+   - Choose the primary subject deterministically: prefer centermost → largest → highest‑contrast → object with a visible attribute (color/number/logo). If tied, prefer the item with the most legible text/logo.
+8. Conservative fallbacks and prohibited inferences:
+   - If a specific class, color, or text is not confidently visible, use a conservative, generic safe term (e.g., ""person"", ""vehicle"", ""building"") rather than guessing. Never infer unseen attributes such as age, emotion, intent, relationships, or otherwise invent specifics.
+9. Punctuation and token positioning:
+   - Commas, parentheticals, or additional punctuation may not be used to delay required early high‑signal tokens. Hyphens and compound forms count as described above.
+10. Length guidance:
+   - Follow the 8–20 total words limit while aiming for about 10–14 content words to include multiple discriminative tokens.
+
+Examples of forbidden choices: do not output generic templates like ""There is..."" when a more specific subject is visible; do not output invented attributes or unverifiable labels.
+
+Output exactly one short sentence only—no extra text.",Two women in conical hats sort leafy greens in woven baskets at a market.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.35543131828308105,0.23407135903835297,14,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_8d6b4a6a56,149,403,flickr30k_test_000403,images/flickr30k/flickr30k_test_000403.jpg,"[""A man is standing with his arms folded looking at something while the person behind him is jumping onto one of the two beds in the room."", ""A man wearing a yellow shirt standing in the middle of two beds that a boy is jumping on in the background"", ""A young child jumping on the bed as a man looks the other way."", ""Man standing in the bedroom with little boy jumping into bed."", ""A child leaping from bed to bed behind the back of a man.""]",textgrad_8d6b4a6a56,TextGrad Step 7,"Output exactly one short, literal, factual sentence (8–20 words) describing only visible content in the image. Do not add labels, examples, lists, annotations, explanations, or any extra text—one sentence only.
+
+Definitions and counting
+- A single leading article (a/an/the) and punctuation do not count as content words when computing ""first N content words.""
+- Treat a hyphenated color‑class cluster (e.g., ""white-and-brown dog"") as a single attribute+noun cluster for positional rules. Treat slashes or compound nouns similarly when they form one visual token.
+- High‑signal tokens = visible color or pattern, a concrete specific object class (use the most specific multiword class available), a clear Arabic numeral count (digits), clothing/accessory, or legible text/logo copied exactly as seen.
+
+Primary constraints (must)
+1. Early high‑signal tokens:
+   - If two high‑signal tokens are clearly visible, both must appear within the first three content words.
+   - Otherwise at least one high‑signal token must appear within the first two content words.
+2. Color/pattern adjacency:
+   - Any visible color/pattern adjective must appear immediately before its noun with no intervening words or commas (e.g., ""red bicycle""). Use ""noun with [attribute]"" only if the attribute cannot legally appear within the required early content words.
+3. Specific class requirement:
+   - Use the most specific visible concrete class (multiword when available, e.g., ""electric guitar"", ""police car""). Never use generic placeholders such as ""object"", ""item"", or ""instrument."" Use ""person"" only when no more specific role/class is confidently visible.
+4. Counts and legible text:
+   - Use Arabic numerals (digits) for clear counts and place any numeral within the first three content words.
+   - If any legible text or logo is confidently readable, copy it exactly (including visible case) and place it within the first five content words.
+5. Syntax and style:
+   - Prefer a short present‑tense sentence (subject + verb) as the default form. A bare noun phrase (no verb) is allowed only when a verb would prevent meeting the early high‑signal requirements.
+6. Spatial connectors:
+   - Allow at most one short spatial connector (""next to"", ""on"", ""near"", ""in front of"") and only when it disambiguates the primary subject’s relation to a nearby object or surface. Do not stack connectors or use commas to push high‑signal tokens later.
+7. Deterministic primary subject selection:
+   - Choose the primary subject deterministically: prefer centermost → largest → highest‑contrast → object with a visible attribute (color/number/logo). If tied, prefer the item with the most legible text/logo.
+8. Conservative fallbacks and prohibited inferences:
+   - If a specific class, color, or text is not confidently visible, use a conservative, generic safe term (e.g., ""person"", ""vehicle"", ""building"") rather than guessing. Never infer unseen attributes such as age, emotion, intent, relationships, or otherwise invent specifics.
+9. Punctuation and token positioning:
+   - Commas, parentheticals, or additional punctuation may not be used to delay required early high‑signal tokens. Hyphens and compound forms count as described above.
+10. Length guidance:
+   - Follow the 8–20 total words limit while aiming for about 10–14 content words to include multiple discriminative tokens.
+
+Examples of forbidden choices: do not output generic templates like ""There is..."" when a more specific subject is visible; do not output invented attributes or unverifiable labels.
+
+Output exactly one short sentence only—no extra text.",A person in blue shorts jumps on a bed next to a man in an orange shirt.,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.34888768196105957,0.21917101740837097,17,True

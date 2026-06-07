@@ -1,0 +1,142 @@
+{
+  "prompt": "Output exactly one concise, information‑dense caption: a single grammatical sentence composed of comma‑separated short phrases. Produce only that one sentence (no lists, tags, JSON, logs, or extra lines). Use digits for counts only when Count verification below passes. Do not infer age, emotion, intention, or unseen attributes.\n\nRequired overall format and limits\n- Render 1–3 clearly separable subject groups in prominence order; each group is: [digit] + subject noun(s) + spatial anchor (see Spatial anchors). Target ≤24 words; allow up to +10% length (≤27 words) only to include a fully legible quoted text string or one necessary verified part‑level relation/background anchor. Aim for compact, active, comma‑separated noun‑verb phrases.\n\nTwo‑pass generation (mandatory)\n1) Token proposal: internally list candidate tokens for each slot — subject groups, micro‑action, part relation, up to three descriptors, viewpoint/orientation, lighting, background/text.  \n2) Verification & pruning: apply the numeric checks below to every candidate; drop any token that fails; then recompose a single grammatical comma‑separated sentence from the remaining verified tokens. If pruning removes a slot, ensure the final sentence remains grammatical.\n\nNumeric verification rules (must be enforced)\n- Count: include a digit only if each instance is ≥50% unobstructed and individually separable. Separability heuristic: centroids spacing ≥10% image width and distinct non‑overlapping silhouettes/contours. When uncertain, omit digits.\n- Contact (micro‑action): assert contact only if overlap area / smaller bbox area ≥12% OR clear segmentation adjacency/pixel adjacency. Example pass: hand overlapping cup with 18% overlap → contact verified. Example fail: hand near cup with 3% overlap → omit micro‑action.\n- Fine object class: assert a fine class only if classifier confidence >0.60 OR two independent visual cues (distinctive part + unique shape OR part + contextual prop). If metadata missing, require two visual cues.\n- Text transcription: transcribe and quote exact text only if fully legible at ≳8pt equivalent and high contrast; otherwise emit a positional label (e.g., \"signboard above\", \"painted text on shutter at left\").\n- Background anchor: include a background noun phrase only if that anchor occupies ≥5% image area or is a distinct structure (storefront, metal shutter, stairway).\n- If classifier/confidence metadata unavailable, require two independent visual cues before asserting fine classes; do not invent fine classes otherwise.\n\nSpatial anchors, grouping and prominence\n- Centroid x rules: x < 0.33 → \"left\"; 0.33 ≤ x ≤ 0.66 → \"center\"; x > 0.66 → \"right\".\n- If subject width >50% image width, emit \"center\".\n- Append \"partially cropped at [top|bottom|left|right]\" if >5% of subject area lies outside image.\n- Include depth token [foreground|midground|background] only when overlap ratio and scale unambiguously indicate depth (e.g., >25% occlusion and >2× scale difference).\n- Secondary group inclusion: include only if it covers ≥20% of main subject area OR ranks top‑2 by area/saliency.\n\nMicro‑action and part‑level relations (strict)\n- Include exactly one verbized micro‑action only if Contact verification passes. Use a strong verb and immediately follow with one part‑level relation using the exact template: \"[part] [verb] [object]\" (e.g., \"right hand holding pole\"). If contact not verified, omit both micro‑action and part relation.\n- Do not use passive or vague forms; do not use \"with\" except inside the required template.\n\nDescriptor selection and priority (up to 1–3 descriptors)\n- Choose at most three verified descriptors in this strict priority: (1) discriminative prop (unique object, container, tool, sign text), (2) fully legible text (quoted), (3) precise fine class (if verified), (4) material/texture, (5) color, (6) reflection/surface condition. If none verify, omit descriptors.\n- Mandatory: if any discriminative prop or verified part‑level relation passes verification, include at least one such token in the caption. Define \"present\" as classifier confidence >0.60 OR two independent visual cues.\n\nFine‑class cue examples (use these as verification patterns)\n- Motorbike: engine casing + exhaust OR engine casing + attached baskets OR visible exhaust + motorbike frame.  \n- Bicycle: pedals + chain OR spokes + visible pedals OR pedal + chainring.  \n- Street vendor role only if vendor cues present (baskets of fruit + scale/pans + transaction posture).\n\nBackground, signage and reflections\n- If text is fully legible per Text verification, quote exact string. Otherwise use a positional label (\"storefront behind\", \"metal shutter with painted text at left\").  \n- If an element appears doubled/reversed on a glass plane without occlusion, label \"reflections\". If items clearly sit behind glass with supporting occlusion, label \"on display behind glass\". If uncertain, omit both.\n\nPose/orientation and object state\n- When unambiguous per measurable cues, include one brief orientation token (e.g., \"facing camera\", \"turned away\", \"leaning over\").  \n- When object state is clearly visible, include one object‑state descriptor (e.g., \"open instrument case\", \"wet reflective surface\").\n\nTrimming priority (deterministic checklist)\n- If over length, deterministically drop tokens in this order until within limit: color → viewpoint/orientation → lighting → reflections → material/texture → background (unless ≥5% area or contains legible text) → low‑priority descriptors. Always preserve discriminative prop and verified part relations when present.\n\nCount and saliency rules (concrete)\n- Allow digits only when Count verification passes. For secondary groups, require ≥20% of main subject area OR top‑2 saliency by area/attention. When saliency metadata unavailable, use area thresholds.\n\nDeterministic tie‑breakers\n- If two subjects have similar prominence, choose the one with larger bbox area. Use centroid x and width rules for left/center/right deterministically.\n\nFew focused examples (bad → good)\n- Bad: \"man holding something\" → Good: \"1 man center foreground, right hand holding woven basket of oranges, storefront behind.\"  \n- Bad: \"man on bicycle\" (uncertain) → Good (motorbike cues present): \"1 man right foreground, standing by motorbike with woven baskets attached, sunlit doorway behind.\"  \n- Bad: \"sign\" (illegible) → Good: \"1 woman center foreground, walking past painted text on metal shutter at left.\"  \n- Bad: vague count \"several people\" → Good: \"2 children left foreground, both seated, blue pajamas, unwrapping silver gift, adult seated behind.\"\n\nInternal diagnostics (developer use only)\n- Internally compute and retain which verification checks passed for each chosen token (counts, overlap %, cue pairs matched). Do not output these diagnostics in the caption.\n\nNegative rules (must obey)\n- Do not output multiple candidates, metadata, internal logs, or any extra text.  \n- Do not invent counts, contacts, transcribed text, fine classes, or other tokens that fail verification.  \n- Do not infer age, emotion, intentions, or unseen attributes.  \n- Do not use vague quantifiers (\"several\"); use digits only when verified.\n\nFinal note\n- Always perform the two‑pass proposal → verification → pruning process, then emit exactly one grammatical comma‑separated sentence that preserves verified discriminative props and part relations where available and stays within the word limit.",
+  "prompt_id": "textgrad_8daf66d503",
+  "split_csv": "data/splits/flickr30k_main_seed1_train.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal/step_09/train/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal/step_09/train/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal/step_09/train/scores.csv",
+  "data_root": "data",
+  "summary": {
+    "n": 24,
+    "mean_clip": 0.2897951553265254,
+    "mean_siglip": 0.19303078452746072,
+    "mean_caption_len": 20.166666666666668,
+    "generic_rate": 0.0,
+    "mean_delta_clip": -0.03738338251908621,
+    "mean_delta_siglip": 0.006333914585411552,
+    "clip_win_rate": 0.125,
+    "siglip_win_rate": 0.5833333333333334
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_021046",
+      "image_relpath": "images/flickr30k/flickr30k_test_021046.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_021046.jpg",
+      "caption": "1 man left foreground, holding paper, 1 woman right foreground, holding cylindrical container, both seated, interior background with signboard above.",
+      "clip_score": 0.2328215092420578,
+      "siglip_score": 0.1369649171829223,
+      "delta_clip": -0.08964993059635162,
+      "delta_siglip": -0.0682962834835053
+    },
+    {
+      "image_id": "flickr30k_test_021782",
+      "image_relpath": "images/flickr30k/flickr30k_test_021782.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_021782.jpg",
+      "caption": "1 man center foreground, right hand holding chain attached to signboard, signboard with painted text “(212)625-9212” partially cropped at bottom, storefront behind.",
+      "clip_score": 0.2523730397224426,
+      "siglip_score": 0.2101176381111145,
+      "delta_clip": -0.08707505464553827,
+      "delta_siglip": 0.00909239053726199
+    },
+    {
+      "image_id": "flickr30k_test_022494",
+      "image_relpath": "images/flickr30k/flickr30k_test_022494.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_022494.jpg",
+      "caption": "1 man center foreground, holding orange ladder, standing beside brick chimney, white cloth draped object nearby, wooden deck beneath.",
+      "clip_score": 0.2818845510482788,
+      "siglip_score": 0.2030035257339477,
+      "delta_clip": -0.0792335569858551,
+      "delta_siglip": -0.012701347470283508
+    },
+    {
+      "image_id": "flickr30k_test_026288",
+      "image_relpath": "images/flickr30k/flickr30k_test_026288.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_026288.jpg",
+      "caption": "1 man center foreground, crouching, right hand holding jackfruit slice, green leaves beneath, blue bowl and red beans in background.",
+      "clip_score": 0.3017289638519287,
+      "siglip_score": 0.1691405773162841,
+      "delta_clip": -0.07624426484107971,
+      "delta_siglip": -0.050998404622078
+    },
+    {
+      "image_id": "flickr30k_test_005582",
+      "image_relpath": "images/flickr30k/flickr30k_test_005582.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_005582.jpg",
+      "caption": "1 dog center foreground, leaping toward car window, front paw touching glass, 1 brown dog midground walking past, beige car partially cropped at right.",
+      "clip_score": 0.2836335301399231,
+      "siglip_score": 0.2072387039661407,
+      "delta_clip": -0.0706547200679779,
+      "delta_siglip": 0.030904516577720587
+    },
+    {
+      "image_id": "flickr30k_test_009311",
+      "image_relpath": "images/flickr30k/flickr30k_test_009311.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_009311.jpg",
+      "caption": "1 child center foreground, partially cropped at right, leaning over fountain edge, water spraying past face, green background behind.",
+      "clip_score": 0.2739449739456177,
+      "siglip_score": 0.1784409582614898,
+      "delta_clip": -0.056616634130477905,
+      "delta_siglip": 0.010762646794319125
+    },
+    {
+      "image_id": "flickr30k_test_010401",
+      "image_relpath": "images/flickr30k/flickr30k_test_010401.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_010401.jpg",
+      "caption": "1 girl center foreground, midair above leaf pile, arms outstretched, sweater with snowflake pattern, vehicle background.",
+      "clip_score": 0.2815402150154114,
+      "siglip_score": 0.259457916021347,
+      "delta_clip": -0.05423104763031,
+      "delta_siglip": 0.0772823691368103
+    },
+    {
+      "image_id": "flickr30k_test_014348",
+      "image_relpath": "images/flickr30k/flickr30k_test_014348.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_014348.jpg",
+      "caption": "1 batter center foreground, swinging bat, black helmet, red jersey with number 10, white pants, red socks, dirt field, painted text \"OM\" and eagle logo on fence behind.",
+      "clip_score": 0.2396623641252517,
+      "siglip_score": 0.1486769169569015,
+      "delta_clip": -0.05249367654323581,
+      "delta_siglip": -0.006826654076576205
+    },
+    {
+      "image_id": "flickr30k_test_006091",
+      "image_relpath": "images/flickr30k/flickr30k_test_006091.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_006091.jpg",
+      "caption": "1 child center foreground, barefoot on countertop, right hand holding faucet spout, water streaming down sink, pink shirt, blue jeans with yellow heart pattern, red sunglasses, wooden cabinets right background.",
+      "clip_score": 0.3341606855392456,
+      "siglip_score": 0.235026866197586,
+      "delta_clip": -0.05081170797348017,
+      "delta_siglip": -0.008154287934303284
+    },
+    {
+      "image_id": "flickr30k_test_024935",
+      "image_relpath": "images/flickr30k/flickr30k_test_024935.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_024935.jpg",
+      "caption": "1 man center foreground, right hand holding woven basket of oranges, storefront behind, 5 people midground right, 1 orange cone right foreground.",
+      "clip_score": 0.2222169637680053,
+      "siglip_score": 0.1548072099685669,
+      "delta_clip": -0.04872411489486703,
+      "delta_siglip": 0.004835247993469294
+    },
+    {
+      "image_id": "flickr30k_test_027386",
+      "image_relpath": "images/flickr30k/flickr30k_test_027386.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_027386.jpg",
+      "caption": "7 hikers midground, walking single-file along grassy ridge, backpacks visible, distant snow-capped mountains and valley behind.",
+      "clip_score": 0.3032951354980469,
+      "siglip_score": 0.1895624101161956,
+      "delta_clip": -0.04480123519897461,
+      "delta_siglip": -0.013906836509704618
+    },
+    {
+      "image_id": "flickr30k_test_029824",
+      "image_relpath": "images/flickr30k/flickr30k_test_029824.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_029824.jpg",
+      "caption": "1 woman center foreground, standing behind desk with London 2012 Olympics logo, wearing lanyard with badge, smiling at camera, red-orange backdrop with \"Bienvenue Welcome\" text.",
+      "clip_score": 0.3530627787113189,
+      "siglip_score": 0.2673110961914062,
+      "delta_clip": -0.0385925173759461,
+      "delta_siglip": 0.021304637193679782
+    }
+  ]
+}

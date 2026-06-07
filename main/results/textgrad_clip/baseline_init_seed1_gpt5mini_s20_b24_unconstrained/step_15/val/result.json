@@ -1,0 +1,117 @@
+{
+  "prompt": "Default behavior (strict, enforceable)\n\nPrimary goals\n- Maximize CLIP image-text similarity by enforcing exact, CLIP‑preferred surface tokens, short subject-first sentences, and conservative gating for low-confidence images.\n\nCanonical vocabulary and determinism\n- All tokens in Line 1 and the subject token in Line 2 MUST come from the integrator's canonical_id → preferred-surface-token table (whitelist). No ad-hoc tokens (e.g., \"outdoor-world\") or synonyms outside this table are allowed.\n- A locked, pre-evaluated preferred-surface-token must be used for each canonical_id. Deterministic tie-breaker: canonical priority list → canonical_table mapping only.\n\nOutput format\n- By default emit exactly one candidate. A candidate is exactly two lines:\n  Line 1 = 3–5 comma-separated canonical tags (no trailing comma; hyphens allowed for multiword tokens).\n  Line 2 = one concise sentence ending with a single period.\n\nLine 1 (tags) — hard rules\n- Must contain exactly 3–5 high-precision tags in this composition:\n  1) primary object token (or two-objects token, e.g., two-people) — REQUIRED and must be detected above the detector_primary_tag_threshold;\n  2) action token — include only if visually present and detected with high confidence;\n  3) exactly one salient attribute token — choose one of {color OR count OR position} only.\n- No scene/generic/texture tokens unless present in the canonical_table and visually diagnostic.\n- No synonyms, no repeats, no comma lists of descriptors. Example allowed tokens: person, bicycle, red, two-people, running, modern-building.\n\nLine 2 (caption) — hard rules\n- Must begin exactly with the primary Line 1 tag's preferred-surface-token (exact string match) as the grammatical subject (i.e., the first word/phrase of Line 2 == Line1 primary token).\n- Short active-voice sentence of the form: [Subject] [active-verb] [object/relationship] [single salient attribute phrase]. Use concrete verbs (e.g., \"holds\", \"rides\", \"carries\", \"opens\") and concrete attributes (\"red\", \"two\", \"left\").\n- Include only ONE salient attribute (color OR count OR position) and reuse the same attribute token as in Line 1.\n- Target length: 10–13 tokens. Hard maximum: 15 tokens. Fewer tokens are acceptable if constraints are satisfied.\n- No commas, no lists, no subordinate clauses, no speculative language (\"appears to\", \"seems\"), no multiple attributes. End with a single period and no extra punctuation or sentences.\n\nDeterminism, synonym policy, and candidates\n- Never introduce free-form synonyms. Use only the canonical_table preferred token for each canonical_id.\n- Produce multiple candidates (max 3) ONLY when an external CLIP reranker is guaranteed by the integrator. Variants must differ solely by:\n  (a) alternate allowed tag-sets (each 3–5 tokens drawn from canonical_table), or\n  (b) swapping among pre-approved, pre-evaluated synonyms for the same canonical_ids from the integrator's synonym set.\n- Free-form caption text (Line 2 wording) must be identical across candidates; only tag-sets / allowed synonyms may differ.\n\nInternal selection / reranking\n- If an external CLIP reranker is available: deterministically generate up to 3 structured candidates (tag/synonym variations only), rerank with CLIP, emit the top-scoring candidate.\n- If only an internal CLIP is available: same procedure with internal CLIP reranker.\n- If NO CLIP reranker is available: still generate up to 3 deterministic candidates (tag/synonym variants) and use this conservative heuristic:\n  Score = 1.0 * TagPrecisionScore - 0.05 * LengthPenalty - 0.50 * SubjectMismatchPenalty\n  where:\n  - TagPrecisionScore = proportion of Line1 tags visually grounded by detectors (weighted by canonical priority),\n  - LengthPenalty = max(0, (token_count - 13))  (penalize above 13 tokens),\n  - SubjectMismatchPenalty = 0 if Line2 subject == Line1 primary token else 1 (i.e., heavy penalty).\n  Emit the top-scoring candidate if it passes verifier checks (below); otherwise fallback to \"image unclear\".\n\nVerifier / \"image unclear\" rule (conservative, enforced)\n- If ANY of these conditions hold, output exactly and only (single line, no punctuation):\nimage unclear\n  Conditions:\n  1) No primary object detected above the detector_primary_tag_threshold (integrator-configured), OR\n  2) The highest CLIP score among generated candidates is < clip_threshold (default recommended 0.20; integrator may set 0.20–0.22 after dev validation), OR\n  3) Any strict formatting or vocabulary check fails (Line1 tags not all in canonical_table, Line1 tag count outside 3–5, Line2 fails exact-subject match to Line1 primary, Line2 token_count > 15, Line2 contains commas or multiple attributes).\n- Do not output any other fallback caption or extra punctuation when declaring uncertainty.\n\nFormatting and quality guards (automated checks)\n- Enforce programmatic unit tests during generation:\n  1) Whitelist check: every Line1 tag ∈ canonical_table.\n  2) Tag count check: 3 ≤ num_tags ≤ 5 and exactly one attribute token type.\n  3) Subject reuse check: first token(s) of Line2 == Line1 primary token (exact string).\n  4) Length check: token_count(Line2) ≤ 15; prefer 10–13.\n  5) No commas in either line; no trailing commas; Line2 ends with single period.\n  6) Active-verb heuristics: detect presence of an active verb (simple POS or verb-list). Reject copula-heavy captions (\"is near\", \"is standing\") unless necessary; prefer concrete verbs.\n  7) Grounding check: cross-check Line1 primary and action tags against detector confidences; if below thresholds, fail to \"image unclear\".\n- If any automated check fails, do not attempt free-form repairs — return \"image unclear\".\n\nImplementation hints (operational)\n- Maintain versioned canonical_table with pre-evaluated CLIP scores per synonym; lock preferred tokens and update via re-evaluation if CLIP model changes.\n- During candidate creation ensure Line2 reuses exact tag tokens; implement unit test that splits Line2 subject phrase and matches Line1 primary token.\n- Monitor metrics: mean_clip, mean_delta_clip, clip_win_rate, mean_caption_len, generic_rate, token_reuse_fail_rate, and \"image unclear\" frequency. Tune clip_threshold and detector thresholds on held-out dev set to balance coverage and quality.\n\nRationale (brief)\n- Exact token reuse, short subject-first active sentences, a locked CLIP-preferred vocabulary, and conservative gating reduce noise and directly improve image-text CLIP alignment.\n\nFinal requirement\n- If you cannot produce a reliable candidate under the verifier's checks above, output exactly and only:\nimage unclear",
+  "prompt_id": "textgrad_447fe9a739",
+  "split_csv": "data/splits/flickr30k_main_seed1_val.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24/step_15/val/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24/step_15/val/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24/step_15/val/scores.csv",
+  "summary": {
+    "n": 150,
+    "mean_clip": 0.26514759947856265,
+    "mean_siglip": 0.11485961087358494,
+    "mean_caption_len": 9.54,
+    "generic_rate": 0.006666666666666667,
+    "mean_delta_clip": -0.059417848835388816,
+    "mean_delta_siglip": -0.0839809348154813,
+    "clip_win_rate": 0.07,
+    "siglip_win_rate": 0.06666666666666667
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_011250",
+      "caption": "two-people, holding hands, red\n\nTwo people hold hands red.",
+      "clip_score": 0.2087019234895706,
+      "siglip_score": 0.0356601253151893,
+      "delta_clip": -0.203891858458519,
+      "delta_siglip": -0.18485549837350848
+    },
+    {
+      "image_id": "flickr30k_test_006851",
+      "caption": "two-people, holding, green\n\nTwo people hold a green sign.",
+      "clip_score": 0.212773859500885,
+      "siglip_score": 0.1035536378622055,
+      "delta_clip": -0.1799192726612091,
+      "delta_siglip": -0.15368787944316858
+    },
+    {
+      "image_id": "flickr30k_test_011250",
+      "caption": "two-people, holding hands, red\n\nTwo people hold hands red.",
+      "clip_score": 0.2087019234895706,
+      "siglip_score": 0.0356601253151893,
+      "delta_clip": -0.1639208644628525,
+      "delta_siglip": -0.2126806601881981
+    },
+    {
+      "image_id": "flickr30k_test_026125",
+      "caption": "image unclear",
+      "clip_score": 0.1960152238607406,
+      "siglip_score": -0.0470686890184879,
+      "delta_clip": -0.16270078718662268,
+      "delta_siglip": -0.26691392436623573
+    },
+    {
+      "image_id": "flickr30k_test_023900",
+      "caption": "person, holds, skewers, red\n\nThe person holds skewers red.",
+      "clip_score": 0.2022994756698608,
+      "siglip_score": 0.1041600480675697,
+      "delta_clip": -0.15950715541839597,
+      "delta_siglip": -0.18665557354688647
+    },
+    {
+      "image_id": "flickr30k_test_023554",
+      "caption": "image unclear",
+      "clip_score": 0.2292585968971252,
+      "siglip_score": -0.0080681815743446,
+      "delta_clip": -0.15498578548431402,
+      "delta_siglip": -0.251298077404499
+    },
+    {
+      "image_id": "flickr30k_test_023317",
+      "caption": "woman, standing, pink\n\nThe woman stands wearing a pink jacket.",
+      "clip_score": 0.2374732494354248,
+      "siglip_score": 0.0998418033123016,
+      "delta_clip": -0.1536746621131897,
+      "delta_siglip": -0.11854675412178041
+    },
+    {
+      "image_id": "flickr30k_test_006548",
+      "caption": "image unclear",
+      "clip_score": 0.2006909400224685,
+      "siglip_score": -0.0152101470157504,
+      "delta_clip": -0.14972437918186188,
+      "delta_siglip": -0.1968850595876574
+    },
+    {
+      "image_id": "flickr30k_test_017698",
+      "caption": "image unclear",
+      "clip_score": 0.2023223638534546,
+      "siglip_score": -0.012501498684287,
+      "delta_clip": -0.14916390180587769,
+      "delta_siglip": -0.2725413646548986
+    },
+    {
+      "image_id": "flickr30k_test_006548",
+      "caption": "image unclear",
+      "clip_score": 0.2006909400224685,
+      "siglip_score": -0.0152101470157504,
+      "delta_clip": -0.14715622365474706,
+      "delta_siglip": -0.232588599435985
+    },
+    {
+      "image_id": "flickr30k_test_026125",
+      "caption": "image unclear",
+      "clip_score": 0.1960152238607406,
+      "siglip_score": -0.0470686890184879,
+      "delta_clip": -0.14331607520580297,
+      "delta_siglip": -0.2825468517839908
+    },
+    {
+      "image_id": "flickr30k_test_011286",
+      "caption": "three-people, walking, orange\nthree-people walk on orange rocks.",
+      "clip_score": 0.2159675359725952,
+      "siglip_score": 0.139185756444931,
+      "delta_clip": -0.14178806543350223,
+      "delta_siglip": -0.08590015769004819
+    }
+  ]
+}

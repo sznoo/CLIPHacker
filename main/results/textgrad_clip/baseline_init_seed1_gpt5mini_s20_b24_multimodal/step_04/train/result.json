@@ -1,0 +1,142 @@
+{
+  "prompt": "Output exactly one concise, information‑dense caption: a single grammatical sentence of comma‑separated short phrases. Use digits for counts; do not infer, hedge, paraphrase, or add anything not visually present. Output nothing else.\n\nRequired phrase ordering (include each item only if clearly visible; omit unverifiable items). Aim for ≤30 words; allow up to +10% length only to include a required high‑priority item (legible text, a necessary relation phrase, or a clear background anchor).\n\n1) Start with: [digit] + subject noun(s) + spatial anchor. Spatial rules: if subject width >60% image width use \"center\"; otherwise choose left/center/right by centroid. Add depth only if clearly determinable by size/overlap: use [foreground|midground|background]; if depth unclear omit. If partly out of frame, append \"partially cropped at [edge]\".\n\n2) Immediately after, include one visible action+part phrase if any micro‑action cue is present (format: \"[body/part] [verb] [object/target]\" or \"holding [object] with [hand]\"). Micro‑action cues (include action if any apply): visible limb‑object contact, object visibly held by hand, visible deformation/pressure, object displacement (midair or off ground), clear gaze toward an object, or motion blur on limbs. If none of these cues apply, include exactly \"no-action-visible\".\n\n3) Then add up to 1–3 high‑signal descriptor(s) chosen by this priority order and cap:\n A) legible text (transcribe exact string in quotes and localize, e.g. \"'NO PARKING' on door at background right\") — include only if all characters are clearly legible;\n B) reflection/wetness or surface condition (e.g., \"wet pavement with reflections\");\n C) material/texture (e.g., \"rusted metal\", \"woven straw\");\n D) distinctive accessory (e.g., \"white hard hat\", \"red pennant\");\n E) color. If more than 3 candidates, select highest‑ranked; if tie, choose lexicographically.\n\n4) If a person/object clearly interacts with another object/structure, include one concise part‑level relation phrase (e.g., \"sitting on metal chair\", \"rear wheel off ground\", \"holding pennant over awning\"). Include the interacting part (hand, foot, rear wheel, stern).\n\n5) Optionally include exactly one viewpoint token when obvious: {close-up, medium, wide, high-angle, low-angle}.\n\n6) Optionally include exactly one lighting token when obvious: {backlit, front-lit, rim-lit, long-shadow-left, long-shadow-right}.\n\n7) If visible, append one concise background anchor noun phrase (single phrase, e.g., \"stone embankment\", \"storefront window\", \"pier with canopy\"). Omit if no clear anchor.\n\nPre‑output verification (apply before emitting):\n- Transcribe legible text only if all characters readable; otherwise omit text.\n- Include action only if a micro‑action cue above is present; otherwise use \"no-action-visible\".\n- Include at most 3 descriptors from the priority list.\n- If count is uncertain, do not invent a digit.\n- If spatial depth is unclear, omit foreground/midground/background rather than guess.\n- If a subject is partially out of frame, include the exact cropped edge.\n- If any check fails, remove the uncertain token and recheck.\n\nStyle constraints:\n- Use compact, active, factual phrasing and concrete nouns (prefer specific labels: \"acoustic guitar\", \"hard hat\", \"pier\").\n- Do not infer ages, emotions, roles, relationships, or unseen attributes.\n- Keep phrases comma‑separated in one sentence; do not output tags, lists, or extra lines.\n\nExamples (bad → corrected; follow exact target format):\n- Bad: \"Several people in a busy scene.\" → Good: \"3 people left foreground, standing, colorful saris, medium, storefront window behind.\"\n- Bad: \"1 boat\" → Good: \"1 pier center foreground, people on platform, small pavilion with spire, wide, stone embankment behind.\"\n- Bad: \"man with cap\" → Good: \"1 worker center foreground, standing on fire‑escape platform, white hard hat, red brick facade behind.\"\n- Bad: \"player diving\" → Good: \"1 goalkeeper center foreground, mid‑air dive to right with outstretched gloved hands, white soccer ball to right, goal net behind.\"\n- Bad: \"musician playing\" → Good: \"1 man right foreground, right hand on flute, open tip box on ground, medium, storefront window behind.\"\n- Bad: \"kids running\" → Good: \"5 boys center foreground, leaning forward as if starting sprint, green training bibs, dirt field with parked cars behind.\"\n\nUse these rules to produce exactly one caption that follows the ordering and verification checklist.",
+  "prompt_id": "textgrad_4e86359040",
+  "split_csv": "data/splits/flickr30k_main_seed1_train.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal/step_04/train/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal/step_04/train/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal/step_04/train/scores.csv",
+  "data_root": "data",
+  "summary": {
+    "n": 24,
+    "mean_clip": 0.30352069437503815,
+    "mean_siglip": 0.19900835833201805,
+    "mean_caption_len": 23.75,
+    "generic_rate": 0.0,
+    "mean_delta_clip": -0.019826156397660572,
+    "mean_delta_siglip": 0.006545903161168103,
+    "clip_win_rate": 0.2916666666666667,
+    "siglip_win_rate": 0.5833333333333334
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_003349",
+      "image_relpath": "images/flickr30k/flickr30k_test_003349.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_003349.jpg",
+      "caption": "1 child left foreground, standing, red jacket, no-action-visible, \"LOEWE\" on glass, wet pavement with reflections, stone embankment behind.",
+      "clip_score": 0.270433247089386,
+      "siglip_score": 0.1197439357638359,
+      "delta_clip": -0.09356540441513062,
+      "delta_siglip": -0.1558136418461799
+    },
+    {
+      "image_id": "flickr30k_test_021351",
+      "image_relpath": "images/flickr30k/flickr30k_test_021351.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_021351.jpg",
+      "caption": "1 woman center foreground, holding violin with left hand, black outfit, abstract paintings on wall behind, wide, tiled floor with overhead lighting.",
+      "clip_score": 0.2526234984397888,
+      "siglip_score": 0.2217611968517303,
+      "delta_clip": -0.09274616837501526,
+      "delta_siglip": -0.010470405220985413
+    },
+    {
+      "image_id": "flickr30k_test_024011",
+      "image_relpath": "images/flickr30k/flickr30k_test_024011.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_024011.jpg",
+      "caption": "12 dancers center foreground, standing in line, no-action-visible, \"RADIO CITY\" sign above, red and white striped costumes, street with crosswalk, building facade behind.",
+      "clip_score": 0.3048716485500335,
+      "siglip_score": 0.229619026184082,
+      "delta_clip": -0.07658275961875921,
+      "delta_siglip": 0.0570170134305954
+    },
+    {
+      "image_id": "flickr30k_test_013637",
+      "image_relpath": "images/flickr30k/flickr30k_test_013637.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_013637.jpg",
+      "caption": "1 surfer center midground, crouching on surfboard, blue wetsuit, white surfboard, ocean wave splashing around, wide, sunlit water surface.",
+      "clip_score": 0.2516387701034546,
+      "siglip_score": 0.1486555337905883,
+      "delta_clip": -0.05161753296852112,
+      "delta_siglip": -0.019550740718841608
+    },
+    {
+      "image_id": "flickr30k_test_027768",
+      "image_relpath": "images/flickr30k/flickr30k_test_027768.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_027768.jpg",
+      "caption": "1 woman center foreground, holding beige pillow with right hand, red sweatshirt with white logo, orange curly hair, no-action-visible, medium, concrete walkway behind.",
+      "clip_score": 0.3029857873916626,
+      "siglip_score": 0.2176371812820434,
+      "delta_clip": -0.039202153682708685,
+      "delta_siglip": -0.014180138707161005
+    },
+    {
+      "image_id": "flickr30k_test_028178",
+      "image_relpath": "images/flickr30k/flickr30k_test_028178.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_028178.jpg",
+      "caption": "1 man center foreground, holding trumpet with right hand, wearing glasses and red collar, no-action-visible, dark suit, green tree with lights behind, close-up, backlit.",
+      "clip_score": 0.3520956039428711,
+      "siglip_score": 0.2057239264249801,
+      "delta_clip": -0.035629451274871826,
+      "delta_siglip": -0.018952414393424988
+    },
+    {
+      "image_id": "flickr30k_test_015736",
+      "image_relpath": "images/flickr30k/flickr30k_test_015736.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_015736.jpg",
+      "caption": "1 greyhound center foreground, walking through shallow water, white coat with brown patches, red collar, no-action-visible, wet surface with reflections, stone embankment behind.",
+      "clip_score": 0.3153241872787475,
+      "siglip_score": 0.2123113870620727,
+      "delta_clip": -0.03242141008377081,
+      "delta_siglip": 0.0025410056114197055
+    },
+    {
+      "image_id": "flickr30k_test_025844",
+      "image_relpath": "images/flickr30k/flickr30k_test_025844.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_025844.jpg",
+      "caption": "2 children center foreground, boy holding girl with arms, orange tie-dye shirt, camouflage shorts, sandy ground, grassy area behind.",
+      "clip_score": 0.2688767313957214,
+      "siglip_score": 0.1807716786861419,
+      "delta_clip": -0.03147897124290472,
+      "delta_siglip": -0.0007200092077255804
+    },
+    {
+      "image_id": "flickr30k_test_012029",
+      "image_relpath": "images/flickr30k/flickr30k_test_012029.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_012029.jpg",
+      "caption": "1 boat center midground, people on platform, small pavilion with spire, wide, stone embankment behind, no-action-visible, \"श्री गंगाजी मंदिर\" on shrine, wet water surface, white and red attire, holding pennant over awning",
+      "clip_score": 0.3221132755279541,
+      "siglip_score": 0.1403189301490783,
+      "delta_clip": -0.029071509838104193,
+      "delta_siglip": -0.0012959241867065985
+    },
+    {
+      "image_id": "flickr30k_test_002067",
+      "image_relpath": "images/flickr30k/flickr30k_test_002067.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_002067.jpg",
+      "caption": "1 man left foreground, holding electric guitar with right hand, standing on pavement, black guitar case on ground, \"SALON DE THE\" sign visible at background right, wet pavement with reflections, no-action-visible.",
+      "clip_score": 0.3140810132026672,
+      "siglip_score": 0.2048259526491165,
+      "delta_clip": -0.019908487796783503,
+      "delta_siglip": -0.025843530893325806
+    },
+    {
+      "image_id": "flickr30k_test_015474",
+      "image_relpath": "images/flickr30k/flickr30k_test_015474.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_015474.jpg",
+      "caption": "3 boats midground, one with person rowing with oar, another with person holding paddle, third with person holding paddle, muddy water surface, wooden pier with shops, \"DUNG ANH MAI PHAT CO\" sign visible, people on platform, low-angle, stone embankment behind.",
+      "clip_score": 0.3109755516052246,
+      "siglip_score": 0.1684899926185608,
+      "delta_clip": -0.017807871103286688,
+      "delta_siglip": -0.002270609140396118
+    },
+    {
+      "image_id": "flickr30k_test_029346",
+      "image_relpath": "images/flickr30k/flickr30k_test_029346.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_029346.jpg",
+      "caption": "1 surfer center foreground, crouching on surfboard, turquoise water with white spray, no-action-visible, low-angle, ocean wave behind.",
+      "clip_score": 0.2871584296226501,
+      "siglip_score": 0.1559009552001953,
+      "delta_clip": -0.016935169696807917,
+      "delta_siglip": 0.0030763149261475164
+    }
+  ]
+}

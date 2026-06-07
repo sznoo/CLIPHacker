@@ -1,0 +1,117 @@
+{
+  "prompt": "Output exactly two lines only.\n\nLine 1 — tags (format rules)\n- 2–5 comma-separated lower-case tokens (prefer exactly 3). No punctuation except commas.\n- Tokens must be visible nouns or a single visible adjective (color/size). Multiword fused objects (e.g., \"traffic light\", \"wine bottle\") may count as one token.\n- At least two tokens must be concrete, specific nouns. Avoid generic tokens like \"person\"/\"people\" or \"object\" unless no fine-grained detector/confident classifier label is available.\n- Deduplicate tokens; order by visual salience (most discriminative first). Prefer fine-grained nouns likely to be recognized by classifiers/CLIP (e.g., \"trumpet\" rather than \"man\" when reliable).\n- Attributes (color/size) allowed only as the sole attribute token and only if detector confidence ≥ tunable_threshold (recommend 60–75%; default 75%). Otherwise omit attributes.\n- Forbidden tokens: never output meta/instruction words or tooling vocabulary (e.g., prompt, detectors, thresholds, length, caption, tags, line, template, score, clip, siglip, example). Never output proper nouns, brand names, dates, events, or emotions.\n\nLine 2 — caption (format rules)\n- Option A (preferred): one factual short sentence in present simple/progressive of 9–12 words that includes one simple verb or a spatial phrase. Option B (fallback): a 2–3 word phrase (main noun + visible location) when a compliant 9–12 word caption would require guessing. If tags cannot be produced reliably, output exactly: image unclear\n- The main noun from Line 1 must be the first word of Line 2.\n- Non-fallback captions must have at least two exact token overlaps with Line 1 (one must be the main noun). Every non-determiner noun in Line 2 must appear verbatim in Line 1; otherwise do not output that caption.\n- Allowed extra words: determiners, prepositions (on, in, near, by, next to, in front of, behind), one optional period at sentence end. No other punctuation.\n- Require one clear, common visual verb or a spatial relation in non-fallback captions (allowed verbs — common visual verbs: sits, stands, holds, plays, carries, walks, rides, leans, looks, points, reads, opens). Use the simplest verb that fits the visual evidence.\n- Do not introduce attributes, objects, locations, identities, or inferred facts that are not present in Line 1 unless supported by a high-confidence detector per the attribute threshold. Prefer omission over guessing.\n\nConservatism and anti-hallucination\n- If fewer than two high-confidence specific nouns are available, produce the compact fallback or output \"image unclear\".\n- If an attribute token appears in Line 1, it must appear verbatim in Line 2. If attribute confidence is below the configured threshold, omit it.\n- Enforce exact noun correspondence: every noun in Line 2 must be present verbatim in Line 1.\n\nOperational note (for system integrators)\n- Keep candidate generation, scoring, CLIP reranking, and grammar/number checks outside this prompt. The VLM should only follow the concise visual rules above.\n- Tunable knobs: preferred tag count (2–5, default 3), attribute_confidence_threshold (recommended sweep 60/70/75%), and target caption length (9–12 recommended). Small ablations help find the best mean_clip tradeoff.\n- Mild generator hint: prefer visually discriminative nouns that classifiers/CLIP represent well.\n\nCompact exemplars (each block = two output lines)\nPositive (correct)\ntrumpet,man,street\ntrumpet man is playing loudly on the street by parked cars.\n\ndog,rooftop,people\ndog sits near people on the rooftop terrace above the street.\n\nman,accordion,car\naccordion,man,car\naccordion man plays beside the parked car on the curb.\n\nNegative (incorrect → corrected)\nman,hat,flag\nman waves flag at parade.    <!-- BAD: introduces \"parade\" not in tags -->\nman,hat,flag\nman waves flag near the hat.  <!-- GOOD: uses only tag nouns -->\n\nchild,bicycle,park\nchild rides red bicycle in park.  <!-- BAD: introduces attribute \"red\" not in tags -->\nchild,bicycle,park\nchild rides bicycle in the park.  <!-- GOOD: no unsupported attribute -->\n\nperson,bench,tree\nperson sits in Central Park.  <!-- BAD: uses proper noun -->\nperson,bench,tree\nperson sits on the bench by the tree.  <!-- GOOD: uses only tag nouns -->\n\nStrictly follow the Line 1 / Line 2 rules above. If no valid caption candidate passes these checks, return Line 2 = \"image unclear\".",
+  "prompt_id": "textgrad_ffd30bbb54",
+  "split_csv": "data/splits/flickr30k_main_seed1_val.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24/step_08/val/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24/step_08/val/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24/step_08/val/scores.csv",
+  "summary": {
+    "n": 150,
+    "mean_clip": 0.2818558955192566,
+    "mean_siglip": 0.16115465720494587,
+    "mean_caption_len": 9.646666666666667,
+    "generic_rate": 0.0,
+    "mean_delta_clip": -0.0427095527946949,
+    "mean_delta_siglip": -0.03768588848412037,
+    "clip_win_rate": 0.11666666666666667,
+    "siglip_win_rate": 0.17666666666666667
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_007385",
+      "caption": "person,street,frisbee\nperson throws frisbee on the street.",
+      "clip_score": 0.1787363290786743,
+      "siglip_score": 0.0593679547309875,
+      "delta_clip": -0.19012051820755002,
+      "delta_siglip": -0.11556047201156622
+    },
+    {
+      "image_id": "flickr30k_test_016590",
+      "caption": "umbrella,people,steps\numbrella people stand near the steps by the fountain.",
+      "clip_score": 0.2291737496852874,
+      "siglip_score": 0.1450986564159393,
+      "delta_clip": -0.13541159033775332,
+      "delta_siglip": -0.08110012114047999
+    },
+    {
+      "image_id": "flickr30k_test_011286",
+      "caption": "person,river,rock\nperson walks on rock near river.",
+      "clip_score": 0.2239429503679275,
+      "siglip_score": 0.1165345907211303,
+      "delta_clip": -0.13381265103816992,
+      "delta_siglip": -0.10855132341384889
+    },
+    {
+      "image_id": "flickr30k_test_007385",
+      "caption": "person,street,frisbee\nperson throws frisbee on the street.",
+      "clip_score": 0.1787363290786743,
+      "siglip_score": 0.0593679547309875,
+      "delta_clip": -0.1317533850669861,
+      "delta_siglip": -0.06805245578289032
+    },
+    {
+      "image_id": "flickr30k_test_023900",
+      "caption": "utiah,man,stand\nutiah man stands near food stall with skewers.",
+      "clip_score": 0.2343107163906097,
+      "siglip_score": 0.2708024382591247,
+      "delta_clip": -0.12749591469764707,
+      "delta_siglip": -0.020013183355331476
+    },
+    {
+      "image_id": "flickr30k_test_011250",
+      "caption": "boy,child,grass\nboy holds hand of child on grass near yellow tape.",
+      "clip_score": 0.2874005436897278,
+      "siglip_score": 0.2071192264556884,
+      "delta_clip": -0.12519323825836182,
+      "delta_siglip": -0.013396397233009394
+    },
+    {
+      "image_id": "flickr30k_test_016590",
+      "caption": "umbrella,people,steps\numbrella people stand near the steps by the fountain.",
+      "clip_score": 0.2291737496852874,
+      "siglip_score": 0.1450986564159393,
+      "delta_clip": -0.12348175048828133,
+      "delta_siglip": -0.08381430804729459
+    },
+    {
+      "image_id": "flickr30k_test_006548",
+      "caption": "scaffolding,bench,sign\nscaffolding stands near bench beside the sign.",
+      "clip_score": 0.2288862019777298,
+      "siglip_score": 0.1318352371454239,
+      "delta_clip": -0.12152911722660059,
+      "delta_siglip": -0.0498396754264831
+    },
+    {
+      "image_id": "flickr30k_test_023317",
+      "caption": "hat,woman,counter\nwoman stands near counter holding black bag.",
+      "clip_score": 0.2707641124725342,
+      "siglip_score": 0.1335833221673965,
+      "delta_clip": -0.12038379907608032,
+      "delta_siglip": -0.08480523526668551
+    },
+    {
+      "image_id": "flickr30k_test_006548",
+      "caption": "scaffolding,bench,sign\nscaffolding stands near bench beside the sign.",
+      "clip_score": 0.2288862019777298,
+      "siglip_score": 0.1318352371454239,
+      "delta_clip": -0.11896096169948578,
+      "delta_siglip": -0.08554321527481071
+    },
+    {
+      "image_id": "flickr30k_test_009512",
+      "caption": "red,skirt,woman\nwoman stands in front of blue tent wearing red skirt and black top.",
+      "clip_score": 0.2606090307235718,
+      "siglip_score": 0.0595779195427894,
+      "delta_clip": -0.11858272552490234,
+      "delta_siglip": -0.1288127526640892
+    },
+    {
+      "image_id": "flickr30k_test_028445",
+      "caption": "basket,man,street\nman carries basket while riding bicycle on the street.",
+      "clip_score": 0.2567897439002991,
+      "siglip_score": 0.0927059054374694,
+      "delta_clip": -0.11058378219604492,
+      "delta_siglip": -0.1243306696414948
+    }
+  ]
+}

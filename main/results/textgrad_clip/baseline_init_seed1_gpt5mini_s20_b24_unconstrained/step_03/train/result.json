@@ -1,0 +1,117 @@
+{
+  "prompt": "Output exactly two lines only.\n\nLine 1 (tags) — required format and rules:\n- Provide a comma-separated list of up to 8 tokens (no punctuation except commas).\n- First token must contain the main object as a lower-case common noun; it may optionally include a count (digit or word) after the noun (examples: \"child 2\", \"child\", \"person one\"). If a count is included, place it immediately after the noun in that first token.\n- After the first token, list 2–4 salient visible objects and up to 1–2 clearly visible attributes (color or size). Order by salience (most important first) but free ordering is allowed.\n- Use only lower-case common nouns and basic adjectives (person, child, dog, car, red, small). Do NOT use proper nouns, brand names, inferred facts, emotions, events, or dates.\n- Include colors/sizes only when clearly visible; if uncertain, omit them.\n- No repeated synonyms, no articles, and no verbs in tags.\n\nLine 2 (caption) — required format and rules:\n- One factual short sentence (7–14 words) in present simple or present progressive; main object must appear early in the sentence.\n- If a numeric count is visually certain, include it (digit or spelled-out number allowed). If uncertain, omit the count rather than guess.\n- Verb morphology: for a singular main-object count use third-person singular verb (-s); for plural use base verb (e.g., \"1 child stands\", \"2 children stand\").\n- You may include at most one clearly visible color or size in the caption and one simple spatial relation/preposition (on, in, near, by, in front of, behind).\n- Use only concrete, directly visible facts. Do NOT add proper nouns, inferred intentions, emotions, or invented facts.\n- No punctuation except an optional single period at the end.\n\nHarmonization and anti-hallucination:\n- Ensure the caption contains at least one exact token (noun or visible attribute) from Line 1 so tags and caption reinforce the same salient visual terms.\n- Prefer omission over guessing: if a property (count, color, relation) is not clearly visible, leave it out.\n- If you cannot produce a compliant 7–14 word caption without adding uncertain attributes, produce a concise fallback caption of 2–3 words in the form \"<main noun> <location>\" (e.g., \"child sidewalk\") or \"image unclear\". In this fallback case Line 1 may still list visible tags.\n- If you cannot produce even tags reliably, Line 2 must be \"image unclear\".\n\nSelf-checks (must be applied before returning output):\n1. Exactly 2 lines in the output.\n2. Line 1: ≤8 comma-separated tokens; first token = main noun (optionally with count); all lower-case; no forbidden items.\n3. Line 2: either 7–14 words (preferred) or valid 2–3 word fallback; main object early; correct verb form when a count is present.\n4. No proper nouns, inferences, or invented facts.\n5. No punctuation except commas in Line 1 and an optional final period on Line 2.\nIf any check fails, replace Line 2 with the fallback \"image unclear\" (or, if tags cannot be produced, ensure Line 2 is \"image unclear\").\n\nImplementation note for the pipeline (meta instruction, not required in the two-line output):\n- When possible in the calling system, generate 3 short caption variants and use an external CLIP-based reranker to select the best-scoring caption. This often improves image-text alignment. The VLM itself should still follow the two-line output rules above.",
+  "prompt_id": "textgrad_5acfb3d6db",
+  "split_csv": "data/splits/flickr30k_main_seed1_train.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24/step_03/train/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24/step_03/train/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24/step_03/train/scores.csv",
+  "summary": {
+    "n": 24,
+    "mean_clip": 0.2955911960452795,
+    "mean_siglip": 0.16116294451057908,
+    "mean_caption_len": 17.583333333333332,
+    "generic_rate": 0.0,
+    "mean_delta_clip": -0.031275363018115364,
+    "mean_delta_siglip": -0.028408708982169628,
+    "clip_win_rate": 0.125,
+    "siglip_win_rate": 0.25
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_027960",
+      "caption": "child 5\nchild, car, person, person, person, person, person, person, person, person, person, person, person, person, person, person, person, person, person, person, person, person, person, person, person, person, person, person, person, person,",
+      "clip_score": 0.2004364579916,
+      "siglip_score": 0.0387672185897827,
+      "delta_clip": -0.11542721092700961,
+      "delta_siglip": -0.1170247048139572
+    },
+    {
+      "image_id": "flickr30k_test_001002",
+      "caption": "person one, sword, hat, blanket, black, red, blue, orange\nperson one sits on blanket near sword and hat",
+      "clip_score": 0.2821393609046936,
+      "siglip_score": 0.1429229080677032,
+      "delta_clip": -0.0767715573310852,
+      "delta_siglip": -0.08925789594650271
+    },
+    {
+      "image_id": "flickr30k_test_026288",
+      "caption": "person, green fruit, brown bag, blue bowl, dirt ground\nperson sits on dirt ground near green fruit and blue bowl",
+      "clip_score": 0.3024199604988098,
+      "siglip_score": 0.0811413079500198,
+      "delta_clip": -0.07555326819419861,
+      "delta_siglip": -0.13899767398834229
+    },
+    {
+      "image_id": "flickr30k_test_006879",
+      "caption": "child, blue shirt, blue shorts, blue socks, white shoes, tree, ground, other children\nchild stands on ground near tree wearing blue shorts and socks",
+      "clip_score": 0.278577983379364,
+      "siglip_score": 0.1543335616588592,
+      "delta_clip": -0.05707663297653198,
+      "delta_siglip": -0.028129264712333707
+    },
+    {
+      "image_id": "flickr30k_test_019437",
+      "caption": "person, door, sign, pavement, yellow, metal, warning, no parking\nperson walks on pavement in front of metal door with no parking sign",
+      "clip_score": 0.282595157623291,
+      "siglip_score": 0.1454598307609558,
+      "delta_clip": -0.047812074422836304,
+      "delta_siglip": -0.003967851400375283
+    },
+    {
+      "image_id": "flickr30k_test_008358",
+      "caption": "goalkeeper dives\ngoalkeeper in red dives on grass",
+      "clip_score": 0.3124953806400299,
+      "siglip_score": 0.1814514994621276,
+      "delta_clip": -0.0456179678440094,
+      "delta_siglip": -0.02006033062934881
+    },
+    {
+      "image_id": "flickr30k_test_020622",
+      "caption": "person one, fire escape, red building, black railing, gray sky\nperson climbs fire escape on red building",
+      "clip_score": 0.2879920601844787,
+      "siglip_score": 0.1544205099344253,
+      "delta_clip": -0.04276672005653387,
+      "delta_siglip": -0.06005421280860901
+    },
+    {
+      "image_id": "flickr30k_test_015378",
+      "caption": "person one, red shirt, gray pants, black hat, plastic bag\nperson stands near wall holding plastic bag",
+      "clip_score": 0.2636728584766388,
+      "siglip_score": 0.1982370615005493,
+      "delta_clip": -0.04077312350273132,
+      "delta_siglip": -0.0382219851016998
+    },
+    {
+      "image_id": "flickr30k_test_022494",
+      "caption": "person, ladder, brick, white cloth, orange shirt, gray pants\nperson carries ladder near brick wall covered with white cloth",
+      "clip_score": 0.3221138715744018,
+      "siglip_score": 0.2018983960151672,
+      "delta_clip": -0.03900423645973211,
+      "delta_siglip": -0.013806477189063998
+    },
+    {
+      "image_id": "flickr30k_test_017741",
+      "caption": "person two, bench, window, bag, dark, wooden floor\ntwo people sit on a bench near a large window",
+      "clip_score": 0.2856127023696899,
+      "siglip_score": 0.2002236098051071,
+      "delta_clip": -0.03376412391662603,
+      "delta_siglip": -0.041946068406105014
+    },
+    {
+      "image_id": "flickr30k_test_026274",
+      "caption": "horse rider\none person rides brown horse with red flags nearby",
+      "clip_score": 0.2760506272315979,
+      "siglip_score": 0.1283524185419082,
+      "delta_clip": -0.03369385004043579,
+      "delta_siglip": 0.031262077391147614
+    },
+    {
+      "image_id": "flickr30k_test_022101",
+      "caption": "person, escalator, hand, black, white, gray, blue, red\n\nperson stands on escalator near handrail in front of others",
+      "clip_score": 0.2886302471160888,
+      "siglip_score": 0.1539681851863861,
+      "delta_clip": -0.0320135653018952,
+      "delta_siglip": -0.04185131192207328
+    }
+  ]
+}

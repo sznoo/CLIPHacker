@@ -1,0 +1,117 @@
+{
+  "prompt": "Output exactly one literal, factual sentence (8–16 words) describing only visible content in the image. Do not add labels, examples, lists, or extra text. Structure the sentence as: Primary subject (noun) + at least one high‑signal attribute + action/pose and, if visible, a short spatial/location phrase or nearby object. Place at least one high‑signal token within the first five words; include a second high‑signal token when it is clearly visible. High‑signal tokens = specific object class (e.g., electric guitar, fountain), visible color or pattern, clear count, clothing/accessory, or legible text/logo (include exact text verbatim). Keep attribute immediately before the noun (e.g., “red bicycle,” not “bicycle that is red”); short compound attributes or hyphenation (e.g., “dark-blue jacket,” “red-and-white flag”) are allowed when both attributes are visible. Prefer specific nouns (saxophone, motorbike, banner) over generic terms. Use present‑participle verbs for visible actions (riding, holding, standing). If a distinct nearby object or surface is visible, include a short spatial token (next to, on, in front of, near) to link them. Use Arabic numerals when each item is fully visible and separable; if more than three or indistinct use “several”; if uncertain, omit counts. Use “person” when gender/age/role is unclear; use “man,” “woman,” or “child” only when clearly visible. Do not infer unseen attributes (age, emotion, intent, relationships) and avoid figurative or subjective language. Output exactly one short sentence only — no extra text.",
+  "prompt_id": "textgrad_dd84b16e68",
+  "split_csv": "data/splits/flickr30k_main_seed1_val.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_03/val/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_03/val/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_03/val/scores.csv",
+  "summary": {
+    "n": 150,
+    "mean_clip": 0.30950759728749594,
+    "mean_siglip": 0.183233313113451,
+    "mean_caption_len": 11.6,
+    "generic_rate": 0.0,
+    "mean_delta_clip": -0.01505785102645556,
+    "mean_delta_siglip": -0.01560723257561525,
+    "clip_win_rate": 0.31666666666666665,
+    "siglip_win_rate": 0.33666666666666667
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_011250",
+      "caption": "Two children, one in brown shirt, stand holding hands on grass near yellow tape.",
+      "clip_score": 0.3128069341182709,
+      "siglip_score": 0.2254465818405151,
+      "delta_clip": -0.09978684782981873,
+      "delta_siglip": 0.004930958151817322
+    },
+    {
+      "image_id": "flickr30k_test_006161",
+      "caption": "Woman in green vest holding broom stands near trash bag.",
+      "clip_score": 0.242130309343338,
+      "siglip_score": 0.1541101485490799,
+      "delta_clip": -0.0958516001701355,
+      "delta_siglip": -0.0902296155691146
+    },
+    {
+      "image_id": "flickr30k_test_023900",
+      "caption": "Man in dark shirt holding skewers near \"UTIAH\" sign.",
+      "clip_score": 0.2741486430168152,
+      "siglip_score": 0.2540402710437774,
+      "delta_clip": -0.0876579880714416,
+      "delta_siglip": -0.036775350570678766
+    },
+    {
+      "image_id": "flickr30k_test_026513",
+      "caption": "Yellow-jacketed person holding camera near tripod on wet pavement.",
+      "clip_score": 0.3175791800022125,
+      "siglip_score": 0.1773200929164886,
+      "delta_clip": -0.08509483933448786,
+      "delta_siglip": -0.08269858360290533
+    },
+    {
+      "image_id": "flickr30k_test_016590",
+      "caption": "Woman in colorful skirt stands near blue-and-white umbrella.",
+      "clip_score": 0.2805094122886657,
+      "siglip_score": 0.1007825434207916,
+      "delta_clip": -0.084075927734375,
+      "delta_siglip": -0.1254162341356277
+    },
+    {
+      "image_id": "flickr30k_test_006733",
+      "caption": "Boy in blue shorts stands near water bucket on grass.",
+      "clip_score": 0.2727782130241394,
+      "siglip_score": 0.1312804669141769,
+      "delta_clip": -0.08152088522911072,
+      "delta_siglip": -0.04397641122341159
+    },
+    {
+      "image_id": "flickr30k_test_023317",
+      "caption": "Woman in pink jacket and white hat stands near guest services counter.",
+      "clip_score": 0.3100574612617492,
+      "siglip_score": 0.2110521495342254,
+      "delta_clip": -0.08109045028686529,
+      "delta_siglip": -0.007336407899856595
+    },
+    {
+      "image_id": "flickr30k_test_006161",
+      "caption": "Woman in green vest holding broom stands near trash bag.",
+      "clip_score": 0.242130309343338,
+      "siglip_score": 0.1541101485490799,
+      "delta_clip": -0.07914328575134277,
+      "delta_siglip": -0.046402692794799805
+    },
+    {
+      "image_id": "flickr30k_test_000051",
+      "caption": "Man in white gi with \"J.K. LEE\" kneeling and holding wooden sticks near wooden board.",
+      "clip_score": 0.2918849587440491,
+      "siglip_score": 0.1763650774955749,
+      "delta_clip": -0.07672673463821411,
+      "delta_siglip": -0.009808465838432312
+    },
+    {
+      "image_id": "flickr30k_test_013019",
+      "caption": "Man in black jacket holding bag walks beside woman in blue jacket near fence.",
+      "clip_score": 0.2492878288030624,
+      "siglip_score": 0.1203923523426055,
+      "delta_clip": -0.07661320269107821,
+      "delta_siglip": -0.078376516699791
+    },
+    {
+      "image_id": "flickr30k_test_005806",
+      "caption": "Woman in beige sweater packing open black suitcase on floor.",
+      "clip_score": 0.299146443605423,
+      "siglip_score": 0.1536691784858703,
+      "delta_clip": -0.07504758238792414,
+      "delta_siglip": -0.05725488066673279
+    },
+    {
+      "image_id": "flickr30k_test_006733",
+      "caption": "Boy in blue shorts stands near water bucket on grass.",
+      "clip_score": 0.2727782130241394,
+      "siglip_score": 0.1312804669141769,
+      "delta_clip": -0.07303076982498169,
+      "delta_siglip": -0.04351787269115448
+    }
+  ]
+}

@@ -1,0 +1,793 @@
+split_id,method_id,run_id,order,dataset_index,image_id,image_relpath,reference_captions,prompt_id,prompt_name,prompt_text,caption,candidate_id,selected,model,temperature,top_p,max_new_tokens,generation_config,clip_score,siglip_score,caption_len,generic_flag
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_420af965c9,1,18651,flickr30k_test_018651,images/flickr30k/flickr30k_test_018651.jpg,"[""A man in light brown hat, gray coat and a blue vest with a scooter built with baskets full of oranges"", ""A farmer is taking his oranges to the market to sell."", ""A man is standing with vegetables in barrels."", ""An old foreign man selling oranges."", ""Mexican man peddling fresh fruit.""]",textgrad_420af965c9,TextGrad Step 10,"Output exactly two lines only.
+
+Line 1 — tags (format rules)
+- 2–5 comma-separated lower-case tokens (prefer exactly 3). No punctuation except commas.
+- Tokens should be visible concrete nouns or a single visible adjective (color/size) as the sole attribute token. Multiword fused objects (e.g., ""traffic light"", ""wine bottle"") may count as one token.
+- Required pre-filtering & canonicalization (assume an external or prior step): map detector/classifier labels to canonical, high‑coverage visual nouns (prefer COCO/Visual Genome/CLIP-common classes). Filter out non-nouns and convert multiword labels to canonical fused nouns when appropriate (e.g., ""welcome sign"" → ""sign""; ""sofa"" → ""couch""). Only accept attribute tokens (colors/sizes) if the attribute detector confidence ≥ attribute_confidence_threshold (default 75%; tune 60/70/75).
+- Allow lemmatized/canonical matches: tokens may be normalized (plural→singular, synonyms→canonical class) for matching with captions. Synonyms are allowed only if they map back to a canonical tag via the mapping step.
+- Deduplicate tokens; order by visual discriminativeness (most distinctive / likely recognized by CLIP/classifiers first). Prefer fine‑grained nouns (e.g., ""trumpet"" over ""man"" when reliable).
+- If fewer than two high-confidence specific nouns are available after filtering, prefer the compact fallback (Line 2 Option B) or output ""image unclear"".
+- Forbidden tokens in Line 1: meta/instruction words, tooling vocabulary (prompt, detectors, thresholds, score, clip, siglip, example, etc.), proper nouns, brand names, dates, events, emotions, or inferred identities.
+
+Line 2 — caption (format rules)
+- Option A (preferred): one factual short sentence (9–12 words) in present simple or simple progressive that contains one clear visual verb or a concrete spatial relation.
+- Option B (fallback): a 2–3 word phrase (main noun + visible location) when a compliant 9–12 word caption would require guessing.
+- If tags cannot be produced reliably, output exactly: image unclear
+- The main noun from Line 1 must appear in Line 2 in canonical/lemmatized form. To allow more natural phrasing, the caption may start with either: ""<main_noun> ..."" or ""the <main_noun> ..."" or have the main noun within the first two tokens.
+- Non-fallback captions must have at least two token overlaps with Line 1 in canonical/lemmatized form (one must be the main noun). Every non-determiner noun in Line 2 must correspond to a Line 1 token via the canonicalization mapping; otherwise do not output that caption.
+- Allowed extra words: determiners, prepositions (on, in, near, by, next to, in front of, behind), small conjunctions (and), one optional period at sentence end. No other punctuation.
+- Verbs: require one clear common visual verb or spatial relation. Expanded allowed verbs include common visual actions and simple progressive forms (e.g., sits, stands, lies, holds, carries, walks, rides, leans, looks, points, reads, opens, plays, wears, pushes, pulls, places, covers, is holding, is sitting). Use the simplest verb justified by visible evidence.
+- Attributes: an attribute token in Line 1 must appear verbatim in Line 2. Do not introduce attributes, objects, locations, identities, or inferred facts not present in Line 1 unless supported by high-confidence detectors per the attribute threshold. Prefer omission over guessing.
+
+Conservatism and anti-hallucination
+- Forbid proper nouns, emotions, intentions, or speculative inferences. Captions must be strictly visually verifiable from Line 1 tokens and high-confidence detections.
+- If attribute confidence is below the configured threshold, omit the attribute.
+- Use multiword compound nouns when the compound detector confidence is high; do not split compounds into unrelated tokens.
+
+Operational note (integrators / generator)
+- This prompt assumes an upstream pre-filtering/canonicalization step (POS filter, mapping to canonical classes, confidence thresholds). Tune attribute_confidence_threshold (recommended sweep 60/70/75%) and preferred tag count (2–5).
+- Prefer generating a small set of alternative compliant tag sets (e.g., up to 3 variants) when label confidence is ambiguous so a downstream CLIP reranker can choose the best candidate.
+- Keep candidate generation, CLIP reranking, and final selection outside this prompt. The frozen VLM should follow the concise visual rules above.
+
+Strictly follow the Line 1 / Line 2 rules above. If no valid caption candidate passes these checks, return Line 2 = ""image unclear"".","man sits near bicycle
+man sits near bicycle",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.23668481409549713,0.10386630892753601,8,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_420af965c9,10,14728,flickr30k_test_014728,images/flickr30k/flickr30k_test_014728.jpg,"[""Large group of people in a building looking at a large mostly white color ball being rolled."", ""A group of people stand around a large ball while a gentleman takes a picture."", ""Two older men roll out a huge ball as a crowd watches and takes pictures"", ""A man in a group of people is taking a photo."", ""People photographing exhibits in a museum.""]",textgrad_420af965c9,TextGrad Step 10,"Output exactly two lines only.
+
+Line 1 — tags (format rules)
+- 2–5 comma-separated lower-case tokens (prefer exactly 3). No punctuation except commas.
+- Tokens should be visible concrete nouns or a single visible adjective (color/size) as the sole attribute token. Multiword fused objects (e.g., ""traffic light"", ""wine bottle"") may count as one token.
+- Required pre-filtering & canonicalization (assume an external or prior step): map detector/classifier labels to canonical, high‑coverage visual nouns (prefer COCO/Visual Genome/CLIP-common classes). Filter out non-nouns and convert multiword labels to canonical fused nouns when appropriate (e.g., ""welcome sign"" → ""sign""; ""sofa"" → ""couch""). Only accept attribute tokens (colors/sizes) if the attribute detector confidence ≥ attribute_confidence_threshold (default 75%; tune 60/70/75).
+- Allow lemmatized/canonical matches: tokens may be normalized (plural→singular, synonyms→canonical class) for matching with captions. Synonyms are allowed only if they map back to a canonical tag via the mapping step.
+- Deduplicate tokens; order by visual discriminativeness (most distinctive / likely recognized by CLIP/classifiers first). Prefer fine‑grained nouns (e.g., ""trumpet"" over ""man"" when reliable).
+- If fewer than two high-confidence specific nouns are available after filtering, prefer the compact fallback (Line 2 Option B) or output ""image unclear"".
+- Forbidden tokens in Line 1: meta/instruction words, tooling vocabulary (prompt, detectors, thresholds, score, clip, siglip, example, etc.), proper nouns, brand names, dates, events, emotions, or inferred identities.
+
+Line 2 — caption (format rules)
+- Option A (preferred): one factual short sentence (9–12 words) in present simple or simple progressive that contains one clear visual verb or a concrete spatial relation.
+- Option B (fallback): a 2–3 word phrase (main noun + visible location) when a compliant 9–12 word caption would require guessing.
+- If tags cannot be produced reliably, output exactly: image unclear
+- The main noun from Line 1 must appear in Line 2 in canonical/lemmatized form. To allow more natural phrasing, the caption may start with either: ""<main_noun> ..."" or ""the <main_noun> ..."" or have the main noun within the first two tokens.
+- Non-fallback captions must have at least two token overlaps with Line 1 in canonical/lemmatized form (one must be the main noun). Every non-determiner noun in Line 2 must correspond to a Line 1 token via the canonicalization mapping; otherwise do not output that caption.
+- Allowed extra words: determiners, prepositions (on, in, near, by, next to, in front of, behind), small conjunctions (and), one optional period at sentence end. No other punctuation.
+- Verbs: require one clear common visual verb or spatial relation. Expanded allowed verbs include common visual actions and simple progressive forms (e.g., sits, stands, lies, holds, carries, walks, rides, leans, looks, points, reads, opens, plays, wears, pushes, pulls, places, covers, is holding, is sitting). Use the simplest verb justified by visible evidence.
+- Attributes: an attribute token in Line 1 must appear verbatim in Line 2. Do not introduce attributes, objects, locations, identities, or inferred facts not present in Line 1 unless supported by high-confidence detectors per the attribute threshold. Prefer omission over guessing.
+
+Conservatism and anti-hallucination
+- Forbid proper nouns, emotions, intentions, or speculative inferences. Captions must be strictly visually verifiable from Line 1 tokens and high-confidence detections.
+- If attribute confidence is below the configured threshold, omit the attribute.
+- Use multiword compound nouns when the compound detector confidence is high; do not split compounds into unrelated tokens.
+
+Operational note (integrators / generator)
+- This prompt assumes an upstream pre-filtering/canonicalization step (POS filter, mapping to canonical classes, confidence thresholds). Tune attribute_confidence_threshold (recommended sweep 60/70/75%) and preferred tag count (2–5).
+- Prefer generating a small set of alternative compliant tag sets (e.g., up to 3 variants) when label confidence is ambiguous so a downstream CLIP reranker can choose the best candidate.
+- Keep candidate generation, CLIP reranking, and final selection outside this prompt. The frozen VLM should follow the concise visual rules above.
+
+Strictly follow the Line 1 / Line 2 rules above. If no valid caption candidate passes these checks, return Line 2 = ""image unclear"".","people gather around large sphere
+people stand near large sphere",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.2666131258010864,0.18836767971515656,10,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_420af965c9,19,29272,flickr30k_test_029272,images/flickr30k/flickr30k_test_029272.jpg,"[""A man on stage in the act of jumping, with a little boy in the background really enjoying it."", ""A man with braids, a t-shirt, and sweatpants is dancing in front of a crowd of people."", ""An African American man is jumping in the air, while a boy claps."", ""A man jumps rope while a crowd of people watch him."", ""A black man is jumping and a crowd is gathered""]",textgrad_420af965c9,TextGrad Step 10,"Output exactly two lines only.
+
+Line 1 — tags (format rules)
+- 2–5 comma-separated lower-case tokens (prefer exactly 3). No punctuation except commas.
+- Tokens should be visible concrete nouns or a single visible adjective (color/size) as the sole attribute token. Multiword fused objects (e.g., ""traffic light"", ""wine bottle"") may count as one token.
+- Required pre-filtering & canonicalization (assume an external or prior step): map detector/classifier labels to canonical, high‑coverage visual nouns (prefer COCO/Visual Genome/CLIP-common classes). Filter out non-nouns and convert multiword labels to canonical fused nouns when appropriate (e.g., ""welcome sign"" → ""sign""; ""sofa"" → ""couch""). Only accept attribute tokens (colors/sizes) if the attribute detector confidence ≥ attribute_confidence_threshold (default 75%; tune 60/70/75).
+- Allow lemmatized/canonical matches: tokens may be normalized (plural→singular, synonyms→canonical class) for matching with captions. Synonyms are allowed only if they map back to a canonical tag via the mapping step.
+- Deduplicate tokens; order by visual discriminativeness (most distinctive / likely recognized by CLIP/classifiers first). Prefer fine‑grained nouns (e.g., ""trumpet"" over ""man"" when reliable).
+- If fewer than two high-confidence specific nouns are available after filtering, prefer the compact fallback (Line 2 Option B) or output ""image unclear"".
+- Forbidden tokens in Line 1: meta/instruction words, tooling vocabulary (prompt, detectors, thresholds, score, clip, siglip, example, etc.), proper nouns, brand names, dates, events, emotions, or inferred identities.
+
+Line 2 — caption (format rules)
+- Option A (preferred): one factual short sentence (9–12 words) in present simple or simple progressive that contains one clear visual verb or a concrete spatial relation.
+- Option B (fallback): a 2–3 word phrase (main noun + visible location) when a compliant 9–12 word caption would require guessing.
+- If tags cannot be produced reliably, output exactly: image unclear
+- The main noun from Line 1 must appear in Line 2 in canonical/lemmatized form. To allow more natural phrasing, the caption may start with either: ""<main_noun> ..."" or ""the <main_noun> ..."" or have the main noun within the first two tokens.
+- Non-fallback captions must have at least two token overlaps with Line 1 in canonical/lemmatized form (one must be the main noun). Every non-determiner noun in Line 2 must correspond to a Line 1 token via the canonicalization mapping; otherwise do not output that caption.
+- Allowed extra words: determiners, prepositions (on, in, near, by, next to, in front of, behind), small conjunctions (and), one optional period at sentence end. No other punctuation.
+- Verbs: require one clear common visual verb or spatial relation. Expanded allowed verbs include common visual actions and simple progressive forms (e.g., sits, stands, lies, holds, carries, walks, rides, leans, looks, points, reads, opens, plays, wears, pushes, pulls, places, covers, is holding, is sitting). Use the simplest verb justified by visible evidence.
+- Attributes: an attribute token in Line 1 must appear verbatim in Line 2. Do not introduce attributes, objects, locations, identities, or inferred facts not present in Line 1 unless supported by high-confidence detectors per the attribute threshold. Prefer omission over guessing.
+
+Conservatism and anti-hallucination
+- Forbid proper nouns, emotions, intentions, or speculative inferences. Captions must be strictly visually verifiable from Line 1 tokens and high-confidence detections.
+- If attribute confidence is below the configured threshold, omit the attribute.
+- Use multiword compound nouns when the compound detector confidence is high; do not split compounds into unrelated tokens.
+
+Operational note (integrators / generator)
+- This prompt assumes an upstream pre-filtering/canonicalization step (POS filter, mapping to canonical classes, confidence thresholds). Tune attribute_confidence_threshold (recommended sweep 60/70/75%) and preferred tag count (2–5).
+- Prefer generating a small set of alternative compliant tag sets (e.g., up to 3 variants) when label confidence is ambiguous so a downstream CLIP reranker can choose the best candidate.
+- Keep candidate generation, CLIP reranking, and final selection outside this prompt. The frozen VLM should follow the concise visual rules above.
+
+Strictly follow the Line 1 / Line 2 rules above. If no valid caption candidate passes these checks, return Line 2 = ""image unclear"".","dancer, crowd, stage
+dancer jumps on stage in front of crowd",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.257610023021698,0.1457073837518692,11,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_420af965c9,21,12773,flickr30k_test_012773,images/flickr30k/flickr30k_test_012773.jpg,"[""A man in blue jeans is sitting on the shoulders of another person as he interacts with a woman performer on stage at a concert."", ""A woman with a microphone on a stage points the microphone at a man who is standing in the audience in front of her"", ""A fan sitting on someone's shoulders is waving to a woman on a stage that says Amnesty International."", ""Woman on stage at Amnesty International event exchanges gestures with man offstage."", ""A woman on stage points to a man holding up his hand""]",textgrad_420af965c9,TextGrad Step 10,"Output exactly two lines only.
+
+Line 1 — tags (format rules)
+- 2–5 comma-separated lower-case tokens (prefer exactly 3). No punctuation except commas.
+- Tokens should be visible concrete nouns or a single visible adjective (color/size) as the sole attribute token. Multiword fused objects (e.g., ""traffic light"", ""wine bottle"") may count as one token.
+- Required pre-filtering & canonicalization (assume an external or prior step): map detector/classifier labels to canonical, high‑coverage visual nouns (prefer COCO/Visual Genome/CLIP-common classes). Filter out non-nouns and convert multiword labels to canonical fused nouns when appropriate (e.g., ""welcome sign"" → ""sign""; ""sofa"" → ""couch""). Only accept attribute tokens (colors/sizes) if the attribute detector confidence ≥ attribute_confidence_threshold (default 75%; tune 60/70/75).
+- Allow lemmatized/canonical matches: tokens may be normalized (plural→singular, synonyms→canonical class) for matching with captions. Synonyms are allowed only if they map back to a canonical tag via the mapping step.
+- Deduplicate tokens; order by visual discriminativeness (most distinctive / likely recognized by CLIP/classifiers first). Prefer fine‑grained nouns (e.g., ""trumpet"" over ""man"" when reliable).
+- If fewer than two high-confidence specific nouns are available after filtering, prefer the compact fallback (Line 2 Option B) or output ""image unclear"".
+- Forbidden tokens in Line 1: meta/instruction words, tooling vocabulary (prompt, detectors, thresholds, score, clip, siglip, example, etc.), proper nouns, brand names, dates, events, emotions, or inferred identities.
+
+Line 2 — caption (format rules)
+- Option A (preferred): one factual short sentence (9–12 words) in present simple or simple progressive that contains one clear visual verb or a concrete spatial relation.
+- Option B (fallback): a 2–3 word phrase (main noun + visible location) when a compliant 9–12 word caption would require guessing.
+- If tags cannot be produced reliably, output exactly: image unclear
+- The main noun from Line 1 must appear in Line 2 in canonical/lemmatized form. To allow more natural phrasing, the caption may start with either: ""<main_noun> ..."" or ""the <main_noun> ..."" or have the main noun within the first two tokens.
+- Non-fallback captions must have at least two token overlaps with Line 1 in canonical/lemmatized form (one must be the main noun). Every non-determiner noun in Line 2 must correspond to a Line 1 token via the canonicalization mapping; otherwise do not output that caption.
+- Allowed extra words: determiners, prepositions (on, in, near, by, next to, in front of, behind), small conjunctions (and), one optional period at sentence end. No other punctuation.
+- Verbs: require one clear common visual verb or spatial relation. Expanded allowed verbs include common visual actions and simple progressive forms (e.g., sits, stands, lies, holds, carries, walks, rides, leans, looks, points, reads, opens, plays, wears, pushes, pulls, places, covers, is holding, is sitting). Use the simplest verb justified by visible evidence.
+- Attributes: an attribute token in Line 1 must appear verbatim in Line 2. Do not introduce attributes, objects, locations, identities, or inferred facts not present in Line 1 unless supported by high-confidence detectors per the attribute threshold. Prefer omission over guessing.
+
+Conservatism and anti-hallucination
+- Forbid proper nouns, emotions, intentions, or speculative inferences. Captions must be strictly visually verifiable from Line 1 tokens and high-confidence detections.
+- If attribute confidence is below the configured threshold, omit the attribute.
+- Use multiword compound nouns when the compound detector confidence is high; do not split compounds into unrelated tokens.
+
+Operational note (integrators / generator)
+- This prompt assumes an upstream pre-filtering/canonicalization step (POS filter, mapping to canonical classes, confidence thresholds). Tune attribute_confidence_threshold (recommended sweep 60/70/75%) and preferred tag count (2–5).
+- Prefer generating a small set of alternative compliant tag sets (e.g., up to 3 variants) when label confidence is ambiguous so a downstream CLIP reranker can choose the best candidate.
+- Keep candidate generation, CLIP reranking, and final selection outside this prompt. The frozen VLM should follow the concise visual rules above.
+
+Strictly follow the Line 1 / Line 2 rules above. If no valid caption candidate passes these checks, return Line 2 = ""image unclear"".","person, stage, guitar
+man raises hand on stage while woman sings nearby",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.26642411947250366,0.14325477182865143,12,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_420af965c9,24,24978,flickr30k_test_024978,images/flickr30k/flickr30k_test_024978.jpg,"[""A man in a blue shirt and brown pants is sitting next to a parked blue car."", ""A man in a blue sweater is sitting outside in front of a blue car."", ""A man in a blue shirt is sitting beside a blue van"", ""An elderly man sits in a chair in an alleyway."", ""The man in the blue shirt looks very lonely.""]",textgrad_420af965c9,TextGrad Step 10,"Output exactly two lines only.
+
+Line 1 — tags (format rules)
+- 2–5 comma-separated lower-case tokens (prefer exactly 3). No punctuation except commas.
+- Tokens should be visible concrete nouns or a single visible adjective (color/size) as the sole attribute token. Multiword fused objects (e.g., ""traffic light"", ""wine bottle"") may count as one token.
+- Required pre-filtering & canonicalization (assume an external or prior step): map detector/classifier labels to canonical, high‑coverage visual nouns (prefer COCO/Visual Genome/CLIP-common classes). Filter out non-nouns and convert multiword labels to canonical fused nouns when appropriate (e.g., ""welcome sign"" → ""sign""; ""sofa"" → ""couch""). Only accept attribute tokens (colors/sizes) if the attribute detector confidence ≥ attribute_confidence_threshold (default 75%; tune 60/70/75).
+- Allow lemmatized/canonical matches: tokens may be normalized (plural→singular, synonyms→canonical class) for matching with captions. Synonyms are allowed only if they map back to a canonical tag via the mapping step.
+- Deduplicate tokens; order by visual discriminativeness (most distinctive / likely recognized by CLIP/classifiers first). Prefer fine‑grained nouns (e.g., ""trumpet"" over ""man"" when reliable).
+- If fewer than two high-confidence specific nouns are available after filtering, prefer the compact fallback (Line 2 Option B) or output ""image unclear"".
+- Forbidden tokens in Line 1: meta/instruction words, tooling vocabulary (prompt, detectors, thresholds, score, clip, siglip, example, etc.), proper nouns, brand names, dates, events, emotions, or inferred identities.
+
+Line 2 — caption (format rules)
+- Option A (preferred): one factual short sentence (9–12 words) in present simple or simple progressive that contains one clear visual verb or a concrete spatial relation.
+- Option B (fallback): a 2–3 word phrase (main noun + visible location) when a compliant 9–12 word caption would require guessing.
+- If tags cannot be produced reliably, output exactly: image unclear
+- The main noun from Line 1 must appear in Line 2 in canonical/lemmatized form. To allow more natural phrasing, the caption may start with either: ""<main_noun> ..."" or ""the <main_noun> ..."" or have the main noun within the first two tokens.
+- Non-fallback captions must have at least two token overlaps with Line 1 in canonical/lemmatized form (one must be the main noun). Every non-determiner noun in Line 2 must correspond to a Line 1 token via the canonicalization mapping; otherwise do not output that caption.
+- Allowed extra words: determiners, prepositions (on, in, near, by, next to, in front of, behind), small conjunctions (and), one optional period at sentence end. No other punctuation.
+- Verbs: require one clear common visual verb or spatial relation. Expanded allowed verbs include common visual actions and simple progressive forms (e.g., sits, stands, lies, holds, carries, walks, rides, leans, looks, points, reads, opens, plays, wears, pushes, pulls, places, covers, is holding, is sitting). Use the simplest verb justified by visible evidence.
+- Attributes: an attribute token in Line 1 must appear verbatim in Line 2. Do not introduce attributes, objects, locations, identities, or inferred facts not present in Line 1 unless supported by high-confidence detectors per the attribute threshold. Prefer omission over guessing.
+
+Conservatism and anti-hallucination
+- Forbid proper nouns, emotions, intentions, or speculative inferences. Captions must be strictly visually verifiable from Line 1 tokens and high-confidence detections.
+- If attribute confidence is below the configured threshold, omit the attribute.
+- Use multiword compound nouns when the compound detector confidence is high; do not split compounds into unrelated tokens.
+
+Operational note (integrators / generator)
+- This prompt assumes an upstream pre-filtering/canonicalization step (POS filter, mapping to canonical classes, confidence thresholds). Tune attribute_confidence_threshold (recommended sweep 60/70/75%) and preferred tag count (2–5).
+- Prefer generating a small set of alternative compliant tag sets (e.g., up to 3 variants) when label confidence is ambiguous so a downstream CLIP reranker can choose the best candidate.
+- Keep candidate generation, CLIP reranking, and final selection outside this prompt. The frozen VLM should follow the concise visual rules above.
+
+Strictly follow the Line 1 / Line 2 rules above. If no valid caption candidate passes these checks, return Line 2 = ""image unclear"".","man sits on bench
+man sits on bench in alley",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.27408748865127563,0.1904306411743164,10,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_420af965c9,35,3349,flickr30k_test_003349,images/flickr30k/flickr30k_test_003349.jpg,"[""A small child in a red coat watches the fireplace display through the storefront window of a purse store."", ""A small child in a red coat points to a handbag in a shop window."", ""A child wearing a red coat is pointing into a Loewe store window."", ""A little girl is looking at the window display of a store."", ""A child is window shopping for a brown purse.""]",textgrad_420af965c9,TextGrad Step 10,"Output exactly two lines only.
+
+Line 1 — tags (format rules)
+- 2–5 comma-separated lower-case tokens (prefer exactly 3). No punctuation except commas.
+- Tokens should be visible concrete nouns or a single visible adjective (color/size) as the sole attribute token. Multiword fused objects (e.g., ""traffic light"", ""wine bottle"") may count as one token.
+- Required pre-filtering & canonicalization (assume an external or prior step): map detector/classifier labels to canonical, high‑coverage visual nouns (prefer COCO/Visual Genome/CLIP-common classes). Filter out non-nouns and convert multiword labels to canonical fused nouns when appropriate (e.g., ""welcome sign"" → ""sign""; ""sofa"" → ""couch""). Only accept attribute tokens (colors/sizes) if the attribute detector confidence ≥ attribute_confidence_threshold (default 75%; tune 60/70/75).
+- Allow lemmatized/canonical matches: tokens may be normalized (plural→singular, synonyms→canonical class) for matching with captions. Synonyms are allowed only if they map back to a canonical tag via the mapping step.
+- Deduplicate tokens; order by visual discriminativeness (most distinctive / likely recognized by CLIP/classifiers first). Prefer fine‑grained nouns (e.g., ""trumpet"" over ""man"" when reliable).
+- If fewer than two high-confidence specific nouns are available after filtering, prefer the compact fallback (Line 2 Option B) or output ""image unclear"".
+- Forbidden tokens in Line 1: meta/instruction words, tooling vocabulary (prompt, detectors, thresholds, score, clip, siglip, example, etc.), proper nouns, brand names, dates, events, emotions, or inferred identities.
+
+Line 2 — caption (format rules)
+- Option A (preferred): one factual short sentence (9–12 words) in present simple or simple progressive that contains one clear visual verb or a concrete spatial relation.
+- Option B (fallback): a 2–3 word phrase (main noun + visible location) when a compliant 9–12 word caption would require guessing.
+- If tags cannot be produced reliably, output exactly: image unclear
+- The main noun from Line 1 must appear in Line 2 in canonical/lemmatized form. To allow more natural phrasing, the caption may start with either: ""<main_noun> ..."" or ""the <main_noun> ..."" or have the main noun within the first two tokens.
+- Non-fallback captions must have at least two token overlaps with Line 1 in canonical/lemmatized form (one must be the main noun). Every non-determiner noun in Line 2 must correspond to a Line 1 token via the canonicalization mapping; otherwise do not output that caption.
+- Allowed extra words: determiners, prepositions (on, in, near, by, next to, in front of, behind), small conjunctions (and), one optional period at sentence end. No other punctuation.
+- Verbs: require one clear common visual verb or spatial relation. Expanded allowed verbs include common visual actions and simple progressive forms (e.g., sits, stands, lies, holds, carries, walks, rides, leans, looks, points, reads, opens, plays, wears, pushes, pulls, places, covers, is holding, is sitting). Use the simplest verb justified by visible evidence.
+- Attributes: an attribute token in Line 1 must appear verbatim in Line 2. Do not introduce attributes, objects, locations, identities, or inferred facts not present in Line 1 unless supported by high-confidence detectors per the attribute threshold. Prefer omission over guessing.
+
+Conservatism and anti-hallucination
+- Forbid proper nouns, emotions, intentions, or speculative inferences. Captions must be strictly visually verifiable from Line 1 tokens and high-confidence detections.
+- If attribute confidence is below the configured threshold, omit the attribute.
+- Use multiword compound nouns when the compound detector confidence is high; do not split compounds into unrelated tokens.
+
+Operational note (integrators / generator)
+- This prompt assumes an upstream pre-filtering/canonicalization step (POS filter, mapping to canonical classes, confidence thresholds). Tune attribute_confidence_threshold (recommended sweep 60/70/75%) and preferred tag count (2–5).
+- Prefer generating a small set of alternative compliant tag sets (e.g., up to 3 variants) when label confidence is ambiguous so a downstream CLIP reranker can choose the best candidate.
+- Keep candidate generation, CLIP reranking, and final selection outside this prompt. The frozen VLM should follow the concise visual rules above.
+
+Strictly follow the Line 1 / Line 2 rules above. If no valid caption candidate passes these checks, return Line 2 = ""image unclear"".","child stands near store window
+child looks at fire display",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.34884679317474365,0.2386743724346161,10,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_420af965c9,38,1002,flickr30k_test_001002,images/flickr30k/flickr30k_test_001002.jpg,"[""Someone wearing a large hat is sitting on colorful blankets working a loom with a pair of men's dress shoes in front of him."", ""An adult in brightly colored clothing and hat, is weaving or beading while sitting on brightly colored rugs."", ""A Hispanic person sitting among colorful fabric making a belt."", ""A gentleman in traditional garb weaving a blanket in a field."", ""A man works on weaving a cloth good for sale at the market.""]",textgrad_420af965c9,TextGrad Step 10,"Output exactly two lines only.
+
+Line 1 — tags (format rules)
+- 2–5 comma-separated lower-case tokens (prefer exactly 3). No punctuation except commas.
+- Tokens should be visible concrete nouns or a single visible adjective (color/size) as the sole attribute token. Multiword fused objects (e.g., ""traffic light"", ""wine bottle"") may count as one token.
+- Required pre-filtering & canonicalization (assume an external or prior step): map detector/classifier labels to canonical, high‑coverage visual nouns (prefer COCO/Visual Genome/CLIP-common classes). Filter out non-nouns and convert multiword labels to canonical fused nouns when appropriate (e.g., ""welcome sign"" → ""sign""; ""sofa"" → ""couch""). Only accept attribute tokens (colors/sizes) if the attribute detector confidence ≥ attribute_confidence_threshold (default 75%; tune 60/70/75).
+- Allow lemmatized/canonical matches: tokens may be normalized (plural→singular, synonyms→canonical class) for matching with captions. Synonyms are allowed only if they map back to a canonical tag via the mapping step.
+- Deduplicate tokens; order by visual discriminativeness (most distinctive / likely recognized by CLIP/classifiers first). Prefer fine‑grained nouns (e.g., ""trumpet"" over ""man"" when reliable).
+- If fewer than two high-confidence specific nouns are available after filtering, prefer the compact fallback (Line 2 Option B) or output ""image unclear"".
+- Forbidden tokens in Line 1: meta/instruction words, tooling vocabulary (prompt, detectors, thresholds, score, clip, siglip, example, etc.), proper nouns, brand names, dates, events, emotions, or inferred identities.
+
+Line 2 — caption (format rules)
+- Option A (preferred): one factual short sentence (9–12 words) in present simple or simple progressive that contains one clear visual verb or a concrete spatial relation.
+- Option B (fallback): a 2–3 word phrase (main noun + visible location) when a compliant 9–12 word caption would require guessing.
+- If tags cannot be produced reliably, output exactly: image unclear
+- The main noun from Line 1 must appear in Line 2 in canonical/lemmatized form. To allow more natural phrasing, the caption may start with either: ""<main_noun> ..."" or ""the <main_noun> ..."" or have the main noun within the first two tokens.
+- Non-fallback captions must have at least two token overlaps with Line 1 in canonical/lemmatized form (one must be the main noun). Every non-determiner noun in Line 2 must correspond to a Line 1 token via the canonicalization mapping; otherwise do not output that caption.
+- Allowed extra words: determiners, prepositions (on, in, near, by, next to, in front of, behind), small conjunctions (and), one optional period at sentence end. No other punctuation.
+- Verbs: require one clear common visual verb or spatial relation. Expanded allowed verbs include common visual actions and simple progressive forms (e.g., sits, stands, lies, holds, carries, walks, rides, leans, looks, points, reads, opens, plays, wears, pushes, pulls, places, covers, is holding, is sitting). Use the simplest verb justified by visible evidence.
+- Attributes: an attribute token in Line 1 must appear verbatim in Line 2. Do not introduce attributes, objects, locations, identities, or inferred facts not present in Line 1 unless supported by high-confidence detectors per the attribute threshold. Prefer omission over guessing.
+
+Conservatism and anti-hallucination
+- Forbid proper nouns, emotions, intentions, or speculative inferences. Captions must be strictly visually verifiable from Line 1 tokens and high-confidence detections.
+- If attribute confidence is below the configured threshold, omit the attribute.
+- Use multiword compound nouns when the compound detector confidence is high; do not split compounds into unrelated tokens.
+
+Operational note (integrators / generator)
+- This prompt assumes an upstream pre-filtering/canonicalization step (POS filter, mapping to canonical classes, confidence thresholds). Tune attribute_confidence_threshold (recommended sweep 60/70/75%) and preferred tag count (2–5).
+- Prefer generating a small set of alternative compliant tag sets (e.g., up to 3 variants) when label confidence is ambiguous so a downstream CLIP reranker can choose the best candidate.
+- Keep candidate generation, CLIP reranking, and final selection outside this prompt. The frozen VLM should follow the concise visual rules above.
+
+Strictly follow the Line 1 / Line 2 rules above. If no valid caption candidate passes these checks, return Line 2 = ""image unclear"".","person sits on blanket
+person sits on blanket",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.23207125067710876,0.08470982313156128,8,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_420af965c9,39,731,flickr30k_test_000731,images/flickr30k/flickr30k_test_000731.jpg,"[""Three little blond girls, two in blue, one in pink, play on a sunny beach."", ""Three children are playing in sand near to the beach."", ""Three young girls dance on the beach in the sand."", ""Three children playing in sand at beach"", ""Three girls play in the sand.""]",textgrad_420af965c9,TextGrad Step 10,"Output exactly two lines only.
+
+Line 1 — tags (format rules)
+- 2–5 comma-separated lower-case tokens (prefer exactly 3). No punctuation except commas.
+- Tokens should be visible concrete nouns or a single visible adjective (color/size) as the sole attribute token. Multiword fused objects (e.g., ""traffic light"", ""wine bottle"") may count as one token.
+- Required pre-filtering & canonicalization (assume an external or prior step): map detector/classifier labels to canonical, high‑coverage visual nouns (prefer COCO/Visual Genome/CLIP-common classes). Filter out non-nouns and convert multiword labels to canonical fused nouns when appropriate (e.g., ""welcome sign"" → ""sign""; ""sofa"" → ""couch""). Only accept attribute tokens (colors/sizes) if the attribute detector confidence ≥ attribute_confidence_threshold (default 75%; tune 60/70/75).
+- Allow lemmatized/canonical matches: tokens may be normalized (plural→singular, synonyms→canonical class) for matching with captions. Synonyms are allowed only if they map back to a canonical tag via the mapping step.
+- Deduplicate tokens; order by visual discriminativeness (most distinctive / likely recognized by CLIP/classifiers first). Prefer fine‑grained nouns (e.g., ""trumpet"" over ""man"" when reliable).
+- If fewer than two high-confidence specific nouns are available after filtering, prefer the compact fallback (Line 2 Option B) or output ""image unclear"".
+- Forbidden tokens in Line 1: meta/instruction words, tooling vocabulary (prompt, detectors, thresholds, score, clip, siglip, example, etc.), proper nouns, brand names, dates, events, emotions, or inferred identities.
+
+Line 2 — caption (format rules)
+- Option A (preferred): one factual short sentence (9–12 words) in present simple or simple progressive that contains one clear visual verb or a concrete spatial relation.
+- Option B (fallback): a 2–3 word phrase (main noun + visible location) when a compliant 9–12 word caption would require guessing.
+- If tags cannot be produced reliably, output exactly: image unclear
+- The main noun from Line 1 must appear in Line 2 in canonical/lemmatized form. To allow more natural phrasing, the caption may start with either: ""<main_noun> ..."" or ""the <main_noun> ..."" or have the main noun within the first two tokens.
+- Non-fallback captions must have at least two token overlaps with Line 1 in canonical/lemmatized form (one must be the main noun). Every non-determiner noun in Line 2 must correspond to a Line 1 token via the canonicalization mapping; otherwise do not output that caption.
+- Allowed extra words: determiners, prepositions (on, in, near, by, next to, in front of, behind), small conjunctions (and), one optional period at sentence end. No other punctuation.
+- Verbs: require one clear common visual verb or spatial relation. Expanded allowed verbs include common visual actions and simple progressive forms (e.g., sits, stands, lies, holds, carries, walks, rides, leans, looks, points, reads, opens, plays, wears, pushes, pulls, places, covers, is holding, is sitting). Use the simplest verb justified by visible evidence.
+- Attributes: an attribute token in Line 1 must appear verbatim in Line 2. Do not introduce attributes, objects, locations, identities, or inferred facts not present in Line 1 unless supported by high-confidence detectors per the attribute threshold. Prefer omission over guessing.
+
+Conservatism and anti-hallucination
+- Forbid proper nouns, emotions, intentions, or speculative inferences. Captions must be strictly visually verifiable from Line 1 tokens and high-confidence detections.
+- If attribute confidence is below the configured threshold, omit the attribute.
+- Use multiword compound nouns when the compound detector confidence is high; do not split compounds into unrelated tokens.
+
+Operational note (integrators / generator)
+- This prompt assumes an upstream pre-filtering/canonicalization step (POS filter, mapping to canonical classes, confidence thresholds). Tune attribute_confidence_threshold (recommended sweep 60/70/75%) and preferred tag count (2–5).
+- Prefer generating a small set of alternative compliant tag sets (e.g., up to 3 variants) when label confidence is ambiguous so a downstream CLIP reranker can choose the best candidate.
+- Keep candidate generation, CLIP reranking, and final selection outside this prompt. The frozen VLM should follow the concise visual rules above.
+
+Strictly follow the Line 1 / Line 2 rules above. If no valid caption candidate passes these checks, return Line 2 = ""image unclear"".","children playing on beach
+children playing on sand",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.2769547700881958,0.14198118448257446,8,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_420af965c9,49,13831,flickr30k_test_013831,images/flickr30k/flickr30k_test_013831.jpg,"[""A black and white dog jumps a red and white hurdle on a lawn with other dogs and people."", ""A black and white dog is jumping over a fence in an obstacle course."", ""A black and white dog in midair over a hurdle."", ""A dog jumps over a red and white gate."", ""The dog jumps over an obstacle.""]",textgrad_420af965c9,TextGrad Step 10,"Output exactly two lines only.
+
+Line 1 — tags (format rules)
+- 2–5 comma-separated lower-case tokens (prefer exactly 3). No punctuation except commas.
+- Tokens should be visible concrete nouns or a single visible adjective (color/size) as the sole attribute token. Multiword fused objects (e.g., ""traffic light"", ""wine bottle"") may count as one token.
+- Required pre-filtering & canonicalization (assume an external or prior step): map detector/classifier labels to canonical, high‑coverage visual nouns (prefer COCO/Visual Genome/CLIP-common classes). Filter out non-nouns and convert multiword labels to canonical fused nouns when appropriate (e.g., ""welcome sign"" → ""sign""; ""sofa"" → ""couch""). Only accept attribute tokens (colors/sizes) if the attribute detector confidence ≥ attribute_confidence_threshold (default 75%; tune 60/70/75).
+- Allow lemmatized/canonical matches: tokens may be normalized (plural→singular, synonyms→canonical class) for matching with captions. Synonyms are allowed only if they map back to a canonical tag via the mapping step.
+- Deduplicate tokens; order by visual discriminativeness (most distinctive / likely recognized by CLIP/classifiers first). Prefer fine‑grained nouns (e.g., ""trumpet"" over ""man"" when reliable).
+- If fewer than two high-confidence specific nouns are available after filtering, prefer the compact fallback (Line 2 Option B) or output ""image unclear"".
+- Forbidden tokens in Line 1: meta/instruction words, tooling vocabulary (prompt, detectors, thresholds, score, clip, siglip, example, etc.), proper nouns, brand names, dates, events, emotions, or inferred identities.
+
+Line 2 — caption (format rules)
+- Option A (preferred): one factual short sentence (9–12 words) in present simple or simple progressive that contains one clear visual verb or a concrete spatial relation.
+- Option B (fallback): a 2–3 word phrase (main noun + visible location) when a compliant 9–12 word caption would require guessing.
+- If tags cannot be produced reliably, output exactly: image unclear
+- The main noun from Line 1 must appear in Line 2 in canonical/lemmatized form. To allow more natural phrasing, the caption may start with either: ""<main_noun> ..."" or ""the <main_noun> ..."" or have the main noun within the first two tokens.
+- Non-fallback captions must have at least two token overlaps with Line 1 in canonical/lemmatized form (one must be the main noun). Every non-determiner noun in Line 2 must correspond to a Line 1 token via the canonicalization mapping; otherwise do not output that caption.
+- Allowed extra words: determiners, prepositions (on, in, near, by, next to, in front of, behind), small conjunctions (and), one optional period at sentence end. No other punctuation.
+- Verbs: require one clear common visual verb or spatial relation. Expanded allowed verbs include common visual actions and simple progressive forms (e.g., sits, stands, lies, holds, carries, walks, rides, leans, looks, points, reads, opens, plays, wears, pushes, pulls, places, covers, is holding, is sitting). Use the simplest verb justified by visible evidence.
+- Attributes: an attribute token in Line 1 must appear verbatim in Line 2. Do not introduce attributes, objects, locations, identities, or inferred facts not present in Line 1 unless supported by high-confidence detectors per the attribute threshold. Prefer omission over guessing.
+
+Conservatism and anti-hallucination
+- Forbid proper nouns, emotions, intentions, or speculative inferences. Captions must be strictly visually verifiable from Line 1 tokens and high-confidence detections.
+- If attribute confidence is below the configured threshold, omit the attribute.
+- Use multiword compound nouns when the compound detector confidence is high; do not split compounds into unrelated tokens.
+
+Operational note (integrators / generator)
+- This prompt assumes an upstream pre-filtering/canonicalization step (POS filter, mapping to canonical classes, confidence thresholds). Tune attribute_confidence_threshold (recommended sweep 60/70/75%) and preferred tag count (2–5).
+- Prefer generating a small set of alternative compliant tag sets (e.g., up to 3 variants) when label confidence is ambiguous so a downstream CLIP reranker can choose the best candidate.
+- Keep candidate generation, CLIP reranking, and final selection outside this prompt. The frozen VLM should follow the concise visual rules above.
+
+Strictly follow the Line 1 / Line 2 rules above. If no valid caption candidate passes these checks, return Line 2 = ""image unclear"".","dog, hurdle, grass
+dog leaps over red hurdle on grass",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.32449257373809814,0.12789836525917053,10,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_420af965c9,53,7264,flickr30k_test_007264,images/flickr30k/flickr30k_test_007264.jpg,"[""Two ladies and a teenage girl all dressed in summer attire are bending down and laughing, showing a small puppy to a little girl."", ""The little girl in a flower dress is talking to the ladies on the street."", ""A woman teaching a young girl not to be afraid of puppies."", ""Three women and a little girl play with a small puppy."", ""A woman bends down and pets a young girl's dog.""]",textgrad_420af965c9,TextGrad Step 10,"Output exactly two lines only.
+
+Line 1 — tags (format rules)
+- 2–5 comma-separated lower-case tokens (prefer exactly 3). No punctuation except commas.
+- Tokens should be visible concrete nouns or a single visible adjective (color/size) as the sole attribute token. Multiword fused objects (e.g., ""traffic light"", ""wine bottle"") may count as one token.
+- Required pre-filtering & canonicalization (assume an external or prior step): map detector/classifier labels to canonical, high‑coverage visual nouns (prefer COCO/Visual Genome/CLIP-common classes). Filter out non-nouns and convert multiword labels to canonical fused nouns when appropriate (e.g., ""welcome sign"" → ""sign""; ""sofa"" → ""couch""). Only accept attribute tokens (colors/sizes) if the attribute detector confidence ≥ attribute_confidence_threshold (default 75%; tune 60/70/75).
+- Allow lemmatized/canonical matches: tokens may be normalized (plural→singular, synonyms→canonical class) for matching with captions. Synonyms are allowed only if they map back to a canonical tag via the mapping step.
+- Deduplicate tokens; order by visual discriminativeness (most distinctive / likely recognized by CLIP/classifiers first). Prefer fine‑grained nouns (e.g., ""trumpet"" over ""man"" when reliable).
+- If fewer than two high-confidence specific nouns are available after filtering, prefer the compact fallback (Line 2 Option B) or output ""image unclear"".
+- Forbidden tokens in Line 1: meta/instruction words, tooling vocabulary (prompt, detectors, thresholds, score, clip, siglip, example, etc.), proper nouns, brand names, dates, events, emotions, or inferred identities.
+
+Line 2 — caption (format rules)
+- Option A (preferred): one factual short sentence (9–12 words) in present simple or simple progressive that contains one clear visual verb or a concrete spatial relation.
+- Option B (fallback): a 2–3 word phrase (main noun + visible location) when a compliant 9–12 word caption would require guessing.
+- If tags cannot be produced reliably, output exactly: image unclear
+- The main noun from Line 1 must appear in Line 2 in canonical/lemmatized form. To allow more natural phrasing, the caption may start with either: ""<main_noun> ..."" or ""the <main_noun> ..."" or have the main noun within the first two tokens.
+- Non-fallback captions must have at least two token overlaps with Line 1 in canonical/lemmatized form (one must be the main noun). Every non-determiner noun in Line 2 must correspond to a Line 1 token via the canonicalization mapping; otherwise do not output that caption.
+- Allowed extra words: determiners, prepositions (on, in, near, by, next to, in front of, behind), small conjunctions (and), one optional period at sentence end. No other punctuation.
+- Verbs: require one clear common visual verb or spatial relation. Expanded allowed verbs include common visual actions and simple progressive forms (e.g., sits, stands, lies, holds, carries, walks, rides, leans, looks, points, reads, opens, plays, wears, pushes, pulls, places, covers, is holding, is sitting). Use the simplest verb justified by visible evidence.
+- Attributes: an attribute token in Line 1 must appear verbatim in Line 2. Do not introduce attributes, objects, locations, identities, or inferred facts not present in Line 1 unless supported by high-confidence detectors per the attribute threshold. Prefer omission over guessing.
+
+Conservatism and anti-hallucination
+- Forbid proper nouns, emotions, intentions, or speculative inferences. Captions must be strictly visually verifiable from Line 1 tokens and high-confidence detections.
+- If attribute confidence is below the configured threshold, omit the attribute.
+- Use multiword compound nouns when the compound detector confidence is high; do not split compounds into unrelated tokens.
+
+Operational note (integrators / generator)
+- This prompt assumes an upstream pre-filtering/canonicalization step (POS filter, mapping to canonical classes, confidence thresholds). Tune attribute_confidence_threshold (recommended sweep 60/70/75%) and preferred tag count (2–5).
+- Prefer generating a small set of alternative compliant tag sets (e.g., up to 3 variants) when label confidence is ambiguous so a downstream CLIP reranker can choose the best candidate.
+- Keep candidate generation, CLIP reranking, and final selection outside this prompt. The frozen VLM should follow the concise visual rules above.
+
+Strictly follow the Line 1 / Line 2 rules above. If no valid caption candidate passes these checks, return Line 2 = ""image unclear"".","woman, child, dog
+woman crouches near child and dog",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.31875061988830566,0.19364847242832184,9,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_420af965c9,55,14348,flickr30k_test_014348,images/flickr30k/flickr30k_test_014348.jpg,"[""A baseball player in a red shirt and white pants is swinging the bat towards a yellow ball whilst three people look on."", ""A baseball player recoils from an action involving a bat while opposing team members look on."", ""A woman swings at a softball on a playing field while other players look on."", ""A girl in a red and white uniform is swinging a bat."", ""A girl swings a bat during a softball game.""]",textgrad_420af965c9,TextGrad Step 10,"Output exactly two lines only.
+
+Line 1 — tags (format rules)
+- 2–5 comma-separated lower-case tokens (prefer exactly 3). No punctuation except commas.
+- Tokens should be visible concrete nouns or a single visible adjective (color/size) as the sole attribute token. Multiword fused objects (e.g., ""traffic light"", ""wine bottle"") may count as one token.
+- Required pre-filtering & canonicalization (assume an external or prior step): map detector/classifier labels to canonical, high‑coverage visual nouns (prefer COCO/Visual Genome/CLIP-common classes). Filter out non-nouns and convert multiword labels to canonical fused nouns when appropriate (e.g., ""welcome sign"" → ""sign""; ""sofa"" → ""couch""). Only accept attribute tokens (colors/sizes) if the attribute detector confidence ≥ attribute_confidence_threshold (default 75%; tune 60/70/75).
+- Allow lemmatized/canonical matches: tokens may be normalized (plural→singular, synonyms→canonical class) for matching with captions. Synonyms are allowed only if they map back to a canonical tag via the mapping step.
+- Deduplicate tokens; order by visual discriminativeness (most distinctive / likely recognized by CLIP/classifiers first). Prefer fine‑grained nouns (e.g., ""trumpet"" over ""man"" when reliable).
+- If fewer than two high-confidence specific nouns are available after filtering, prefer the compact fallback (Line 2 Option B) or output ""image unclear"".
+- Forbidden tokens in Line 1: meta/instruction words, tooling vocabulary (prompt, detectors, thresholds, score, clip, siglip, example, etc.), proper nouns, brand names, dates, events, emotions, or inferred identities.
+
+Line 2 — caption (format rules)
+- Option A (preferred): one factual short sentence (9–12 words) in present simple or simple progressive that contains one clear visual verb or a concrete spatial relation.
+- Option B (fallback): a 2–3 word phrase (main noun + visible location) when a compliant 9–12 word caption would require guessing.
+- If tags cannot be produced reliably, output exactly: image unclear
+- The main noun from Line 1 must appear in Line 2 in canonical/lemmatized form. To allow more natural phrasing, the caption may start with either: ""<main_noun> ..."" or ""the <main_noun> ..."" or have the main noun within the first two tokens.
+- Non-fallback captions must have at least two token overlaps with Line 1 in canonical/lemmatized form (one must be the main noun). Every non-determiner noun in Line 2 must correspond to a Line 1 token via the canonicalization mapping; otherwise do not output that caption.
+- Allowed extra words: determiners, prepositions (on, in, near, by, next to, in front of, behind), small conjunctions (and), one optional period at sentence end. No other punctuation.
+- Verbs: require one clear common visual verb or spatial relation. Expanded allowed verbs include common visual actions and simple progressive forms (e.g., sits, stands, lies, holds, carries, walks, rides, leans, looks, points, reads, opens, plays, wears, pushes, pulls, places, covers, is holding, is sitting). Use the simplest verb justified by visible evidence.
+- Attributes: an attribute token in Line 1 must appear verbatim in Line 2. Do not introduce attributes, objects, locations, identities, or inferred facts not present in Line 1 unless supported by high-confidence detectors per the attribute threshold. Prefer omission over guessing.
+
+Conservatism and anti-hallucination
+- Forbid proper nouns, emotions, intentions, or speculative inferences. Captions must be strictly visually verifiable from Line 1 tokens and high-confidence detections.
+- If attribute confidence is below the configured threshold, omit the attribute.
+- Use multiword compound nouns when the compound detector confidence is high; do not split compounds into unrelated tokens.
+
+Operational note (integrators / generator)
+- This prompt assumes an upstream pre-filtering/canonicalization step (POS filter, mapping to canonical classes, confidence thresholds). Tune attribute_confidence_threshold (recommended sweep 60/70/75%) and preferred tag count (2–5).
+- Prefer generating a small set of alternative compliant tag sets (e.g., up to 3 variants) when label confidence is ambiguous so a downstream CLIP reranker can choose the best candidate.
+- Keep candidate generation, CLIP reranking, and final selection outside this prompt. The frozen VLM should follow the concise visual rules above.
+
+Strictly follow the Line 1 / Line 2 rules above. If no valid caption candidate passes these checks, return Line 2 = ""image unclear"".","- batter, helmet, uniform
+the batter swings bat near home plate",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.27539291977882385,0.10107181966304779,11,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_420af965c9,60,7565,flickr30k_test_007565,images/flickr30k/flickr30k_test_007565.jpg,"[""An infant is crawling on a wood floor, with a water bottle laying nearby."", ""A young baby crawls across the wood floor towards the water bottle."", ""A baby crawls on hardwood floors towards a water bottle."", ""A baby crawls on a wood floor near a bottle of water."", ""A baby on a wood floor with a water bottle""]",textgrad_420af965c9,TextGrad Step 10,"Output exactly two lines only.
+
+Line 1 — tags (format rules)
+- 2–5 comma-separated lower-case tokens (prefer exactly 3). No punctuation except commas.
+- Tokens should be visible concrete nouns or a single visible adjective (color/size) as the sole attribute token. Multiword fused objects (e.g., ""traffic light"", ""wine bottle"") may count as one token.
+- Required pre-filtering & canonicalization (assume an external or prior step): map detector/classifier labels to canonical, high‑coverage visual nouns (prefer COCO/Visual Genome/CLIP-common classes). Filter out non-nouns and convert multiword labels to canonical fused nouns when appropriate (e.g., ""welcome sign"" → ""sign""; ""sofa"" → ""couch""). Only accept attribute tokens (colors/sizes) if the attribute detector confidence ≥ attribute_confidence_threshold (default 75%; tune 60/70/75).
+- Allow lemmatized/canonical matches: tokens may be normalized (plural→singular, synonyms→canonical class) for matching with captions. Synonyms are allowed only if they map back to a canonical tag via the mapping step.
+- Deduplicate tokens; order by visual discriminativeness (most distinctive / likely recognized by CLIP/classifiers first). Prefer fine‑grained nouns (e.g., ""trumpet"" over ""man"" when reliable).
+- If fewer than two high-confidence specific nouns are available after filtering, prefer the compact fallback (Line 2 Option B) or output ""image unclear"".
+- Forbidden tokens in Line 1: meta/instruction words, tooling vocabulary (prompt, detectors, thresholds, score, clip, siglip, example, etc.), proper nouns, brand names, dates, events, emotions, or inferred identities.
+
+Line 2 — caption (format rules)
+- Option A (preferred): one factual short sentence (9–12 words) in present simple or simple progressive that contains one clear visual verb or a concrete spatial relation.
+- Option B (fallback): a 2–3 word phrase (main noun + visible location) when a compliant 9–12 word caption would require guessing.
+- If tags cannot be produced reliably, output exactly: image unclear
+- The main noun from Line 1 must appear in Line 2 in canonical/lemmatized form. To allow more natural phrasing, the caption may start with either: ""<main_noun> ..."" or ""the <main_noun> ..."" or have the main noun within the first two tokens.
+- Non-fallback captions must have at least two token overlaps with Line 1 in canonical/lemmatized form (one must be the main noun). Every non-determiner noun in Line 2 must correspond to a Line 1 token via the canonicalization mapping; otherwise do not output that caption.
+- Allowed extra words: determiners, prepositions (on, in, near, by, next to, in front of, behind), small conjunctions (and), one optional period at sentence end. No other punctuation.
+- Verbs: require one clear common visual verb or spatial relation. Expanded allowed verbs include common visual actions and simple progressive forms (e.g., sits, stands, lies, holds, carries, walks, rides, leans, looks, points, reads, opens, plays, wears, pushes, pulls, places, covers, is holding, is sitting). Use the simplest verb justified by visible evidence.
+- Attributes: an attribute token in Line 1 must appear verbatim in Line 2. Do not introduce attributes, objects, locations, identities, or inferred facts not present in Line 1 unless supported by high-confidence detectors per the attribute threshold. Prefer omission over guessing.
+
+Conservatism and anti-hallucination
+- Forbid proper nouns, emotions, intentions, or speculative inferences. Captions must be strictly visually verifiable from Line 1 tokens and high-confidence detections.
+- If attribute confidence is below the configured threshold, omit the attribute.
+- Use multiword compound nouns when the compound detector confidence is high; do not split compounds into unrelated tokens.
+
+Operational note (integrators / generator)
+- This prompt assumes an upstream pre-filtering/canonicalization step (POS filter, mapping to canonical classes, confidence thresholds). Tune attribute_confidence_threshold (recommended sweep 60/70/75%) and preferred tag count (2–5).
+- Prefer generating a small set of alternative compliant tag sets (e.g., up to 3 variants) when label confidence is ambiguous so a downstream CLIP reranker can choose the best candidate.
+- Keep candidate generation, CLIP reranking, and final selection outside this prompt. The frozen VLM should follow the concise visual rules above.
+
+Strictly follow the Line 1 / Line 2 rules above. If no valid caption candidate passes these checks, return Line 2 = ""image unclear"".","baby crawls on wooden floor
+baby near water bottle",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.3511011600494385,0.21983318030834198,9,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_420af965c9,66,30359,flickr30k_test_030359,images/flickr30k/flickr30k_test_030359.jpg,"[""A soccer game with 5 guys in the picture but three of them are about to commence in a three way kick."", ""A group of soccer teammates are fighting over the soccer ball while in a stadium full of supporters."", ""Five young men, three in yellow, one in red and one in white are playing soccer."", ""A soccer player is attempting to score a goal."", ""Guys are play soccer on the field.""]",textgrad_420af965c9,TextGrad Step 10,"Output exactly two lines only.
+
+Line 1 — tags (format rules)
+- 2–5 comma-separated lower-case tokens (prefer exactly 3). No punctuation except commas.
+- Tokens should be visible concrete nouns or a single visible adjective (color/size) as the sole attribute token. Multiword fused objects (e.g., ""traffic light"", ""wine bottle"") may count as one token.
+- Required pre-filtering & canonicalization (assume an external or prior step): map detector/classifier labels to canonical, high‑coverage visual nouns (prefer COCO/Visual Genome/CLIP-common classes). Filter out non-nouns and convert multiword labels to canonical fused nouns when appropriate (e.g., ""welcome sign"" → ""sign""; ""sofa"" → ""couch""). Only accept attribute tokens (colors/sizes) if the attribute detector confidence ≥ attribute_confidence_threshold (default 75%; tune 60/70/75).
+- Allow lemmatized/canonical matches: tokens may be normalized (plural→singular, synonyms→canonical class) for matching with captions. Synonyms are allowed only if they map back to a canonical tag via the mapping step.
+- Deduplicate tokens; order by visual discriminativeness (most distinctive / likely recognized by CLIP/classifiers first). Prefer fine‑grained nouns (e.g., ""trumpet"" over ""man"" when reliable).
+- If fewer than two high-confidence specific nouns are available after filtering, prefer the compact fallback (Line 2 Option B) or output ""image unclear"".
+- Forbidden tokens in Line 1: meta/instruction words, tooling vocabulary (prompt, detectors, thresholds, score, clip, siglip, example, etc.), proper nouns, brand names, dates, events, emotions, or inferred identities.
+
+Line 2 — caption (format rules)
+- Option A (preferred): one factual short sentence (9–12 words) in present simple or simple progressive that contains one clear visual verb or a concrete spatial relation.
+- Option B (fallback): a 2–3 word phrase (main noun + visible location) when a compliant 9–12 word caption would require guessing.
+- If tags cannot be produced reliably, output exactly: image unclear
+- The main noun from Line 1 must appear in Line 2 in canonical/lemmatized form. To allow more natural phrasing, the caption may start with either: ""<main_noun> ..."" or ""the <main_noun> ..."" or have the main noun within the first two tokens.
+- Non-fallback captions must have at least two token overlaps with Line 1 in canonical/lemmatized form (one must be the main noun). Every non-determiner noun in Line 2 must correspond to a Line 1 token via the canonicalization mapping; otherwise do not output that caption.
+- Allowed extra words: determiners, prepositions (on, in, near, by, next to, in front of, behind), small conjunctions (and), one optional period at sentence end. No other punctuation.
+- Verbs: require one clear common visual verb or spatial relation. Expanded allowed verbs include common visual actions and simple progressive forms (e.g., sits, stands, lies, holds, carries, walks, rides, leans, looks, points, reads, opens, plays, wears, pushes, pulls, places, covers, is holding, is sitting). Use the simplest verb justified by visible evidence.
+- Attributes: an attribute token in Line 1 must appear verbatim in Line 2. Do not introduce attributes, objects, locations, identities, or inferred facts not present in Line 1 unless supported by high-confidence detectors per the attribute threshold. Prefer omission over guessing.
+
+Conservatism and anti-hallucination
+- Forbid proper nouns, emotions, intentions, or speculative inferences. Captions must be strictly visually verifiable from Line 1 tokens and high-confidence detections.
+- If attribute confidence is below the configured threshold, omit the attribute.
+- Use multiword compound nouns when the compound detector confidence is high; do not split compounds into unrelated tokens.
+
+Operational note (integrators / generator)
+- This prompt assumes an upstream pre-filtering/canonicalization step (POS filter, mapping to canonical classes, confidence thresholds). Tune attribute_confidence_threshold (recommended sweep 60/70/75%) and preferred tag count (2–5).
+- Prefer generating a small set of alternative compliant tag sets (e.g., up to 3 variants) when label confidence is ambiguous so a downstream CLIP reranker can choose the best candidate.
+- Keep candidate generation, CLIP reranking, and final selection outside this prompt. The frozen VLM should follow the concise visual rules above.
+
+Strictly follow the Line 1 / Line 2 rules above. If no valid caption candidate passes these checks, return Line 2 = ""image unclear"".","goalkeeper, player, ball
+goalkeeper dives as player heads ball",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.2878287434577942,0.13758690655231476,9,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_420af965c9,67,704,flickr30k_test_000704,images/flickr30k/flickr30k_test_000704.jpg,"[""Two men, one looking at a screen with a drum next to him, while the other is a man dressed in a white shirt is talking into a microphone."", ""A man in a white shirt sings into a microphone as he reads the words on a screen, while a balding man plays the drums."", ""Two guys looking at the screen of a tv while one sings, (presumably ) and the other plays a set of big wooden drums."", ""One man is playing the drums while another is singing Karaoke."", ""Two men in a club playing bongos and singing karaoke.""]",textgrad_420af965c9,TextGrad Step 10,"Output exactly two lines only.
+
+Line 1 — tags (format rules)
+- 2–5 comma-separated lower-case tokens (prefer exactly 3). No punctuation except commas.
+- Tokens should be visible concrete nouns or a single visible adjective (color/size) as the sole attribute token. Multiword fused objects (e.g., ""traffic light"", ""wine bottle"") may count as one token.
+- Required pre-filtering & canonicalization (assume an external or prior step): map detector/classifier labels to canonical, high‑coverage visual nouns (prefer COCO/Visual Genome/CLIP-common classes). Filter out non-nouns and convert multiword labels to canonical fused nouns when appropriate (e.g., ""welcome sign"" → ""sign""; ""sofa"" → ""couch""). Only accept attribute tokens (colors/sizes) if the attribute detector confidence ≥ attribute_confidence_threshold (default 75%; tune 60/70/75).
+- Allow lemmatized/canonical matches: tokens may be normalized (plural→singular, synonyms→canonical class) for matching with captions. Synonyms are allowed only if they map back to a canonical tag via the mapping step.
+- Deduplicate tokens; order by visual discriminativeness (most distinctive / likely recognized by CLIP/classifiers first). Prefer fine‑grained nouns (e.g., ""trumpet"" over ""man"" when reliable).
+- If fewer than two high-confidence specific nouns are available after filtering, prefer the compact fallback (Line 2 Option B) or output ""image unclear"".
+- Forbidden tokens in Line 1: meta/instruction words, tooling vocabulary (prompt, detectors, thresholds, score, clip, siglip, example, etc.), proper nouns, brand names, dates, events, emotions, or inferred identities.
+
+Line 2 — caption (format rules)
+- Option A (preferred): one factual short sentence (9–12 words) in present simple or simple progressive that contains one clear visual verb or a concrete spatial relation.
+- Option B (fallback): a 2–3 word phrase (main noun + visible location) when a compliant 9–12 word caption would require guessing.
+- If tags cannot be produced reliably, output exactly: image unclear
+- The main noun from Line 1 must appear in Line 2 in canonical/lemmatized form. To allow more natural phrasing, the caption may start with either: ""<main_noun> ..."" or ""the <main_noun> ..."" or have the main noun within the first two tokens.
+- Non-fallback captions must have at least two token overlaps with Line 1 in canonical/lemmatized form (one must be the main noun). Every non-determiner noun in Line 2 must correspond to a Line 1 token via the canonicalization mapping; otherwise do not output that caption.
+- Allowed extra words: determiners, prepositions (on, in, near, by, next to, in front of, behind), small conjunctions (and), one optional period at sentence end. No other punctuation.
+- Verbs: require one clear common visual verb or spatial relation. Expanded allowed verbs include common visual actions and simple progressive forms (e.g., sits, stands, lies, holds, carries, walks, rides, leans, looks, points, reads, opens, plays, wears, pushes, pulls, places, covers, is holding, is sitting). Use the simplest verb justified by visible evidence.
+- Attributes: an attribute token in Line 1 must appear verbatim in Line 2. Do not introduce attributes, objects, locations, identities, or inferred facts not present in Line 1 unless supported by high-confidence detectors per the attribute threshold. Prefer omission over guessing.
+
+Conservatism and anti-hallucination
+- Forbid proper nouns, emotions, intentions, or speculative inferences. Captions must be strictly visually verifiable from Line 1 tokens and high-confidence detections.
+- If attribute confidence is below the configured threshold, omit the attribute.
+- Use multiword compound nouns when the compound detector confidence is high; do not split compounds into unrelated tokens.
+
+Operational note (integrators / generator)
+- This prompt assumes an upstream pre-filtering/canonicalization step (POS filter, mapping to canonical classes, confidence thresholds). Tune attribute_confidence_threshold (recommended sweep 60/70/75%) and preferred tag count (2–5).
+- Prefer generating a small set of alternative compliant tag sets (e.g., up to 3 variants) when label confidence is ambiguous so a downstream CLIP reranker can choose the best candidate.
+- Keep candidate generation, CLIP reranking, and final selection outside this prompt. The frozen VLM should follow the concise visual rules above.
+
+Strictly follow the Line 1 / Line 2 rules above. If no valid caption candidate passes these checks, return Line 2 = ""image unclear"".","man sings into microphone
+man holds microphone near drum",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.21505296230316162,0.13804714381694794,9,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_420af965c9,72,30218,flickr30k_test_030218,images/flickr30k/flickr30k_test_030218.jpg,"[""An older, bearded man play a small metal whistle while holding an oboe in his arm on a city street in font of a store window."", ""A bearded man, dressed in jeans and a jacket, is preparing to play a flute instrument on the sidewalk."", ""A man in a gray sweater and blue jeans, playing a flute along a street."", ""An old bearded man plays a hand flute on the side of a sidewalk."", ""An old man playing a musical instrument at a city sidewalk.""]",textgrad_420af965c9,TextGrad Step 10,"Output exactly two lines only.
+
+Line 1 — tags (format rules)
+- 2–5 comma-separated lower-case tokens (prefer exactly 3). No punctuation except commas.
+- Tokens should be visible concrete nouns or a single visible adjective (color/size) as the sole attribute token. Multiword fused objects (e.g., ""traffic light"", ""wine bottle"") may count as one token.
+- Required pre-filtering & canonicalization (assume an external or prior step): map detector/classifier labels to canonical, high‑coverage visual nouns (prefer COCO/Visual Genome/CLIP-common classes). Filter out non-nouns and convert multiword labels to canonical fused nouns when appropriate (e.g., ""welcome sign"" → ""sign""; ""sofa"" → ""couch""). Only accept attribute tokens (colors/sizes) if the attribute detector confidence ≥ attribute_confidence_threshold (default 75%; tune 60/70/75).
+- Allow lemmatized/canonical matches: tokens may be normalized (plural→singular, synonyms→canonical class) for matching with captions. Synonyms are allowed only if they map back to a canonical tag via the mapping step.
+- Deduplicate tokens; order by visual discriminativeness (most distinctive / likely recognized by CLIP/classifiers first). Prefer fine‑grained nouns (e.g., ""trumpet"" over ""man"" when reliable).
+- If fewer than two high-confidence specific nouns are available after filtering, prefer the compact fallback (Line 2 Option B) or output ""image unclear"".
+- Forbidden tokens in Line 1: meta/instruction words, tooling vocabulary (prompt, detectors, thresholds, score, clip, siglip, example, etc.), proper nouns, brand names, dates, events, emotions, or inferred identities.
+
+Line 2 — caption (format rules)
+- Option A (preferred): one factual short sentence (9–12 words) in present simple or simple progressive that contains one clear visual verb or a concrete spatial relation.
+- Option B (fallback): a 2–3 word phrase (main noun + visible location) when a compliant 9–12 word caption would require guessing.
+- If tags cannot be produced reliably, output exactly: image unclear
+- The main noun from Line 1 must appear in Line 2 in canonical/lemmatized form. To allow more natural phrasing, the caption may start with either: ""<main_noun> ..."" or ""the <main_noun> ..."" or have the main noun within the first two tokens.
+- Non-fallback captions must have at least two token overlaps with Line 1 in canonical/lemmatized form (one must be the main noun). Every non-determiner noun in Line 2 must correspond to a Line 1 token via the canonicalization mapping; otherwise do not output that caption.
+- Allowed extra words: determiners, prepositions (on, in, near, by, next to, in front of, behind), small conjunctions (and), one optional period at sentence end. No other punctuation.
+- Verbs: require one clear common visual verb or spatial relation. Expanded allowed verbs include common visual actions and simple progressive forms (e.g., sits, stands, lies, holds, carries, walks, rides, leans, looks, points, reads, opens, plays, wears, pushes, pulls, places, covers, is holding, is sitting). Use the simplest verb justified by visible evidence.
+- Attributes: an attribute token in Line 1 must appear verbatim in Line 2. Do not introduce attributes, objects, locations, identities, or inferred facts not present in Line 1 unless supported by high-confidence detectors per the attribute threshold. Prefer omission over guessing.
+
+Conservatism and anti-hallucination
+- Forbid proper nouns, emotions, intentions, or speculative inferences. Captions must be strictly visually verifiable from Line 1 tokens and high-confidence detections.
+- If attribute confidence is below the configured threshold, omit the attribute.
+- Use multiword compound nouns when the compound detector confidence is high; do not split compounds into unrelated tokens.
+
+Operational note (integrators / generator)
+- This prompt assumes an upstream pre-filtering/canonicalization step (POS filter, mapping to canonical classes, confidence thresholds). Tune attribute_confidence_threshold (recommended sweep 60/70/75%) and preferred tag count (2–5).
+- Prefer generating a small set of alternative compliant tag sets (e.g., up to 3 variants) when label confidence is ambiguous so a downstream CLIP reranker can choose the best candidate.
+- Keep candidate generation, CLIP reranking, and final selection outside this prompt. The frozen VLM should follow the concise visual rules above.
+
+Strictly follow the Line 1 / Line 2 rules above. If no valid caption candidate passes these checks, return Line 2 = ""image unclear"".","man plays flute
+man stands on sidewalk",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.30774566531181335,0.2163836508989334,7,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_420af965c9,85,23304,flickr30k_test_023304,images/flickr30k/flickr30k_test_023304.jpg,"[""A young woman in a pink top holds several shopping bags while walking down a boulevard."", ""A woman in a pink and black short skirted outfit walking with shopping bags."", ""A lady dressed in pink and black walking down a sidewalk carrying packages."", ""A young woman is walking with shopping bags in Hollywood."", ""A well dressed woman is shopping in front of a store.""]",textgrad_420af965c9,TextGrad Step 10,"Output exactly two lines only.
+
+Line 1 — tags (format rules)
+- 2–5 comma-separated lower-case tokens (prefer exactly 3). No punctuation except commas.
+- Tokens should be visible concrete nouns or a single visible adjective (color/size) as the sole attribute token. Multiword fused objects (e.g., ""traffic light"", ""wine bottle"") may count as one token.
+- Required pre-filtering & canonicalization (assume an external or prior step): map detector/classifier labels to canonical, high‑coverage visual nouns (prefer COCO/Visual Genome/CLIP-common classes). Filter out non-nouns and convert multiword labels to canonical fused nouns when appropriate (e.g., ""welcome sign"" → ""sign""; ""sofa"" → ""couch""). Only accept attribute tokens (colors/sizes) if the attribute detector confidence ≥ attribute_confidence_threshold (default 75%; tune 60/70/75).
+- Allow lemmatized/canonical matches: tokens may be normalized (plural→singular, synonyms→canonical class) for matching with captions. Synonyms are allowed only if they map back to a canonical tag via the mapping step.
+- Deduplicate tokens; order by visual discriminativeness (most distinctive / likely recognized by CLIP/classifiers first). Prefer fine‑grained nouns (e.g., ""trumpet"" over ""man"" when reliable).
+- If fewer than two high-confidence specific nouns are available after filtering, prefer the compact fallback (Line 2 Option B) or output ""image unclear"".
+- Forbidden tokens in Line 1: meta/instruction words, tooling vocabulary (prompt, detectors, thresholds, score, clip, siglip, example, etc.), proper nouns, brand names, dates, events, emotions, or inferred identities.
+
+Line 2 — caption (format rules)
+- Option A (preferred): one factual short sentence (9–12 words) in present simple or simple progressive that contains one clear visual verb or a concrete spatial relation.
+- Option B (fallback): a 2–3 word phrase (main noun + visible location) when a compliant 9–12 word caption would require guessing.
+- If tags cannot be produced reliably, output exactly: image unclear
+- The main noun from Line 1 must appear in Line 2 in canonical/lemmatized form. To allow more natural phrasing, the caption may start with either: ""<main_noun> ..."" or ""the <main_noun> ..."" or have the main noun within the first two tokens.
+- Non-fallback captions must have at least two token overlaps with Line 1 in canonical/lemmatized form (one must be the main noun). Every non-determiner noun in Line 2 must correspond to a Line 1 token via the canonicalization mapping; otherwise do not output that caption.
+- Allowed extra words: determiners, prepositions (on, in, near, by, next to, in front of, behind), small conjunctions (and), one optional period at sentence end. No other punctuation.
+- Verbs: require one clear common visual verb or spatial relation. Expanded allowed verbs include common visual actions and simple progressive forms (e.g., sits, stands, lies, holds, carries, walks, rides, leans, looks, points, reads, opens, plays, wears, pushes, pulls, places, covers, is holding, is sitting). Use the simplest verb justified by visible evidence.
+- Attributes: an attribute token in Line 1 must appear verbatim in Line 2. Do not introduce attributes, objects, locations, identities, or inferred facts not present in Line 1 unless supported by high-confidence detectors per the attribute threshold. Prefer omission over guessing.
+
+Conservatism and anti-hallucination
+- Forbid proper nouns, emotions, intentions, or speculative inferences. Captions must be strictly visually verifiable from Line 1 tokens and high-confidence detections.
+- If attribute confidence is below the configured threshold, omit the attribute.
+- Use multiword compound nouns when the compound detector confidence is high; do not split compounds into unrelated tokens.
+
+Operational note (integrators / generator)
+- This prompt assumes an upstream pre-filtering/canonicalization step (POS filter, mapping to canonical classes, confidence thresholds). Tune attribute_confidence_threshold (recommended sweep 60/70/75%) and preferred tag count (2–5).
+- Prefer generating a small set of alternative compliant tag sets (e.g., up to 3 variants) when label confidence is ambiguous so a downstream CLIP reranker can choose the best candidate.
+- Keep candidate generation, CLIP reranking, and final selection outside this prompt. The frozen VLM should follow the concise visual rules above.
+
+Strictly follow the Line 1 / Line 2 rules above. If no valid caption candidate passes these checks, return Line 2 = ""image unclear"".","pink bag
+woman walks with pink bag",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.29460740089416504,0.1576601266860962,7,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_420af965c9,87,30685,flickr30k_test_030685,images/flickr30k/flickr30k_test_030685.jpg,"[""A man who looks like Andy Dick is talking to a man in a hall with a man with a splotch of primary-color red on his hair."", ""A guy with a golden hair is chatting with a guy with a red-hair on top of his head."", ""Two male college students at a social networking event."", ""Two boys in dark clothing talk to each other."", ""Two men are talking in a hallway.""]",textgrad_420af965c9,TextGrad Step 10,"Output exactly two lines only.
+
+Line 1 — tags (format rules)
+- 2–5 comma-separated lower-case tokens (prefer exactly 3). No punctuation except commas.
+- Tokens should be visible concrete nouns or a single visible adjective (color/size) as the sole attribute token. Multiword fused objects (e.g., ""traffic light"", ""wine bottle"") may count as one token.
+- Required pre-filtering & canonicalization (assume an external or prior step): map detector/classifier labels to canonical, high‑coverage visual nouns (prefer COCO/Visual Genome/CLIP-common classes). Filter out non-nouns and convert multiword labels to canonical fused nouns when appropriate (e.g., ""welcome sign"" → ""sign""; ""sofa"" → ""couch""). Only accept attribute tokens (colors/sizes) if the attribute detector confidence ≥ attribute_confidence_threshold (default 75%; tune 60/70/75).
+- Allow lemmatized/canonical matches: tokens may be normalized (plural→singular, synonyms→canonical class) for matching with captions. Synonyms are allowed only if they map back to a canonical tag via the mapping step.
+- Deduplicate tokens; order by visual discriminativeness (most distinctive / likely recognized by CLIP/classifiers first). Prefer fine‑grained nouns (e.g., ""trumpet"" over ""man"" when reliable).
+- If fewer than two high-confidence specific nouns are available after filtering, prefer the compact fallback (Line 2 Option B) or output ""image unclear"".
+- Forbidden tokens in Line 1: meta/instruction words, tooling vocabulary (prompt, detectors, thresholds, score, clip, siglip, example, etc.), proper nouns, brand names, dates, events, emotions, or inferred identities.
+
+Line 2 — caption (format rules)
+- Option A (preferred): one factual short sentence (9–12 words) in present simple or simple progressive that contains one clear visual verb or a concrete spatial relation.
+- Option B (fallback): a 2–3 word phrase (main noun + visible location) when a compliant 9–12 word caption would require guessing.
+- If tags cannot be produced reliably, output exactly: image unclear
+- The main noun from Line 1 must appear in Line 2 in canonical/lemmatized form. To allow more natural phrasing, the caption may start with either: ""<main_noun> ..."" or ""the <main_noun> ..."" or have the main noun within the first two tokens.
+- Non-fallback captions must have at least two token overlaps with Line 1 in canonical/lemmatized form (one must be the main noun). Every non-determiner noun in Line 2 must correspond to a Line 1 token via the canonicalization mapping; otherwise do not output that caption.
+- Allowed extra words: determiners, prepositions (on, in, near, by, next to, in front of, behind), small conjunctions (and), one optional period at sentence end. No other punctuation.
+- Verbs: require one clear common visual verb or spatial relation. Expanded allowed verbs include common visual actions and simple progressive forms (e.g., sits, stands, lies, holds, carries, walks, rides, leans, looks, points, reads, opens, plays, wears, pushes, pulls, places, covers, is holding, is sitting). Use the simplest verb justified by visible evidence.
+- Attributes: an attribute token in Line 1 must appear verbatim in Line 2. Do not introduce attributes, objects, locations, identities, or inferred facts not present in Line 1 unless supported by high-confidence detectors per the attribute threshold. Prefer omission over guessing.
+
+Conservatism and anti-hallucination
+- Forbid proper nouns, emotions, intentions, or speculative inferences. Captions must be strictly visually verifiable from Line 1 tokens and high-confidence detections.
+- If attribute confidence is below the configured threshold, omit the attribute.
+- Use multiword compound nouns when the compound detector confidence is high; do not split compounds into unrelated tokens.
+
+Operational note (integrators / generator)
+- This prompt assumes an upstream pre-filtering/canonicalization step (POS filter, mapping to canonical classes, confidence thresholds). Tune attribute_confidence_threshold (recommended sweep 60/70/75%) and preferred tag count (2–5).
+- Prefer generating a small set of alternative compliant tag sets (e.g., up to 3 variants) when label confidence is ambiguous so a downstream CLIP reranker can choose the best candidate.
+- Keep candidate generation, CLIP reranking, and final selection outside this prompt. The frozen VLM should follow the concise visual rules above.
+
+Strictly follow the Line 1 / Line 2 rules above. If no valid caption candidate passes these checks, return Line 2 = ""image unclear"".","man holds cup
+man stands near wall",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.2735918462276459,0.12675075232982635,7,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_420af965c9,91,21964,flickr30k_test_021964,images/flickr30k/flickr30k_test_021964.jpg,"[""A man and a woman seated at a table, having drinks and deep in conversation."", ""A couple talking together having drinks in a quiet booth."", ""A man and a woman are sitting at a table with drinks."", ""Two people are sitting and enjoying some beverages."", ""Couple having cocktails at a club.""]",textgrad_420af965c9,TextGrad Step 10,"Output exactly two lines only.
+
+Line 1 — tags (format rules)
+- 2–5 comma-separated lower-case tokens (prefer exactly 3). No punctuation except commas.
+- Tokens should be visible concrete nouns or a single visible adjective (color/size) as the sole attribute token. Multiword fused objects (e.g., ""traffic light"", ""wine bottle"") may count as one token.
+- Required pre-filtering & canonicalization (assume an external or prior step): map detector/classifier labels to canonical, high‑coverage visual nouns (prefer COCO/Visual Genome/CLIP-common classes). Filter out non-nouns and convert multiword labels to canonical fused nouns when appropriate (e.g., ""welcome sign"" → ""sign""; ""sofa"" → ""couch""). Only accept attribute tokens (colors/sizes) if the attribute detector confidence ≥ attribute_confidence_threshold (default 75%; tune 60/70/75).
+- Allow lemmatized/canonical matches: tokens may be normalized (plural→singular, synonyms→canonical class) for matching with captions. Synonyms are allowed only if they map back to a canonical tag via the mapping step.
+- Deduplicate tokens; order by visual discriminativeness (most distinctive / likely recognized by CLIP/classifiers first). Prefer fine‑grained nouns (e.g., ""trumpet"" over ""man"" when reliable).
+- If fewer than two high-confidence specific nouns are available after filtering, prefer the compact fallback (Line 2 Option B) or output ""image unclear"".
+- Forbidden tokens in Line 1: meta/instruction words, tooling vocabulary (prompt, detectors, thresholds, score, clip, siglip, example, etc.), proper nouns, brand names, dates, events, emotions, or inferred identities.
+
+Line 2 — caption (format rules)
+- Option A (preferred): one factual short sentence (9–12 words) in present simple or simple progressive that contains one clear visual verb or a concrete spatial relation.
+- Option B (fallback): a 2–3 word phrase (main noun + visible location) when a compliant 9–12 word caption would require guessing.
+- If tags cannot be produced reliably, output exactly: image unclear
+- The main noun from Line 1 must appear in Line 2 in canonical/lemmatized form. To allow more natural phrasing, the caption may start with either: ""<main_noun> ..."" or ""the <main_noun> ..."" or have the main noun within the first two tokens.
+- Non-fallback captions must have at least two token overlaps with Line 1 in canonical/lemmatized form (one must be the main noun). Every non-determiner noun in Line 2 must correspond to a Line 1 token via the canonicalization mapping; otherwise do not output that caption.
+- Allowed extra words: determiners, prepositions (on, in, near, by, next to, in front of, behind), small conjunctions (and), one optional period at sentence end. No other punctuation.
+- Verbs: require one clear common visual verb or spatial relation. Expanded allowed verbs include common visual actions and simple progressive forms (e.g., sits, stands, lies, holds, carries, walks, rides, leans, looks, points, reads, opens, plays, wears, pushes, pulls, places, covers, is holding, is sitting). Use the simplest verb justified by visible evidence.
+- Attributes: an attribute token in Line 1 must appear verbatim in Line 2. Do not introduce attributes, objects, locations, identities, or inferred facts not present in Line 1 unless supported by high-confidence detectors per the attribute threshold. Prefer omission over guessing.
+
+Conservatism and anti-hallucination
+- Forbid proper nouns, emotions, intentions, or speculative inferences. Captions must be strictly visually verifiable from Line 1 tokens and high-confidence detections.
+- If attribute confidence is below the configured threshold, omit the attribute.
+- Use multiword compound nouns when the compound detector confidence is high; do not split compounds into unrelated tokens.
+
+Operational note (integrators / generator)
+- This prompt assumes an upstream pre-filtering/canonicalization step (POS filter, mapping to canonical classes, confidence thresholds). Tune attribute_confidence_threshold (recommended sweep 60/70/75%) and preferred tag count (2–5).
+- Prefer generating a small set of alternative compliant tag sets (e.g., up to 3 variants) when label confidence is ambiguous so a downstream CLIP reranker can choose the best candidate.
+- Keep candidate generation, CLIP reranking, and final selection outside this prompt. The frozen VLM should follow the concise visual rules above.
+
+Strictly follow the Line 1 / Line 2 rules above. If no valid caption candidate passes these checks, return Line 2 = ""image unclear"".","couch, man, drink
+man sits on couch near drink",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.23594053089618683,0.13242287933826447,9,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_420af965c9,102,19300,flickr30k_test_019300,images/flickr30k/flickr30k_test_019300.jpg,"[""A man dangles from the room of an incompletely built building in the middle of a field."", ""A man laying on the roof attempting to rebuild it."", ""A man hanging off a partially framed roof."", ""Man laying on a partially built house."", ""A man is installing a roof.""]",textgrad_420af965c9,TextGrad Step 10,"Output exactly two lines only.
+
+Line 1 — tags (format rules)
+- 2–5 comma-separated lower-case tokens (prefer exactly 3). No punctuation except commas.
+- Tokens should be visible concrete nouns or a single visible adjective (color/size) as the sole attribute token. Multiword fused objects (e.g., ""traffic light"", ""wine bottle"") may count as one token.
+- Required pre-filtering & canonicalization (assume an external or prior step): map detector/classifier labels to canonical, high‑coverage visual nouns (prefer COCO/Visual Genome/CLIP-common classes). Filter out non-nouns and convert multiword labels to canonical fused nouns when appropriate (e.g., ""welcome sign"" → ""sign""; ""sofa"" → ""couch""). Only accept attribute tokens (colors/sizes) if the attribute detector confidence ≥ attribute_confidence_threshold (default 75%; tune 60/70/75).
+- Allow lemmatized/canonical matches: tokens may be normalized (plural→singular, synonyms→canonical class) for matching with captions. Synonyms are allowed only if they map back to a canonical tag via the mapping step.
+- Deduplicate tokens; order by visual discriminativeness (most distinctive / likely recognized by CLIP/classifiers first). Prefer fine‑grained nouns (e.g., ""trumpet"" over ""man"" when reliable).
+- If fewer than two high-confidence specific nouns are available after filtering, prefer the compact fallback (Line 2 Option B) or output ""image unclear"".
+- Forbidden tokens in Line 1: meta/instruction words, tooling vocabulary (prompt, detectors, thresholds, score, clip, siglip, example, etc.), proper nouns, brand names, dates, events, emotions, or inferred identities.
+
+Line 2 — caption (format rules)
+- Option A (preferred): one factual short sentence (9–12 words) in present simple or simple progressive that contains one clear visual verb or a concrete spatial relation.
+- Option B (fallback): a 2–3 word phrase (main noun + visible location) when a compliant 9–12 word caption would require guessing.
+- If tags cannot be produced reliably, output exactly: image unclear
+- The main noun from Line 1 must appear in Line 2 in canonical/lemmatized form. To allow more natural phrasing, the caption may start with either: ""<main_noun> ..."" or ""the <main_noun> ..."" or have the main noun within the first two tokens.
+- Non-fallback captions must have at least two token overlaps with Line 1 in canonical/lemmatized form (one must be the main noun). Every non-determiner noun in Line 2 must correspond to a Line 1 token via the canonicalization mapping; otherwise do not output that caption.
+- Allowed extra words: determiners, prepositions (on, in, near, by, next to, in front of, behind), small conjunctions (and), one optional period at sentence end. No other punctuation.
+- Verbs: require one clear common visual verb or spatial relation. Expanded allowed verbs include common visual actions and simple progressive forms (e.g., sits, stands, lies, holds, carries, walks, rides, leans, looks, points, reads, opens, plays, wears, pushes, pulls, places, covers, is holding, is sitting). Use the simplest verb justified by visible evidence.
+- Attributes: an attribute token in Line 1 must appear verbatim in Line 2. Do not introduce attributes, objects, locations, identities, or inferred facts not present in Line 1 unless supported by high-confidence detectors per the attribute threshold. Prefer omission over guessing.
+
+Conservatism and anti-hallucination
+- Forbid proper nouns, emotions, intentions, or speculative inferences. Captions must be strictly visually verifiable from Line 1 tokens and high-confidence detections.
+- If attribute confidence is below the configured threshold, omit the attribute.
+- Use multiword compound nouns when the compound detector confidence is high; do not split compounds into unrelated tokens.
+
+Operational note (integrators / generator)
+- This prompt assumes an upstream pre-filtering/canonicalization step (POS filter, mapping to canonical classes, confidence thresholds). Tune attribute_confidence_threshold (recommended sweep 60/70/75%) and preferred tag count (2–5).
+- Prefer generating a small set of alternative compliant tag sets (e.g., up to 3 variants) when label confidence is ambiguous so a downstream CLIP reranker can choose the best candidate.
+- Keep candidate generation, CLIP reranking, and final selection outside this prompt. The frozen VLM should follow the concise visual rules above.
+
+Strictly follow the Line 1 / Line 2 rules above. If no valid caption candidate passes these checks, return Line 2 = ""image unclear"".","man climbing roof frame
+man climbs wooden structure",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.311566025018692,0.16294988989830017,8,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_420af965c9,111,21782,flickr30k_test_021782,images/flickr30k/flickr30k_test_021782.jpg,"[""An oriental man in a blue shirt is leaning against a chain."", ""Some men stand near a sign written in English and Chinese."", ""Street vendors talk to each other while others walk by."", ""Two Asian men rest by a sign on an urban street."", ""A man is watching what to get in the shops.""]",textgrad_420af965c9,TextGrad Step 10,"Output exactly two lines only.
+
+Line 1 — tags (format rules)
+- 2–5 comma-separated lower-case tokens (prefer exactly 3). No punctuation except commas.
+- Tokens should be visible concrete nouns or a single visible adjective (color/size) as the sole attribute token. Multiword fused objects (e.g., ""traffic light"", ""wine bottle"") may count as one token.
+- Required pre-filtering & canonicalization (assume an external or prior step): map detector/classifier labels to canonical, high‑coverage visual nouns (prefer COCO/Visual Genome/CLIP-common classes). Filter out non-nouns and convert multiword labels to canonical fused nouns when appropriate (e.g., ""welcome sign"" → ""sign""; ""sofa"" → ""couch""). Only accept attribute tokens (colors/sizes) if the attribute detector confidence ≥ attribute_confidence_threshold (default 75%; tune 60/70/75).
+- Allow lemmatized/canonical matches: tokens may be normalized (plural→singular, synonyms→canonical class) for matching with captions. Synonyms are allowed only if they map back to a canonical tag via the mapping step.
+- Deduplicate tokens; order by visual discriminativeness (most distinctive / likely recognized by CLIP/classifiers first). Prefer fine‑grained nouns (e.g., ""trumpet"" over ""man"" when reliable).
+- If fewer than two high-confidence specific nouns are available after filtering, prefer the compact fallback (Line 2 Option B) or output ""image unclear"".
+- Forbidden tokens in Line 1: meta/instruction words, tooling vocabulary (prompt, detectors, thresholds, score, clip, siglip, example, etc.), proper nouns, brand names, dates, events, emotions, or inferred identities.
+
+Line 2 — caption (format rules)
+- Option A (preferred): one factual short sentence (9–12 words) in present simple or simple progressive that contains one clear visual verb or a concrete spatial relation.
+- Option B (fallback): a 2–3 word phrase (main noun + visible location) when a compliant 9–12 word caption would require guessing.
+- If tags cannot be produced reliably, output exactly: image unclear
+- The main noun from Line 1 must appear in Line 2 in canonical/lemmatized form. To allow more natural phrasing, the caption may start with either: ""<main_noun> ..."" or ""the <main_noun> ..."" or have the main noun within the first two tokens.
+- Non-fallback captions must have at least two token overlaps with Line 1 in canonical/lemmatized form (one must be the main noun). Every non-determiner noun in Line 2 must correspond to a Line 1 token via the canonicalization mapping; otherwise do not output that caption.
+- Allowed extra words: determiners, prepositions (on, in, near, by, next to, in front of, behind), small conjunctions (and), one optional period at sentence end. No other punctuation.
+- Verbs: require one clear common visual verb or spatial relation. Expanded allowed verbs include common visual actions and simple progressive forms (e.g., sits, stands, lies, holds, carries, walks, rides, leans, looks, points, reads, opens, plays, wears, pushes, pulls, places, covers, is holding, is sitting). Use the simplest verb justified by visible evidence.
+- Attributes: an attribute token in Line 1 must appear verbatim in Line 2. Do not introduce attributes, objects, locations, identities, or inferred facts not present in Line 1 unless supported by high-confidence detectors per the attribute threshold. Prefer omission over guessing.
+
+Conservatism and anti-hallucination
+- Forbid proper nouns, emotions, intentions, or speculative inferences. Captions must be strictly visually verifiable from Line 1 tokens and high-confidence detections.
+- If attribute confidence is below the configured threshold, omit the attribute.
+- Use multiword compound nouns when the compound detector confidence is high; do not split compounds into unrelated tokens.
+
+Operational note (integrators / generator)
+- This prompt assumes an upstream pre-filtering/canonicalization step (POS filter, mapping to canonical classes, confidence thresholds). Tune attribute_confidence_threshold (recommended sweep 60/70/75%) and preferred tag count (2–5).
+- Prefer generating a small set of alternative compliant tag sets (e.g., up to 3 variants) when label confidence is ambiguous so a downstream CLIP reranker can choose the best candidate.
+- Keep candidate generation, CLIP reranking, and final selection outside this prompt. The frozen VLM should follow the concise visual rules above.
+
+Strictly follow the Line 1 / Line 2 rules above. If no valid caption candidate passes these checks, return Line 2 = ""image unclear"".","sign
+man leans on sign",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.24210695922374725,0.17015030980110168,5,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_420af965c9,112,5669,flickr30k_test_005669,images/flickr30k/flickr30k_test_005669.jpg,"[""Several young people adults sit around while a middle-eastern band prepares to play keyboard, drums, violin and a mandolin."", ""An audience listens to a band play as colorful lights light the scene."", ""A man playing an instrument while others sit at a table and watch."", ""A small band performing for people in a nightclub."", ""A group of people enjoying an intimate concert.""]",textgrad_420af965c9,TextGrad Step 10,"Output exactly two lines only.
+
+Line 1 — tags (format rules)
+- 2–5 comma-separated lower-case tokens (prefer exactly 3). No punctuation except commas.
+- Tokens should be visible concrete nouns or a single visible adjective (color/size) as the sole attribute token. Multiword fused objects (e.g., ""traffic light"", ""wine bottle"") may count as one token.
+- Required pre-filtering & canonicalization (assume an external or prior step): map detector/classifier labels to canonical, high‑coverage visual nouns (prefer COCO/Visual Genome/CLIP-common classes). Filter out non-nouns and convert multiword labels to canonical fused nouns when appropriate (e.g., ""welcome sign"" → ""sign""; ""sofa"" → ""couch""). Only accept attribute tokens (colors/sizes) if the attribute detector confidence ≥ attribute_confidence_threshold (default 75%; tune 60/70/75).
+- Allow lemmatized/canonical matches: tokens may be normalized (plural→singular, synonyms→canonical class) for matching with captions. Synonyms are allowed only if they map back to a canonical tag via the mapping step.
+- Deduplicate tokens; order by visual discriminativeness (most distinctive / likely recognized by CLIP/classifiers first). Prefer fine‑grained nouns (e.g., ""trumpet"" over ""man"" when reliable).
+- If fewer than two high-confidence specific nouns are available after filtering, prefer the compact fallback (Line 2 Option B) or output ""image unclear"".
+- Forbidden tokens in Line 1: meta/instruction words, tooling vocabulary (prompt, detectors, thresholds, score, clip, siglip, example, etc.), proper nouns, brand names, dates, events, emotions, or inferred identities.
+
+Line 2 — caption (format rules)
+- Option A (preferred): one factual short sentence (9–12 words) in present simple or simple progressive that contains one clear visual verb or a concrete spatial relation.
+- Option B (fallback): a 2–3 word phrase (main noun + visible location) when a compliant 9–12 word caption would require guessing.
+- If tags cannot be produced reliably, output exactly: image unclear
+- The main noun from Line 1 must appear in Line 2 in canonical/lemmatized form. To allow more natural phrasing, the caption may start with either: ""<main_noun> ..."" or ""the <main_noun> ..."" or have the main noun within the first two tokens.
+- Non-fallback captions must have at least two token overlaps with Line 1 in canonical/lemmatized form (one must be the main noun). Every non-determiner noun in Line 2 must correspond to a Line 1 token via the canonicalization mapping; otherwise do not output that caption.
+- Allowed extra words: determiners, prepositions (on, in, near, by, next to, in front of, behind), small conjunctions (and), one optional period at sentence end. No other punctuation.
+- Verbs: require one clear common visual verb or spatial relation. Expanded allowed verbs include common visual actions and simple progressive forms (e.g., sits, stands, lies, holds, carries, walks, rides, leans, looks, points, reads, opens, plays, wears, pushes, pulls, places, covers, is holding, is sitting). Use the simplest verb justified by visible evidence.
+- Attributes: an attribute token in Line 1 must appear verbatim in Line 2. Do not introduce attributes, objects, locations, identities, or inferred facts not present in Line 1 unless supported by high-confidence detectors per the attribute threshold. Prefer omission over guessing.
+
+Conservatism and anti-hallucination
+- Forbid proper nouns, emotions, intentions, or speculative inferences. Captions must be strictly visually verifiable from Line 1 tokens and high-confidence detections.
+- If attribute confidence is below the configured threshold, omit the attribute.
+- Use multiword compound nouns when the compound detector confidence is high; do not split compounds into unrelated tokens.
+
+Operational note (integrators / generator)
+- This prompt assumes an upstream pre-filtering/canonicalization step (POS filter, mapping to canonical classes, confidence thresholds). Tune attribute_confidence_threshold (recommended sweep 60/70/75%) and preferred tag count (2–5).
+- Prefer generating a small set of alternative compliant tag sets (e.g., up to 3 variants) when label confidence is ambiguous so a downstream CLIP reranker can choose the best candidate.
+- Keep candidate generation, CLIP reranking, and final selection outside this prompt. The frozen VLM should follow the concise visual rules above.
+
+Strictly follow the Line 1 / Line 2 rules above. If no valid caption candidate passes these checks, return Line 2 = ""image unclear"".","guitar, person, stage
+person sits on chair near stage",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.25965777039527893,0.11190986633300781,9,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_420af965c9,126,25508,flickr30k_test_025508,images/flickr30k/flickr30k_test_025508.jpg,"[""A man in an orange shirt does a flip off a sand dune in the desert."", ""A young boy is doing a cannon ball outside near the desert sand."", ""Man in t-shirt and shorts doing a backflip on a sand hill."", ""A man is doing a flip in the air off of a sand dune."", ""A boy doing a back flip off of a sand dune.""]",textgrad_420af965c9,TextGrad Step 10,"Output exactly two lines only.
+
+Line 1 — tags (format rules)
+- 2–5 comma-separated lower-case tokens (prefer exactly 3). No punctuation except commas.
+- Tokens should be visible concrete nouns or a single visible adjective (color/size) as the sole attribute token. Multiword fused objects (e.g., ""traffic light"", ""wine bottle"") may count as one token.
+- Required pre-filtering & canonicalization (assume an external or prior step): map detector/classifier labels to canonical, high‑coverage visual nouns (prefer COCO/Visual Genome/CLIP-common classes). Filter out non-nouns and convert multiword labels to canonical fused nouns when appropriate (e.g., ""welcome sign"" → ""sign""; ""sofa"" → ""couch""). Only accept attribute tokens (colors/sizes) if the attribute detector confidence ≥ attribute_confidence_threshold (default 75%; tune 60/70/75).
+- Allow lemmatized/canonical matches: tokens may be normalized (plural→singular, synonyms→canonical class) for matching with captions. Synonyms are allowed only if they map back to a canonical tag via the mapping step.
+- Deduplicate tokens; order by visual discriminativeness (most distinctive / likely recognized by CLIP/classifiers first). Prefer fine‑grained nouns (e.g., ""trumpet"" over ""man"" when reliable).
+- If fewer than two high-confidence specific nouns are available after filtering, prefer the compact fallback (Line 2 Option B) or output ""image unclear"".
+- Forbidden tokens in Line 1: meta/instruction words, tooling vocabulary (prompt, detectors, thresholds, score, clip, siglip, example, etc.), proper nouns, brand names, dates, events, emotions, or inferred identities.
+
+Line 2 — caption (format rules)
+- Option A (preferred): one factual short sentence (9–12 words) in present simple or simple progressive that contains one clear visual verb or a concrete spatial relation.
+- Option B (fallback): a 2–3 word phrase (main noun + visible location) when a compliant 9–12 word caption would require guessing.
+- If tags cannot be produced reliably, output exactly: image unclear
+- The main noun from Line 1 must appear in Line 2 in canonical/lemmatized form. To allow more natural phrasing, the caption may start with either: ""<main_noun> ..."" or ""the <main_noun> ..."" or have the main noun within the first two tokens.
+- Non-fallback captions must have at least two token overlaps with Line 1 in canonical/lemmatized form (one must be the main noun). Every non-determiner noun in Line 2 must correspond to a Line 1 token via the canonicalization mapping; otherwise do not output that caption.
+- Allowed extra words: determiners, prepositions (on, in, near, by, next to, in front of, behind), small conjunctions (and), one optional period at sentence end. No other punctuation.
+- Verbs: require one clear common visual verb or spatial relation. Expanded allowed verbs include common visual actions and simple progressive forms (e.g., sits, stands, lies, holds, carries, walks, rides, leans, looks, points, reads, opens, plays, wears, pushes, pulls, places, covers, is holding, is sitting). Use the simplest verb justified by visible evidence.
+- Attributes: an attribute token in Line 1 must appear verbatim in Line 2. Do not introduce attributes, objects, locations, identities, or inferred facts not present in Line 1 unless supported by high-confidence detectors per the attribute threshold. Prefer omission over guessing.
+
+Conservatism and anti-hallucination
+- Forbid proper nouns, emotions, intentions, or speculative inferences. Captions must be strictly visually verifiable from Line 1 tokens and high-confidence detections.
+- If attribute confidence is below the configured threshold, omit the attribute.
+- Use multiword compound nouns when the compound detector confidence is high; do not split compounds into unrelated tokens.
+
+Operational note (integrators / generator)
+- This prompt assumes an upstream pre-filtering/canonicalization step (POS filter, mapping to canonical classes, confidence thresholds). Tune attribute_confidence_threshold (recommended sweep 60/70/75%) and preferred tag count (2–5).
+- Prefer generating a small set of alternative compliant tag sets (e.g., up to 3 variants) when label confidence is ambiguous so a downstream CLIP reranker can choose the best candidate.
+- Keep candidate generation, CLIP reranking, and final selection outside this prompt. The frozen VLM should follow the concise visual rules above.
+
+Strictly follow the Line 1 / Line 2 rules above. If no valid caption candidate passes these checks, return Line 2 = ""image unclear"".","person
+person flipping in desert",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.31999123096466064,0.20393064618110657,5,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_420af965c9,132,16046,flickr30k_test_016046,images/flickr30k/flickr30k_test_016046.jpg,"[""A group a youths sitting outdoors watching two people with a microphone that are doing something by a table with a basin and some soap."", ""Two young women speak into a microphone n front of a crowd of other young women."", ""Two young women are speaking with a microphone to a group of young girls."", ""Two girls doing a demonstration in front of an audience outside."", ""A woman in a blue shirt is speaking to a group of children.""]",textgrad_420af965c9,TextGrad Step 10,"Output exactly two lines only.
+
+Line 1 — tags (format rules)
+- 2–5 comma-separated lower-case tokens (prefer exactly 3). No punctuation except commas.
+- Tokens should be visible concrete nouns or a single visible adjective (color/size) as the sole attribute token. Multiword fused objects (e.g., ""traffic light"", ""wine bottle"") may count as one token.
+- Required pre-filtering & canonicalization (assume an external or prior step): map detector/classifier labels to canonical, high‑coverage visual nouns (prefer COCO/Visual Genome/CLIP-common classes). Filter out non-nouns and convert multiword labels to canonical fused nouns when appropriate (e.g., ""welcome sign"" → ""sign""; ""sofa"" → ""couch""). Only accept attribute tokens (colors/sizes) if the attribute detector confidence ≥ attribute_confidence_threshold (default 75%; tune 60/70/75).
+- Allow lemmatized/canonical matches: tokens may be normalized (plural→singular, synonyms→canonical class) for matching with captions. Synonyms are allowed only if they map back to a canonical tag via the mapping step.
+- Deduplicate tokens; order by visual discriminativeness (most distinctive / likely recognized by CLIP/classifiers first). Prefer fine‑grained nouns (e.g., ""trumpet"" over ""man"" when reliable).
+- If fewer than two high-confidence specific nouns are available after filtering, prefer the compact fallback (Line 2 Option B) or output ""image unclear"".
+- Forbidden tokens in Line 1: meta/instruction words, tooling vocabulary (prompt, detectors, thresholds, score, clip, siglip, example, etc.), proper nouns, brand names, dates, events, emotions, or inferred identities.
+
+Line 2 — caption (format rules)
+- Option A (preferred): one factual short sentence (9–12 words) in present simple or simple progressive that contains one clear visual verb or a concrete spatial relation.
+- Option B (fallback): a 2–3 word phrase (main noun + visible location) when a compliant 9–12 word caption would require guessing.
+- If tags cannot be produced reliably, output exactly: image unclear
+- The main noun from Line 1 must appear in Line 2 in canonical/lemmatized form. To allow more natural phrasing, the caption may start with either: ""<main_noun> ..."" or ""the <main_noun> ..."" or have the main noun within the first two tokens.
+- Non-fallback captions must have at least two token overlaps with Line 1 in canonical/lemmatized form (one must be the main noun). Every non-determiner noun in Line 2 must correspond to a Line 1 token via the canonicalization mapping; otherwise do not output that caption.
+- Allowed extra words: determiners, prepositions (on, in, near, by, next to, in front of, behind), small conjunctions (and), one optional period at sentence end. No other punctuation.
+- Verbs: require one clear common visual verb or spatial relation. Expanded allowed verbs include common visual actions and simple progressive forms (e.g., sits, stands, lies, holds, carries, walks, rides, leans, looks, points, reads, opens, plays, wears, pushes, pulls, places, covers, is holding, is sitting). Use the simplest verb justified by visible evidence.
+- Attributes: an attribute token in Line 1 must appear verbatim in Line 2. Do not introduce attributes, objects, locations, identities, or inferred facts not present in Line 1 unless supported by high-confidence detectors per the attribute threshold. Prefer omission over guessing.
+
+Conservatism and anti-hallucination
+- Forbid proper nouns, emotions, intentions, or speculative inferences. Captions must be strictly visually verifiable from Line 1 tokens and high-confidence detections.
+- If attribute confidence is below the configured threshold, omit the attribute.
+- Use multiword compound nouns when the compound detector confidence is high; do not split compounds into unrelated tokens.
+
+Operational note (integrators / generator)
+- This prompt assumes an upstream pre-filtering/canonicalization step (POS filter, mapping to canonical classes, confidence thresholds). Tune attribute_confidence_threshold (recommended sweep 60/70/75%) and preferred tag count (2–5).
+- Prefer generating a small set of alternative compliant tag sets (e.g., up to 3 variants) when label confidence is ambiguous so a downstream CLIP reranker can choose the best candidate.
+- Keep candidate generation, CLIP reranking, and final selection outside this prompt. The frozen VLM should follow the concise visual rules above.
+
+Strictly follow the Line 1 / Line 2 rules above. If no valid caption candidate passes these checks, return Line 2 = ""image unclear"".","people sit around table
+people sit around table",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.22414258122444153,0.09202811121940613,8,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_420af965c9,142,18945,flickr30k_test_018945,images/flickr30k/flickr30k_test_018945.jpg,"[""Two women, one in purple and the other in black and red, jump over hurdles in a contest."", ""Two black women are competing or practicing running hurdles on a track."", ""The two women athletes prepare to leap over the hurdles."", ""Two sprinters are jumping over an obstacle."", ""Two women compete in a hurdle event.""]",textgrad_420af965c9,TextGrad Step 10,"Output exactly two lines only.
+
+Line 1 — tags (format rules)
+- 2–5 comma-separated lower-case tokens (prefer exactly 3). No punctuation except commas.
+- Tokens should be visible concrete nouns or a single visible adjective (color/size) as the sole attribute token. Multiword fused objects (e.g., ""traffic light"", ""wine bottle"") may count as one token.
+- Required pre-filtering & canonicalization (assume an external or prior step): map detector/classifier labels to canonical, high‑coverage visual nouns (prefer COCO/Visual Genome/CLIP-common classes). Filter out non-nouns and convert multiword labels to canonical fused nouns when appropriate (e.g., ""welcome sign"" → ""sign""; ""sofa"" → ""couch""). Only accept attribute tokens (colors/sizes) if the attribute detector confidence ≥ attribute_confidence_threshold (default 75%; tune 60/70/75).
+- Allow lemmatized/canonical matches: tokens may be normalized (plural→singular, synonyms→canonical class) for matching with captions. Synonyms are allowed only if they map back to a canonical tag via the mapping step.
+- Deduplicate tokens; order by visual discriminativeness (most distinctive / likely recognized by CLIP/classifiers first). Prefer fine‑grained nouns (e.g., ""trumpet"" over ""man"" when reliable).
+- If fewer than two high-confidence specific nouns are available after filtering, prefer the compact fallback (Line 2 Option B) or output ""image unclear"".
+- Forbidden tokens in Line 1: meta/instruction words, tooling vocabulary (prompt, detectors, thresholds, score, clip, siglip, example, etc.), proper nouns, brand names, dates, events, emotions, or inferred identities.
+
+Line 2 — caption (format rules)
+- Option A (preferred): one factual short sentence (9–12 words) in present simple or simple progressive that contains one clear visual verb or a concrete spatial relation.
+- Option B (fallback): a 2–3 word phrase (main noun + visible location) when a compliant 9–12 word caption would require guessing.
+- If tags cannot be produced reliably, output exactly: image unclear
+- The main noun from Line 1 must appear in Line 2 in canonical/lemmatized form. To allow more natural phrasing, the caption may start with either: ""<main_noun> ..."" or ""the <main_noun> ..."" or have the main noun within the first two tokens.
+- Non-fallback captions must have at least two token overlaps with Line 1 in canonical/lemmatized form (one must be the main noun). Every non-determiner noun in Line 2 must correspond to a Line 1 token via the canonicalization mapping; otherwise do not output that caption.
+- Allowed extra words: determiners, prepositions (on, in, near, by, next to, in front of, behind), small conjunctions (and), one optional period at sentence end. No other punctuation.
+- Verbs: require one clear common visual verb or spatial relation. Expanded allowed verbs include common visual actions and simple progressive forms (e.g., sits, stands, lies, holds, carries, walks, rides, leans, looks, points, reads, opens, plays, wears, pushes, pulls, places, covers, is holding, is sitting). Use the simplest verb justified by visible evidence.
+- Attributes: an attribute token in Line 1 must appear verbatim in Line 2. Do not introduce attributes, objects, locations, identities, or inferred facts not present in Line 1 unless supported by high-confidence detectors per the attribute threshold. Prefer omission over guessing.
+
+Conservatism and anti-hallucination
+- Forbid proper nouns, emotions, intentions, or speculative inferences. Captions must be strictly visually verifiable from Line 1 tokens and high-confidence detections.
+- If attribute confidence is below the configured threshold, omit the attribute.
+- Use multiword compound nouns when the compound detector confidence is high; do not split compounds into unrelated tokens.
+
+Operational note (integrators / generator)
+- This prompt assumes an upstream pre-filtering/canonicalization step (POS filter, mapping to canonical classes, confidence thresholds). Tune attribute_confidence_threshold (recommended sweep 60/70/75%) and preferred tag count (2–5).
+- Prefer generating a small set of alternative compliant tag sets (e.g., up to 3 variants) when label confidence is ambiguous so a downstream CLIP reranker can choose the best candidate.
+- Keep candidate generation, CLIP reranking, and final selection outside this prompt. The frozen VLM should follow the concise visual rules above.
+
+Strictly follow the Line 1 / Line 2 rules above. If no valid caption candidate passes these checks, return Line 2 = ""image unclear"".","runners leap over hurdles
+athletes sprint past hurdles",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.30514904856681824,0.15998181700706482,8,False

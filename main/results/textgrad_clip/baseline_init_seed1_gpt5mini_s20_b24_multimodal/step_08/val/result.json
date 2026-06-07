@@ -1,0 +1,142 @@
+{
+  "prompt": "Output exactly one concise, information‑dense caption: a single grammatical sentence composed of comma‑separated short phrases. Produce only that one sentence (no lists, tags, JSON, logs, or extra lines). Use digits for counts only when Count verification below passes. Do not infer age, emotion, intention, or unseen attributes.\n\nRequired overall format and limits\n- Render 1–3 clearly separable subject groups in prominence order; each group is: [digit] + subject noun(s) + spatial anchor (see Spatial anchors). Target ≤24 words; allow up to +10% length (≤27 words) only to include a fully legible quoted text string or one necessary verified part‑level relation/background anchor. Aim for compact, active, comma‑separated noun‑verb phrases.\n\nTwo‑pass generation (mandatory)\n1) Token proposal: internally list candidate tokens for each slot — subject groups, micro‑action, part relation, up to three descriptors, viewpoint/orientation, lighting, background/text.  \n2) Verification & pruning: apply the numeric checks below to every candidate; drop any token that fails; then recompose a single grammatical comma‑separated sentence from the remaining verified tokens. If pruning removes a slot, ensure the final sentence remains grammatical.\n\nNumeric verification rules (must be enforced)\n- Count: include a digit only if each instance is ≥50% unobstructed and individually separable. Separability heuristic: centroids spacing ≥10% image width and distinct non‑overlapping silhouettes/contours. When uncertain, omit digits.\n- Contact (micro‑action): assert contact only if overlap area / smaller bbox area ≥12% OR clear segmentation adjacency/pixel adjacency. Example pass: hand overlapping cup with 18% overlap → contact verified. Example fail: hand near cup with 3% overlap → omit micro‑action.\n- Fine object class: assert a fine class only if classifier confidence >0.60 OR two independent visual cues (distinctive part + unique shape OR part + contextual prop). If metadata missing, require two visual cues.\n- Text transcription: transcribe and quote exact text only if fully legible at ≳8pt equivalent and high contrast; otherwise emit a positional label (e.g., \"signboard above\", \"painted text on shutter at left\").\n- Background anchor: include a background noun phrase only if that anchor occupies ≥5% image area or is a distinct structure (storefront, metal shutter, stairway).\n- If classifier/confidence metadata unavailable, require two independent visual cues before asserting fine classes; do not invent fine classes otherwise.\n\nSpatial anchors, grouping and prominence\n- Centroid x rules: x < 0.33 → \"left\"; 0.33 ≤ x ≤ 0.66 → \"center\"; x > 0.66 → \"right\".\n- If subject width >50% image width, emit \"center\".\n- Append \"partially cropped at [top|bottom|left|right]\" if >5% of subject area lies outside image.\n- Include depth token [foreground|midground|background] only when overlap ratio and scale unambiguously indicate depth (e.g., >25% occlusion and >2× scale difference).\n- Secondary group inclusion: include only if it covers ≥20% of main subject area OR ranks top‑2 by area/saliency.\n\nMicro‑action and part‑level relations (strict)\n- Include exactly one verbized micro‑action only if Contact verification passes. Use a strong verb and immediately follow with one part‑level relation using the exact template: \"[part] [verb] [object]\" (e.g., \"right hand holding pole\"). If contact not verified, omit both micro‑action and part relation.\n- Do not use passive or vague forms; do not use \"with\" except inside the required template.\n\nDescriptor selection and priority (up to 1–3 descriptors)\n- Choose at most three verified descriptors in this strict priority: (1) discriminative prop (unique object, container, tool, sign text), (2) fully legible text (quoted), (3) precise fine class (if verified), (4) material/texture, (5) color, (6) reflection/surface condition. If none verify, omit descriptors.\n- Mandatory: if any discriminative prop or verified part‑level relation passes verification, include at least one such token in the caption. Define \"present\" as classifier confidence >0.60 OR two independent visual cues.\n\nFine‑class cue examples (use these as verification patterns)\n- Motorbike: engine casing + exhaust OR engine casing + attached baskets OR visible exhaust + motorbike frame.  \n- Bicycle: pedals + chain OR spokes + visible pedals OR pedal + chainring.  \n- Street vendor role only if vendor cues present (baskets of fruit + scale/pans + transaction posture).\n\nBackground, signage and reflections\n- If text is fully legible per Text verification, quote exact string. Otherwise use a positional label (\"storefront behind\", \"metal shutter with painted text at left\").  \n- If an element appears doubled/reversed on a glass plane without occlusion, label \"reflections\". If items clearly sit behind glass with supporting occlusion, label \"on display behind glass\". If uncertain, omit both.\n\nPose/orientation and object state\n- When unambiguous per measurable cues, include one brief orientation token (e.g., \"facing camera\", \"turned away\", \"leaning over\").  \n- When object state is clearly visible, include one object‑state descriptor (e.g., \"open instrument case\", \"wet reflective surface\").\n\nTrimming priority (deterministic checklist)\n- If over length, deterministically drop tokens in this order until within limit: color → viewpoint/orientation → lighting → reflections → material/texture → background (unless ≥5% area or contains legible text) → low‑priority descriptors. Always preserve discriminative prop and verified part relations when present.\n\nCount and saliency rules (concrete)\n- Allow digits only when Count verification passes. For secondary groups, require ≥20% of main subject area OR top‑2 saliency by area/attention. When saliency metadata unavailable, use area thresholds.\n\nDeterministic tie‑breakers\n- If two subjects have similar prominence, choose the one with larger bbox area. Use centroid x and width rules for left/center/right deterministically.\n\nFew focused examples (bad → good)\n- Bad: \"man holding something\" → Good: \"1 man center foreground, right hand holding woven basket of oranges, storefront behind.\"  \n- Bad: \"man on bicycle\" (uncertain) → Good (motorbike cues present): \"1 man right foreground, standing by motorbike with woven baskets attached, sunlit doorway behind.\"  \n- Bad: \"sign\" (illegible) → Good: \"1 woman center foreground, walking past painted text on metal shutter at left.\"  \n- Bad: vague count \"several people\" → Good: \"2 children left foreground, both seated, blue pajamas, unwrapping silver gift, adult seated behind.\"\n\nInternal diagnostics (developer use only)\n- Internally compute and retain which verification checks passed for each chosen token (counts, overlap %, cue pairs matched). Do not output these diagnostics in the caption.\n\nNegative rules (must obey)\n- Do not output multiple candidates, metadata, internal logs, or any extra text.  \n- Do not invent counts, contacts, transcribed text, fine classes, or other tokens that fail verification.  \n- Do not infer age, emotion, intentions, or unseen attributes.  \n- Do not use vague quantifiers (\"several\"); use digits only when verified.\n\nFinal note\n- Always perform the two‑pass proposal → verification → pruning process, then emit exactly one grammatical comma‑separated sentence that preserves verified discriminative props and part relations where available and stays within the word limit.",
+  "prompt_id": "textgrad_8daf66d503",
+  "split_csv": "data/splits/flickr30k_main_seed1_val.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal/step_08/val/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal/step_08/val/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal/step_08/val/scores.csv",
+  "data_root": "data",
+  "summary": {
+    "n": 150,
+    "mean_clip": 0.3003248034914335,
+    "mean_siglip": 0.19549947063128154,
+    "mean_caption_len": 20.986666666666668,
+    "generic_rate": 0.0,
+    "mean_delta_clip": -0.02424064482251803,
+    "mean_delta_siglip": -0.0033410750577847147,
+    "clip_win_rate": 0.20333333333333334,
+    "siglip_win_rate": 0.44333333333333336
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_012572",
+      "image_relpath": "images/flickr30k/flickr30k_test_012572.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_012572.jpg",
+      "caption": "1 woman center foreground, wearing purple knitted hat, right hand near jacket pocket, signboard with \"Domino Pizza\" text visible at left.",
+      "clip_score": 0.2931186556816101,
+      "siglip_score": 0.2511005103588104,
+      "delta_clip": -0.09667322039604187,
+      "delta_siglip": -0.04154431819915766
+    },
+    {
+      "image_id": "flickr30k_test_001063",
+      "image_relpath": "images/flickr30k/flickr30k_test_001063.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_001063.jpg",
+      "caption": "1 man center foreground, right hand pointing, olive tank top, beige couch partially cropped at right, yellow wall background, window shutter at left.",
+      "clip_score": 0.2449868619441986,
+      "siglip_score": 0.206984668970108,
+      "delta_clip": -0.09503436088562012,
+      "delta_siglip": -0.028996899724006597
+    },
+    {
+      "image_id": "flickr30k_test_020669",
+      "image_relpath": "images/flickr30k/flickr30k_test_020669.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_020669.jpg",
+      "caption": "1 man center foreground, seated on grass, wearing light jacket and blue pants, 1 woman right foreground, seated on grass, wearing straw hat and red shorts, bare tree trunk behind, water background.",
+      "clip_score": 0.2618751525878906,
+      "siglip_score": 0.1679395586252212,
+      "delta_clip": -0.09449851512908936,
+      "delta_siglip": -0.0336993932723999
+    },
+    {
+      "image_id": "flickr30k_test_011250",
+      "image_relpath": "images/flickr30k/flickr30k_test_011250.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_011250.jpg",
+      "caption": "Two children center foreground, right hand holding left hand, standing on grass near yellow caution tape, airplane visible in background.",
+      "clip_score": 0.3218459486961365,
+      "siglip_score": 0.2827466130256653,
+      "delta_clip": -0.09074783325195312,
+      "delta_siglip": 0.062230989336967496
+    },
+    {
+      "image_id": "flickr30k_test_010223",
+      "image_relpath": "images/flickr30k/flickr30k_test_010223.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_010223.jpg",
+      "caption": "1 man center foreground, right hand holding bottle with label, left hand holding cup, seated on brown chair, window blind at right.",
+      "clip_score": 0.2611194550991058,
+      "siglip_score": 0.145854502916336,
+      "delta_clip": -0.09066596627235413,
+      "delta_siglip": -0.051493272185325595
+    },
+    {
+      "image_id": "flickr30k_test_018677",
+      "image_relpath": "images/flickr30k/flickr30k_test_018677.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_018677.jpg",
+      "caption": "1 man left foreground, 1 woman center foreground, right hand holding plate, leaning on stair railing, framed artwork on wall behind.",
+      "clip_score": 0.2487263530492782,
+      "siglip_score": 0.2036976516246795,
+      "delta_clip": -0.08960704505443579,
+      "delta_siglip": -0.009032338857650785
+    },
+    {
+      "image_id": "flickr30k_test_013546",
+      "image_relpath": "images/flickr30k/flickr30k_test_013546.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_013546.jpg",
+      "caption": "1 child center midground standing on yellow platform, hand holding metal rail, blurred green trees background.",
+      "clip_score": 0.2885336577892303,
+      "siglip_score": 0.1552618443965912,
+      "delta_clip": -0.0885345339775086,
+      "delta_siglip": -0.05416750907897941
+    },
+    {
+      "image_id": "flickr30k_test_016835",
+      "image_relpath": "images/flickr30k/flickr30k_test_016835.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_016835.jpg",
+      "caption": "1 man center foreground, standing on street, right hand holding flaming torch, crowd seated behind, \"Front St E\" sign visible.",
+      "clip_score": 0.2947040498256683,
+      "siglip_score": 0.114282302558422,
+      "delta_clip": -0.08833149075508123,
+      "delta_siglip": -0.126610703766346
+    },
+    {
+      "image_id": "flickr30k_test_001063",
+      "image_relpath": "images/flickr30k/flickr30k_test_001063.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_001063.jpg",
+      "caption": "1 man center foreground, right hand pointing, olive tank top, beige couch partially cropped at right, yellow wall background, window shutter at left.",
+      "clip_score": 0.2449868619441986,
+      "siglip_score": 0.206984668970108,
+      "delta_clip": -0.08060520887374878,
+      "delta_siglip": -0.0075691640377044955
+    },
+    {
+      "image_id": "flickr30k_test_012666",
+      "image_relpath": "images/flickr30k/flickr30k_test_012666.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_012666.jpg",
+      "caption": "2 hockey players center foreground, one red jersey with number 9, other white jersey with number 24, right hand gripping left shoulder, ice rink background.",
+      "clip_score": 0.2504015862941742,
+      "siglip_score": 0.1622103154659271,
+      "delta_clip": -0.07902157306671143,
+      "delta_siglip": -0.04151955246925351
+    },
+    {
+      "image_id": "flickr30k_test_028445",
+      "image_relpath": "images/flickr30k/flickr30k_test_028445.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_028445.jpg",
+      "caption": "1 man center foreground, holding blue mesh laundry hamper, bicycle handlebar in hand, red pickup truck right, building background.",
+      "clip_score": 0.2897231876850128,
+      "siglip_score": 0.2159327268600464,
+      "delta_clip": -0.07765033841133118,
+      "delta_siglip": -0.001103848218917819
+    },
+    {
+      "image_id": "flickr30k_test_007523",
+      "image_relpath": "images/flickr30k/flickr30k_test_007523.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_007523.jpg",
+      "caption": "1 woman center foreground, right hand holding violin bow, left hand on fingerboard, teal background behind.",
+      "clip_score": 0.2713361084461212,
+      "siglip_score": 0.1699022501707077,
+      "delta_clip": -0.0768517553806305,
+      "delta_siglip": -0.023704841732978793
+    }
+  ]
+}

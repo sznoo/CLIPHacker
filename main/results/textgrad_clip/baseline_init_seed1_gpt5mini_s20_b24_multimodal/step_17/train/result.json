@@ -1,0 +1,142 @@
+{
+  "prompt": "Output exactly one concise, information‑dense caption: a single grammatical sentence composed of comma‑separated short phrases. Produce only that one sentence and nothing else.\n\nAssembly pipeline (deterministic, single pass)\n1) Slots (fill in this order; append only one token per slot unless slot allows multiple):\n   a. Subject group(s) + HIGH‑value prop/anchor (0–3 groups; must appear first).\n   b. Micro‑action/contact (exact template rules below).\n   c. Fine class (verified label or dataset lexicon fallback).\n   d. Clothing / clear pose / orientation (only if HIGH/MEDIUM verified).\n   e. Up to two anchors/signage (only if verified; otherwise use positional anchor fallback tokens).\n   f. Cropping/depth token (only if HIGH verified).\n\nVerification → emission rules (deterministic)\n- For every slot compute evidence_set = {geometry, segmentation, detector_confidence, contact_confidence, motion_confidence, OCR_confidence, saliency_score, textspot_confidence} and map to a band:\n  • HIGH: any single evidence ≥ HIGH threshold → allow VERIFIED emission.\n  • MEDIUM: two complementary evidences ≥ MEDIUM threshold → allow only from the enumerated MEDIUM‑allowed list for that slot.\n  • LOW: otherwise → emit the explicit fallback token for that slot.\n- If band == HIGH → emit the VERIFIED token (exact text from detector/classifier/OCR).\n- If band == MEDIUM → emit only a token from the strict MEDIUM whitelist (enumerated below).\n- If band == LOW → emit the prescribed fallback token for that slot (see fallbacks list).\n\nFirst‑words constraint (hard)\n- The first 6–8 words must contain at least the subject group token (or a plural fallback noun) and any HIGH‑verified anchor/prop. If no HIGH verification exists by the time the 8th word would be emitted, emit the plural fallback subject token (people/dogs/vehicles/group of people) as the first token and use anchor fallback tokens later.\n\nCount rules (strict)\n- Emit a digit only when Count is HIGH verified by geometry/segmentation OR detector_count_confidence ≥ 0.70. Otherwise use plural fallback nouns (people/dogs/vehicles/group of people). Do not append qualifiers.\n\nMicro‑action / contact (template)\n- HIGH only: exact template \"left|right [hand|foot|part] [strong‑verb] [object]\" (e.g., \"right hand holding woven basket\"). Motion verbs allowed only with motion evidence.\n- MEDIUM only: choose from the enumerated MEDIUM micro‑verb whitelist (e.g., holding, carrying, pushing) and use the same short template.\n- LOW: use conservative fallback \"[part] near [object]\" (e.g., \"right hand near woven basket\").\n- Never use hedges or speculative wording.\n\nFine‑class and anchors\n- Emit fine class only when HIGH verified (classifier_conf≥0.60) or MEDIUM using a tightly enumerated MEDIUM set. Otherwise use dataset lexicon fallback: storefront, painted metal shutter, two‑wheeled vehicle, woven basket, cart, minivan, marquee, group of people.\n- Anchor priority and allowed tokens (attempt in order): marquee/storefront, corrugated metal shutter, flagpole, red rectangular signs, ladder, bicycle/two‑wheeled vehicle, guitar/amp case, boats/canopies. If unverified, use positional anchor fallbacks: \"storefront behind\", \"flagpole left\", \"marquee above\", \"painted metal shutter\".\n\nOCR / signage\n- HIGH OCR_quote_verified → quote exact text (counts toward length).\n- MEDIUM OCR → emit only allowed low‑risk signage descriptors (e.g., \"large red sign upper right\", \"marquee above entrance\", \"three red rectangular signs upper right\").\n- LOW → emit anchor positional fallback (e.g., \"storefront behind\").\n- Never invent partial words or brand names.\n\nSaliency tie‑breaking\n- When multiple VERIFIED candidates compete, choose by saliency order: text > face > large color patch/prop > clothing. If still tied, prefer earlier slot order.\n\nPruning, compression, and length control (enforced)\n- Target length: 10–14 words. Hard cap: 18 words. Allow up to 20 words only when emitting quoted text or two HIGH VERIFIED fine classes.\n- Before emitting each token check estimated cumulative length; if adding the token would exceed hard cap, run deterministic pruning:\n   1) Compress adjective chains into compact noun phrases.\n   2) Iteratively remove descriptors in this exact priority: lighting/reflection → object state/material → background/ancillary context.\n   3) Never remove HIGH‑verified tokens from slots 1–3.\n- Continue pruning until within cap. If still over cap after pruning, follow the final validator fallback (below).\n\nDe‑duplication and normalization\n- Collapse exact repeated phrases and repeated tokens. Merge adjective chains (e.g., \"rustic wooden facade\"). Prohibit repeating the same phrase in the final sentence.\n\nMEDIUM‑allowed lists (examples to use only under MEDIUM band)\n- Micro‑verbs: holding, carrying, pushing, pulling.\n- Fine‑class limited detector labels: bicycle, motorbike/scooter, ladder, vendor/produce stand, ladder, performer.\n- Signage descriptors (MEDIUM OCR): the low‑risk set listed above.\n\nFinal validator (must pass)\n- After assembly and pruning ensure:\n   • single grammatical sentence of comma‑separated short phrases;\n   • length within caps;\n   • first 6–8 words include subject or plural fallback;\n   • no hedges or invented brand/text; no duplicated phrases;\n   • only allowed MEDIUM tokens used under MEDIUM band.\n- If validator fails → emit the minimal safe caption constructed deterministically as: \"[plural fallback subject] center foreground, right hand near object, storefront behind\" compressed to ≤10 words (substitute appropriate fallback tokens based on verification results).\n\nPreferred micro‑templates (use when slots permit)\n- \"1 woman center foreground, right hand holding woven basket of oranges, storefront behind.\"\n- \"two dogs left foreground, small white dog jumping at car passenger window, woman leaning out.\"\n- \"1 person right foreground, standing by two‑wheeled vehicle, painted metal shutter behind.\"\n\nAnti‑hallucination absolute rules (must follow)\n- Never invent brand names, partial text, ages, emotions, intentions, or unsupported attributes. No hedges. When verification is insufficient, use the prescribed fallback lexicon.\n\nProduce only the single validated sentence as the final caption.",
+  "prompt_id": "textgrad_42ce013524",
+  "split_csv": "data/splits/flickr30k_main_seed1_train.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal/step_17/train/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal/step_17/train/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal/step_17/train/scores.csv",
+  "data_root": "data",
+  "summary": {
+    "n": 24,
+    "mean_clip": 0.3162587347129981,
+    "mean_siglip": 0.1951003819704055,
+    "mean_caption_len": 20.375,
+    "generic_rate": 0.0,
+    "mean_delta_clip": -0.01579783360163371,
+    "mean_delta_siglip": 0.011142378672957412,
+    "clip_win_rate": 0.4166666666666667,
+    "siglip_win_rate": 0.625
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_012029",
+      "image_relpath": "images/flickr30k/flickr30k_test_012029.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_012029.jpg",
+      "caption": "people on floating platform near temple, right hand holding woven basket, storefront behind, marquee above",
+      "clip_score": 0.2589179277420044,
+      "siglip_score": 0.1120682209730148,
+      "delta_clip": -0.0922668576240539,
+      "delta_siglip": -0.02954663336277011
+    },
+    {
+      "image_id": "flickr30k_test_024011",
+      "image_relpath": "images/flickr30k/flickr30k_test_024011.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_024011.jpg",
+      "caption": "Dancers in striped costumes perform on street crosswalk, Santa Claus and officials stand center, Radio City Music Hall marquee visible behind.",
+      "clip_score": 0.3182413578033447,
+      "siglip_score": 0.2133484184741974,
+      "delta_clip": -0.063213050365448,
+      "delta_siglip": 0.04074640572071078
+    },
+    {
+      "image_id": "flickr30k_test_016046",
+      "image_relpath": "images/flickr30k/flickr30k_test_016046.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_016046.jpg",
+      "caption": "Two women center foreground, one holding yellow basin, seated group right, trees and brick wall background.",
+      "clip_score": 0.2743589878082275,
+      "siglip_score": 0.1733437478542328,
+      "delta_clip": -0.06313198804855352,
+      "delta_siglip": 0.014350205659866389
+    },
+    {
+      "image_id": "flickr30k_test_014594",
+      "image_relpath": "images/flickr30k/flickr30k_test_014594.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_014594.jpg",
+      "caption": "Jockey in green striped shirt and yellow helmet rides brown horse with white blaze over wooden fence, hooves lifted mid-air, grassy field behind.",
+      "clip_score": 0.2811744809150696,
+      "siglip_score": 0.1796886920928955,
+      "delta_clip": -0.055877685546875,
+      "delta_siglip": -0.014344900846481295
+    },
+    {
+      "image_id": "flickr30k_test_005582",
+      "image_relpath": "images/flickr30k/flickr30k_test_005582.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_005582.jpg",
+      "caption": "small white dog jumping at car passenger window, woman leaning out, brown dog walking nearby",
+      "clip_score": 0.3023168444633484,
+      "siglip_score": 0.2146167010068893,
+      "delta_clip": -0.05197140574455261,
+      "delta_siglip": 0.03828251361846918
+    },
+    {
+      "image_id": "flickr30k_test_029272",
+      "image_relpath": "images/flickr30k/flickr30k_test_029272.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_029272.jpg",
+      "caption": "man mid-air jump on stage, crowd watching, gray sweatpants, black t-shirt, dreadlocks, sneakers, outdoor festival setting",
+      "clip_score": 0.297040194272995,
+      "siglip_score": 0.1485702991485595,
+      "delta_clip": -0.04188206791877741,
+      "delta_siglip": -0.03592103719711312
+    },
+    {
+      "image_id": "flickr30k_test_028178",
+      "image_relpath": "images/flickr30k/flickr30k_test_028178.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_028178.jpg",
+      "caption": "man in glasses playing trumpet under lit tree, red shirt, holding ornament, festive night setting",
+      "clip_score": 0.3492055833339691,
+      "siglip_score": 0.233033537864685,
+      "delta_clip": -0.038519471883773804,
+      "delta_siglip": 0.008357197046279907
+    },
+    {
+      "image_id": "flickr30k_test_003961",
+      "image_relpath": "images/flickr30k/flickr30k_test_003961.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_003961.jpg",
+      "caption": "woman center foreground, right hand holding American Girl Place bag, storefront behind",
+      "clip_score": 0.3132897317409515,
+      "siglip_score": 0.2013235837221145,
+      "delta_clip": -0.03615888953208923,
+      "delta_siglip": -0.0693217962980271
+    },
+    {
+      "image_id": "flickr30k_test_025508",
+      "image_relpath": "images/flickr30k/flickr30k_test_025508.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_025508.jpg",
+      "caption": "Person mid-backflip above sand dune, arms extended, legs tucked, clear blue sky backdrop, sand spray trailing.",
+      "clip_score": 0.3315691351890564,
+      "siglip_score": 0.1928190886974334,
+      "delta_clip": -0.03410977125167841,
+      "delta_siglip": -0.0016638934612275003
+    },
+    {
+      "image_id": "flickr30k_test_013576",
+      "image_relpath": "images/flickr30k/flickr30k_test_013576.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_013576.jpg",
+      "caption": "Boy in Mets jersey rides red motorcycle, smiling, on asphalt court with painted wall behind.",
+      "clip_score": 0.3785871863365173,
+      "siglip_score": 0.2654109895229339,
+      "delta_clip": -0.030170798301696833,
+      "delta_siglip": -0.007031232118606623
+    },
+    {
+      "image_id": "flickr30k_test_023641",
+      "image_relpath": "images/flickr30k/flickr30k_test_023641.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_023641.jpg",
+      "caption": "woman in striped shirt walking center foreground, group seated right side under trees, wet cobblestone path, storefront behind",
+      "clip_score": 0.313893973827362,
+      "siglip_score": 0.224711075425148,
+      "delta_clip": -0.024349033832550104,
+      "delta_siglip": 0.04507294297218331
+    },
+    {
+      "image_id": "flickr30k_test_015474",
+      "image_relpath": "images/flickr30k/flickr30k_test_015474.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_015474.jpg",
+      "caption": "woman paddling boat carrying basket of vegetables, another woman rowing nearby, storefront with red signs behind, wooden pier extending into murky water.",
+      "clip_score": 0.3103924393653869,
+      "siglip_score": 0.1872158795595169,
+      "delta_clip": -0.01839098334312439,
+      "delta_siglip": 0.016455277800559998
+    }
+  ]
+}

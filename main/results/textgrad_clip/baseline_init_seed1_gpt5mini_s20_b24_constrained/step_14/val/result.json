@@ -1,0 +1,117 @@
+{
+  "prompt": "Generate exactly one short, literal, factual caption (one grammatically correct sentence) describing only visible content in the image. Output exactly one sentence only — no extra text. Total words: 8–14 (prefer 9–12). Follow these prioritized rules (apply in order):\n\n1) Subject selection: choose the candidate subject that yields the most high‑signal tokens (see rule 3). If tied, prefer larger area. If a person’s detector_confidence is within ±0.10 of the top candidate, select the person. Prefer subjects that enable early discriminative tokens rather than choosing by area alone.\n\n2) Visibility (deterministic): an object counts as \"clearly visible\" if area ≥1.5% OR (area ≥0.8% AND detector_confidence ≥0.45). Small‑object exception: treat as visible if area ≥0.6% AND detector_confidence ≥0.75, or area ≥0.4% AND detector_confidence ≥0.80. Additionally, allow top‑2 detections to be treated as visible if detector_confidence ≥0.35 AND area ≥0.5%. Do not invent attributes not supported by the detections.\n\n3) High‑signal tokens (definition and placement): a high‑signal token is a visible color or pattern, a concrete multiword class (e.g., \"stop sign\", \"double‑decker bus\"), a clear Arabic numeral, a clothing/accessory term, or short legible text/logo (1–3 tokens). Require at least one high‑signal token within the first 2 content words (a single leading article does not count). If two distinct high‑signal tokens are clearly visible, include both within the first 3 content words unless grammar absolutely prevents it.\n\n4) OCR/text copying: allow copying short readable text/logos of 1–3 tokens when OCR_confidence ≥0.55 AND OCR_bbox_area ≥0.8%, or when OCR_confidence ≥0.60 AND OCR_bbox_area ≥0.8% (both thresholds apply). Do not copy phone numbers or runs of ≥5 consecutive digits; do not copy unreadable or low‑confidence text. Prefer concise insertion like: shirt NIKE or shirt \"NIKE\".\n\n5) Second object allowance: you may append one compact post‑nominal prepositional or participial phrase (one relation only, e.g., \"by market stall\", \"on sidewalk\") if that second short phrase adds a distinct high‑signal token (color, multiword class, numeral, or logo). No stacked relations or long descriptive chains.\n\n6) Wording, modifiers, verbs, and length: start the caption with [Color/Number/Multiword_class] + [class] when such a token is available (avoid beginning with a leading article that delays signals). Allow up to two pre‑nominal high‑signal modifiers, OR one pre‑nominal modifier plus one short post‑nominal relation as in rule 5. Use present‑tense, concise S V (+ O) sentences. Prefer specific, high‑information verbs (examples: strums, rides, kicks, dives, dribbles, holds, holds onto, carries, wears, reads, drinks, pours, pushes, pulls, stands beside, sits on, walks past, walks toward, passes, stops at) rather than bland copula verbs. Favor multiword concrete classes over generic labels (e.g., \"red double‑decker bus\" rather than \"vehicle\").\n\n7) Numbers and formatting: use Arabic numerals for visible counts that meet visibility/OCR rules. Use common collocations and natural grammar. Keep captions dense with concrete tokens and minimal function words.\n\n8) Safety and literalness: do not invent unseen attributes, emotions, intentions, or dialogue. Do not hallucinate unreadable text. If no high‑signal token meets the visibility/OCR thresholds, prefer the next visible candidate that provides at least one high‑signal token, but never violate the visibility and OCR safety rules.\n\nFinal constraints: one sentence only, 8–14 words, literal description of visible content, follow the visibility and OCR thresholds above, do not output fallback phrases (e.g., \"image unclear\"), and do not add any extra commentary.",
+  "prompt_id": "textgrad_d94841e133",
+  "split_csv": "data/splits/flickr30k_main_seed1_val.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_14/val/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_14/val/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_14/val/scores.csv",
+  "summary": {
+    "n": 150,
+    "mean_clip": 0.3144139628609022,
+    "mean_siglip": 0.18840981788933275,
+    "mean_caption_len": 10.84,
+    "generic_rate": 0.013333333333333334,
+    "mean_delta_clip": -0.010151485453049343,
+    "mean_delta_siglip": -0.010430727799733483,
+    "clip_win_rate": 0.38333333333333336,
+    "siglip_win_rate": 0.36666666666666664
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_011250",
+      "caption": "Two boys stand in grass near yellow caution tape.",
+      "clip_score": 0.3028560280799866,
+      "siglip_score": 0.2088349163532257,
+      "delta_clip": -0.10973775386810303,
+      "delta_siglip": -0.01168070733547208
+    },
+    {
+      "image_id": "flickr30k_test_023900",
+      "caption": "Man smiles while holding skewers at \"UTIAH\" food stall.",
+      "clip_score": 0.2652111053466797,
+      "siglip_score": 0.2610092759132385,
+      "delta_clip": -0.09659552574157709,
+      "delta_siglip": -0.02980634570121765
+    },
+    {
+      "image_id": "flickr30k_test_000585",
+      "caption": "Red crane lifts equipment as workers in yellow vests stand nearby.",
+      "clip_score": 0.2521564066410064,
+      "siglip_score": 0.1519086807966232,
+      "delta_clip": -0.08484536409378057,
+      "delta_siglip": -0.05602617561817169
+    },
+    {
+      "image_id": "flickr30k_test_005806",
+      "caption": "Woman in beige sweater packs clothes into open black suitcase.",
+      "clip_score": 0.2900846004486084,
+      "siglip_score": 0.1332746744155883,
+      "delta_clip": -0.08410942554473871,
+      "delta_siglip": -0.0776493847370148
+    },
+    {
+      "image_id": "flickr30k_test_011286",
+      "caption": "Three people in orange shorts walk along rocky riverbank.",
+      "clip_score": 0.2790911793708801,
+      "siglip_score": 0.1892420947551727,
+      "delta_clip": -0.07866442203521729,
+      "delta_siglip": -0.03584381937980649
+    },
+    {
+      "image_id": "flickr30k_test_003587",
+      "caption": "Man wearing black cap with number 3 and jacket with sponsor logos.",
+      "clip_score": 0.2906580567359924,
+      "siglip_score": 0.2467146515846252,
+      "delta_clip": -0.07462888956069952,
+      "delta_siglip": -0.017589420080184992
+    },
+    {
+      "image_id": "flickr30k_test_000585",
+      "caption": "Red crane lifts equipment as workers in yellow vests stand nearby.",
+      "clip_score": 0.2521564066410064,
+      "siglip_score": 0.1519086807966232,
+      "delta_clip": -0.07386109232902527,
+      "delta_siglip": -0.0006995946168898981
+    },
+    {
+      "image_id": "flickr30k_test_023317",
+      "caption": "Woman in pink jacket and white hat stands at guest services booth.",
+      "clip_score": 0.3211140930652618,
+      "siglip_score": 0.2362621426582336,
+      "delta_clip": -0.07003381848335272,
+      "delta_siglip": 0.017873585224151584
+    },
+    {
+      "image_id": "flickr30k_test_011250",
+      "caption": "Two boys stand in grass near yellow caution tape.",
+      "clip_score": 0.3028560280799866,
+      "siglip_score": 0.2088349163532257,
+      "delta_clip": -0.06976675987243652,
+      "delta_siglip": -0.03950586915016169
+    },
+    {
+      "image_id": "flickr30k_test_022056",
+      "caption": "Boy in green shirt holds hands behind head.",
+      "clip_score": 0.2860679030418396,
+      "siglip_score": 0.1546062231063842,
+      "delta_clip": -0.06587216258049011,
+      "delta_siglip": -0.0812151581048966
+    },
+    {
+      "image_id": "flickr30k_test_026753",
+      "caption": "Man in black shirt \"LOVE\" grinds rail on inline skates.",
+      "clip_score": 0.2682712972164154,
+      "siglip_score": 0.1740317940711975,
+      "delta_clip": -0.0633199512958526,
+      "delta_siglip": 0.01649078726768502
+    },
+    {
+      "image_id": "flickr30k_test_016269",
+      "caption": "Man in red jacket stands beside woman in beige coat near checkered floor.",
+      "clip_score": 0.2665384709835052,
+      "siglip_score": 0.0786895453929901,
+      "delta_clip": -0.061415225267410334,
+      "delta_siglip": -0.0746739208698272
+    }
+  ]
+}

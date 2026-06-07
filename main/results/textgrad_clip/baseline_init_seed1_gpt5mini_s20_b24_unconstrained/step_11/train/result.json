@@ -1,0 +1,117 @@
+{
+  "prompt": "Output exactly two lines only.\n\nLine 1 — tags (format rules; required)\n- Must contain 2–5 comma-separated lower‑case tokens (prefer exactly 3). No punctuation except commas. No surrounding whitespace beyond single spaces around commas.\n- Tokens must be visible concrete nouns or a single visible adjective (color/size) as the sole attribute token. Multiword fused objects (e.g., \"traffic light\", \"wine bottle\") may count as one token.\n- Required upstream pre‑filtering/canonicalization (assumed done before this prompt): map detector/classifier labels to a fixed canonical inventory (recommended: COCO / Visual Genome / CLIP‑common). Normalize plurals→singular and synonyms→canonical class. Only accept attribute tokens (colors/sizes) if attribute_confidence ≥ attribute_confidence_threshold (see parameters). Compound nouns allowed only when compound_detector_confidence is high.\n- Deduplicate tokens. Order tokens by visual discriminativeness (most distinctive / highest detector confidence / CLIP retrieval frequency first). Prefer fine‑grained nouns (e.g., \"trumpet\" over \"man\") when reliably detected.\n- Forbidden tokens in Line 1: meta/instruction words, tooling vocabulary (prompt, detector, threshold, clip, siglip, example, etc.), proper nouns, brand names, dates, events, emotions, inferred identities, or speculation.\n- If fewer than two high‑confidence specific nouns remain after filtering, do not invent tags — the caption fallback must be used (see Line 2). In that case, Line 1 may still contain up to one attribute token if above threshold; otherwise keep the main noun only or leave Line 1 empty if no reliable nouns.\n\nLine 2 — caption (format rules; required)\n- Option A (preferred, mandatory when possible): exactly one short factual sentence of 9–12 words in present simple or simple progressive. Sentence must contain exactly one clear visual verb or one concrete spatial relation and follow a grammatical structure (subject + verb + object/prepositional phrase). Allowed verbs are common visible actions (e.g., sits, stands, rides, holds, carries, walks, leans, looks, points, reads, opens, plays, wears, pushes, pulls, places, covers, is holding, is sitting). Use the simplest verb justified by visual evidence.\n- Option B (fallback): only allowed when fewer than two high‑confidence specific nouns exist. Produce a 2–3 word phrase: main noun + visible location token (e.g., \"dog on sidewalk\"). No sentence punctuation.\n- If tags cannot be produced reliably or a compliant caption cannot be constructed without hallucination, output exactly: image unclear\n- Main noun requirement: the canonical main noun (Line 1 first token) must appear verbatim in Line 2 and be within the first two tokens of Line 2 (allowed forms: \"<main_noun> ...\" or \"the <main_noun> ...\"). Non‑determiner nouns in Line 2 must correspond to tokens in Line 1 (via canonical mapping); otherwise do not output the caption.\n- Token overlap: Non‑fallback Option A captions must share at least two canonical tokens with Line 1 (one must be the main noun). Attributes included in Line 1 must appear verbatim in Line 2 if included; otherwise omit attributes from Line 2.\n- Allowed extra words: determiners (a, the), prepositions (on, in, near, by, next to, in front of, behind), conjunction \"and\", small function words. One optional period at sentence end only. No other punctuation or added objects/attributes not in Line 1.\n- Anti‑hallucination: do not introduce any new object, attribute, identity, emotion, or inferred action that is not present in Line 1 or justified by an attribute confidence ≥ attribute_confidence_threshold. If attribute confidence < threshold, omit the attribute.\n- No repetition: do not repeat identical Line 2 text or output duplicated fragments.\n\nOperational and optimization rules (parameters & tie‑breaks)\n- Parameters (tuneable): attribute_confidence_threshold (default 75%; recommended sweep 60/70/75%), preferred_tag_count (default 3), tie_break_delta_confidence (default 10 percentage points).\n- Prefer the most specific canonical noun when its detector confidence exceeds the next-best class by tie_break_delta_confidence. If confidences are close, prefer nouns that match the canonical inventory used by CLIP (COCO/VG/CLIP‑common) or have higher CLIP retrieval frequency.\n- When ambiguous, produce conservative choices: prefer omission of low‑confidence tokens over guessing; prefer Option A only when all non‑determiner nouns can be traced to Line 1.\n- Candidate generation: this frozen VLM should produce a single compliant two-line output. For better downstream CLIP selection, integrators should run the generator with alternate high-confidence Line 1 sets (up to 2–3 variants derived by the upstream canonicalization/tie‑breaking logic) and perform CLIP reranking externally. Do not invent alternate candidates inside a single two-line output.\n- Diagnostics (for integrators): log for each caption which canonical tokens were used, their detector confidences, whether Option A or B was used, and any omitted attributes due to thresholding. Use these diagnostics to tune thresholds and preferred_tag_count.\n\nSafety and scoring guidance\n- Maximize lexical overlap with Line 1 tokens and prefer discriminative nouns and a single concrete verb to improve CLIP alignment while strictly avoiding hallucination. Do not use proper nouns, identities, or speculative language.\n- If any required check fails (main noun missing, fewer than two token overlaps for Option A, verb/spatial relation absent, attribute included below threshold, or forbidden token introduced), the output must instead be: image unclear\n\nStrictly follow the Line 1 / Line 2 rules above. If no valid caption candidate passes these checks, return Line 2 = \"image unclear\".",
+  "prompt_id": "textgrad_1d4b2bb1f3",
+  "split_csv": "data/splits/flickr30k_main_seed1_train.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24/step_11/train/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24/step_11/train/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24/step_11/train/scores.csv",
+  "summary": {
+    "n": 24,
+    "mean_clip": 0.2731258198618889,
+    "mean_siglip": 0.1612511724233627,
+    "mean_caption_len": 8.166666666666666,
+    "generic_rate": 0.0,
+    "mean_delta_clip": -0.05234010952214401,
+    "mean_delta_siglip": -0.032514090339342765,
+    "clip_win_rate": 0.08333333333333333,
+    "siglip_win_rate": 0.16666666666666666
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_024011",
+      "caption": "dancer, street, parade\ndancers perform on street during parade",
+      "clip_score": 0.2272100448608398,
+      "siglip_score": 0.1064287573099136,
+      "delta_clip": -0.15424436330795294,
+      "delta_siglip": -0.06617325544357301
+    },
+    {
+      "image_id": "flickr30k_test_013576",
+      "caption": "child on motorcycle\nchild rides red motorcycle",
+      "clip_score": 0.2907449901103973,
+      "siglip_score": 0.1454383432865142,
+      "delta_clip": -0.11801299452781683,
+      "delta_siglip": -0.12700387835502633
+    },
+    {
+      "image_id": "flickr30k_test_021782",
+      "caption": "sign, man, sidewalk\nman leans on sign on sidewalk",
+      "clip_score": 0.2314856350421905,
+      "siglip_score": 0.168888971209526,
+      "delta_clip": -0.1079624593257904,
+      "delta_siglip": -0.032136276364326505
+    },
+    {
+      "image_id": "flickr30k_test_023641",
+      "caption": "tree people\npeople walk under tree",
+      "clip_score": 0.2564047873020172,
+      "siglip_score": 0.1318008303642273,
+      "delta_clip": -0.0818382203578949,
+      "delta_siglip": -0.047837302088737405
+    },
+    {
+      "image_id": "flickr30k_test_021284",
+      "caption": "hats, crowd, flag\nmen in hats stand near flag",
+      "clip_score": 0.2456291317939758,
+      "siglip_score": 0.1428412199020385,
+      "delta_clip": -0.07663726806640628,
+      "delta_siglip": -0.0930177718400956
+    },
+    {
+      "image_id": "flickr30k_test_027768",
+      "caption": "person, red, sweater\nperson in red sweater holds pillow",
+      "clip_score": 0.2658519744873047,
+      "siglip_score": 0.2011620104312896,
+      "delta_clip": -0.0763359665870666,
+      "delta_siglip": -0.030655309557914817
+    },
+    {
+      "image_id": "flickr30k_test_024189",
+      "caption": "man bending\nman arranging bags on sidewalk",
+      "clip_score": 0.2575764060020447,
+      "siglip_score": 0.1915081590414047,
+      "delta_clip": -0.06903794407844543,
+      "delta_siglip": -0.045907825231552096
+    },
+    {
+      "image_id": "flickr30k_test_023643",
+      "caption": "umbrella, sketch, girl\ngirl sits under umbrella near sketch",
+      "clip_score": 0.2600637376308441,
+      "siglip_score": 0.1681387424468994,
+      "delta_clip": -0.06684830784797668,
+      "delta_siglip": -0.10778623819351199
+    },
+    {
+      "image_id": "flickr30k_test_006879",
+      "caption": "child soccer\nchild stands on gravel near tree",
+      "clip_score": 0.2727788984775543,
+      "siglip_score": 0.1936365067958831,
+      "delta_clip": -0.06287571787834167,
+      "delta_siglip": 0.011173680424690191
+    },
+    {
+      "image_id": "flickr30k_test_014180",
+      "caption": "bicycle, building, person\nbicycle riders pass by modern building",
+      "clip_score": 0.2631309032440185,
+      "siglip_score": 0.1684706360101699,
+      "delta_clip": -0.05909973382949829,
+      "delta_siglip": -0.008592233061790494
+    },
+    {
+      "image_id": "flickr30k_test_005582",
+      "caption": "dog, car, sidewalk\ndog jumps toward car window",
+      "clip_score": 0.3013418018817901,
+      "siglip_score": 0.1660626977682113,
+      "delta_clip": -0.052946448326110895,
+      "delta_siglip": -0.010271489620208796
+    },
+    {
+      "image_id": "flickr30k_test_027445",
+      "caption": "workers operating wood chipper\nmen loading branches into truck",
+      "clip_score": 0.2910370230674743,
+      "siglip_score": 0.1926811337471008,
+      "delta_clip": -0.05193781852722168,
+      "delta_siglip": -0.0006772577762604037
+    }
+  ]
+}

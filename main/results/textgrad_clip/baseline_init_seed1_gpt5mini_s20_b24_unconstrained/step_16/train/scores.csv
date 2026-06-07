@@ -1,0 +1,1909 @@
+split_id,method_id,run_id,order,dataset_index,image_id,image_relpath,reference_captions,prompt_id,prompt_name,prompt_text,caption,candidate_id,selected,model,temperature,top_p,max_new_tokens,generation_config,clip_score,siglip_score,caption_len,generic_flag
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_447fe9a739,7,3863,flickr30k_test_003863,images/flickr30k/flickr30k_test_003863.jpg,"[""A group of six people have jumped into the air in the middle of nowhere and one is catching a ball."", ""A group of people are jumping into the air with their arms held high."", ""Six people are jumping in the air, one of them throwing a ball."", ""A group of people in a desert jumping, one throwing a ball."", ""Six people jump for ball.""]",textgrad_447fe9a739,TextGrad Step 16,"Default behavior (strict, enforceable)
+
+Primary goals
+- Maximize CLIP image-text similarity by enforcing exact, CLIP‑preferred surface tokens, short subject-first sentences, and conservative gating for low-confidence images.
+
+Canonical vocabulary and determinism
+- All tokens in Line 1 and the subject token in Line 2 MUST come from the integrator's canonical_id → preferred-surface-token table (whitelist). No ad-hoc tokens (e.g., ""outdoor-world"") or synonyms outside this table are allowed.
+- A locked, pre-evaluated preferred-surface-token must be used for each canonical_id. Deterministic tie-breaker: canonical priority list → canonical_table mapping only.
+
+Output format
+- By default emit exactly one candidate. A candidate is exactly two lines:
+  Line 1 = 3–5 comma-separated canonical tags (no trailing comma; hyphens allowed for multiword tokens).
+  Line 2 = one concise sentence ending with a single period.
+
+Line 1 (tags) — hard rules
+- Must contain exactly 3–5 high-precision tags in this composition:
+  1) primary object token (or two-objects token, e.g., two-people) — REQUIRED and must be detected above the detector_primary_tag_threshold;
+  2) action token — include only if visually present and detected with high confidence;
+  3) exactly one salient attribute token — choose one of {color OR count OR position} only.
+- No scene/generic/texture tokens unless present in the canonical_table and visually diagnostic.
+- No synonyms, no repeats, no comma lists of descriptors. Example allowed tokens: person, bicycle, red, two-people, running, modern-building.
+
+Line 2 (caption) — hard rules
+- Must begin exactly with the primary Line 1 tag's preferred-surface-token (exact string match) as the grammatical subject (i.e., the first word/phrase of Line 2 == Line1 primary token).
+- Short active-voice sentence of the form: [Subject] [active-verb] [object/relationship] [single salient attribute phrase]. Use concrete verbs (e.g., ""holds"", ""rides"", ""carries"", ""opens"") and concrete attributes (""red"", ""two"", ""left"").
+- Include only ONE salient attribute (color OR count OR position) and reuse the same attribute token as in Line 1.
+- Target length: 10–13 tokens. Hard maximum: 15 tokens. Fewer tokens are acceptable if constraints are satisfied.
+- No commas, no lists, no subordinate clauses, no speculative language (""appears to"", ""seems""), no multiple attributes. End with a single period and no extra punctuation or sentences.
+
+Determinism, synonym policy, and candidates
+- Never introduce free-form synonyms. Use only the canonical_table preferred token for each canonical_id.
+- Produce multiple candidates (max 3) ONLY when an external CLIP reranker is guaranteed by the integrator. Variants must differ solely by:
+  (a) alternate allowed tag-sets (each 3–5 tokens drawn from canonical_table), or
+  (b) swapping among pre-approved, pre-evaluated synonyms for the same canonical_ids from the integrator's synonym set.
+- Free-form caption text (Line 2 wording) must be identical across candidates; only tag-sets / allowed synonyms may differ.
+
+Internal selection / reranking
+- If an external CLIP reranker is available: deterministically generate up to 3 structured candidates (tag/synonym variations only), rerank with CLIP, emit the top-scoring candidate.
+- If only an internal CLIP is available: same procedure with internal CLIP reranker.
+- If NO CLIP reranker is available: still generate up to 3 deterministic candidates (tag/synonym variants) and use this conservative heuristic:
+  Score = 1.0 * TagPrecisionScore - 0.05 * LengthPenalty - 0.50 * SubjectMismatchPenalty
+  where:
+  - TagPrecisionScore = proportion of Line1 tags visually grounded by detectors (weighted by canonical priority),
+  - LengthPenalty = max(0, (token_count - 13))  (penalize above 13 tokens),
+  - SubjectMismatchPenalty = 0 if Line2 subject == Line1 primary token else 1 (i.e., heavy penalty).
+  Emit the top-scoring candidate if it passes verifier checks (below); otherwise fallback to ""image unclear"".
+
+Verifier / ""image unclear"" rule (conservative, enforced)
+- If ANY of these conditions hold, output exactly and only (single line, no punctuation):
+image unclear
+  Conditions:
+  1) No primary object detected above the detector_primary_tag_threshold (integrator-configured), OR
+  2) The highest CLIP score among generated candidates is < clip_threshold (default recommended 0.20; integrator may set 0.20–0.22 after dev validation), OR
+  3) Any strict formatting or vocabulary check fails (Line1 tags not all in canonical_table, Line1 tag count outside 3–5, Line2 fails exact-subject match to Line1 primary, Line2 token_count > 15, Line2 contains commas or multiple attributes).
+- Do not output any other fallback caption or extra punctuation when declaring uncertainty.
+
+Formatting and quality guards (automated checks)
+- Enforce programmatic unit tests during generation:
+  1) Whitelist check: every Line1 tag ∈ canonical_table.
+  2) Tag count check: 3 ≤ num_tags ≤ 5 and exactly one attribute token type.
+  3) Subject reuse check: first token(s) of Line2 == Line1 primary token (exact string).
+  4) Length check: token_count(Line2) ≤ 15; prefer 10–13.
+  5) No commas in either line; no trailing commas; Line2 ends with single period.
+  6) Active-verb heuristics: detect presence of an active verb (simple POS or verb-list). Reject copula-heavy captions (""is near"", ""is standing"") unless necessary; prefer concrete verbs.
+  7) Grounding check: cross-check Line1 primary and action tags against detector confidences; if below thresholds, fail to ""image unclear"".
+- If any automated check fails, do not attempt free-form repairs — return ""image unclear"".
+
+Implementation hints (operational)
+- Maintain versioned canonical_table with pre-evaluated CLIP scores per synonym; lock preferred tokens and update via re-evaluation if CLIP model changes.
+- During candidate creation ensure Line2 reuses exact tag tokens; implement unit test that splits Line2 subject phrase and matches Line1 primary token.
+- Monitor metrics: mean_clip, mean_delta_clip, clip_win_rate, mean_caption_len, generic_rate, token_reuse_fail_rate, and ""image unclear"" frequency. Tune clip_threshold and detector thresholds on held-out dev set to balance coverage and quality.
+
+Rationale (brief)
+- Exact token reuse, short subject-first active sentences, a locked CLIP-preferred vocabulary, and conservative gating reduce noise and directly improve image-text CLIP alignment.
+
+Final requirement
+- If you cannot produce a reliable candidate under the verifier's checks above, output exactly and only:
+image unclear","person, jumping, five, white
+five people jump in the air above a white salt flat.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.36824092268943787,0.1807391345500946,15,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_447fe9a739,9,24935,flickr30k_test_024935,images/flickr30k/flickr30k_test_024935.jpg,"[""A group of shoppers gather at a fresh produce stand in order to make their selections."", ""A group of African Americans gather a street vendor."", ""Customers are waiting to get some food."", ""Hungry people are shopping for food."", ""A line is forming for the food cart.""]",textgrad_447fe9a739,TextGrad Step 16,"Default behavior (strict, enforceable)
+
+Primary goals
+- Maximize CLIP image-text similarity by enforcing exact, CLIP‑preferred surface tokens, short subject-first sentences, and conservative gating for low-confidence images.
+
+Canonical vocabulary and determinism
+- All tokens in Line 1 and the subject token in Line 2 MUST come from the integrator's canonical_id → preferred-surface-token table (whitelist). No ad-hoc tokens (e.g., ""outdoor-world"") or synonyms outside this table are allowed.
+- A locked, pre-evaluated preferred-surface-token must be used for each canonical_id. Deterministic tie-breaker: canonical priority list → canonical_table mapping only.
+
+Output format
+- By default emit exactly one candidate. A candidate is exactly two lines:
+  Line 1 = 3–5 comma-separated canonical tags (no trailing comma; hyphens allowed for multiword tokens).
+  Line 2 = one concise sentence ending with a single period.
+
+Line 1 (tags) — hard rules
+- Must contain exactly 3–5 high-precision tags in this composition:
+  1) primary object token (or two-objects token, e.g., two-people) — REQUIRED and must be detected above the detector_primary_tag_threshold;
+  2) action token — include only if visually present and detected with high confidence;
+  3) exactly one salient attribute token — choose one of {color OR count OR position} only.
+- No scene/generic/texture tokens unless present in the canonical_table and visually diagnostic.
+- No synonyms, no repeats, no comma lists of descriptors. Example allowed tokens: person, bicycle, red, two-people, running, modern-building.
+
+Line 2 (caption) — hard rules
+- Must begin exactly with the primary Line 1 tag's preferred-surface-token (exact string match) as the grammatical subject (i.e., the first word/phrase of Line 2 == Line1 primary token).
+- Short active-voice sentence of the form: [Subject] [active-verb] [object/relationship] [single salient attribute phrase]. Use concrete verbs (e.g., ""holds"", ""rides"", ""carries"", ""opens"") and concrete attributes (""red"", ""two"", ""left"").
+- Include only ONE salient attribute (color OR count OR position) and reuse the same attribute token as in Line 1.
+- Target length: 10–13 tokens. Hard maximum: 15 tokens. Fewer tokens are acceptable if constraints are satisfied.
+- No commas, no lists, no subordinate clauses, no speculative language (""appears to"", ""seems""), no multiple attributes. End with a single period and no extra punctuation or sentences.
+
+Determinism, synonym policy, and candidates
+- Never introduce free-form synonyms. Use only the canonical_table preferred token for each canonical_id.
+- Produce multiple candidates (max 3) ONLY when an external CLIP reranker is guaranteed by the integrator. Variants must differ solely by:
+  (a) alternate allowed tag-sets (each 3–5 tokens drawn from canonical_table), or
+  (b) swapping among pre-approved, pre-evaluated synonyms for the same canonical_ids from the integrator's synonym set.
+- Free-form caption text (Line 2 wording) must be identical across candidates; only tag-sets / allowed synonyms may differ.
+
+Internal selection / reranking
+- If an external CLIP reranker is available: deterministically generate up to 3 structured candidates (tag/synonym variations only), rerank with CLIP, emit the top-scoring candidate.
+- If only an internal CLIP is available: same procedure with internal CLIP reranker.
+- If NO CLIP reranker is available: still generate up to 3 deterministic candidates (tag/synonym variants) and use this conservative heuristic:
+  Score = 1.0 * TagPrecisionScore - 0.05 * LengthPenalty - 0.50 * SubjectMismatchPenalty
+  where:
+  - TagPrecisionScore = proportion of Line1 tags visually grounded by detectors (weighted by canonical priority),
+  - LengthPenalty = max(0, (token_count - 13))  (penalize above 13 tokens),
+  - SubjectMismatchPenalty = 0 if Line2 subject == Line1 primary token else 1 (i.e., heavy penalty).
+  Emit the top-scoring candidate if it passes verifier checks (below); otherwise fallback to ""image unclear"".
+
+Verifier / ""image unclear"" rule (conservative, enforced)
+- If ANY of these conditions hold, output exactly and only (single line, no punctuation):
+image unclear
+  Conditions:
+  1) No primary object detected above the detector_primary_tag_threshold (integrator-configured), OR
+  2) The highest CLIP score among generated candidates is < clip_threshold (default recommended 0.20; integrator may set 0.20–0.22 after dev validation), OR
+  3) Any strict formatting or vocabulary check fails (Line1 tags not all in canonical_table, Line1 tag count outside 3–5, Line2 fails exact-subject match to Line1 primary, Line2 token_count > 15, Line2 contains commas or multiple attributes).
+- Do not output any other fallback caption or extra punctuation when declaring uncertainty.
+
+Formatting and quality guards (automated checks)
+- Enforce programmatic unit tests during generation:
+  1) Whitelist check: every Line1 tag ∈ canonical_table.
+  2) Tag count check: 3 ≤ num_tags ≤ 5 and exactly one attribute token type.
+  3) Subject reuse check: first token(s) of Line2 == Line1 primary token (exact string).
+  4) Length check: token_count(Line2) ≤ 15; prefer 10–13.
+  5) No commas in either line; no trailing commas; Line2 ends with single period.
+  6) Active-verb heuristics: detect presence of an active verb (simple POS or verb-list). Reject copula-heavy captions (""is near"", ""is standing"") unless necessary; prefer concrete verbs.
+  7) Grounding check: cross-check Line1 primary and action tags against detector confidences; if below thresholds, fail to ""image unclear"".
+- If any automated check fails, do not attempt free-form repairs — return ""image unclear"".
+
+Implementation hints (operational)
+- Maintain versioned canonical_table with pre-evaluated CLIP scores per synonym; lock preferred tokens and update via re-evaluation if CLIP model changes.
+- During candidate creation ensure Line2 reuses exact tag tokens; implement unit test that splits Line2 subject phrase and matches Line1 primary token.
+- Monitor metrics: mean_clip, mean_delta_clip, clip_win_rate, mean_caption_len, generic_rate, token_reuse_fail_rate, and ""image unclear"" frequency. Tune clip_threshold and detector thresholds on held-out dev set to balance coverage and quality.
+
+Rationale (brief)
+- Exact token reuse, short subject-first active sentences, a locked CLIP-preferred vocabulary, and conservative gating reduce noise and directly improve image-text CLIP alignment.
+
+Final requirement
+- If you cannot produce a reliable candidate under the verifier's checks above, output exactly and only:
+image unclear","person, standing, red, two-people
+
+person stands near red cone.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.1907976269721985,0.0495108962059021,9,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_447fe9a739,26,69,flickr30k_test_000069,images/flickr30k/flickr30k_test_000069.jpg,"[""A man in a black coat walks past a red spaceship with a parking ticket stuck to its window."", ""A man is standing in front of a small red object that looks like a plane."", ""A man wearing a black jacket is walking towards the street."", ""A man in a black jacket is moving towards a street."", ""Man in black coat examining airplane nose.""]",textgrad_447fe9a739,TextGrad Step 16,"Default behavior (strict, enforceable)
+
+Primary goals
+- Maximize CLIP image-text similarity by enforcing exact, CLIP‑preferred surface tokens, short subject-first sentences, and conservative gating for low-confidence images.
+
+Canonical vocabulary and determinism
+- All tokens in Line 1 and the subject token in Line 2 MUST come from the integrator's canonical_id → preferred-surface-token table (whitelist). No ad-hoc tokens (e.g., ""outdoor-world"") or synonyms outside this table are allowed.
+- A locked, pre-evaluated preferred-surface-token must be used for each canonical_id. Deterministic tie-breaker: canonical priority list → canonical_table mapping only.
+
+Output format
+- By default emit exactly one candidate. A candidate is exactly two lines:
+  Line 1 = 3–5 comma-separated canonical tags (no trailing comma; hyphens allowed for multiword tokens).
+  Line 2 = one concise sentence ending with a single period.
+
+Line 1 (tags) — hard rules
+- Must contain exactly 3–5 high-precision tags in this composition:
+  1) primary object token (or two-objects token, e.g., two-people) — REQUIRED and must be detected above the detector_primary_tag_threshold;
+  2) action token — include only if visually present and detected with high confidence;
+  3) exactly one salient attribute token — choose one of {color OR count OR position} only.
+- No scene/generic/texture tokens unless present in the canonical_table and visually diagnostic.
+- No synonyms, no repeats, no comma lists of descriptors. Example allowed tokens: person, bicycle, red, two-people, running, modern-building.
+
+Line 2 (caption) — hard rules
+- Must begin exactly with the primary Line 1 tag's preferred-surface-token (exact string match) as the grammatical subject (i.e., the first word/phrase of Line 2 == Line1 primary token).
+- Short active-voice sentence of the form: [Subject] [active-verb] [object/relationship] [single salient attribute phrase]. Use concrete verbs (e.g., ""holds"", ""rides"", ""carries"", ""opens"") and concrete attributes (""red"", ""two"", ""left"").
+- Include only ONE salient attribute (color OR count OR position) and reuse the same attribute token as in Line 1.
+- Target length: 10–13 tokens. Hard maximum: 15 tokens. Fewer tokens are acceptable if constraints are satisfied.
+- No commas, no lists, no subordinate clauses, no speculative language (""appears to"", ""seems""), no multiple attributes. End with a single period and no extra punctuation or sentences.
+
+Determinism, synonym policy, and candidates
+- Never introduce free-form synonyms. Use only the canonical_table preferred token for each canonical_id.
+- Produce multiple candidates (max 3) ONLY when an external CLIP reranker is guaranteed by the integrator. Variants must differ solely by:
+  (a) alternate allowed tag-sets (each 3–5 tokens drawn from canonical_table), or
+  (b) swapping among pre-approved, pre-evaluated synonyms for the same canonical_ids from the integrator's synonym set.
+- Free-form caption text (Line 2 wording) must be identical across candidates; only tag-sets / allowed synonyms may differ.
+
+Internal selection / reranking
+- If an external CLIP reranker is available: deterministically generate up to 3 structured candidates (tag/synonym variations only), rerank with CLIP, emit the top-scoring candidate.
+- If only an internal CLIP is available: same procedure with internal CLIP reranker.
+- If NO CLIP reranker is available: still generate up to 3 deterministic candidates (tag/synonym variants) and use this conservative heuristic:
+  Score = 1.0 * TagPrecisionScore - 0.05 * LengthPenalty - 0.50 * SubjectMismatchPenalty
+  where:
+  - TagPrecisionScore = proportion of Line1 tags visually grounded by detectors (weighted by canonical priority),
+  - LengthPenalty = max(0, (token_count - 13))  (penalize above 13 tokens),
+  - SubjectMismatchPenalty = 0 if Line2 subject == Line1 primary token else 1 (i.e., heavy penalty).
+  Emit the top-scoring candidate if it passes verifier checks (below); otherwise fallback to ""image unclear"".
+
+Verifier / ""image unclear"" rule (conservative, enforced)
+- If ANY of these conditions hold, output exactly and only (single line, no punctuation):
+image unclear
+  Conditions:
+  1) No primary object detected above the detector_primary_tag_threshold (integrator-configured), OR
+  2) The highest CLIP score among generated candidates is < clip_threshold (default recommended 0.20; integrator may set 0.20–0.22 after dev validation), OR
+  3) Any strict formatting or vocabulary check fails (Line1 tags not all in canonical_table, Line1 tag count outside 3–5, Line2 fails exact-subject match to Line1 primary, Line2 token_count > 15, Line2 contains commas or multiple attributes).
+- Do not output any other fallback caption or extra punctuation when declaring uncertainty.
+
+Formatting and quality guards (automated checks)
+- Enforce programmatic unit tests during generation:
+  1) Whitelist check: every Line1 tag ∈ canonical_table.
+  2) Tag count check: 3 ≤ num_tags ≤ 5 and exactly one attribute token type.
+  3) Subject reuse check: first token(s) of Line2 == Line1 primary token (exact string).
+  4) Length check: token_count(Line2) ≤ 15; prefer 10–13.
+  5) No commas in either line; no trailing commas; Line2 ends with single period.
+  6) Active-verb heuristics: detect presence of an active verb (simple POS or verb-list). Reject copula-heavy captions (""is near"", ""is standing"") unless necessary; prefer concrete verbs.
+  7) Grounding check: cross-check Line1 primary and action tags against detector confidences; if below thresholds, fail to ""image unclear"".
+- If any automated check fails, do not attempt free-form repairs — return ""image unclear"".
+
+Implementation hints (operational)
+- Maintain versioned canonical_table with pre-evaluated CLIP scores per synonym; lock preferred tokens and update via re-evaluation if CLIP model changes.
+- During candidate creation ensure Line2 reuses exact tag tokens; implement unit test that splits Line2 subject phrase and matches Line1 primary token.
+- Monitor metrics: mean_clip, mean_delta_clip, clip_win_rate, mean_caption_len, generic_rate, token_reuse_fail_rate, and ""image unclear"" frequency. Tune clip_threshold and detector thresholds on held-out dev set to balance coverage and quality.
+
+Rationale (brief)
+- Exact token reuse, short subject-first active sentences, a locked CLIP-preferred vocabulary, and conservative gating reduce noise and directly improve image-text CLIP alignment.
+
+Final requirement
+- If you cannot produce a reliable candidate under the verifier's checks above, output exactly and only:
+image unclear",image unclear,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.22265399992465973,-0.018072575330734253,2,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_447fe9a739,29,8727,flickr30k_test_008727,images/flickr30k/flickr30k_test_008727.jpg,"[""One little toddler wearing blue pajamas and a little girl wearing red pajamas opening presents on christmas day."", ""A baby boy in blue pajamas watches while his blond sister with glasses opens a Christmas present."", ""A little girl wearing her pajamas opening a present while a little boy looks on."", ""A girl is opening a present while a young boy in blue pajamas watches."", ""A young girl and a toddler are tearing wrapping paper off a present.""]",textgrad_447fe9a739,TextGrad Step 16,"Default behavior (strict, enforceable)
+
+Primary goals
+- Maximize CLIP image-text similarity by enforcing exact, CLIP‑preferred surface tokens, short subject-first sentences, and conservative gating for low-confidence images.
+
+Canonical vocabulary and determinism
+- All tokens in Line 1 and the subject token in Line 2 MUST come from the integrator's canonical_id → preferred-surface-token table (whitelist). No ad-hoc tokens (e.g., ""outdoor-world"") or synonyms outside this table are allowed.
+- A locked, pre-evaluated preferred-surface-token must be used for each canonical_id. Deterministic tie-breaker: canonical priority list → canonical_table mapping only.
+
+Output format
+- By default emit exactly one candidate. A candidate is exactly two lines:
+  Line 1 = 3–5 comma-separated canonical tags (no trailing comma; hyphens allowed for multiword tokens).
+  Line 2 = one concise sentence ending with a single period.
+
+Line 1 (tags) — hard rules
+- Must contain exactly 3–5 high-precision tags in this composition:
+  1) primary object token (or two-objects token, e.g., two-people) — REQUIRED and must be detected above the detector_primary_tag_threshold;
+  2) action token — include only if visually present and detected with high confidence;
+  3) exactly one salient attribute token — choose one of {color OR count OR position} only.
+- No scene/generic/texture tokens unless present in the canonical_table and visually diagnostic.
+- No synonyms, no repeats, no comma lists of descriptors. Example allowed tokens: person, bicycle, red, two-people, running, modern-building.
+
+Line 2 (caption) — hard rules
+- Must begin exactly with the primary Line 1 tag's preferred-surface-token (exact string match) as the grammatical subject (i.e., the first word/phrase of Line 2 == Line1 primary token).
+- Short active-voice sentence of the form: [Subject] [active-verb] [object/relationship] [single salient attribute phrase]. Use concrete verbs (e.g., ""holds"", ""rides"", ""carries"", ""opens"") and concrete attributes (""red"", ""two"", ""left"").
+- Include only ONE salient attribute (color OR count OR position) and reuse the same attribute token as in Line 1.
+- Target length: 10–13 tokens. Hard maximum: 15 tokens. Fewer tokens are acceptable if constraints are satisfied.
+- No commas, no lists, no subordinate clauses, no speculative language (""appears to"", ""seems""), no multiple attributes. End with a single period and no extra punctuation or sentences.
+
+Determinism, synonym policy, and candidates
+- Never introduce free-form synonyms. Use only the canonical_table preferred token for each canonical_id.
+- Produce multiple candidates (max 3) ONLY when an external CLIP reranker is guaranteed by the integrator. Variants must differ solely by:
+  (a) alternate allowed tag-sets (each 3–5 tokens drawn from canonical_table), or
+  (b) swapping among pre-approved, pre-evaluated synonyms for the same canonical_ids from the integrator's synonym set.
+- Free-form caption text (Line 2 wording) must be identical across candidates; only tag-sets / allowed synonyms may differ.
+
+Internal selection / reranking
+- If an external CLIP reranker is available: deterministically generate up to 3 structured candidates (tag/synonym variations only), rerank with CLIP, emit the top-scoring candidate.
+- If only an internal CLIP is available: same procedure with internal CLIP reranker.
+- If NO CLIP reranker is available: still generate up to 3 deterministic candidates (tag/synonym variants) and use this conservative heuristic:
+  Score = 1.0 * TagPrecisionScore - 0.05 * LengthPenalty - 0.50 * SubjectMismatchPenalty
+  where:
+  - TagPrecisionScore = proportion of Line1 tags visually grounded by detectors (weighted by canonical priority),
+  - LengthPenalty = max(0, (token_count - 13))  (penalize above 13 tokens),
+  - SubjectMismatchPenalty = 0 if Line2 subject == Line1 primary token else 1 (i.e., heavy penalty).
+  Emit the top-scoring candidate if it passes verifier checks (below); otherwise fallback to ""image unclear"".
+
+Verifier / ""image unclear"" rule (conservative, enforced)
+- If ANY of these conditions hold, output exactly and only (single line, no punctuation):
+image unclear
+  Conditions:
+  1) No primary object detected above the detector_primary_tag_threshold (integrator-configured), OR
+  2) The highest CLIP score among generated candidates is < clip_threshold (default recommended 0.20; integrator may set 0.20–0.22 after dev validation), OR
+  3) Any strict formatting or vocabulary check fails (Line1 tags not all in canonical_table, Line1 tag count outside 3–5, Line2 fails exact-subject match to Line1 primary, Line2 token_count > 15, Line2 contains commas or multiple attributes).
+- Do not output any other fallback caption or extra punctuation when declaring uncertainty.
+
+Formatting and quality guards (automated checks)
+- Enforce programmatic unit tests during generation:
+  1) Whitelist check: every Line1 tag ∈ canonical_table.
+  2) Tag count check: 3 ≤ num_tags ≤ 5 and exactly one attribute token type.
+  3) Subject reuse check: first token(s) of Line2 == Line1 primary token (exact string).
+  4) Length check: token_count(Line2) ≤ 15; prefer 10–13.
+  5) No commas in either line; no trailing commas; Line2 ends with single period.
+  6) Active-verb heuristics: detect presence of an active verb (simple POS or verb-list). Reject copula-heavy captions (""is near"", ""is standing"") unless necessary; prefer concrete verbs.
+  7) Grounding check: cross-check Line1 primary and action tags against detector confidences; if below thresholds, fail to ""image unclear"".
+- If any automated check fails, do not attempt free-form repairs — return ""image unclear"".
+
+Implementation hints (operational)
+- Maintain versioned canonical_table with pre-evaluated CLIP scores per synonym; lock preferred tokens and update via re-evaluation if CLIP model changes.
+- During candidate creation ensure Line2 reuses exact tag tokens; implement unit test that splits Line2 subject phrase and matches Line1 primary token.
+- Monitor metrics: mean_clip, mean_delta_clip, clip_win_rate, mean_caption_len, generic_rate, token_reuse_fail_rate, and ""image unclear"" frequency. Tune clip_threshold and detector thresholds on held-out dev set to balance coverage and quality.
+
+Rationale (brief)
+- Exact token reuse, short subject-first active sentences, a locked CLIP-preferred vocabulary, and conservative gating reduce noise and directly improve image-text CLIP alignment.
+
+Final requirement
+- If you cannot produce a reliable candidate under the verifier's checks above, output exactly and only:
+image unclear","two-people, opens, blue
+
+The two-people opens a gift wrapped in blue paper.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.25223448872566223,0.1482180655002594,12,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_447fe9a739,32,7496,flickr30k_test_007496,images/flickr30k/flickr30k_test_007496.jpg,"[""Two men wearing hats play accordions while standing between two burgundy and black pre-World War II automobiles."", ""Two accordion players in period costumes perform between two maroon-colored antique cars."", ""Two old men with hats are standing in between cars with their accordions."", ""Two men between 2 classic cars playing accordions."", ""Two men playing music and displaying old cars.""]",textgrad_447fe9a739,TextGrad Step 16,"Default behavior (strict, enforceable)
+
+Primary goals
+- Maximize CLIP image-text similarity by enforcing exact, CLIP‑preferred surface tokens, short subject-first sentences, and conservative gating for low-confidence images.
+
+Canonical vocabulary and determinism
+- All tokens in Line 1 and the subject token in Line 2 MUST come from the integrator's canonical_id → preferred-surface-token table (whitelist). No ad-hoc tokens (e.g., ""outdoor-world"") or synonyms outside this table are allowed.
+- A locked, pre-evaluated preferred-surface-token must be used for each canonical_id. Deterministic tie-breaker: canonical priority list → canonical_table mapping only.
+
+Output format
+- By default emit exactly one candidate. A candidate is exactly two lines:
+  Line 1 = 3–5 comma-separated canonical tags (no trailing comma; hyphens allowed for multiword tokens).
+  Line 2 = one concise sentence ending with a single period.
+
+Line 1 (tags) — hard rules
+- Must contain exactly 3–5 high-precision tags in this composition:
+  1) primary object token (or two-objects token, e.g., two-people) — REQUIRED and must be detected above the detector_primary_tag_threshold;
+  2) action token — include only if visually present and detected with high confidence;
+  3) exactly one salient attribute token — choose one of {color OR count OR position} only.
+- No scene/generic/texture tokens unless present in the canonical_table and visually diagnostic.
+- No synonyms, no repeats, no comma lists of descriptors. Example allowed tokens: person, bicycle, red, two-people, running, modern-building.
+
+Line 2 (caption) — hard rules
+- Must begin exactly with the primary Line 1 tag's preferred-surface-token (exact string match) as the grammatical subject (i.e., the first word/phrase of Line 2 == Line1 primary token).
+- Short active-voice sentence of the form: [Subject] [active-verb] [object/relationship] [single salient attribute phrase]. Use concrete verbs (e.g., ""holds"", ""rides"", ""carries"", ""opens"") and concrete attributes (""red"", ""two"", ""left"").
+- Include only ONE salient attribute (color OR count OR position) and reuse the same attribute token as in Line 1.
+- Target length: 10–13 tokens. Hard maximum: 15 tokens. Fewer tokens are acceptable if constraints are satisfied.
+- No commas, no lists, no subordinate clauses, no speculative language (""appears to"", ""seems""), no multiple attributes. End with a single period and no extra punctuation or sentences.
+
+Determinism, synonym policy, and candidates
+- Never introduce free-form synonyms. Use only the canonical_table preferred token for each canonical_id.
+- Produce multiple candidates (max 3) ONLY when an external CLIP reranker is guaranteed by the integrator. Variants must differ solely by:
+  (a) alternate allowed tag-sets (each 3–5 tokens drawn from canonical_table), or
+  (b) swapping among pre-approved, pre-evaluated synonyms for the same canonical_ids from the integrator's synonym set.
+- Free-form caption text (Line 2 wording) must be identical across candidates; only tag-sets / allowed synonyms may differ.
+
+Internal selection / reranking
+- If an external CLIP reranker is available: deterministically generate up to 3 structured candidates (tag/synonym variations only), rerank with CLIP, emit the top-scoring candidate.
+- If only an internal CLIP is available: same procedure with internal CLIP reranker.
+- If NO CLIP reranker is available: still generate up to 3 deterministic candidates (tag/synonym variants) and use this conservative heuristic:
+  Score = 1.0 * TagPrecisionScore - 0.05 * LengthPenalty - 0.50 * SubjectMismatchPenalty
+  where:
+  - TagPrecisionScore = proportion of Line1 tags visually grounded by detectors (weighted by canonical priority),
+  - LengthPenalty = max(0, (token_count - 13))  (penalize above 13 tokens),
+  - SubjectMismatchPenalty = 0 if Line2 subject == Line1 primary token else 1 (i.e., heavy penalty).
+  Emit the top-scoring candidate if it passes verifier checks (below); otherwise fallback to ""image unclear"".
+
+Verifier / ""image unclear"" rule (conservative, enforced)
+- If ANY of these conditions hold, output exactly and only (single line, no punctuation):
+image unclear
+  Conditions:
+  1) No primary object detected above the detector_primary_tag_threshold (integrator-configured), OR
+  2) The highest CLIP score among generated candidates is < clip_threshold (default recommended 0.20; integrator may set 0.20–0.22 after dev validation), OR
+  3) Any strict formatting or vocabulary check fails (Line1 tags not all in canonical_table, Line1 tag count outside 3–5, Line2 fails exact-subject match to Line1 primary, Line2 token_count > 15, Line2 contains commas or multiple attributes).
+- Do not output any other fallback caption or extra punctuation when declaring uncertainty.
+
+Formatting and quality guards (automated checks)
+- Enforce programmatic unit tests during generation:
+  1) Whitelist check: every Line1 tag ∈ canonical_table.
+  2) Tag count check: 3 ≤ num_tags ≤ 5 and exactly one attribute token type.
+  3) Subject reuse check: first token(s) of Line2 == Line1 primary token (exact string).
+  4) Length check: token_count(Line2) ≤ 15; prefer 10–13.
+  5) No commas in either line; no trailing commas; Line2 ends with single period.
+  6) Active-verb heuristics: detect presence of an active verb (simple POS or verb-list). Reject copula-heavy captions (""is near"", ""is standing"") unless necessary; prefer concrete verbs.
+  7) Grounding check: cross-check Line1 primary and action tags against detector confidences; if below thresholds, fail to ""image unclear"".
+- If any automated check fails, do not attempt free-form repairs — return ""image unclear"".
+
+Implementation hints (operational)
+- Maintain versioned canonical_table with pre-evaluated CLIP scores per synonym; lock preferred tokens and update via re-evaluation if CLIP model changes.
+- During candidate creation ensure Line2 reuses exact tag tokens; implement unit test that splits Line2 subject phrase and matches Line1 primary token.
+- Monitor metrics: mean_clip, mean_delta_clip, clip_win_rate, mean_caption_len, generic_rate, token_reuse_fail_rate, and ""image unclear"" frequency. Tune clip_threshold and detector thresholds on held-out dev set to balance coverage and quality.
+
+Rationale (brief)
+- Exact token reuse, short subject-first active sentences, a locked CLIP-preferred vocabulary, and conservative gating reduce noise and directly improve image-text CLIP alignment.
+
+Final requirement
+- If you cannot produce a reliable candidate under the verifier's checks above, output exactly and only:
+image unclear","two-people, playing, red, left
+two-people play the accordions near the red cars on the left.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.27217262983322144,0.2044406533241272,15,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_447fe9a739,39,731,flickr30k_test_000731,images/flickr30k/flickr30k_test_000731.jpg,"[""Three little blond girls, two in blue, one in pink, play on a sunny beach."", ""Three children are playing in sand near to the beach."", ""Three young girls dance on the beach in the sand."", ""Three children playing in sand at beach"", ""Three girls play in the sand.""]",textgrad_447fe9a739,TextGrad Step 16,"Default behavior (strict, enforceable)
+
+Primary goals
+- Maximize CLIP image-text similarity by enforcing exact, CLIP‑preferred surface tokens, short subject-first sentences, and conservative gating for low-confidence images.
+
+Canonical vocabulary and determinism
+- All tokens in Line 1 and the subject token in Line 2 MUST come from the integrator's canonical_id → preferred-surface-token table (whitelist). No ad-hoc tokens (e.g., ""outdoor-world"") or synonyms outside this table are allowed.
+- A locked, pre-evaluated preferred-surface-token must be used for each canonical_id. Deterministic tie-breaker: canonical priority list → canonical_table mapping only.
+
+Output format
+- By default emit exactly one candidate. A candidate is exactly two lines:
+  Line 1 = 3–5 comma-separated canonical tags (no trailing comma; hyphens allowed for multiword tokens).
+  Line 2 = one concise sentence ending with a single period.
+
+Line 1 (tags) — hard rules
+- Must contain exactly 3–5 high-precision tags in this composition:
+  1) primary object token (or two-objects token, e.g., two-people) — REQUIRED and must be detected above the detector_primary_tag_threshold;
+  2) action token — include only if visually present and detected with high confidence;
+  3) exactly one salient attribute token — choose one of {color OR count OR position} only.
+- No scene/generic/texture tokens unless present in the canonical_table and visually diagnostic.
+- No synonyms, no repeats, no comma lists of descriptors. Example allowed tokens: person, bicycle, red, two-people, running, modern-building.
+
+Line 2 (caption) — hard rules
+- Must begin exactly with the primary Line 1 tag's preferred-surface-token (exact string match) as the grammatical subject (i.e., the first word/phrase of Line 2 == Line1 primary token).
+- Short active-voice sentence of the form: [Subject] [active-verb] [object/relationship] [single salient attribute phrase]. Use concrete verbs (e.g., ""holds"", ""rides"", ""carries"", ""opens"") and concrete attributes (""red"", ""two"", ""left"").
+- Include only ONE salient attribute (color OR count OR position) and reuse the same attribute token as in Line 1.
+- Target length: 10–13 tokens. Hard maximum: 15 tokens. Fewer tokens are acceptable if constraints are satisfied.
+- No commas, no lists, no subordinate clauses, no speculative language (""appears to"", ""seems""), no multiple attributes. End with a single period and no extra punctuation or sentences.
+
+Determinism, synonym policy, and candidates
+- Never introduce free-form synonyms. Use only the canonical_table preferred token for each canonical_id.
+- Produce multiple candidates (max 3) ONLY when an external CLIP reranker is guaranteed by the integrator. Variants must differ solely by:
+  (a) alternate allowed tag-sets (each 3–5 tokens drawn from canonical_table), or
+  (b) swapping among pre-approved, pre-evaluated synonyms for the same canonical_ids from the integrator's synonym set.
+- Free-form caption text (Line 2 wording) must be identical across candidates; only tag-sets / allowed synonyms may differ.
+
+Internal selection / reranking
+- If an external CLIP reranker is available: deterministically generate up to 3 structured candidates (tag/synonym variations only), rerank with CLIP, emit the top-scoring candidate.
+- If only an internal CLIP is available: same procedure with internal CLIP reranker.
+- If NO CLIP reranker is available: still generate up to 3 deterministic candidates (tag/synonym variants) and use this conservative heuristic:
+  Score = 1.0 * TagPrecisionScore - 0.05 * LengthPenalty - 0.50 * SubjectMismatchPenalty
+  where:
+  - TagPrecisionScore = proportion of Line1 tags visually grounded by detectors (weighted by canonical priority),
+  - LengthPenalty = max(0, (token_count - 13))  (penalize above 13 tokens),
+  - SubjectMismatchPenalty = 0 if Line2 subject == Line1 primary token else 1 (i.e., heavy penalty).
+  Emit the top-scoring candidate if it passes verifier checks (below); otherwise fallback to ""image unclear"".
+
+Verifier / ""image unclear"" rule (conservative, enforced)
+- If ANY of these conditions hold, output exactly and only (single line, no punctuation):
+image unclear
+  Conditions:
+  1) No primary object detected above the detector_primary_tag_threshold (integrator-configured), OR
+  2) The highest CLIP score among generated candidates is < clip_threshold (default recommended 0.20; integrator may set 0.20–0.22 after dev validation), OR
+  3) Any strict formatting or vocabulary check fails (Line1 tags not all in canonical_table, Line1 tag count outside 3–5, Line2 fails exact-subject match to Line1 primary, Line2 token_count > 15, Line2 contains commas or multiple attributes).
+- Do not output any other fallback caption or extra punctuation when declaring uncertainty.
+
+Formatting and quality guards (automated checks)
+- Enforce programmatic unit tests during generation:
+  1) Whitelist check: every Line1 tag ∈ canonical_table.
+  2) Tag count check: 3 ≤ num_tags ≤ 5 and exactly one attribute token type.
+  3) Subject reuse check: first token(s) of Line2 == Line1 primary token (exact string).
+  4) Length check: token_count(Line2) ≤ 15; prefer 10–13.
+  5) No commas in either line; no trailing commas; Line2 ends with single period.
+  6) Active-verb heuristics: detect presence of an active verb (simple POS or verb-list). Reject copula-heavy captions (""is near"", ""is standing"") unless necessary; prefer concrete verbs.
+  7) Grounding check: cross-check Line1 primary and action tags against detector confidences; if below thresholds, fail to ""image unclear"".
+- If any automated check fails, do not attempt free-form repairs — return ""image unclear"".
+
+Implementation hints (operational)
+- Maintain versioned canonical_table with pre-evaluated CLIP scores per synonym; lock preferred tokens and update via re-evaluation if CLIP model changes.
+- During candidate creation ensure Line2 reuses exact tag tokens; implement unit test that splits Line2 subject phrase and matches Line1 primary token.
+- Monitor metrics: mean_clip, mean_delta_clip, clip_win_rate, mean_caption_len, generic_rate, token_reuse_fail_rate, and ""image unclear"" frequency. Tune clip_threshold and detector thresholds on held-out dev set to balance coverage and quality.
+
+Rationale (brief)
+- Exact token reuse, short subject-first active sentences, a locked CLIP-preferred vocabulary, and conservative gating reduce noise and directly improve image-text CLIP alignment.
+
+Final requirement
+- If you cannot produce a reliable candidate under the verifier's checks above, output exactly and only:
+image unclear","two-people, posing, pink
+
+two-people pose with pink clothing.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.22120985388755798,0.04756312817335129,8,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_447fe9a739,42,17741,flickr30k_test_017741,images/flickr30k/flickr30k_test_017741.jpg,"[""Two people sit on a bench overlooking a vast amount of windows."", ""Two people sitting on a bench in front of a large window."", ""Two people sitting looking at a glass wall."", ""Two people are siting on a black bench."", ""Two women sitting on a bench.""]",textgrad_447fe9a739,TextGrad Step 16,"Default behavior (strict, enforceable)
+
+Primary goals
+- Maximize CLIP image-text similarity by enforcing exact, CLIP‑preferred surface tokens, short subject-first sentences, and conservative gating for low-confidence images.
+
+Canonical vocabulary and determinism
+- All tokens in Line 1 and the subject token in Line 2 MUST come from the integrator's canonical_id → preferred-surface-token table (whitelist). No ad-hoc tokens (e.g., ""outdoor-world"") or synonyms outside this table are allowed.
+- A locked, pre-evaluated preferred-surface-token must be used for each canonical_id. Deterministic tie-breaker: canonical priority list → canonical_table mapping only.
+
+Output format
+- By default emit exactly one candidate. A candidate is exactly two lines:
+  Line 1 = 3–5 comma-separated canonical tags (no trailing comma; hyphens allowed for multiword tokens).
+  Line 2 = one concise sentence ending with a single period.
+
+Line 1 (tags) — hard rules
+- Must contain exactly 3–5 high-precision tags in this composition:
+  1) primary object token (or two-objects token, e.g., two-people) — REQUIRED and must be detected above the detector_primary_tag_threshold;
+  2) action token — include only if visually present and detected with high confidence;
+  3) exactly one salient attribute token — choose one of {color OR count OR position} only.
+- No scene/generic/texture tokens unless present in the canonical_table and visually diagnostic.
+- No synonyms, no repeats, no comma lists of descriptors. Example allowed tokens: person, bicycle, red, two-people, running, modern-building.
+
+Line 2 (caption) — hard rules
+- Must begin exactly with the primary Line 1 tag's preferred-surface-token (exact string match) as the grammatical subject (i.e., the first word/phrase of Line 2 == Line1 primary token).
+- Short active-voice sentence of the form: [Subject] [active-verb] [object/relationship] [single salient attribute phrase]. Use concrete verbs (e.g., ""holds"", ""rides"", ""carries"", ""opens"") and concrete attributes (""red"", ""two"", ""left"").
+- Include only ONE salient attribute (color OR count OR position) and reuse the same attribute token as in Line 1.
+- Target length: 10–13 tokens. Hard maximum: 15 tokens. Fewer tokens are acceptable if constraints are satisfied.
+- No commas, no lists, no subordinate clauses, no speculative language (""appears to"", ""seems""), no multiple attributes. End with a single period and no extra punctuation or sentences.
+
+Determinism, synonym policy, and candidates
+- Never introduce free-form synonyms. Use only the canonical_table preferred token for each canonical_id.
+- Produce multiple candidates (max 3) ONLY when an external CLIP reranker is guaranteed by the integrator. Variants must differ solely by:
+  (a) alternate allowed tag-sets (each 3–5 tokens drawn from canonical_table), or
+  (b) swapping among pre-approved, pre-evaluated synonyms for the same canonical_ids from the integrator's synonym set.
+- Free-form caption text (Line 2 wording) must be identical across candidates; only tag-sets / allowed synonyms may differ.
+
+Internal selection / reranking
+- If an external CLIP reranker is available: deterministically generate up to 3 structured candidates (tag/synonym variations only), rerank with CLIP, emit the top-scoring candidate.
+- If only an internal CLIP is available: same procedure with internal CLIP reranker.
+- If NO CLIP reranker is available: still generate up to 3 deterministic candidates (tag/synonym variants) and use this conservative heuristic:
+  Score = 1.0 * TagPrecisionScore - 0.05 * LengthPenalty - 0.50 * SubjectMismatchPenalty
+  where:
+  - TagPrecisionScore = proportion of Line1 tags visually grounded by detectors (weighted by canonical priority),
+  - LengthPenalty = max(0, (token_count - 13))  (penalize above 13 tokens),
+  - SubjectMismatchPenalty = 0 if Line2 subject == Line1 primary token else 1 (i.e., heavy penalty).
+  Emit the top-scoring candidate if it passes verifier checks (below); otherwise fallback to ""image unclear"".
+
+Verifier / ""image unclear"" rule (conservative, enforced)
+- If ANY of these conditions hold, output exactly and only (single line, no punctuation):
+image unclear
+  Conditions:
+  1) No primary object detected above the detector_primary_tag_threshold (integrator-configured), OR
+  2) The highest CLIP score among generated candidates is < clip_threshold (default recommended 0.20; integrator may set 0.20–0.22 after dev validation), OR
+  3) Any strict formatting or vocabulary check fails (Line1 tags not all in canonical_table, Line1 tag count outside 3–5, Line2 fails exact-subject match to Line1 primary, Line2 token_count > 15, Line2 contains commas or multiple attributes).
+- Do not output any other fallback caption or extra punctuation when declaring uncertainty.
+
+Formatting and quality guards (automated checks)
+- Enforce programmatic unit tests during generation:
+  1) Whitelist check: every Line1 tag ∈ canonical_table.
+  2) Tag count check: 3 ≤ num_tags ≤ 5 and exactly one attribute token type.
+  3) Subject reuse check: first token(s) of Line2 == Line1 primary token (exact string).
+  4) Length check: token_count(Line2) ≤ 15; prefer 10–13.
+  5) No commas in either line; no trailing commas; Line2 ends with single period.
+  6) Active-verb heuristics: detect presence of an active verb (simple POS or verb-list). Reject copula-heavy captions (""is near"", ""is standing"") unless necessary; prefer concrete verbs.
+  7) Grounding check: cross-check Line1 primary and action tags against detector confidences; if below thresholds, fail to ""image unclear"".
+- If any automated check fails, do not attempt free-form repairs — return ""image unclear"".
+
+Implementation hints (operational)
+- Maintain versioned canonical_table with pre-evaluated CLIP scores per synonym; lock preferred tokens and update via re-evaluation if CLIP model changes.
+- During candidate creation ensure Line2 reuses exact tag tokens; implement unit test that splits Line2 subject phrase and matches Line1 primary token.
+- Monitor metrics: mean_clip, mean_delta_clip, clip_win_rate, mean_caption_len, generic_rate, token_reuse_fail_rate, and ""image unclear"" frequency. Tune clip_threshold and detector thresholds on held-out dev set to balance coverage and quality.
+
+Rationale (brief)
+- Exact token reuse, short subject-first active sentences, a locked CLIP-preferred vocabulary, and conservative gating reduce noise and directly improve image-text CLIP alignment.
+
+Final requirement
+- If you cannot produce a reliable candidate under the verifier's checks above, output exactly and only:
+image unclear","two-people, sitting, modern-building, black, bench
+two-people sit on a black bench in a modern-building.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.3146810531616211,0.19622604548931122,14,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_447fe9a739,45,28876,flickr30k_test_028876,images/flickr30k/flickr30k_test_028876.jpg,"[""A participant in a sporting event has landed on his head while holding the ball on a field of grass."", ""A person doing a face plant while the other watches on a clear, lush field of green grass."", ""A male athlete tackles his head into the ground to protect the ball in play."", ""The rugby player got the ball but he is smashing his head into the ground."", ""Uniformed athletes dive onto a grassy playing field.""]",textgrad_447fe9a739,TextGrad Step 16,"Default behavior (strict, enforceable)
+
+Primary goals
+- Maximize CLIP image-text similarity by enforcing exact, CLIP‑preferred surface tokens, short subject-first sentences, and conservative gating for low-confidence images.
+
+Canonical vocabulary and determinism
+- All tokens in Line 1 and the subject token in Line 2 MUST come from the integrator's canonical_id → preferred-surface-token table (whitelist). No ad-hoc tokens (e.g., ""outdoor-world"") or synonyms outside this table are allowed.
+- A locked, pre-evaluated preferred-surface-token must be used for each canonical_id. Deterministic tie-breaker: canonical priority list → canonical_table mapping only.
+
+Output format
+- By default emit exactly one candidate. A candidate is exactly two lines:
+  Line 1 = 3–5 comma-separated canonical tags (no trailing comma; hyphens allowed for multiword tokens).
+  Line 2 = one concise sentence ending with a single period.
+
+Line 1 (tags) — hard rules
+- Must contain exactly 3–5 high-precision tags in this composition:
+  1) primary object token (or two-objects token, e.g., two-people) — REQUIRED and must be detected above the detector_primary_tag_threshold;
+  2) action token — include only if visually present and detected with high confidence;
+  3) exactly one salient attribute token — choose one of {color OR count OR position} only.
+- No scene/generic/texture tokens unless present in the canonical_table and visually diagnostic.
+- No synonyms, no repeats, no comma lists of descriptors. Example allowed tokens: person, bicycle, red, two-people, running, modern-building.
+
+Line 2 (caption) — hard rules
+- Must begin exactly with the primary Line 1 tag's preferred-surface-token (exact string match) as the grammatical subject (i.e., the first word/phrase of Line 2 == Line1 primary token).
+- Short active-voice sentence of the form: [Subject] [active-verb] [object/relationship] [single salient attribute phrase]. Use concrete verbs (e.g., ""holds"", ""rides"", ""carries"", ""opens"") and concrete attributes (""red"", ""two"", ""left"").
+- Include only ONE salient attribute (color OR count OR position) and reuse the same attribute token as in Line 1.
+- Target length: 10–13 tokens. Hard maximum: 15 tokens. Fewer tokens are acceptable if constraints are satisfied.
+- No commas, no lists, no subordinate clauses, no speculative language (""appears to"", ""seems""), no multiple attributes. End with a single period and no extra punctuation or sentences.
+
+Determinism, synonym policy, and candidates
+- Never introduce free-form synonyms. Use only the canonical_table preferred token for each canonical_id.
+- Produce multiple candidates (max 3) ONLY when an external CLIP reranker is guaranteed by the integrator. Variants must differ solely by:
+  (a) alternate allowed tag-sets (each 3–5 tokens drawn from canonical_table), or
+  (b) swapping among pre-approved, pre-evaluated synonyms for the same canonical_ids from the integrator's synonym set.
+- Free-form caption text (Line 2 wording) must be identical across candidates; only tag-sets / allowed synonyms may differ.
+
+Internal selection / reranking
+- If an external CLIP reranker is available: deterministically generate up to 3 structured candidates (tag/synonym variations only), rerank with CLIP, emit the top-scoring candidate.
+- If only an internal CLIP is available: same procedure with internal CLIP reranker.
+- If NO CLIP reranker is available: still generate up to 3 deterministic candidates (tag/synonym variants) and use this conservative heuristic:
+  Score = 1.0 * TagPrecisionScore - 0.05 * LengthPenalty - 0.50 * SubjectMismatchPenalty
+  where:
+  - TagPrecisionScore = proportion of Line1 tags visually grounded by detectors (weighted by canonical priority),
+  - LengthPenalty = max(0, (token_count - 13))  (penalize above 13 tokens),
+  - SubjectMismatchPenalty = 0 if Line2 subject == Line1 primary token else 1 (i.e., heavy penalty).
+  Emit the top-scoring candidate if it passes verifier checks (below); otherwise fallback to ""image unclear"".
+
+Verifier / ""image unclear"" rule (conservative, enforced)
+- If ANY of these conditions hold, output exactly and only (single line, no punctuation):
+image unclear
+  Conditions:
+  1) No primary object detected above the detector_primary_tag_threshold (integrator-configured), OR
+  2) The highest CLIP score among generated candidates is < clip_threshold (default recommended 0.20; integrator may set 0.20–0.22 after dev validation), OR
+  3) Any strict formatting or vocabulary check fails (Line1 tags not all in canonical_table, Line1 tag count outside 3–5, Line2 fails exact-subject match to Line1 primary, Line2 token_count > 15, Line2 contains commas or multiple attributes).
+- Do not output any other fallback caption or extra punctuation when declaring uncertainty.
+
+Formatting and quality guards (automated checks)
+- Enforce programmatic unit tests during generation:
+  1) Whitelist check: every Line1 tag ∈ canonical_table.
+  2) Tag count check: 3 ≤ num_tags ≤ 5 and exactly one attribute token type.
+  3) Subject reuse check: first token(s) of Line2 == Line1 primary token (exact string).
+  4) Length check: token_count(Line2) ≤ 15; prefer 10–13.
+  5) No commas in either line; no trailing commas; Line2 ends with single period.
+  6) Active-verb heuristics: detect presence of an active verb (simple POS or verb-list). Reject copula-heavy captions (""is near"", ""is standing"") unless necessary; prefer concrete verbs.
+  7) Grounding check: cross-check Line1 primary and action tags against detector confidences; if below thresholds, fail to ""image unclear"".
+- If any automated check fails, do not attempt free-form repairs — return ""image unclear"".
+
+Implementation hints (operational)
+- Maintain versioned canonical_table with pre-evaluated CLIP scores per synonym; lock preferred tokens and update via re-evaluation if CLIP model changes.
+- During candidate creation ensure Line2 reuses exact tag tokens; implement unit test that splits Line2 subject phrase and matches Line1 primary token.
+- Monitor metrics: mean_clip, mean_delta_clip, clip_win_rate, mean_caption_len, generic_rate, token_reuse_fail_rate, and ""image unclear"" frequency. Tune clip_threshold and detector thresholds on held-out dev set to balance coverage and quality.
+
+Rationale (brief)
+- Exact token reuse, short subject-first active sentences, a locked CLIP-preferred vocabulary, and conservative gating reduce noise and directly improve image-text CLIP alignment.
+
+Final requirement
+- If you cannot produce a reliable candidate under the verifier's checks above, output exactly and only:
+image unclear","person, falling, blue, two-people
+
+person falls on grass in blue.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.21645963191986084,0.0859927386045456,10,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_447fe9a739,47,22494,flickr30k_test_022494,images/flickr30k/flickr30k_test_022494.jpg,"[""A man in an orange shirt and gray pants with white paint on them looks at the camera while standing near an orange ladder and a gray and white brick wall."", ""A house painter in clothes covered in paint pauses to look at the camera."", ""A man in an orange shirt with an orange ladder next to a brick wall."", ""A man in an orange shirt is holding a ladder."", ""A worker grabs a ladder to move it around.""]",textgrad_447fe9a739,TextGrad Step 16,"Default behavior (strict, enforceable)
+
+Primary goals
+- Maximize CLIP image-text similarity by enforcing exact, CLIP‑preferred surface tokens, short subject-first sentences, and conservative gating for low-confidence images.
+
+Canonical vocabulary and determinism
+- All tokens in Line 1 and the subject token in Line 2 MUST come from the integrator's canonical_id → preferred-surface-token table (whitelist). No ad-hoc tokens (e.g., ""outdoor-world"") or synonyms outside this table are allowed.
+- A locked, pre-evaluated preferred-surface-token must be used for each canonical_id. Deterministic tie-breaker: canonical priority list → canonical_table mapping only.
+
+Output format
+- By default emit exactly one candidate. A candidate is exactly two lines:
+  Line 1 = 3–5 comma-separated canonical tags (no trailing comma; hyphens allowed for multiword tokens).
+  Line 2 = one concise sentence ending with a single period.
+
+Line 1 (tags) — hard rules
+- Must contain exactly 3–5 high-precision tags in this composition:
+  1) primary object token (or two-objects token, e.g., two-people) — REQUIRED and must be detected above the detector_primary_tag_threshold;
+  2) action token — include only if visually present and detected with high confidence;
+  3) exactly one salient attribute token — choose one of {color OR count OR position} only.
+- No scene/generic/texture tokens unless present in the canonical_table and visually diagnostic.
+- No synonyms, no repeats, no comma lists of descriptors. Example allowed tokens: person, bicycle, red, two-people, running, modern-building.
+
+Line 2 (caption) — hard rules
+- Must begin exactly with the primary Line 1 tag's preferred-surface-token (exact string match) as the grammatical subject (i.e., the first word/phrase of Line 2 == Line1 primary token).
+- Short active-voice sentence of the form: [Subject] [active-verb] [object/relationship] [single salient attribute phrase]. Use concrete verbs (e.g., ""holds"", ""rides"", ""carries"", ""opens"") and concrete attributes (""red"", ""two"", ""left"").
+- Include only ONE salient attribute (color OR count OR position) and reuse the same attribute token as in Line 1.
+- Target length: 10–13 tokens. Hard maximum: 15 tokens. Fewer tokens are acceptable if constraints are satisfied.
+- No commas, no lists, no subordinate clauses, no speculative language (""appears to"", ""seems""), no multiple attributes. End with a single period and no extra punctuation or sentences.
+
+Determinism, synonym policy, and candidates
+- Never introduce free-form synonyms. Use only the canonical_table preferred token for each canonical_id.
+- Produce multiple candidates (max 3) ONLY when an external CLIP reranker is guaranteed by the integrator. Variants must differ solely by:
+  (a) alternate allowed tag-sets (each 3–5 tokens drawn from canonical_table), or
+  (b) swapping among pre-approved, pre-evaluated synonyms for the same canonical_ids from the integrator's synonym set.
+- Free-form caption text (Line 2 wording) must be identical across candidates; only tag-sets / allowed synonyms may differ.
+
+Internal selection / reranking
+- If an external CLIP reranker is available: deterministically generate up to 3 structured candidates (tag/synonym variations only), rerank with CLIP, emit the top-scoring candidate.
+- If only an internal CLIP is available: same procedure with internal CLIP reranker.
+- If NO CLIP reranker is available: still generate up to 3 deterministic candidates (tag/synonym variants) and use this conservative heuristic:
+  Score = 1.0 * TagPrecisionScore - 0.05 * LengthPenalty - 0.50 * SubjectMismatchPenalty
+  where:
+  - TagPrecisionScore = proportion of Line1 tags visually grounded by detectors (weighted by canonical priority),
+  - LengthPenalty = max(0, (token_count - 13))  (penalize above 13 tokens),
+  - SubjectMismatchPenalty = 0 if Line2 subject == Line1 primary token else 1 (i.e., heavy penalty).
+  Emit the top-scoring candidate if it passes verifier checks (below); otherwise fallback to ""image unclear"".
+
+Verifier / ""image unclear"" rule (conservative, enforced)
+- If ANY of these conditions hold, output exactly and only (single line, no punctuation):
+image unclear
+  Conditions:
+  1) No primary object detected above the detector_primary_tag_threshold (integrator-configured), OR
+  2) The highest CLIP score among generated candidates is < clip_threshold (default recommended 0.20; integrator may set 0.20–0.22 after dev validation), OR
+  3) Any strict formatting or vocabulary check fails (Line1 tags not all in canonical_table, Line1 tag count outside 3–5, Line2 fails exact-subject match to Line1 primary, Line2 token_count > 15, Line2 contains commas or multiple attributes).
+- Do not output any other fallback caption or extra punctuation when declaring uncertainty.
+
+Formatting and quality guards (automated checks)
+- Enforce programmatic unit tests during generation:
+  1) Whitelist check: every Line1 tag ∈ canonical_table.
+  2) Tag count check: 3 ≤ num_tags ≤ 5 and exactly one attribute token type.
+  3) Subject reuse check: first token(s) of Line2 == Line1 primary token (exact string).
+  4) Length check: token_count(Line2) ≤ 15; prefer 10–13.
+  5) No commas in either line; no trailing commas; Line2 ends with single period.
+  6) Active-verb heuristics: detect presence of an active verb (simple POS or verb-list). Reject copula-heavy captions (""is near"", ""is standing"") unless necessary; prefer concrete verbs.
+  7) Grounding check: cross-check Line1 primary and action tags against detector confidences; if below thresholds, fail to ""image unclear"".
+- If any automated check fails, do not attempt free-form repairs — return ""image unclear"".
+
+Implementation hints (operational)
+- Maintain versioned canonical_table with pre-evaluated CLIP scores per synonym; lock preferred tokens and update via re-evaluation if CLIP model changes.
+- During candidate creation ensure Line2 reuses exact tag tokens; implement unit test that splits Line2 subject phrase and matches Line1 primary token.
+- Monitor metrics: mean_clip, mean_delta_clip, clip_win_rate, mean_caption_len, generic_rate, token_reuse_fail_rate, and ""image unclear"" frequency. Tune clip_threshold and detector thresholds on held-out dev set to balance coverage and quality.
+
+Rationale (brief)
+- Exact token reuse, short subject-first active sentences, a locked CLIP-preferred vocabulary, and conservative gating reduce noise and directly improve image-text CLIP alignment.
+
+Final requirement
+- If you cannot produce a reliable candidate under the verifier's checks above, output exactly and only:
+image unclear","person, holds, ladder, orange
+
+The person holds an orange ladder.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.25674593448638916,0.15294092893600464,10,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_447fe9a739,50,23784,flickr30k_test_023784,images/flickr30k/flickr30k_test_023784.jpg,"[""A very aged woman wearing blue is standing in front of a pile of things, many in black trash bags."", ""Smiling woman in a blue apron standing in front of a pile of bags and boxes."", ""An elderly hispanic woman wears a blue vest in front of a pile of boxes."", ""A woman wearing a blue vest seems to be in a very messy area."", ""A woman in a blue smock in a blue smock is smiling.""]",textgrad_447fe9a739,TextGrad Step 16,"Default behavior (strict, enforceable)
+
+Primary goals
+- Maximize CLIP image-text similarity by enforcing exact, CLIP‑preferred surface tokens, short subject-first sentences, and conservative gating for low-confidence images.
+
+Canonical vocabulary and determinism
+- All tokens in Line 1 and the subject token in Line 2 MUST come from the integrator's canonical_id → preferred-surface-token table (whitelist). No ad-hoc tokens (e.g., ""outdoor-world"") or synonyms outside this table are allowed.
+- A locked, pre-evaluated preferred-surface-token must be used for each canonical_id. Deterministic tie-breaker: canonical priority list → canonical_table mapping only.
+
+Output format
+- By default emit exactly one candidate. A candidate is exactly two lines:
+  Line 1 = 3–5 comma-separated canonical tags (no trailing comma; hyphens allowed for multiword tokens).
+  Line 2 = one concise sentence ending with a single period.
+
+Line 1 (tags) — hard rules
+- Must contain exactly 3–5 high-precision tags in this composition:
+  1) primary object token (or two-objects token, e.g., two-people) — REQUIRED and must be detected above the detector_primary_tag_threshold;
+  2) action token — include only if visually present and detected with high confidence;
+  3) exactly one salient attribute token — choose one of {color OR count OR position} only.
+- No scene/generic/texture tokens unless present in the canonical_table and visually diagnostic.
+- No synonyms, no repeats, no comma lists of descriptors. Example allowed tokens: person, bicycle, red, two-people, running, modern-building.
+
+Line 2 (caption) — hard rules
+- Must begin exactly with the primary Line 1 tag's preferred-surface-token (exact string match) as the grammatical subject (i.e., the first word/phrase of Line 2 == Line1 primary token).
+- Short active-voice sentence of the form: [Subject] [active-verb] [object/relationship] [single salient attribute phrase]. Use concrete verbs (e.g., ""holds"", ""rides"", ""carries"", ""opens"") and concrete attributes (""red"", ""two"", ""left"").
+- Include only ONE salient attribute (color OR count OR position) and reuse the same attribute token as in Line 1.
+- Target length: 10–13 tokens. Hard maximum: 15 tokens. Fewer tokens are acceptable if constraints are satisfied.
+- No commas, no lists, no subordinate clauses, no speculative language (""appears to"", ""seems""), no multiple attributes. End with a single period and no extra punctuation or sentences.
+
+Determinism, synonym policy, and candidates
+- Never introduce free-form synonyms. Use only the canonical_table preferred token for each canonical_id.
+- Produce multiple candidates (max 3) ONLY when an external CLIP reranker is guaranteed by the integrator. Variants must differ solely by:
+  (a) alternate allowed tag-sets (each 3–5 tokens drawn from canonical_table), or
+  (b) swapping among pre-approved, pre-evaluated synonyms for the same canonical_ids from the integrator's synonym set.
+- Free-form caption text (Line 2 wording) must be identical across candidates; only tag-sets / allowed synonyms may differ.
+
+Internal selection / reranking
+- If an external CLIP reranker is available: deterministically generate up to 3 structured candidates (tag/synonym variations only), rerank with CLIP, emit the top-scoring candidate.
+- If only an internal CLIP is available: same procedure with internal CLIP reranker.
+- If NO CLIP reranker is available: still generate up to 3 deterministic candidates (tag/synonym variants) and use this conservative heuristic:
+  Score = 1.0 * TagPrecisionScore - 0.05 * LengthPenalty - 0.50 * SubjectMismatchPenalty
+  where:
+  - TagPrecisionScore = proportion of Line1 tags visually grounded by detectors (weighted by canonical priority),
+  - LengthPenalty = max(0, (token_count - 13))  (penalize above 13 tokens),
+  - SubjectMismatchPenalty = 0 if Line2 subject == Line1 primary token else 1 (i.e., heavy penalty).
+  Emit the top-scoring candidate if it passes verifier checks (below); otherwise fallback to ""image unclear"".
+
+Verifier / ""image unclear"" rule (conservative, enforced)
+- If ANY of these conditions hold, output exactly and only (single line, no punctuation):
+image unclear
+  Conditions:
+  1) No primary object detected above the detector_primary_tag_threshold (integrator-configured), OR
+  2) The highest CLIP score among generated candidates is < clip_threshold (default recommended 0.20; integrator may set 0.20–0.22 after dev validation), OR
+  3) Any strict formatting or vocabulary check fails (Line1 tags not all in canonical_table, Line1 tag count outside 3–5, Line2 fails exact-subject match to Line1 primary, Line2 token_count > 15, Line2 contains commas or multiple attributes).
+- Do not output any other fallback caption or extra punctuation when declaring uncertainty.
+
+Formatting and quality guards (automated checks)
+- Enforce programmatic unit tests during generation:
+  1) Whitelist check: every Line1 tag ∈ canonical_table.
+  2) Tag count check: 3 ≤ num_tags ≤ 5 and exactly one attribute token type.
+  3) Subject reuse check: first token(s) of Line2 == Line1 primary token (exact string).
+  4) Length check: token_count(Line2) ≤ 15; prefer 10–13.
+  5) No commas in either line; no trailing commas; Line2 ends with single period.
+  6) Active-verb heuristics: detect presence of an active verb (simple POS or verb-list). Reject copula-heavy captions (""is near"", ""is standing"") unless necessary; prefer concrete verbs.
+  7) Grounding check: cross-check Line1 primary and action tags against detector confidences; if below thresholds, fail to ""image unclear"".
+- If any automated check fails, do not attempt free-form repairs — return ""image unclear"".
+
+Implementation hints (operational)
+- Maintain versioned canonical_table with pre-evaluated CLIP scores per synonym; lock preferred tokens and update via re-evaluation if CLIP model changes.
+- During candidate creation ensure Line2 reuses exact tag tokens; implement unit test that splits Line2 subject phrase and matches Line1 primary token.
+- Monitor metrics: mean_clip, mean_delta_clip, clip_win_rate, mean_caption_len, generic_rate, token_reuse_fail_rate, and ""image unclear"" frequency. Tune clip_threshold and detector thresholds on held-out dev set to balance coverage and quality.
+
+Rationale (brief)
+- Exact token reuse, short subject-first active sentences, a locked CLIP-preferred vocabulary, and conservative gating reduce noise and directly improve image-text CLIP alignment.
+
+Final requirement
+- If you cannot produce a reliable candidate under the verifier's checks above, output exactly and only:
+image unclear","person, smiling, blue, indoors
+person smiles wearing blue indoors.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.2354588508605957,0.196110799908638,9,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_447fe9a739,53,7264,flickr30k_test_007264,images/flickr30k/flickr30k_test_007264.jpg,"[""Two ladies and a teenage girl all dressed in summer attire are bending down and laughing, showing a small puppy to a little girl."", ""The little girl in a flower dress is talking to the ladies on the street."", ""A woman teaching a young girl not to be afraid of puppies."", ""Three women and a little girl play with a small puppy."", ""A woman bends down and pets a young girl's dog.""]",textgrad_447fe9a739,TextGrad Step 16,"Default behavior (strict, enforceable)
+
+Primary goals
+- Maximize CLIP image-text similarity by enforcing exact, CLIP‑preferred surface tokens, short subject-first sentences, and conservative gating for low-confidence images.
+
+Canonical vocabulary and determinism
+- All tokens in Line 1 and the subject token in Line 2 MUST come from the integrator's canonical_id → preferred-surface-token table (whitelist). No ad-hoc tokens (e.g., ""outdoor-world"") or synonyms outside this table are allowed.
+- A locked, pre-evaluated preferred-surface-token must be used for each canonical_id. Deterministic tie-breaker: canonical priority list → canonical_table mapping only.
+
+Output format
+- By default emit exactly one candidate. A candidate is exactly two lines:
+  Line 1 = 3–5 comma-separated canonical tags (no trailing comma; hyphens allowed for multiword tokens).
+  Line 2 = one concise sentence ending with a single period.
+
+Line 1 (tags) — hard rules
+- Must contain exactly 3–5 high-precision tags in this composition:
+  1) primary object token (or two-objects token, e.g., two-people) — REQUIRED and must be detected above the detector_primary_tag_threshold;
+  2) action token — include only if visually present and detected with high confidence;
+  3) exactly one salient attribute token — choose one of {color OR count OR position} only.
+- No scene/generic/texture tokens unless present in the canonical_table and visually diagnostic.
+- No synonyms, no repeats, no comma lists of descriptors. Example allowed tokens: person, bicycle, red, two-people, running, modern-building.
+
+Line 2 (caption) — hard rules
+- Must begin exactly with the primary Line 1 tag's preferred-surface-token (exact string match) as the grammatical subject (i.e., the first word/phrase of Line 2 == Line1 primary token).
+- Short active-voice sentence of the form: [Subject] [active-verb] [object/relationship] [single salient attribute phrase]. Use concrete verbs (e.g., ""holds"", ""rides"", ""carries"", ""opens"") and concrete attributes (""red"", ""two"", ""left"").
+- Include only ONE salient attribute (color OR count OR position) and reuse the same attribute token as in Line 1.
+- Target length: 10–13 tokens. Hard maximum: 15 tokens. Fewer tokens are acceptable if constraints are satisfied.
+- No commas, no lists, no subordinate clauses, no speculative language (""appears to"", ""seems""), no multiple attributes. End with a single period and no extra punctuation or sentences.
+
+Determinism, synonym policy, and candidates
+- Never introduce free-form synonyms. Use only the canonical_table preferred token for each canonical_id.
+- Produce multiple candidates (max 3) ONLY when an external CLIP reranker is guaranteed by the integrator. Variants must differ solely by:
+  (a) alternate allowed tag-sets (each 3–5 tokens drawn from canonical_table), or
+  (b) swapping among pre-approved, pre-evaluated synonyms for the same canonical_ids from the integrator's synonym set.
+- Free-form caption text (Line 2 wording) must be identical across candidates; only tag-sets / allowed synonyms may differ.
+
+Internal selection / reranking
+- If an external CLIP reranker is available: deterministically generate up to 3 structured candidates (tag/synonym variations only), rerank with CLIP, emit the top-scoring candidate.
+- If only an internal CLIP is available: same procedure with internal CLIP reranker.
+- If NO CLIP reranker is available: still generate up to 3 deterministic candidates (tag/synonym variants) and use this conservative heuristic:
+  Score = 1.0 * TagPrecisionScore - 0.05 * LengthPenalty - 0.50 * SubjectMismatchPenalty
+  where:
+  - TagPrecisionScore = proportion of Line1 tags visually grounded by detectors (weighted by canonical priority),
+  - LengthPenalty = max(0, (token_count - 13))  (penalize above 13 tokens),
+  - SubjectMismatchPenalty = 0 if Line2 subject == Line1 primary token else 1 (i.e., heavy penalty).
+  Emit the top-scoring candidate if it passes verifier checks (below); otherwise fallback to ""image unclear"".
+
+Verifier / ""image unclear"" rule (conservative, enforced)
+- If ANY of these conditions hold, output exactly and only (single line, no punctuation):
+image unclear
+  Conditions:
+  1) No primary object detected above the detector_primary_tag_threshold (integrator-configured), OR
+  2) The highest CLIP score among generated candidates is < clip_threshold (default recommended 0.20; integrator may set 0.20–0.22 after dev validation), OR
+  3) Any strict formatting or vocabulary check fails (Line1 tags not all in canonical_table, Line1 tag count outside 3–5, Line2 fails exact-subject match to Line1 primary, Line2 token_count > 15, Line2 contains commas or multiple attributes).
+- Do not output any other fallback caption or extra punctuation when declaring uncertainty.
+
+Formatting and quality guards (automated checks)
+- Enforce programmatic unit tests during generation:
+  1) Whitelist check: every Line1 tag ∈ canonical_table.
+  2) Tag count check: 3 ≤ num_tags ≤ 5 and exactly one attribute token type.
+  3) Subject reuse check: first token(s) of Line2 == Line1 primary token (exact string).
+  4) Length check: token_count(Line2) ≤ 15; prefer 10–13.
+  5) No commas in either line; no trailing commas; Line2 ends with single period.
+  6) Active-verb heuristics: detect presence of an active verb (simple POS or verb-list). Reject copula-heavy captions (""is near"", ""is standing"") unless necessary; prefer concrete verbs.
+  7) Grounding check: cross-check Line1 primary and action tags against detector confidences; if below thresholds, fail to ""image unclear"".
+- If any automated check fails, do not attempt free-form repairs — return ""image unclear"".
+
+Implementation hints (operational)
+- Maintain versioned canonical_table with pre-evaluated CLIP scores per synonym; lock preferred tokens and update via re-evaluation if CLIP model changes.
+- During candidate creation ensure Line2 reuses exact tag tokens; implement unit test that splits Line2 subject phrase and matches Line1 primary token.
+- Monitor metrics: mean_clip, mean_delta_clip, clip_win_rate, mean_caption_len, generic_rate, token_reuse_fail_rate, and ""image unclear"" frequency. Tune clip_threshold and detector thresholds on held-out dev set to balance coverage and quality.
+
+Rationale (brief)
+- Exact token reuse, short subject-first active sentences, a locked CLIP-preferred vocabulary, and conservative gating reduce noise and directly improve image-text CLIP alignment.
+
+Final requirement
+- If you cannot produce a reliable candidate under the verifier's checks above, output exactly and only:
+image unclear","person, dog, child, blue, outdoor
+
+person holds dog near child in blue dress.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.2961113452911377,0.13259799778461456,13,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_447fe9a739,56,16246,flickr30k_test_016246,images/flickr30k/flickr30k_test_016246.jpg,"[""A child is holding a bunch of balloons in front of their face."", ""A child holding balloons that cover their face."", ""A little boy holds many inflated balloons."", ""Child carrying a bouquet of balloons."", ""A young child carrying many balloons.""]",textgrad_447fe9a739,TextGrad Step 16,"Default behavior (strict, enforceable)
+
+Primary goals
+- Maximize CLIP image-text similarity by enforcing exact, CLIP‑preferred surface tokens, short subject-first sentences, and conservative gating for low-confidence images.
+
+Canonical vocabulary and determinism
+- All tokens in Line 1 and the subject token in Line 2 MUST come from the integrator's canonical_id → preferred-surface-token table (whitelist). No ad-hoc tokens (e.g., ""outdoor-world"") or synonyms outside this table are allowed.
+- A locked, pre-evaluated preferred-surface-token must be used for each canonical_id. Deterministic tie-breaker: canonical priority list → canonical_table mapping only.
+
+Output format
+- By default emit exactly one candidate. A candidate is exactly two lines:
+  Line 1 = 3–5 comma-separated canonical tags (no trailing comma; hyphens allowed for multiword tokens).
+  Line 2 = one concise sentence ending with a single period.
+
+Line 1 (tags) — hard rules
+- Must contain exactly 3–5 high-precision tags in this composition:
+  1) primary object token (or two-objects token, e.g., two-people) — REQUIRED and must be detected above the detector_primary_tag_threshold;
+  2) action token — include only if visually present and detected with high confidence;
+  3) exactly one salient attribute token — choose one of {color OR count OR position} only.
+- No scene/generic/texture tokens unless present in the canonical_table and visually diagnostic.
+- No synonyms, no repeats, no comma lists of descriptors. Example allowed tokens: person, bicycle, red, two-people, running, modern-building.
+
+Line 2 (caption) — hard rules
+- Must begin exactly with the primary Line 1 tag's preferred-surface-token (exact string match) as the grammatical subject (i.e., the first word/phrase of Line 2 == Line1 primary token).
+- Short active-voice sentence of the form: [Subject] [active-verb] [object/relationship] [single salient attribute phrase]. Use concrete verbs (e.g., ""holds"", ""rides"", ""carries"", ""opens"") and concrete attributes (""red"", ""two"", ""left"").
+- Include only ONE salient attribute (color OR count OR position) and reuse the same attribute token as in Line 1.
+- Target length: 10–13 tokens. Hard maximum: 15 tokens. Fewer tokens are acceptable if constraints are satisfied.
+- No commas, no lists, no subordinate clauses, no speculative language (""appears to"", ""seems""), no multiple attributes. End with a single period and no extra punctuation or sentences.
+
+Determinism, synonym policy, and candidates
+- Never introduce free-form synonyms. Use only the canonical_table preferred token for each canonical_id.
+- Produce multiple candidates (max 3) ONLY when an external CLIP reranker is guaranteed by the integrator. Variants must differ solely by:
+  (a) alternate allowed tag-sets (each 3–5 tokens drawn from canonical_table), or
+  (b) swapping among pre-approved, pre-evaluated synonyms for the same canonical_ids from the integrator's synonym set.
+- Free-form caption text (Line 2 wording) must be identical across candidates; only tag-sets / allowed synonyms may differ.
+
+Internal selection / reranking
+- If an external CLIP reranker is available: deterministically generate up to 3 structured candidates (tag/synonym variations only), rerank with CLIP, emit the top-scoring candidate.
+- If only an internal CLIP is available: same procedure with internal CLIP reranker.
+- If NO CLIP reranker is available: still generate up to 3 deterministic candidates (tag/synonym variants) and use this conservative heuristic:
+  Score = 1.0 * TagPrecisionScore - 0.05 * LengthPenalty - 0.50 * SubjectMismatchPenalty
+  where:
+  - TagPrecisionScore = proportion of Line1 tags visually grounded by detectors (weighted by canonical priority),
+  - LengthPenalty = max(0, (token_count - 13))  (penalize above 13 tokens),
+  - SubjectMismatchPenalty = 0 if Line2 subject == Line1 primary token else 1 (i.e., heavy penalty).
+  Emit the top-scoring candidate if it passes verifier checks (below); otherwise fallback to ""image unclear"".
+
+Verifier / ""image unclear"" rule (conservative, enforced)
+- If ANY of these conditions hold, output exactly and only (single line, no punctuation):
+image unclear
+  Conditions:
+  1) No primary object detected above the detector_primary_tag_threshold (integrator-configured), OR
+  2) The highest CLIP score among generated candidates is < clip_threshold (default recommended 0.20; integrator may set 0.20–0.22 after dev validation), OR
+  3) Any strict formatting or vocabulary check fails (Line1 tags not all in canonical_table, Line1 tag count outside 3–5, Line2 fails exact-subject match to Line1 primary, Line2 token_count > 15, Line2 contains commas or multiple attributes).
+- Do not output any other fallback caption or extra punctuation when declaring uncertainty.
+
+Formatting and quality guards (automated checks)
+- Enforce programmatic unit tests during generation:
+  1) Whitelist check: every Line1 tag ∈ canonical_table.
+  2) Tag count check: 3 ≤ num_tags ≤ 5 and exactly one attribute token type.
+  3) Subject reuse check: first token(s) of Line2 == Line1 primary token (exact string).
+  4) Length check: token_count(Line2) ≤ 15; prefer 10–13.
+  5) No commas in either line; no trailing commas; Line2 ends with single period.
+  6) Active-verb heuristics: detect presence of an active verb (simple POS or verb-list). Reject copula-heavy captions (""is near"", ""is standing"") unless necessary; prefer concrete verbs.
+  7) Grounding check: cross-check Line1 primary and action tags against detector confidences; if below thresholds, fail to ""image unclear"".
+- If any automated check fails, do not attempt free-form repairs — return ""image unclear"".
+
+Implementation hints (operational)
+- Maintain versioned canonical_table with pre-evaluated CLIP scores per synonym; lock preferred tokens and update via re-evaluation if CLIP model changes.
+- During candidate creation ensure Line2 reuses exact tag tokens; implement unit test that splits Line2 subject phrase and matches Line1 primary token.
+- Monitor metrics: mean_clip, mean_delta_clip, clip_win_rate, mean_caption_len, generic_rate, token_reuse_fail_rate, and ""image unclear"" frequency. Tune clip_threshold and detector thresholds on held-out dev set to balance coverage and quality.
+
+Rationale (brief)
+- Exact token reuse, short subject-first active sentences, a locked CLIP-preferred vocabulary, and conservative gating reduce noise and directly improve image-text CLIP alignment.
+
+Final requirement
+- If you cannot produce a reliable candidate under the verifier's checks above, output exactly and only:
+image unclear","person, holds, balloons, colorful
+
+person holds balloons colorful.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.2767506241798401,0.13216954469680786,8,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_447fe9a739,60,7565,flickr30k_test_007565,images/flickr30k/flickr30k_test_007565.jpg,"[""An infant is crawling on a wood floor, with a water bottle laying nearby."", ""A young baby crawls across the wood floor towards the water bottle."", ""A baby crawls on hardwood floors towards a water bottle."", ""A baby crawls on a wood floor near a bottle of water."", ""A baby on a wood floor with a water bottle""]",textgrad_447fe9a739,TextGrad Step 16,"Default behavior (strict, enforceable)
+
+Primary goals
+- Maximize CLIP image-text similarity by enforcing exact, CLIP‑preferred surface tokens, short subject-first sentences, and conservative gating for low-confidence images.
+
+Canonical vocabulary and determinism
+- All tokens in Line 1 and the subject token in Line 2 MUST come from the integrator's canonical_id → preferred-surface-token table (whitelist). No ad-hoc tokens (e.g., ""outdoor-world"") or synonyms outside this table are allowed.
+- A locked, pre-evaluated preferred-surface-token must be used for each canonical_id. Deterministic tie-breaker: canonical priority list → canonical_table mapping only.
+
+Output format
+- By default emit exactly one candidate. A candidate is exactly two lines:
+  Line 1 = 3–5 comma-separated canonical tags (no trailing comma; hyphens allowed for multiword tokens).
+  Line 2 = one concise sentence ending with a single period.
+
+Line 1 (tags) — hard rules
+- Must contain exactly 3–5 high-precision tags in this composition:
+  1) primary object token (or two-objects token, e.g., two-people) — REQUIRED and must be detected above the detector_primary_tag_threshold;
+  2) action token — include only if visually present and detected with high confidence;
+  3) exactly one salient attribute token — choose one of {color OR count OR position} only.
+- No scene/generic/texture tokens unless present in the canonical_table and visually diagnostic.
+- No synonyms, no repeats, no comma lists of descriptors. Example allowed tokens: person, bicycle, red, two-people, running, modern-building.
+
+Line 2 (caption) — hard rules
+- Must begin exactly with the primary Line 1 tag's preferred-surface-token (exact string match) as the grammatical subject (i.e., the first word/phrase of Line 2 == Line1 primary token).
+- Short active-voice sentence of the form: [Subject] [active-verb] [object/relationship] [single salient attribute phrase]. Use concrete verbs (e.g., ""holds"", ""rides"", ""carries"", ""opens"") and concrete attributes (""red"", ""two"", ""left"").
+- Include only ONE salient attribute (color OR count OR position) and reuse the same attribute token as in Line 1.
+- Target length: 10–13 tokens. Hard maximum: 15 tokens. Fewer tokens are acceptable if constraints are satisfied.
+- No commas, no lists, no subordinate clauses, no speculative language (""appears to"", ""seems""), no multiple attributes. End with a single period and no extra punctuation or sentences.
+
+Determinism, synonym policy, and candidates
+- Never introduce free-form synonyms. Use only the canonical_table preferred token for each canonical_id.
+- Produce multiple candidates (max 3) ONLY when an external CLIP reranker is guaranteed by the integrator. Variants must differ solely by:
+  (a) alternate allowed tag-sets (each 3–5 tokens drawn from canonical_table), or
+  (b) swapping among pre-approved, pre-evaluated synonyms for the same canonical_ids from the integrator's synonym set.
+- Free-form caption text (Line 2 wording) must be identical across candidates; only tag-sets / allowed synonyms may differ.
+
+Internal selection / reranking
+- If an external CLIP reranker is available: deterministically generate up to 3 structured candidates (tag/synonym variations only), rerank with CLIP, emit the top-scoring candidate.
+- If only an internal CLIP is available: same procedure with internal CLIP reranker.
+- If NO CLIP reranker is available: still generate up to 3 deterministic candidates (tag/synonym variants) and use this conservative heuristic:
+  Score = 1.0 * TagPrecisionScore - 0.05 * LengthPenalty - 0.50 * SubjectMismatchPenalty
+  where:
+  - TagPrecisionScore = proportion of Line1 tags visually grounded by detectors (weighted by canonical priority),
+  - LengthPenalty = max(0, (token_count - 13))  (penalize above 13 tokens),
+  - SubjectMismatchPenalty = 0 if Line2 subject == Line1 primary token else 1 (i.e., heavy penalty).
+  Emit the top-scoring candidate if it passes verifier checks (below); otherwise fallback to ""image unclear"".
+
+Verifier / ""image unclear"" rule (conservative, enforced)
+- If ANY of these conditions hold, output exactly and only (single line, no punctuation):
+image unclear
+  Conditions:
+  1) No primary object detected above the detector_primary_tag_threshold (integrator-configured), OR
+  2) The highest CLIP score among generated candidates is < clip_threshold (default recommended 0.20; integrator may set 0.20–0.22 after dev validation), OR
+  3) Any strict formatting or vocabulary check fails (Line1 tags not all in canonical_table, Line1 tag count outside 3–5, Line2 fails exact-subject match to Line1 primary, Line2 token_count > 15, Line2 contains commas or multiple attributes).
+- Do not output any other fallback caption or extra punctuation when declaring uncertainty.
+
+Formatting and quality guards (automated checks)
+- Enforce programmatic unit tests during generation:
+  1) Whitelist check: every Line1 tag ∈ canonical_table.
+  2) Tag count check: 3 ≤ num_tags ≤ 5 and exactly one attribute token type.
+  3) Subject reuse check: first token(s) of Line2 == Line1 primary token (exact string).
+  4) Length check: token_count(Line2) ≤ 15; prefer 10–13.
+  5) No commas in either line; no trailing commas; Line2 ends with single period.
+  6) Active-verb heuristics: detect presence of an active verb (simple POS or verb-list). Reject copula-heavy captions (""is near"", ""is standing"") unless necessary; prefer concrete verbs.
+  7) Grounding check: cross-check Line1 primary and action tags against detector confidences; if below thresholds, fail to ""image unclear"".
+- If any automated check fails, do not attempt free-form repairs — return ""image unclear"".
+
+Implementation hints (operational)
+- Maintain versioned canonical_table with pre-evaluated CLIP scores per synonym; lock preferred tokens and update via re-evaluation if CLIP model changes.
+- During candidate creation ensure Line2 reuses exact tag tokens; implement unit test that splits Line2 subject phrase and matches Line1 primary token.
+- Monitor metrics: mean_clip, mean_delta_clip, clip_win_rate, mean_caption_len, generic_rate, token_reuse_fail_rate, and ""image unclear"" frequency. Tune clip_threshold and detector thresholds on held-out dev set to balance coverage and quality.
+
+Rationale (brief)
+- Exact token reuse, short subject-first active sentences, a locked CLIP-preferred vocabulary, and conservative gating reduce noise and directly improve image-text CLIP alignment.
+
+Final requirement
+- If you cannot produce a reliable candidate under the verifier's checks above, output exactly and only:
+image unclear","baby, crawling, wooden-floor, plastic-bottle, right
+
+Baby crawls toward plastic bottle on wooden floor.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.3565084934234619,0.23690778017044067,13,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_447fe9a739,63,24934,flickr30k_test_024934,images/flickr30k/flickr30k_test_024934.jpg,"[""A man wearing a striped jacket tentatively looking down onto his hands while walking."", ""A man walks along a cobblestone path, next to a large blue wall."", ""A man walking down a brick path next to a blue wall."", ""A lone man walking along side a blue wall."", ""Solitary man walks past blue wall.""]",textgrad_447fe9a739,TextGrad Step 16,"Default behavior (strict, enforceable)
+
+Primary goals
+- Maximize CLIP image-text similarity by enforcing exact, CLIP‑preferred surface tokens, short subject-first sentences, and conservative gating for low-confidence images.
+
+Canonical vocabulary and determinism
+- All tokens in Line 1 and the subject token in Line 2 MUST come from the integrator's canonical_id → preferred-surface-token table (whitelist). No ad-hoc tokens (e.g., ""outdoor-world"") or synonyms outside this table are allowed.
+- A locked, pre-evaluated preferred-surface-token must be used for each canonical_id. Deterministic tie-breaker: canonical priority list → canonical_table mapping only.
+
+Output format
+- By default emit exactly one candidate. A candidate is exactly two lines:
+  Line 1 = 3–5 comma-separated canonical tags (no trailing comma; hyphens allowed for multiword tokens).
+  Line 2 = one concise sentence ending with a single period.
+
+Line 1 (tags) — hard rules
+- Must contain exactly 3–5 high-precision tags in this composition:
+  1) primary object token (or two-objects token, e.g., two-people) — REQUIRED and must be detected above the detector_primary_tag_threshold;
+  2) action token — include only if visually present and detected with high confidence;
+  3) exactly one salient attribute token — choose one of {color OR count OR position} only.
+- No scene/generic/texture tokens unless present in the canonical_table and visually diagnostic.
+- No synonyms, no repeats, no comma lists of descriptors. Example allowed tokens: person, bicycle, red, two-people, running, modern-building.
+
+Line 2 (caption) — hard rules
+- Must begin exactly with the primary Line 1 tag's preferred-surface-token (exact string match) as the grammatical subject (i.e., the first word/phrase of Line 2 == Line1 primary token).
+- Short active-voice sentence of the form: [Subject] [active-verb] [object/relationship] [single salient attribute phrase]. Use concrete verbs (e.g., ""holds"", ""rides"", ""carries"", ""opens"") and concrete attributes (""red"", ""two"", ""left"").
+- Include only ONE salient attribute (color OR count OR position) and reuse the same attribute token as in Line 1.
+- Target length: 10–13 tokens. Hard maximum: 15 tokens. Fewer tokens are acceptable if constraints are satisfied.
+- No commas, no lists, no subordinate clauses, no speculative language (""appears to"", ""seems""), no multiple attributes. End with a single period and no extra punctuation or sentences.
+
+Determinism, synonym policy, and candidates
+- Never introduce free-form synonyms. Use only the canonical_table preferred token for each canonical_id.
+- Produce multiple candidates (max 3) ONLY when an external CLIP reranker is guaranteed by the integrator. Variants must differ solely by:
+  (a) alternate allowed tag-sets (each 3–5 tokens drawn from canonical_table), or
+  (b) swapping among pre-approved, pre-evaluated synonyms for the same canonical_ids from the integrator's synonym set.
+- Free-form caption text (Line 2 wording) must be identical across candidates; only tag-sets / allowed synonyms may differ.
+
+Internal selection / reranking
+- If an external CLIP reranker is available: deterministically generate up to 3 structured candidates (tag/synonym variations only), rerank with CLIP, emit the top-scoring candidate.
+- If only an internal CLIP is available: same procedure with internal CLIP reranker.
+- If NO CLIP reranker is available: still generate up to 3 deterministic candidates (tag/synonym variants) and use this conservative heuristic:
+  Score = 1.0 * TagPrecisionScore - 0.05 * LengthPenalty - 0.50 * SubjectMismatchPenalty
+  where:
+  - TagPrecisionScore = proportion of Line1 tags visually grounded by detectors (weighted by canonical priority),
+  - LengthPenalty = max(0, (token_count - 13))  (penalize above 13 tokens),
+  - SubjectMismatchPenalty = 0 if Line2 subject == Line1 primary token else 1 (i.e., heavy penalty).
+  Emit the top-scoring candidate if it passes verifier checks (below); otherwise fallback to ""image unclear"".
+
+Verifier / ""image unclear"" rule (conservative, enforced)
+- If ANY of these conditions hold, output exactly and only (single line, no punctuation):
+image unclear
+  Conditions:
+  1) No primary object detected above the detector_primary_tag_threshold (integrator-configured), OR
+  2) The highest CLIP score among generated candidates is < clip_threshold (default recommended 0.20; integrator may set 0.20–0.22 after dev validation), OR
+  3) Any strict formatting or vocabulary check fails (Line1 tags not all in canonical_table, Line1 tag count outside 3–5, Line2 fails exact-subject match to Line1 primary, Line2 token_count > 15, Line2 contains commas or multiple attributes).
+- Do not output any other fallback caption or extra punctuation when declaring uncertainty.
+
+Formatting and quality guards (automated checks)
+- Enforce programmatic unit tests during generation:
+  1) Whitelist check: every Line1 tag ∈ canonical_table.
+  2) Tag count check: 3 ≤ num_tags ≤ 5 and exactly one attribute token type.
+  3) Subject reuse check: first token(s) of Line2 == Line1 primary token (exact string).
+  4) Length check: token_count(Line2) ≤ 15; prefer 10–13.
+  5) No commas in either line; no trailing commas; Line2 ends with single period.
+  6) Active-verb heuristics: detect presence of an active verb (simple POS or verb-list). Reject copula-heavy captions (""is near"", ""is standing"") unless necessary; prefer concrete verbs.
+  7) Grounding check: cross-check Line1 primary and action tags against detector confidences; if below thresholds, fail to ""image unclear"".
+- If any automated check fails, do not attempt free-form repairs — return ""image unclear"".
+
+Implementation hints (operational)
+- Maintain versioned canonical_table with pre-evaluated CLIP scores per synonym; lock preferred tokens and update via re-evaluation if CLIP model changes.
+- During candidate creation ensure Line2 reuses exact tag tokens; implement unit test that splits Line2 subject phrase and matches Line1 primary token.
+- Monitor metrics: mean_clip, mean_delta_clip, clip_win_rate, mean_caption_len, generic_rate, token_reuse_fail_rate, and ""image unclear"" frequency. Tune clip_threshold and detector thresholds on held-out dev set to balance coverage and quality.
+
+Rationale (brief)
+- Exact token reuse, short subject-first active sentences, a locked CLIP-preferred vocabulary, and conservative gating reduce noise and directly improve image-text CLIP alignment.
+
+Final requirement
+- If you cannot produce a reliable candidate under the verifier's checks above, output exactly and only:
+image unclear","person, walking, blue, street
+person walks on blue street.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.31099793314933777,0.18681807816028595,9,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_447fe9a739,75,6091,flickr30k_test_006091,images/flickr30k/flickr30k_test_006091.jpg,"[""A little girl is sitting on the counter dangling one foot in the sink whilst holding a dish jet washer."", ""A young girl wearing red sunglasses sits near a sink and holds the faucet."", ""A little girl wearing sunglasses puts her feet into the kitchen sink."", ""A young, barefoot girl in red sunglasses plays in a sink."", ""A little girl plays with a faucet.""]",textgrad_447fe9a739,TextGrad Step 16,"Default behavior (strict, enforceable)
+
+Primary goals
+- Maximize CLIP image-text similarity by enforcing exact, CLIP‑preferred surface tokens, short subject-first sentences, and conservative gating for low-confidence images.
+
+Canonical vocabulary and determinism
+- All tokens in Line 1 and the subject token in Line 2 MUST come from the integrator's canonical_id → preferred-surface-token table (whitelist). No ad-hoc tokens (e.g., ""outdoor-world"") or synonyms outside this table are allowed.
+- A locked, pre-evaluated preferred-surface-token must be used for each canonical_id. Deterministic tie-breaker: canonical priority list → canonical_table mapping only.
+
+Output format
+- By default emit exactly one candidate. A candidate is exactly two lines:
+  Line 1 = 3–5 comma-separated canonical tags (no trailing comma; hyphens allowed for multiword tokens).
+  Line 2 = one concise sentence ending with a single period.
+
+Line 1 (tags) — hard rules
+- Must contain exactly 3–5 high-precision tags in this composition:
+  1) primary object token (or two-objects token, e.g., two-people) — REQUIRED and must be detected above the detector_primary_tag_threshold;
+  2) action token — include only if visually present and detected with high confidence;
+  3) exactly one salient attribute token — choose one of {color OR count OR position} only.
+- No scene/generic/texture tokens unless present in the canonical_table and visually diagnostic.
+- No synonyms, no repeats, no comma lists of descriptors. Example allowed tokens: person, bicycle, red, two-people, running, modern-building.
+
+Line 2 (caption) — hard rules
+- Must begin exactly with the primary Line 1 tag's preferred-surface-token (exact string match) as the grammatical subject (i.e., the first word/phrase of Line 2 == Line1 primary token).
+- Short active-voice sentence of the form: [Subject] [active-verb] [object/relationship] [single salient attribute phrase]. Use concrete verbs (e.g., ""holds"", ""rides"", ""carries"", ""opens"") and concrete attributes (""red"", ""two"", ""left"").
+- Include only ONE salient attribute (color OR count OR position) and reuse the same attribute token as in Line 1.
+- Target length: 10–13 tokens. Hard maximum: 15 tokens. Fewer tokens are acceptable if constraints are satisfied.
+- No commas, no lists, no subordinate clauses, no speculative language (""appears to"", ""seems""), no multiple attributes. End with a single period and no extra punctuation or sentences.
+
+Determinism, synonym policy, and candidates
+- Never introduce free-form synonyms. Use only the canonical_table preferred token for each canonical_id.
+- Produce multiple candidates (max 3) ONLY when an external CLIP reranker is guaranteed by the integrator. Variants must differ solely by:
+  (a) alternate allowed tag-sets (each 3–5 tokens drawn from canonical_table), or
+  (b) swapping among pre-approved, pre-evaluated synonyms for the same canonical_ids from the integrator's synonym set.
+- Free-form caption text (Line 2 wording) must be identical across candidates; only tag-sets / allowed synonyms may differ.
+
+Internal selection / reranking
+- If an external CLIP reranker is available: deterministically generate up to 3 structured candidates (tag/synonym variations only), rerank with CLIP, emit the top-scoring candidate.
+- If only an internal CLIP is available: same procedure with internal CLIP reranker.
+- If NO CLIP reranker is available: still generate up to 3 deterministic candidates (tag/synonym variants) and use this conservative heuristic:
+  Score = 1.0 * TagPrecisionScore - 0.05 * LengthPenalty - 0.50 * SubjectMismatchPenalty
+  where:
+  - TagPrecisionScore = proportion of Line1 tags visually grounded by detectors (weighted by canonical priority),
+  - LengthPenalty = max(0, (token_count - 13))  (penalize above 13 tokens),
+  - SubjectMismatchPenalty = 0 if Line2 subject == Line1 primary token else 1 (i.e., heavy penalty).
+  Emit the top-scoring candidate if it passes verifier checks (below); otherwise fallback to ""image unclear"".
+
+Verifier / ""image unclear"" rule (conservative, enforced)
+- If ANY of these conditions hold, output exactly and only (single line, no punctuation):
+image unclear
+  Conditions:
+  1) No primary object detected above the detector_primary_tag_threshold (integrator-configured), OR
+  2) The highest CLIP score among generated candidates is < clip_threshold (default recommended 0.20; integrator may set 0.20–0.22 after dev validation), OR
+  3) Any strict formatting or vocabulary check fails (Line1 tags not all in canonical_table, Line1 tag count outside 3–5, Line2 fails exact-subject match to Line1 primary, Line2 token_count > 15, Line2 contains commas or multiple attributes).
+- Do not output any other fallback caption or extra punctuation when declaring uncertainty.
+
+Formatting and quality guards (automated checks)
+- Enforce programmatic unit tests during generation:
+  1) Whitelist check: every Line1 tag ∈ canonical_table.
+  2) Tag count check: 3 ≤ num_tags ≤ 5 and exactly one attribute token type.
+  3) Subject reuse check: first token(s) of Line2 == Line1 primary token (exact string).
+  4) Length check: token_count(Line2) ≤ 15; prefer 10–13.
+  5) No commas in either line; no trailing commas; Line2 ends with single period.
+  6) Active-verb heuristics: detect presence of an active verb (simple POS or verb-list). Reject copula-heavy captions (""is near"", ""is standing"") unless necessary; prefer concrete verbs.
+  7) Grounding check: cross-check Line1 primary and action tags against detector confidences; if below thresholds, fail to ""image unclear"".
+- If any automated check fails, do not attempt free-form repairs — return ""image unclear"".
+
+Implementation hints (operational)
+- Maintain versioned canonical_table with pre-evaluated CLIP scores per synonym; lock preferred tokens and update via re-evaluation if CLIP model changes.
+- During candidate creation ensure Line2 reuses exact tag tokens; implement unit test that splits Line2 subject phrase and matches Line1 primary token.
+- Monitor metrics: mean_clip, mean_delta_clip, clip_win_rate, mean_caption_len, generic_rate, token_reuse_fail_rate, and ""image unclear"" frequency. Tune clip_threshold and detector thresholds on held-out dev set to balance coverage and quality.
+
+Rationale (brief)
+- Exact token reuse, short subject-first active sentences, a locked CLIP-preferred vocabulary, and conservative gating reduce noise and directly improve image-text CLIP alignment.
+
+Final requirement
+- If you cannot produce a reliable candidate under the verifier's checks above, output exactly and only:
+image unclear","person, holds, faucet, pink, barefoot
+
+person holds faucet pink barefoot.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.2881796956062317,0.14274059236049652,10,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_447fe9a739,77,23712,flickr30k_test_023712,images/flickr30k/flickr30k_test_023712.jpg,"[""A man in a red shirt plays the violin on stage."", ""A man with long wavy hair, playing the violin."", ""A man eagerly playing the violin on stage."", ""A man with long wavy hair plays to violin."", ""A man plays the violin on stage.""]",textgrad_447fe9a739,TextGrad Step 16,"Default behavior (strict, enforceable)
+
+Primary goals
+- Maximize CLIP image-text similarity by enforcing exact, CLIP‑preferred surface tokens, short subject-first sentences, and conservative gating for low-confidence images.
+
+Canonical vocabulary and determinism
+- All tokens in Line 1 and the subject token in Line 2 MUST come from the integrator's canonical_id → preferred-surface-token table (whitelist). No ad-hoc tokens (e.g., ""outdoor-world"") or synonyms outside this table are allowed.
+- A locked, pre-evaluated preferred-surface-token must be used for each canonical_id. Deterministic tie-breaker: canonical priority list → canonical_table mapping only.
+
+Output format
+- By default emit exactly one candidate. A candidate is exactly two lines:
+  Line 1 = 3–5 comma-separated canonical tags (no trailing comma; hyphens allowed for multiword tokens).
+  Line 2 = one concise sentence ending with a single period.
+
+Line 1 (tags) — hard rules
+- Must contain exactly 3–5 high-precision tags in this composition:
+  1) primary object token (or two-objects token, e.g., two-people) — REQUIRED and must be detected above the detector_primary_tag_threshold;
+  2) action token — include only if visually present and detected with high confidence;
+  3) exactly one salient attribute token — choose one of {color OR count OR position} only.
+- No scene/generic/texture tokens unless present in the canonical_table and visually diagnostic.
+- No synonyms, no repeats, no comma lists of descriptors. Example allowed tokens: person, bicycle, red, two-people, running, modern-building.
+
+Line 2 (caption) — hard rules
+- Must begin exactly with the primary Line 1 tag's preferred-surface-token (exact string match) as the grammatical subject (i.e., the first word/phrase of Line 2 == Line1 primary token).
+- Short active-voice sentence of the form: [Subject] [active-verb] [object/relationship] [single salient attribute phrase]. Use concrete verbs (e.g., ""holds"", ""rides"", ""carries"", ""opens"") and concrete attributes (""red"", ""two"", ""left"").
+- Include only ONE salient attribute (color OR count OR position) and reuse the same attribute token as in Line 1.
+- Target length: 10–13 tokens. Hard maximum: 15 tokens. Fewer tokens are acceptable if constraints are satisfied.
+- No commas, no lists, no subordinate clauses, no speculative language (""appears to"", ""seems""), no multiple attributes. End with a single period and no extra punctuation or sentences.
+
+Determinism, synonym policy, and candidates
+- Never introduce free-form synonyms. Use only the canonical_table preferred token for each canonical_id.
+- Produce multiple candidates (max 3) ONLY when an external CLIP reranker is guaranteed by the integrator. Variants must differ solely by:
+  (a) alternate allowed tag-sets (each 3–5 tokens drawn from canonical_table), or
+  (b) swapping among pre-approved, pre-evaluated synonyms for the same canonical_ids from the integrator's synonym set.
+- Free-form caption text (Line 2 wording) must be identical across candidates; only tag-sets / allowed synonyms may differ.
+
+Internal selection / reranking
+- If an external CLIP reranker is available: deterministically generate up to 3 structured candidates (tag/synonym variations only), rerank with CLIP, emit the top-scoring candidate.
+- If only an internal CLIP is available: same procedure with internal CLIP reranker.
+- If NO CLIP reranker is available: still generate up to 3 deterministic candidates (tag/synonym variants) and use this conservative heuristic:
+  Score = 1.0 * TagPrecisionScore - 0.05 * LengthPenalty - 0.50 * SubjectMismatchPenalty
+  where:
+  - TagPrecisionScore = proportion of Line1 tags visually grounded by detectors (weighted by canonical priority),
+  - LengthPenalty = max(0, (token_count - 13))  (penalize above 13 tokens),
+  - SubjectMismatchPenalty = 0 if Line2 subject == Line1 primary token else 1 (i.e., heavy penalty).
+  Emit the top-scoring candidate if it passes verifier checks (below); otherwise fallback to ""image unclear"".
+
+Verifier / ""image unclear"" rule (conservative, enforced)
+- If ANY of these conditions hold, output exactly and only (single line, no punctuation):
+image unclear
+  Conditions:
+  1) No primary object detected above the detector_primary_tag_threshold (integrator-configured), OR
+  2) The highest CLIP score among generated candidates is < clip_threshold (default recommended 0.20; integrator may set 0.20–0.22 after dev validation), OR
+  3) Any strict formatting or vocabulary check fails (Line1 tags not all in canonical_table, Line1 tag count outside 3–5, Line2 fails exact-subject match to Line1 primary, Line2 token_count > 15, Line2 contains commas or multiple attributes).
+- Do not output any other fallback caption or extra punctuation when declaring uncertainty.
+
+Formatting and quality guards (automated checks)
+- Enforce programmatic unit tests during generation:
+  1) Whitelist check: every Line1 tag ∈ canonical_table.
+  2) Tag count check: 3 ≤ num_tags ≤ 5 and exactly one attribute token type.
+  3) Subject reuse check: first token(s) of Line2 == Line1 primary token (exact string).
+  4) Length check: token_count(Line2) ≤ 15; prefer 10–13.
+  5) No commas in either line; no trailing commas; Line2 ends with single period.
+  6) Active-verb heuristics: detect presence of an active verb (simple POS or verb-list). Reject copula-heavy captions (""is near"", ""is standing"") unless necessary; prefer concrete verbs.
+  7) Grounding check: cross-check Line1 primary and action tags against detector confidences; if below thresholds, fail to ""image unclear"".
+- If any automated check fails, do not attempt free-form repairs — return ""image unclear"".
+
+Implementation hints (operational)
+- Maintain versioned canonical_table with pre-evaluated CLIP scores per synonym; lock preferred tokens and update via re-evaluation if CLIP model changes.
+- During candidate creation ensure Line2 reuses exact tag tokens; implement unit test that splits Line2 subject phrase and matches Line1 primary token.
+- Monitor metrics: mean_clip, mean_delta_clip, clip_win_rate, mean_caption_len, generic_rate, token_reuse_fail_rate, and ""image unclear"" frequency. Tune clip_threshold and detector thresholds on held-out dev set to balance coverage and quality.
+
+Rationale (brief)
+- Exact token reuse, short subject-first active sentences, a locked CLIP-preferred vocabulary, and conservative gating reduce noise and directly improve image-text CLIP alignment.
+
+Final requirement
+- If you cannot produce a reliable candidate under the verifier's checks above, output exactly and only:
+image unclear","person, playing, violin, red, stage
+person plays violin on stage",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.29899778962135315,0.15897704660892487,10,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_447fe9a739,87,30685,flickr30k_test_030685,images/flickr30k/flickr30k_test_030685.jpg,"[""A man who looks like Andy Dick is talking to a man in a hall with a man with a splotch of primary-color red on his hair."", ""A guy with a golden hair is chatting with a guy with a red-hair on top of his head."", ""Two male college students at a social networking event."", ""Two boys in dark clothing talk to each other."", ""Two men are talking in a hallway.""]",textgrad_447fe9a739,TextGrad Step 16,"Default behavior (strict, enforceable)
+
+Primary goals
+- Maximize CLIP image-text similarity by enforcing exact, CLIP‑preferred surface tokens, short subject-first sentences, and conservative gating for low-confidence images.
+
+Canonical vocabulary and determinism
+- All tokens in Line 1 and the subject token in Line 2 MUST come from the integrator's canonical_id → preferred-surface-token table (whitelist). No ad-hoc tokens (e.g., ""outdoor-world"") or synonyms outside this table are allowed.
+- A locked, pre-evaluated preferred-surface-token must be used for each canonical_id. Deterministic tie-breaker: canonical priority list → canonical_table mapping only.
+
+Output format
+- By default emit exactly one candidate. A candidate is exactly two lines:
+  Line 1 = 3–5 comma-separated canonical tags (no trailing comma; hyphens allowed for multiword tokens).
+  Line 2 = one concise sentence ending with a single period.
+
+Line 1 (tags) — hard rules
+- Must contain exactly 3–5 high-precision tags in this composition:
+  1) primary object token (or two-objects token, e.g., two-people) — REQUIRED and must be detected above the detector_primary_tag_threshold;
+  2) action token — include only if visually present and detected with high confidence;
+  3) exactly one salient attribute token — choose one of {color OR count OR position} only.
+- No scene/generic/texture tokens unless present in the canonical_table and visually diagnostic.
+- No synonyms, no repeats, no comma lists of descriptors. Example allowed tokens: person, bicycle, red, two-people, running, modern-building.
+
+Line 2 (caption) — hard rules
+- Must begin exactly with the primary Line 1 tag's preferred-surface-token (exact string match) as the grammatical subject (i.e., the first word/phrase of Line 2 == Line1 primary token).
+- Short active-voice sentence of the form: [Subject] [active-verb] [object/relationship] [single salient attribute phrase]. Use concrete verbs (e.g., ""holds"", ""rides"", ""carries"", ""opens"") and concrete attributes (""red"", ""two"", ""left"").
+- Include only ONE salient attribute (color OR count OR position) and reuse the same attribute token as in Line 1.
+- Target length: 10–13 tokens. Hard maximum: 15 tokens. Fewer tokens are acceptable if constraints are satisfied.
+- No commas, no lists, no subordinate clauses, no speculative language (""appears to"", ""seems""), no multiple attributes. End with a single period and no extra punctuation or sentences.
+
+Determinism, synonym policy, and candidates
+- Never introduce free-form synonyms. Use only the canonical_table preferred token for each canonical_id.
+- Produce multiple candidates (max 3) ONLY when an external CLIP reranker is guaranteed by the integrator. Variants must differ solely by:
+  (a) alternate allowed tag-sets (each 3–5 tokens drawn from canonical_table), or
+  (b) swapping among pre-approved, pre-evaluated synonyms for the same canonical_ids from the integrator's synonym set.
+- Free-form caption text (Line 2 wording) must be identical across candidates; only tag-sets / allowed synonyms may differ.
+
+Internal selection / reranking
+- If an external CLIP reranker is available: deterministically generate up to 3 structured candidates (tag/synonym variations only), rerank with CLIP, emit the top-scoring candidate.
+- If only an internal CLIP is available: same procedure with internal CLIP reranker.
+- If NO CLIP reranker is available: still generate up to 3 deterministic candidates (tag/synonym variants) and use this conservative heuristic:
+  Score = 1.0 * TagPrecisionScore - 0.05 * LengthPenalty - 0.50 * SubjectMismatchPenalty
+  where:
+  - TagPrecisionScore = proportion of Line1 tags visually grounded by detectors (weighted by canonical priority),
+  - LengthPenalty = max(0, (token_count - 13))  (penalize above 13 tokens),
+  - SubjectMismatchPenalty = 0 if Line2 subject == Line1 primary token else 1 (i.e., heavy penalty).
+  Emit the top-scoring candidate if it passes verifier checks (below); otherwise fallback to ""image unclear"".
+
+Verifier / ""image unclear"" rule (conservative, enforced)
+- If ANY of these conditions hold, output exactly and only (single line, no punctuation):
+image unclear
+  Conditions:
+  1) No primary object detected above the detector_primary_tag_threshold (integrator-configured), OR
+  2) The highest CLIP score among generated candidates is < clip_threshold (default recommended 0.20; integrator may set 0.20–0.22 after dev validation), OR
+  3) Any strict formatting or vocabulary check fails (Line1 tags not all in canonical_table, Line1 tag count outside 3–5, Line2 fails exact-subject match to Line1 primary, Line2 token_count > 15, Line2 contains commas or multiple attributes).
+- Do not output any other fallback caption or extra punctuation when declaring uncertainty.
+
+Formatting and quality guards (automated checks)
+- Enforce programmatic unit tests during generation:
+  1) Whitelist check: every Line1 tag ∈ canonical_table.
+  2) Tag count check: 3 ≤ num_tags ≤ 5 and exactly one attribute token type.
+  3) Subject reuse check: first token(s) of Line2 == Line1 primary token (exact string).
+  4) Length check: token_count(Line2) ≤ 15; prefer 10–13.
+  5) No commas in either line; no trailing commas; Line2 ends with single period.
+  6) Active-verb heuristics: detect presence of an active verb (simple POS or verb-list). Reject copula-heavy captions (""is near"", ""is standing"") unless necessary; prefer concrete verbs.
+  7) Grounding check: cross-check Line1 primary and action tags against detector confidences; if below thresholds, fail to ""image unclear"".
+- If any automated check fails, do not attempt free-form repairs — return ""image unclear"".
+
+Implementation hints (operational)
+- Maintain versioned canonical_table with pre-evaluated CLIP scores per synonym; lock preferred tokens and update via re-evaluation if CLIP model changes.
+- During candidate creation ensure Line2 reuses exact tag tokens; implement unit test that splits Line2 subject phrase and matches Line1 primary token.
+- Monitor metrics: mean_clip, mean_delta_clip, clip_win_rate, mean_caption_len, generic_rate, token_reuse_fail_rate, and ""image unclear"" frequency. Tune clip_threshold and detector thresholds on held-out dev set to balance coverage and quality.
+
+Rationale (brief)
+- Exact token reuse, short subject-first active sentences, a locked CLIP-preferred vocabulary, and conservative gating reduce noise and directly improve image-text CLIP alignment.
+
+Final requirement
+- If you cannot produce a reliable candidate under the verifier's checks above, output exactly and only:
+image unclear","two-people, talking, holding, red
+
+The two people are talking while one holds a red cup.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.25583887100219727,0.1701483428478241,15,True
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_447fe9a739,94,9311,flickr30k_test_009311,images/flickr30k/flickr30k_test_009311.jpg,"[""A toddler plays in a water fountain with his mouth open and ready for a drink."", ""A baby sticking out his tonge while looking at a spraying water fountain."", ""A baby trying to catch water from a fountain in his mouth"", ""A small boy is playing at a water fountain"", ""A baby reaching into a water fountain.""]",textgrad_447fe9a739,TextGrad Step 16,"Default behavior (strict, enforceable)
+
+Primary goals
+- Maximize CLIP image-text similarity by enforcing exact, CLIP‑preferred surface tokens, short subject-first sentences, and conservative gating for low-confidence images.
+
+Canonical vocabulary and determinism
+- All tokens in Line 1 and the subject token in Line 2 MUST come from the integrator's canonical_id → preferred-surface-token table (whitelist). No ad-hoc tokens (e.g., ""outdoor-world"") or synonyms outside this table are allowed.
+- A locked, pre-evaluated preferred-surface-token must be used for each canonical_id. Deterministic tie-breaker: canonical priority list → canonical_table mapping only.
+
+Output format
+- By default emit exactly one candidate. A candidate is exactly two lines:
+  Line 1 = 3–5 comma-separated canonical tags (no trailing comma; hyphens allowed for multiword tokens).
+  Line 2 = one concise sentence ending with a single period.
+
+Line 1 (tags) — hard rules
+- Must contain exactly 3–5 high-precision tags in this composition:
+  1) primary object token (or two-objects token, e.g., two-people) — REQUIRED and must be detected above the detector_primary_tag_threshold;
+  2) action token — include only if visually present and detected with high confidence;
+  3) exactly one salient attribute token — choose one of {color OR count OR position} only.
+- No scene/generic/texture tokens unless present in the canonical_table and visually diagnostic.
+- No synonyms, no repeats, no comma lists of descriptors. Example allowed tokens: person, bicycle, red, two-people, running, modern-building.
+
+Line 2 (caption) — hard rules
+- Must begin exactly with the primary Line 1 tag's preferred-surface-token (exact string match) as the grammatical subject (i.e., the first word/phrase of Line 2 == Line1 primary token).
+- Short active-voice sentence of the form: [Subject] [active-verb] [object/relationship] [single salient attribute phrase]. Use concrete verbs (e.g., ""holds"", ""rides"", ""carries"", ""opens"") and concrete attributes (""red"", ""two"", ""left"").
+- Include only ONE salient attribute (color OR count OR position) and reuse the same attribute token as in Line 1.
+- Target length: 10–13 tokens. Hard maximum: 15 tokens. Fewer tokens are acceptable if constraints are satisfied.
+- No commas, no lists, no subordinate clauses, no speculative language (""appears to"", ""seems""), no multiple attributes. End with a single period and no extra punctuation or sentences.
+
+Determinism, synonym policy, and candidates
+- Never introduce free-form synonyms. Use only the canonical_table preferred token for each canonical_id.
+- Produce multiple candidates (max 3) ONLY when an external CLIP reranker is guaranteed by the integrator. Variants must differ solely by:
+  (a) alternate allowed tag-sets (each 3–5 tokens drawn from canonical_table), or
+  (b) swapping among pre-approved, pre-evaluated synonyms for the same canonical_ids from the integrator's synonym set.
+- Free-form caption text (Line 2 wording) must be identical across candidates; only tag-sets / allowed synonyms may differ.
+
+Internal selection / reranking
+- If an external CLIP reranker is available: deterministically generate up to 3 structured candidates (tag/synonym variations only), rerank with CLIP, emit the top-scoring candidate.
+- If only an internal CLIP is available: same procedure with internal CLIP reranker.
+- If NO CLIP reranker is available: still generate up to 3 deterministic candidates (tag/synonym variants) and use this conservative heuristic:
+  Score = 1.0 * TagPrecisionScore - 0.05 * LengthPenalty - 0.50 * SubjectMismatchPenalty
+  where:
+  - TagPrecisionScore = proportion of Line1 tags visually grounded by detectors (weighted by canonical priority),
+  - LengthPenalty = max(0, (token_count - 13))  (penalize above 13 tokens),
+  - SubjectMismatchPenalty = 0 if Line2 subject == Line1 primary token else 1 (i.e., heavy penalty).
+  Emit the top-scoring candidate if it passes verifier checks (below); otherwise fallback to ""image unclear"".
+
+Verifier / ""image unclear"" rule (conservative, enforced)
+- If ANY of these conditions hold, output exactly and only (single line, no punctuation):
+image unclear
+  Conditions:
+  1) No primary object detected above the detector_primary_tag_threshold (integrator-configured), OR
+  2) The highest CLIP score among generated candidates is < clip_threshold (default recommended 0.20; integrator may set 0.20–0.22 after dev validation), OR
+  3) Any strict formatting or vocabulary check fails (Line1 tags not all in canonical_table, Line1 tag count outside 3–5, Line2 fails exact-subject match to Line1 primary, Line2 token_count > 15, Line2 contains commas or multiple attributes).
+- Do not output any other fallback caption or extra punctuation when declaring uncertainty.
+
+Formatting and quality guards (automated checks)
+- Enforce programmatic unit tests during generation:
+  1) Whitelist check: every Line1 tag ∈ canonical_table.
+  2) Tag count check: 3 ≤ num_tags ≤ 5 and exactly one attribute token type.
+  3) Subject reuse check: first token(s) of Line2 == Line1 primary token (exact string).
+  4) Length check: token_count(Line2) ≤ 15; prefer 10–13.
+  5) No commas in either line; no trailing commas; Line2 ends with single period.
+  6) Active-verb heuristics: detect presence of an active verb (simple POS or verb-list). Reject copula-heavy captions (""is near"", ""is standing"") unless necessary; prefer concrete verbs.
+  7) Grounding check: cross-check Line1 primary and action tags against detector confidences; if below thresholds, fail to ""image unclear"".
+- If any automated check fails, do not attempt free-form repairs — return ""image unclear"".
+
+Implementation hints (operational)
+- Maintain versioned canonical_table with pre-evaluated CLIP scores per synonym; lock preferred tokens and update via re-evaluation if CLIP model changes.
+- During candidate creation ensure Line2 reuses exact tag tokens; implement unit test that splits Line2 subject phrase and matches Line1 primary token.
+- Monitor metrics: mean_clip, mean_delta_clip, clip_win_rate, mean_caption_len, generic_rate, token_reuse_fail_rate, and ""image unclear"" frequency. Tune clip_threshold and detector thresholds on held-out dev set to balance coverage and quality.
+
+Rationale (brief)
+- Exact token reuse, short subject-first active sentences, a locked CLIP-preferred vocabulary, and conservative gating reduce noise and directly improve image-text CLIP alignment.
+
+Final requirement
+- If you cannot produce a reliable candidate under the verifier's checks above, output exactly and only:
+image unclear","child, laughing, blonde, outdoor, fountain
+
+Child laughs at fountain with blonde hair.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.3186246156692505,0.16242972016334534,12,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_447fe9a739,106,7954,flickr30k_test_007954,images/flickr30k/flickr30k_test_007954.jpg,"[""A girl wearing a pink bathing suit top and sunglasses is playing in the sand next to a boy wearing red swim trunks."", ""A woman and her son play in the sand on a sunny day in the beach."", ""A young boy and girl in swimsuits play in the sand at the beach."", ""Two teenagers at the beach playing in the sand"", ""A boy and girl play with the sand.""]",textgrad_447fe9a739,TextGrad Step 16,"Default behavior (strict, enforceable)
+
+Primary goals
+- Maximize CLIP image-text similarity by enforcing exact, CLIP‑preferred surface tokens, short subject-first sentences, and conservative gating for low-confidence images.
+
+Canonical vocabulary and determinism
+- All tokens in Line 1 and the subject token in Line 2 MUST come from the integrator's canonical_id → preferred-surface-token table (whitelist). No ad-hoc tokens (e.g., ""outdoor-world"") or synonyms outside this table are allowed.
+- A locked, pre-evaluated preferred-surface-token must be used for each canonical_id. Deterministic tie-breaker: canonical priority list → canonical_table mapping only.
+
+Output format
+- By default emit exactly one candidate. A candidate is exactly two lines:
+  Line 1 = 3–5 comma-separated canonical tags (no trailing comma; hyphens allowed for multiword tokens).
+  Line 2 = one concise sentence ending with a single period.
+
+Line 1 (tags) — hard rules
+- Must contain exactly 3–5 high-precision tags in this composition:
+  1) primary object token (or two-objects token, e.g., two-people) — REQUIRED and must be detected above the detector_primary_tag_threshold;
+  2) action token — include only if visually present and detected with high confidence;
+  3) exactly one salient attribute token — choose one of {color OR count OR position} only.
+- No scene/generic/texture tokens unless present in the canonical_table and visually diagnostic.
+- No synonyms, no repeats, no comma lists of descriptors. Example allowed tokens: person, bicycle, red, two-people, running, modern-building.
+
+Line 2 (caption) — hard rules
+- Must begin exactly with the primary Line 1 tag's preferred-surface-token (exact string match) as the grammatical subject (i.e., the first word/phrase of Line 2 == Line1 primary token).
+- Short active-voice sentence of the form: [Subject] [active-verb] [object/relationship] [single salient attribute phrase]. Use concrete verbs (e.g., ""holds"", ""rides"", ""carries"", ""opens"") and concrete attributes (""red"", ""two"", ""left"").
+- Include only ONE salient attribute (color OR count OR position) and reuse the same attribute token as in Line 1.
+- Target length: 10–13 tokens. Hard maximum: 15 tokens. Fewer tokens are acceptable if constraints are satisfied.
+- No commas, no lists, no subordinate clauses, no speculative language (""appears to"", ""seems""), no multiple attributes. End with a single period and no extra punctuation or sentences.
+
+Determinism, synonym policy, and candidates
+- Never introduce free-form synonyms. Use only the canonical_table preferred token for each canonical_id.
+- Produce multiple candidates (max 3) ONLY when an external CLIP reranker is guaranteed by the integrator. Variants must differ solely by:
+  (a) alternate allowed tag-sets (each 3–5 tokens drawn from canonical_table), or
+  (b) swapping among pre-approved, pre-evaluated synonyms for the same canonical_ids from the integrator's synonym set.
+- Free-form caption text (Line 2 wording) must be identical across candidates; only tag-sets / allowed synonyms may differ.
+
+Internal selection / reranking
+- If an external CLIP reranker is available: deterministically generate up to 3 structured candidates (tag/synonym variations only), rerank with CLIP, emit the top-scoring candidate.
+- If only an internal CLIP is available: same procedure with internal CLIP reranker.
+- If NO CLIP reranker is available: still generate up to 3 deterministic candidates (tag/synonym variants) and use this conservative heuristic:
+  Score = 1.0 * TagPrecisionScore - 0.05 * LengthPenalty - 0.50 * SubjectMismatchPenalty
+  where:
+  - TagPrecisionScore = proportion of Line1 tags visually grounded by detectors (weighted by canonical priority),
+  - LengthPenalty = max(0, (token_count - 13))  (penalize above 13 tokens),
+  - SubjectMismatchPenalty = 0 if Line2 subject == Line1 primary token else 1 (i.e., heavy penalty).
+  Emit the top-scoring candidate if it passes verifier checks (below); otherwise fallback to ""image unclear"".
+
+Verifier / ""image unclear"" rule (conservative, enforced)
+- If ANY of these conditions hold, output exactly and only (single line, no punctuation):
+image unclear
+  Conditions:
+  1) No primary object detected above the detector_primary_tag_threshold (integrator-configured), OR
+  2) The highest CLIP score among generated candidates is < clip_threshold (default recommended 0.20; integrator may set 0.20–0.22 after dev validation), OR
+  3) Any strict formatting or vocabulary check fails (Line1 tags not all in canonical_table, Line1 tag count outside 3–5, Line2 fails exact-subject match to Line1 primary, Line2 token_count > 15, Line2 contains commas or multiple attributes).
+- Do not output any other fallback caption or extra punctuation when declaring uncertainty.
+
+Formatting and quality guards (automated checks)
+- Enforce programmatic unit tests during generation:
+  1) Whitelist check: every Line1 tag ∈ canonical_table.
+  2) Tag count check: 3 ≤ num_tags ≤ 5 and exactly one attribute token type.
+  3) Subject reuse check: first token(s) of Line2 == Line1 primary token (exact string).
+  4) Length check: token_count(Line2) ≤ 15; prefer 10–13.
+  5) No commas in either line; no trailing commas; Line2 ends with single period.
+  6) Active-verb heuristics: detect presence of an active verb (simple POS or verb-list). Reject copula-heavy captions (""is near"", ""is standing"") unless necessary; prefer concrete verbs.
+  7) Grounding check: cross-check Line1 primary and action tags against detector confidences; if below thresholds, fail to ""image unclear"".
+- If any automated check fails, do not attempt free-form repairs — return ""image unclear"".
+
+Implementation hints (operational)
+- Maintain versioned canonical_table with pre-evaluated CLIP scores per synonym; lock preferred tokens and update via re-evaluation if CLIP model changes.
+- During candidate creation ensure Line2 reuses exact tag tokens; implement unit test that splits Line2 subject phrase and matches Line1 primary token.
+- Monitor metrics: mean_clip, mean_delta_clip, clip_win_rate, mean_caption_len, generic_rate, token_reuse_fail_rate, and ""image unclear"" frequency. Tune clip_threshold and detector thresholds on held-out dev set to balance coverage and quality.
+
+Rationale (brief)
+- Exact token reuse, short subject-first active sentences, a locked CLIP-preferred vocabulary, and conservative gating reduce noise and directly improve image-text CLIP alignment.
+
+Final requirement
+- If you cannot produce a reliable candidate under the verifier's checks above, output exactly and only:
+image unclear","two-people, building-sand, crouching, red, beach
+two-people crouch on red sand at the beach.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.27353864908218384,0.09791845083236694,13,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_447fe9a739,109,13247,flickr30k_test_013247,images/flickr30k/flickr30k_test_013247.jpg,"[""Several men walk in front of a building marked 'Bass Pro Shops Outdoor World'."", ""People are walking outside the entrance to Bass Pro Shops Outdoor World."", ""People walking in front of the Outdoor World store."", ""A white-haired man is walking out of a store."", ""People outside of an Outdoor World shop.""]",textgrad_447fe9a739,TextGrad Step 16,"Default behavior (strict, enforceable)
+
+Primary goals
+- Maximize CLIP image-text similarity by enforcing exact, CLIP‑preferred surface tokens, short subject-first sentences, and conservative gating for low-confidence images.
+
+Canonical vocabulary and determinism
+- All tokens in Line 1 and the subject token in Line 2 MUST come from the integrator's canonical_id → preferred-surface-token table (whitelist). No ad-hoc tokens (e.g., ""outdoor-world"") or synonyms outside this table are allowed.
+- A locked, pre-evaluated preferred-surface-token must be used for each canonical_id. Deterministic tie-breaker: canonical priority list → canonical_table mapping only.
+
+Output format
+- By default emit exactly one candidate. A candidate is exactly two lines:
+  Line 1 = 3–5 comma-separated canonical tags (no trailing comma; hyphens allowed for multiword tokens).
+  Line 2 = one concise sentence ending with a single period.
+
+Line 1 (tags) — hard rules
+- Must contain exactly 3–5 high-precision tags in this composition:
+  1) primary object token (or two-objects token, e.g., two-people) — REQUIRED and must be detected above the detector_primary_tag_threshold;
+  2) action token — include only if visually present and detected with high confidence;
+  3) exactly one salient attribute token — choose one of {color OR count OR position} only.
+- No scene/generic/texture tokens unless present in the canonical_table and visually diagnostic.
+- No synonyms, no repeats, no comma lists of descriptors. Example allowed tokens: person, bicycle, red, two-people, running, modern-building.
+
+Line 2 (caption) — hard rules
+- Must begin exactly with the primary Line 1 tag's preferred-surface-token (exact string match) as the grammatical subject (i.e., the first word/phrase of Line 2 == Line1 primary token).
+- Short active-voice sentence of the form: [Subject] [active-verb] [object/relationship] [single salient attribute phrase]. Use concrete verbs (e.g., ""holds"", ""rides"", ""carries"", ""opens"") and concrete attributes (""red"", ""two"", ""left"").
+- Include only ONE salient attribute (color OR count OR position) and reuse the same attribute token as in Line 1.
+- Target length: 10–13 tokens. Hard maximum: 15 tokens. Fewer tokens are acceptable if constraints are satisfied.
+- No commas, no lists, no subordinate clauses, no speculative language (""appears to"", ""seems""), no multiple attributes. End with a single period and no extra punctuation or sentences.
+
+Determinism, synonym policy, and candidates
+- Never introduce free-form synonyms. Use only the canonical_table preferred token for each canonical_id.
+- Produce multiple candidates (max 3) ONLY when an external CLIP reranker is guaranteed by the integrator. Variants must differ solely by:
+  (a) alternate allowed tag-sets (each 3–5 tokens drawn from canonical_table), or
+  (b) swapping among pre-approved, pre-evaluated synonyms for the same canonical_ids from the integrator's synonym set.
+- Free-form caption text (Line 2 wording) must be identical across candidates; only tag-sets / allowed synonyms may differ.
+
+Internal selection / reranking
+- If an external CLIP reranker is available: deterministically generate up to 3 structured candidates (tag/synonym variations only), rerank with CLIP, emit the top-scoring candidate.
+- If only an internal CLIP is available: same procedure with internal CLIP reranker.
+- If NO CLIP reranker is available: still generate up to 3 deterministic candidates (tag/synonym variants) and use this conservative heuristic:
+  Score = 1.0 * TagPrecisionScore - 0.05 * LengthPenalty - 0.50 * SubjectMismatchPenalty
+  where:
+  - TagPrecisionScore = proportion of Line1 tags visually grounded by detectors (weighted by canonical priority),
+  - LengthPenalty = max(0, (token_count - 13))  (penalize above 13 tokens),
+  - SubjectMismatchPenalty = 0 if Line2 subject == Line1 primary token else 1 (i.e., heavy penalty).
+  Emit the top-scoring candidate if it passes verifier checks (below); otherwise fallback to ""image unclear"".
+
+Verifier / ""image unclear"" rule (conservative, enforced)
+- If ANY of these conditions hold, output exactly and only (single line, no punctuation):
+image unclear
+  Conditions:
+  1) No primary object detected above the detector_primary_tag_threshold (integrator-configured), OR
+  2) The highest CLIP score among generated candidates is < clip_threshold (default recommended 0.20; integrator may set 0.20–0.22 after dev validation), OR
+  3) Any strict formatting or vocabulary check fails (Line1 tags not all in canonical_table, Line1 tag count outside 3–5, Line2 fails exact-subject match to Line1 primary, Line2 token_count > 15, Line2 contains commas or multiple attributes).
+- Do not output any other fallback caption or extra punctuation when declaring uncertainty.
+
+Formatting and quality guards (automated checks)
+- Enforce programmatic unit tests during generation:
+  1) Whitelist check: every Line1 tag ∈ canonical_table.
+  2) Tag count check: 3 ≤ num_tags ≤ 5 and exactly one attribute token type.
+  3) Subject reuse check: first token(s) of Line2 == Line1 primary token (exact string).
+  4) Length check: token_count(Line2) ≤ 15; prefer 10–13.
+  5) No commas in either line; no trailing commas; Line2 ends with single period.
+  6) Active-verb heuristics: detect presence of an active verb (simple POS or verb-list). Reject copula-heavy captions (""is near"", ""is standing"") unless necessary; prefer concrete verbs.
+  7) Grounding check: cross-check Line1 primary and action tags against detector confidences; if below thresholds, fail to ""image unclear"".
+- If any automated check fails, do not attempt free-form repairs — return ""image unclear"".
+
+Implementation hints (operational)
+- Maintain versioned canonical_table with pre-evaluated CLIP scores per synonym; lock preferred tokens and update via re-evaluation if CLIP model changes.
+- During candidate creation ensure Line2 reuses exact tag tokens; implement unit test that splits Line2 subject phrase and matches Line1 primary token.
+- Monitor metrics: mean_clip, mean_delta_clip, clip_win_rate, mean_caption_len, generic_rate, token_reuse_fail_rate, and ""image unclear"" frequency. Tune clip_threshold and detector thresholds on held-out dev set to balance coverage and quality.
+
+Rationale (brief)
+- Exact token reuse, short subject-first active sentences, a locked CLIP-preferred vocabulary, and conservative gating reduce noise and directly improve image-text CLIP alignment.
+
+Final requirement
+- If you cannot produce a reliable candidate under the verifier's checks above, output exactly and only:
+image unclear","person, walking, two-people, modern-building, red
+
+person walks toward modern-building with two-people.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.18070533871650696,0.05190521478652954,11,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_447fe9a739,119,24189,flickr30k_test_024189,images/flickr30k/flickr30k_test_024189.jpg,"[""A man and a woman are standing outside of subway with their travel luggage and sleeping bags."", ""Two people are picking up their belongings in front of a Subway."", ""A man and a woman outside subways picking up their belongings."", ""Two kids in odd clothes in front of a subway shop."", ""Man and woman are in front of Subway restaurant.""]",textgrad_447fe9a739,TextGrad Step 16,"Default behavior (strict, enforceable)
+
+Primary goals
+- Maximize CLIP image-text similarity by enforcing exact, CLIP‑preferred surface tokens, short subject-first sentences, and conservative gating for low-confidence images.
+
+Canonical vocabulary and determinism
+- All tokens in Line 1 and the subject token in Line 2 MUST come from the integrator's canonical_id → preferred-surface-token table (whitelist). No ad-hoc tokens (e.g., ""outdoor-world"") or synonyms outside this table are allowed.
+- A locked, pre-evaluated preferred-surface-token must be used for each canonical_id. Deterministic tie-breaker: canonical priority list → canonical_table mapping only.
+
+Output format
+- By default emit exactly one candidate. A candidate is exactly two lines:
+  Line 1 = 3–5 comma-separated canonical tags (no trailing comma; hyphens allowed for multiword tokens).
+  Line 2 = one concise sentence ending with a single period.
+
+Line 1 (tags) — hard rules
+- Must contain exactly 3–5 high-precision tags in this composition:
+  1) primary object token (or two-objects token, e.g., two-people) — REQUIRED and must be detected above the detector_primary_tag_threshold;
+  2) action token — include only if visually present and detected with high confidence;
+  3) exactly one salient attribute token — choose one of {color OR count OR position} only.
+- No scene/generic/texture tokens unless present in the canonical_table and visually diagnostic.
+- No synonyms, no repeats, no comma lists of descriptors. Example allowed tokens: person, bicycle, red, two-people, running, modern-building.
+
+Line 2 (caption) — hard rules
+- Must begin exactly with the primary Line 1 tag's preferred-surface-token (exact string match) as the grammatical subject (i.e., the first word/phrase of Line 2 == Line1 primary token).
+- Short active-voice sentence of the form: [Subject] [active-verb] [object/relationship] [single salient attribute phrase]. Use concrete verbs (e.g., ""holds"", ""rides"", ""carries"", ""opens"") and concrete attributes (""red"", ""two"", ""left"").
+- Include only ONE salient attribute (color OR count OR position) and reuse the same attribute token as in Line 1.
+- Target length: 10–13 tokens. Hard maximum: 15 tokens. Fewer tokens are acceptable if constraints are satisfied.
+- No commas, no lists, no subordinate clauses, no speculative language (""appears to"", ""seems""), no multiple attributes. End with a single period and no extra punctuation or sentences.
+
+Determinism, synonym policy, and candidates
+- Never introduce free-form synonyms. Use only the canonical_table preferred token for each canonical_id.
+- Produce multiple candidates (max 3) ONLY when an external CLIP reranker is guaranteed by the integrator. Variants must differ solely by:
+  (a) alternate allowed tag-sets (each 3–5 tokens drawn from canonical_table), or
+  (b) swapping among pre-approved, pre-evaluated synonyms for the same canonical_ids from the integrator's synonym set.
+- Free-form caption text (Line 2 wording) must be identical across candidates; only tag-sets / allowed synonyms may differ.
+
+Internal selection / reranking
+- If an external CLIP reranker is available: deterministically generate up to 3 structured candidates (tag/synonym variations only), rerank with CLIP, emit the top-scoring candidate.
+- If only an internal CLIP is available: same procedure with internal CLIP reranker.
+- If NO CLIP reranker is available: still generate up to 3 deterministic candidates (tag/synonym variants) and use this conservative heuristic:
+  Score = 1.0 * TagPrecisionScore - 0.05 * LengthPenalty - 0.50 * SubjectMismatchPenalty
+  where:
+  - TagPrecisionScore = proportion of Line1 tags visually grounded by detectors (weighted by canonical priority),
+  - LengthPenalty = max(0, (token_count - 13))  (penalize above 13 tokens),
+  - SubjectMismatchPenalty = 0 if Line2 subject == Line1 primary token else 1 (i.e., heavy penalty).
+  Emit the top-scoring candidate if it passes verifier checks (below); otherwise fallback to ""image unclear"".
+
+Verifier / ""image unclear"" rule (conservative, enforced)
+- If ANY of these conditions hold, output exactly and only (single line, no punctuation):
+image unclear
+  Conditions:
+  1) No primary object detected above the detector_primary_tag_threshold (integrator-configured), OR
+  2) The highest CLIP score among generated candidates is < clip_threshold (default recommended 0.20; integrator may set 0.20–0.22 after dev validation), OR
+  3) Any strict formatting or vocabulary check fails (Line1 tags not all in canonical_table, Line1 tag count outside 3–5, Line2 fails exact-subject match to Line1 primary, Line2 token_count > 15, Line2 contains commas or multiple attributes).
+- Do not output any other fallback caption or extra punctuation when declaring uncertainty.
+
+Formatting and quality guards (automated checks)
+- Enforce programmatic unit tests during generation:
+  1) Whitelist check: every Line1 tag ∈ canonical_table.
+  2) Tag count check: 3 ≤ num_tags ≤ 5 and exactly one attribute token type.
+  3) Subject reuse check: first token(s) of Line2 == Line1 primary token (exact string).
+  4) Length check: token_count(Line2) ≤ 15; prefer 10–13.
+  5) No commas in either line; no trailing commas; Line2 ends with single period.
+  6) Active-verb heuristics: detect presence of an active verb (simple POS or verb-list). Reject copula-heavy captions (""is near"", ""is standing"") unless necessary; prefer concrete verbs.
+  7) Grounding check: cross-check Line1 primary and action tags against detector confidences; if below thresholds, fail to ""image unclear"".
+- If any automated check fails, do not attempt free-form repairs — return ""image unclear"".
+
+Implementation hints (operational)
+- Maintain versioned canonical_table with pre-evaluated CLIP scores per synonym; lock preferred tokens and update via re-evaluation if CLIP model changes.
+- During candidate creation ensure Line2 reuses exact tag tokens; implement unit test that splits Line2 subject phrase and matches Line1 primary token.
+- Monitor metrics: mean_clip, mean_delta_clip, clip_win_rate, mean_caption_len, generic_rate, token_reuse_fail_rate, and ""image unclear"" frequency. Tune clip_threshold and detector thresholds on held-out dev set to balance coverage and quality.
+
+Rationale (brief)
+- Exact token reuse, short subject-first active sentences, a locked CLIP-preferred vocabulary, and conservative gating reduce noise and directly improve image-text CLIP alignment.
+
+Final requirement
+- If you cannot produce a reliable candidate under the verifier's checks above, output exactly and only:
+image unclear","person, bending, green
+
+person bends over a pile of bags on the sidewalk.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.28286415338516235,0.20162993669509888,13,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_447fe9a739,134,969,flickr30k_test_000969,images/flickr30k/flickr30k_test_000969.jpg,"[""Young men and women sit at a wooden table on which several partially-drunk beverages have been placed; the picture is interrupted by an outstretched hand, colored green in the odd light of the wood-paneled interior."", ""A green tinted hand is being held up in front of a table of people."", ""Two guys gather around a table with two girls while drinking."", ""People socializing at a table with beverages."", ""A group of friends hanging out in a bar.""]",textgrad_447fe9a739,TextGrad Step 16,"Default behavior (strict, enforceable)
+
+Primary goals
+- Maximize CLIP image-text similarity by enforcing exact, CLIP‑preferred surface tokens, short subject-first sentences, and conservative gating for low-confidence images.
+
+Canonical vocabulary and determinism
+- All tokens in Line 1 and the subject token in Line 2 MUST come from the integrator's canonical_id → preferred-surface-token table (whitelist). No ad-hoc tokens (e.g., ""outdoor-world"") or synonyms outside this table are allowed.
+- A locked, pre-evaluated preferred-surface-token must be used for each canonical_id. Deterministic tie-breaker: canonical priority list → canonical_table mapping only.
+
+Output format
+- By default emit exactly one candidate. A candidate is exactly two lines:
+  Line 1 = 3–5 comma-separated canonical tags (no trailing comma; hyphens allowed for multiword tokens).
+  Line 2 = one concise sentence ending with a single period.
+
+Line 1 (tags) — hard rules
+- Must contain exactly 3–5 high-precision tags in this composition:
+  1) primary object token (or two-objects token, e.g., two-people) — REQUIRED and must be detected above the detector_primary_tag_threshold;
+  2) action token — include only if visually present and detected with high confidence;
+  3) exactly one salient attribute token — choose one of {color OR count OR position} only.
+- No scene/generic/texture tokens unless present in the canonical_table and visually diagnostic.
+- No synonyms, no repeats, no comma lists of descriptors. Example allowed tokens: person, bicycle, red, two-people, running, modern-building.
+
+Line 2 (caption) — hard rules
+- Must begin exactly with the primary Line 1 tag's preferred-surface-token (exact string match) as the grammatical subject (i.e., the first word/phrase of Line 2 == Line1 primary token).
+- Short active-voice sentence of the form: [Subject] [active-verb] [object/relationship] [single salient attribute phrase]. Use concrete verbs (e.g., ""holds"", ""rides"", ""carries"", ""opens"") and concrete attributes (""red"", ""two"", ""left"").
+- Include only ONE salient attribute (color OR count OR position) and reuse the same attribute token as in Line 1.
+- Target length: 10–13 tokens. Hard maximum: 15 tokens. Fewer tokens are acceptable if constraints are satisfied.
+- No commas, no lists, no subordinate clauses, no speculative language (""appears to"", ""seems""), no multiple attributes. End with a single period and no extra punctuation or sentences.
+
+Determinism, synonym policy, and candidates
+- Never introduce free-form synonyms. Use only the canonical_table preferred token for each canonical_id.
+- Produce multiple candidates (max 3) ONLY when an external CLIP reranker is guaranteed by the integrator. Variants must differ solely by:
+  (a) alternate allowed tag-sets (each 3–5 tokens drawn from canonical_table), or
+  (b) swapping among pre-approved, pre-evaluated synonyms for the same canonical_ids from the integrator's synonym set.
+- Free-form caption text (Line 2 wording) must be identical across candidates; only tag-sets / allowed synonyms may differ.
+
+Internal selection / reranking
+- If an external CLIP reranker is available: deterministically generate up to 3 structured candidates (tag/synonym variations only), rerank with CLIP, emit the top-scoring candidate.
+- If only an internal CLIP is available: same procedure with internal CLIP reranker.
+- If NO CLIP reranker is available: still generate up to 3 deterministic candidates (tag/synonym variants) and use this conservative heuristic:
+  Score = 1.0 * TagPrecisionScore - 0.05 * LengthPenalty - 0.50 * SubjectMismatchPenalty
+  where:
+  - TagPrecisionScore = proportion of Line1 tags visually grounded by detectors (weighted by canonical priority),
+  - LengthPenalty = max(0, (token_count - 13))  (penalize above 13 tokens),
+  - SubjectMismatchPenalty = 0 if Line2 subject == Line1 primary token else 1 (i.e., heavy penalty).
+  Emit the top-scoring candidate if it passes verifier checks (below); otherwise fallback to ""image unclear"".
+
+Verifier / ""image unclear"" rule (conservative, enforced)
+- If ANY of these conditions hold, output exactly and only (single line, no punctuation):
+image unclear
+  Conditions:
+  1) No primary object detected above the detector_primary_tag_threshold (integrator-configured), OR
+  2) The highest CLIP score among generated candidates is < clip_threshold (default recommended 0.20; integrator may set 0.20–0.22 after dev validation), OR
+  3) Any strict formatting or vocabulary check fails (Line1 tags not all in canonical_table, Line1 tag count outside 3–5, Line2 fails exact-subject match to Line1 primary, Line2 token_count > 15, Line2 contains commas or multiple attributes).
+- Do not output any other fallback caption or extra punctuation when declaring uncertainty.
+
+Formatting and quality guards (automated checks)
+- Enforce programmatic unit tests during generation:
+  1) Whitelist check: every Line1 tag ∈ canonical_table.
+  2) Tag count check: 3 ≤ num_tags ≤ 5 and exactly one attribute token type.
+  3) Subject reuse check: first token(s) of Line2 == Line1 primary token (exact string).
+  4) Length check: token_count(Line2) ≤ 15; prefer 10–13.
+  5) No commas in either line; no trailing commas; Line2 ends with single period.
+  6) Active-verb heuristics: detect presence of an active verb (simple POS or verb-list). Reject copula-heavy captions (""is near"", ""is standing"") unless necessary; prefer concrete verbs.
+  7) Grounding check: cross-check Line1 primary and action tags against detector confidences; if below thresholds, fail to ""image unclear"".
+- If any automated check fails, do not attempt free-form repairs — return ""image unclear"".
+
+Implementation hints (operational)
+- Maintain versioned canonical_table with pre-evaluated CLIP scores per synonym; lock preferred tokens and update via re-evaluation if CLIP model changes.
+- During candidate creation ensure Line2 reuses exact tag tokens; implement unit test that splits Line2 subject phrase and matches Line1 primary token.
+- Monitor metrics: mean_clip, mean_delta_clip, clip_win_rate, mean_caption_len, generic_rate, token_reuse_fail_rate, and ""image unclear"" frequency. Tune clip_threshold and detector thresholds on held-out dev set to balance coverage and quality.
+
+Rationale (brief)
+- Exact token reuse, short subject-first active sentences, a locked CLIP-preferred vocabulary, and conservative gating reduce noise and directly improve image-text CLIP alignment.
+
+Final requirement
+- If you cannot produce a reliable candidate under the verifier's checks above, output exactly and only:
+image unclear","person, drinking, green, table
+
+person drinks from a glass on a table.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.3136885166168213,0.11979318410158157,12,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_447fe9a739,137,10109,flickr30k_test_010109,images/flickr30k/flickr30k_test_010109.jpg,"[""A group of Asians with baskets of produce are squatting in a vegetable market."", ""Several people are picking through crops at an urban market."", ""Two people cleaning greens in the sunset."", ""Women are on business selling vegetables."", ""Two Asians with green leafy vegetables.""]",textgrad_447fe9a739,TextGrad Step 16,"Default behavior (strict, enforceable)
+
+Primary goals
+- Maximize CLIP image-text similarity by enforcing exact, CLIP‑preferred surface tokens, short subject-first sentences, and conservative gating for low-confidence images.
+
+Canonical vocabulary and determinism
+- All tokens in Line 1 and the subject token in Line 2 MUST come from the integrator's canonical_id → preferred-surface-token table (whitelist). No ad-hoc tokens (e.g., ""outdoor-world"") or synonyms outside this table are allowed.
+- A locked, pre-evaluated preferred-surface-token must be used for each canonical_id. Deterministic tie-breaker: canonical priority list → canonical_table mapping only.
+
+Output format
+- By default emit exactly one candidate. A candidate is exactly two lines:
+  Line 1 = 3–5 comma-separated canonical tags (no trailing comma; hyphens allowed for multiword tokens).
+  Line 2 = one concise sentence ending with a single period.
+
+Line 1 (tags) — hard rules
+- Must contain exactly 3–5 high-precision tags in this composition:
+  1) primary object token (or two-objects token, e.g., two-people) — REQUIRED and must be detected above the detector_primary_tag_threshold;
+  2) action token — include only if visually present and detected with high confidence;
+  3) exactly one salient attribute token — choose one of {color OR count OR position} only.
+- No scene/generic/texture tokens unless present in the canonical_table and visually diagnostic.
+- No synonyms, no repeats, no comma lists of descriptors. Example allowed tokens: person, bicycle, red, two-people, running, modern-building.
+
+Line 2 (caption) — hard rules
+- Must begin exactly with the primary Line 1 tag's preferred-surface-token (exact string match) as the grammatical subject (i.e., the first word/phrase of Line 2 == Line1 primary token).
+- Short active-voice sentence of the form: [Subject] [active-verb] [object/relationship] [single salient attribute phrase]. Use concrete verbs (e.g., ""holds"", ""rides"", ""carries"", ""opens"") and concrete attributes (""red"", ""two"", ""left"").
+- Include only ONE salient attribute (color OR count OR position) and reuse the same attribute token as in Line 1.
+- Target length: 10–13 tokens. Hard maximum: 15 tokens. Fewer tokens are acceptable if constraints are satisfied.
+- No commas, no lists, no subordinate clauses, no speculative language (""appears to"", ""seems""), no multiple attributes. End with a single period and no extra punctuation or sentences.
+
+Determinism, synonym policy, and candidates
+- Never introduce free-form synonyms. Use only the canonical_table preferred token for each canonical_id.
+- Produce multiple candidates (max 3) ONLY when an external CLIP reranker is guaranteed by the integrator. Variants must differ solely by:
+  (a) alternate allowed tag-sets (each 3–5 tokens drawn from canonical_table), or
+  (b) swapping among pre-approved, pre-evaluated synonyms for the same canonical_ids from the integrator's synonym set.
+- Free-form caption text (Line 2 wording) must be identical across candidates; only tag-sets / allowed synonyms may differ.
+
+Internal selection / reranking
+- If an external CLIP reranker is available: deterministically generate up to 3 structured candidates (tag/synonym variations only), rerank with CLIP, emit the top-scoring candidate.
+- If only an internal CLIP is available: same procedure with internal CLIP reranker.
+- If NO CLIP reranker is available: still generate up to 3 deterministic candidates (tag/synonym variants) and use this conservative heuristic:
+  Score = 1.0 * TagPrecisionScore - 0.05 * LengthPenalty - 0.50 * SubjectMismatchPenalty
+  where:
+  - TagPrecisionScore = proportion of Line1 tags visually grounded by detectors (weighted by canonical priority),
+  - LengthPenalty = max(0, (token_count - 13))  (penalize above 13 tokens),
+  - SubjectMismatchPenalty = 0 if Line2 subject == Line1 primary token else 1 (i.e., heavy penalty).
+  Emit the top-scoring candidate if it passes verifier checks (below); otherwise fallback to ""image unclear"".
+
+Verifier / ""image unclear"" rule (conservative, enforced)
+- If ANY of these conditions hold, output exactly and only (single line, no punctuation):
+image unclear
+  Conditions:
+  1) No primary object detected above the detector_primary_tag_threshold (integrator-configured), OR
+  2) The highest CLIP score among generated candidates is < clip_threshold (default recommended 0.20; integrator may set 0.20–0.22 after dev validation), OR
+  3) Any strict formatting or vocabulary check fails (Line1 tags not all in canonical_table, Line1 tag count outside 3–5, Line2 fails exact-subject match to Line1 primary, Line2 token_count > 15, Line2 contains commas or multiple attributes).
+- Do not output any other fallback caption or extra punctuation when declaring uncertainty.
+
+Formatting and quality guards (automated checks)
+- Enforce programmatic unit tests during generation:
+  1) Whitelist check: every Line1 tag ∈ canonical_table.
+  2) Tag count check: 3 ≤ num_tags ≤ 5 and exactly one attribute token type.
+  3) Subject reuse check: first token(s) of Line2 == Line1 primary token (exact string).
+  4) Length check: token_count(Line2) ≤ 15; prefer 10–13.
+  5) No commas in either line; no trailing commas; Line2 ends with single period.
+  6) Active-verb heuristics: detect presence of an active verb (simple POS or verb-list). Reject copula-heavy captions (""is near"", ""is standing"") unless necessary; prefer concrete verbs.
+  7) Grounding check: cross-check Line1 primary and action tags against detector confidences; if below thresholds, fail to ""image unclear"".
+- If any automated check fails, do not attempt free-form repairs — return ""image unclear"".
+
+Implementation hints (operational)
+- Maintain versioned canonical_table with pre-evaluated CLIP scores per synonym; lock preferred tokens and update via re-evaluation if CLIP model changes.
+- During candidate creation ensure Line2 reuses exact tag tokens; implement unit test that splits Line2 subject phrase and matches Line1 primary token.
+- Monitor metrics: mean_clip, mean_delta_clip, clip_win_rate, mean_caption_len, generic_rate, token_reuse_fail_rate, and ""image unclear"" frequency. Tune clip_threshold and detector thresholds on held-out dev set to balance coverage and quality.
+
+Rationale (brief)
+- Exact token reuse, short subject-first active sentences, a locked CLIP-preferred vocabulary, and conservative gating reduce noise and directly improve image-text CLIP alignment.
+
+Final requirement
+- If you cannot produce a reliable candidate under the verifier's checks above, output exactly and only:
+image unclear","two-people, sorting, green, basket
+two-people sort green in basket.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.2692093849182129,0.1317758411169052,9,False
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_447fe9a739,148,7436,flickr30k_test_007436,images/flickr30k/flickr30k_test_007436.jpg,"[""An elderly woman looking at her cellphone, and a young black man looking toward her."", ""A group of people hanging out on the street as a woman looks at her phone."", ""Everyone on the street in the city seem to be busy doing their own thing."", ""An elderly woman checks her cellphone while standing on the curb."", ""An older lady takes a moment to check her phone in a busy street.""]",textgrad_447fe9a739,TextGrad Step 16,"Default behavior (strict, enforceable)
+
+Primary goals
+- Maximize CLIP image-text similarity by enforcing exact, CLIP‑preferred surface tokens, short subject-first sentences, and conservative gating for low-confidence images.
+
+Canonical vocabulary and determinism
+- All tokens in Line 1 and the subject token in Line 2 MUST come from the integrator's canonical_id → preferred-surface-token table (whitelist). No ad-hoc tokens (e.g., ""outdoor-world"") or synonyms outside this table are allowed.
+- A locked, pre-evaluated preferred-surface-token must be used for each canonical_id. Deterministic tie-breaker: canonical priority list → canonical_table mapping only.
+
+Output format
+- By default emit exactly one candidate. A candidate is exactly two lines:
+  Line 1 = 3–5 comma-separated canonical tags (no trailing comma; hyphens allowed for multiword tokens).
+  Line 2 = one concise sentence ending with a single period.
+
+Line 1 (tags) — hard rules
+- Must contain exactly 3–5 high-precision tags in this composition:
+  1) primary object token (or two-objects token, e.g., two-people) — REQUIRED and must be detected above the detector_primary_tag_threshold;
+  2) action token — include only if visually present and detected with high confidence;
+  3) exactly one salient attribute token — choose one of {color OR count OR position} only.
+- No scene/generic/texture tokens unless present in the canonical_table and visually diagnostic.
+- No synonyms, no repeats, no comma lists of descriptors. Example allowed tokens: person, bicycle, red, two-people, running, modern-building.
+
+Line 2 (caption) — hard rules
+- Must begin exactly with the primary Line 1 tag's preferred-surface-token (exact string match) as the grammatical subject (i.e., the first word/phrase of Line 2 == Line1 primary token).
+- Short active-voice sentence of the form: [Subject] [active-verb] [object/relationship] [single salient attribute phrase]. Use concrete verbs (e.g., ""holds"", ""rides"", ""carries"", ""opens"") and concrete attributes (""red"", ""two"", ""left"").
+- Include only ONE salient attribute (color OR count OR position) and reuse the same attribute token as in Line 1.
+- Target length: 10–13 tokens. Hard maximum: 15 tokens. Fewer tokens are acceptable if constraints are satisfied.
+- No commas, no lists, no subordinate clauses, no speculative language (""appears to"", ""seems""), no multiple attributes. End with a single period and no extra punctuation or sentences.
+
+Determinism, synonym policy, and candidates
+- Never introduce free-form synonyms. Use only the canonical_table preferred token for each canonical_id.
+- Produce multiple candidates (max 3) ONLY when an external CLIP reranker is guaranteed by the integrator. Variants must differ solely by:
+  (a) alternate allowed tag-sets (each 3–5 tokens drawn from canonical_table), or
+  (b) swapping among pre-approved, pre-evaluated synonyms for the same canonical_ids from the integrator's synonym set.
+- Free-form caption text (Line 2 wording) must be identical across candidates; only tag-sets / allowed synonyms may differ.
+
+Internal selection / reranking
+- If an external CLIP reranker is available: deterministically generate up to 3 structured candidates (tag/synonym variations only), rerank with CLIP, emit the top-scoring candidate.
+- If only an internal CLIP is available: same procedure with internal CLIP reranker.
+- If NO CLIP reranker is available: still generate up to 3 deterministic candidates (tag/synonym variants) and use this conservative heuristic:
+  Score = 1.0 * TagPrecisionScore - 0.05 * LengthPenalty - 0.50 * SubjectMismatchPenalty
+  where:
+  - TagPrecisionScore = proportion of Line1 tags visually grounded by detectors (weighted by canonical priority),
+  - LengthPenalty = max(0, (token_count - 13))  (penalize above 13 tokens),
+  - SubjectMismatchPenalty = 0 if Line2 subject == Line1 primary token else 1 (i.e., heavy penalty).
+  Emit the top-scoring candidate if it passes verifier checks (below); otherwise fallback to ""image unclear"".
+
+Verifier / ""image unclear"" rule (conservative, enforced)
+- If ANY of these conditions hold, output exactly and only (single line, no punctuation):
+image unclear
+  Conditions:
+  1) No primary object detected above the detector_primary_tag_threshold (integrator-configured), OR
+  2) The highest CLIP score among generated candidates is < clip_threshold (default recommended 0.20; integrator may set 0.20–0.22 after dev validation), OR
+  3) Any strict formatting or vocabulary check fails (Line1 tags not all in canonical_table, Line1 tag count outside 3–5, Line2 fails exact-subject match to Line1 primary, Line2 token_count > 15, Line2 contains commas or multiple attributes).
+- Do not output any other fallback caption or extra punctuation when declaring uncertainty.
+
+Formatting and quality guards (automated checks)
+- Enforce programmatic unit tests during generation:
+  1) Whitelist check: every Line1 tag ∈ canonical_table.
+  2) Tag count check: 3 ≤ num_tags ≤ 5 and exactly one attribute token type.
+  3) Subject reuse check: first token(s) of Line2 == Line1 primary token (exact string).
+  4) Length check: token_count(Line2) ≤ 15; prefer 10–13.
+  5) No commas in either line; no trailing commas; Line2 ends with single period.
+  6) Active-verb heuristics: detect presence of an active verb (simple POS or verb-list). Reject copula-heavy captions (""is near"", ""is standing"") unless necessary; prefer concrete verbs.
+  7) Grounding check: cross-check Line1 primary and action tags against detector confidences; if below thresholds, fail to ""image unclear"".
+- If any automated check fails, do not attempt free-form repairs — return ""image unclear"".
+
+Implementation hints (operational)
+- Maintain versioned canonical_table with pre-evaluated CLIP scores per synonym; lock preferred tokens and update via re-evaluation if CLIP model changes.
+- During candidate creation ensure Line2 reuses exact tag tokens; implement unit test that splits Line2 subject phrase and matches Line1 primary token.
+- Monitor metrics: mean_clip, mean_delta_clip, clip_win_rate, mean_caption_len, generic_rate, token_reuse_fail_rate, and ""image unclear"" frequency. Tune clip_threshold and detector thresholds on held-out dev set to balance coverage and quality.
+
+Rationale (brief)
+- Exact token reuse, short subject-first active sentences, a locked CLIP-preferred vocabulary, and conservative gating reduce noise and directly improve image-text CLIP alignment.
+
+Final requirement
+- If you cannot produce a reliable candidate under the verifier's checks above, output exactly and only:
+image unclear",image unclear,0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}",0.20622791349887848,0.06254169344902039,2,False

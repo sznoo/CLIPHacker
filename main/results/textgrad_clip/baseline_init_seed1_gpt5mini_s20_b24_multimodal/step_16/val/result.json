@@ -1,0 +1,142 @@
+{
+  "prompt": "Output exactly one concise, information‑dense caption: a single grammatical sentence composed of comma‑separated short phrases. Produce only that one sentence and nothing else.\n\nAssembly pipeline (deterministic, single pass)\n1) Slots (fill in this order; append only one token per slot unless slot allows multiple):\n   a. Subject group(s) + HIGH‑value prop/anchor (0–3 groups; must appear first).\n   b. Micro‑action/contact (exact template rules below).\n   c. Fine class (verified label or dataset lexicon fallback).\n   d. Clothing / clear pose / orientation (only if HIGH/MEDIUM verified).\n   e. Up to two anchors/signage (only if verified; otherwise use positional anchor fallback tokens).\n   f. Cropping/depth token (only if HIGH verified).\n\nVerification → emission rules (deterministic)\n- For every slot compute evidence_set = {geometry, segmentation, detector_confidence, contact_confidence, motion_confidence, OCR_confidence, saliency_score, textspot_confidence} and map to a band:\n  • HIGH: any single evidence ≥ HIGH threshold → allow VERIFIED emission.\n  • MEDIUM: two complementary evidences ≥ MEDIUM threshold → allow only from the enumerated MEDIUM‑allowed list for that slot.\n  • LOW: otherwise → emit the explicit fallback token for that slot.\n- If band == HIGH → emit the VERIFIED token (exact text from detector/classifier/OCR).\n- If band == MEDIUM → emit only a token from the strict MEDIUM whitelist (enumerated below).\n- If band == LOW → emit the prescribed fallback token for that slot (see fallbacks list).\n\nFirst‑words constraint (hard)\n- The first 6–8 words must contain at least the subject group token (or a plural fallback noun) and any HIGH‑verified anchor/prop. If no HIGH verification exists by the time the 8th word would be emitted, emit the plural fallback subject token (people/dogs/vehicles/group of people) as the first token and use anchor fallback tokens later.\n\nCount rules (strict)\n- Emit a digit only when Count is HIGH verified by geometry/segmentation OR detector_count_confidence ≥ 0.70. Otherwise use plural fallback nouns (people/dogs/vehicles/group of people). Do not append qualifiers.\n\nMicro‑action / contact (template)\n- HIGH only: exact template \"left|right [hand|foot|part] [strong‑verb] [object]\" (e.g., \"right hand holding woven basket\"). Motion verbs allowed only with motion evidence.\n- MEDIUM only: choose from the enumerated MEDIUM micro‑verb whitelist (e.g., holding, carrying, pushing) and use the same short template.\n- LOW: use conservative fallback \"[part] near [object]\" (e.g., \"right hand near woven basket\").\n- Never use hedges or speculative wording.\n\nFine‑class and anchors\n- Emit fine class only when HIGH verified (classifier_conf≥0.60) or MEDIUM using a tightly enumerated MEDIUM set. Otherwise use dataset lexicon fallback: storefront, painted metal shutter, two‑wheeled vehicle, woven basket, cart, minivan, marquee, group of people.\n- Anchor priority and allowed tokens (attempt in order): marquee/storefront, corrugated metal shutter, flagpole, red rectangular signs, ladder, bicycle/two‑wheeled vehicle, guitar/amp case, boats/canopies. If unverified, use positional anchor fallbacks: \"storefront behind\", \"flagpole left\", \"marquee above\", \"painted metal shutter\".\n\nOCR / signage\n- HIGH OCR_quote_verified → quote exact text (counts toward length).\n- MEDIUM OCR → emit only allowed low‑risk signage descriptors (e.g., \"large red sign upper right\", \"marquee above entrance\", \"three red rectangular signs upper right\").\n- LOW → emit anchor positional fallback (e.g., \"storefront behind\").\n- Never invent partial words or brand names.\n\nSaliency tie‑breaking\n- When multiple VERIFIED candidates compete, choose by saliency order: text > face > large color patch/prop > clothing. If still tied, prefer earlier slot order.\n\nPruning, compression, and length control (enforced)\n- Target length: 10–14 words. Hard cap: 18 words. Allow up to 20 words only when emitting quoted text or two HIGH VERIFIED fine classes.\n- Before emitting each token check estimated cumulative length; if adding the token would exceed hard cap, run deterministic pruning:\n   1) Compress adjective chains into compact noun phrases.\n   2) Iteratively remove descriptors in this exact priority: lighting/reflection → object state/material → background/ancillary context.\n   3) Never remove HIGH‑verified tokens from slots 1–3.\n- Continue pruning until within cap. If still over cap after pruning, follow the final validator fallback (below).\n\nDe‑duplication and normalization\n- Collapse exact repeated phrases and repeated tokens. Merge adjective chains (e.g., \"rustic wooden facade\"). Prohibit repeating the same phrase in the final sentence.\n\nMEDIUM‑allowed lists (examples to use only under MEDIUM band)\n- Micro‑verbs: holding, carrying, pushing, pulling.\n- Fine‑class limited detector labels: bicycle, motorbike/scooter, ladder, vendor/produce stand, ladder, performer.\n- Signage descriptors (MEDIUM OCR): the low‑risk set listed above.\n\nFinal validator (must pass)\n- After assembly and pruning ensure:\n   • single grammatical sentence of comma‑separated short phrases;\n   • length within caps;\n   • first 6–8 words include subject or plural fallback;\n   • no hedges or invented brand/text; no duplicated phrases;\n   • only allowed MEDIUM tokens used under MEDIUM band.\n- If validator fails → emit the minimal safe caption constructed deterministically as: \"[plural fallback subject] center foreground, right hand near object, storefront behind\" compressed to ≤10 words (substitute appropriate fallback tokens based on verification results).\n\nPreferred micro‑templates (use when slots permit)\n- \"1 woman center foreground, right hand holding woven basket of oranges, storefront behind.\"\n- \"two dogs left foreground, small white dog jumping at car passenger window, woman leaning out.\"\n- \"1 person right foreground, standing by two‑wheeled vehicle, painted metal shutter behind.\"\n\nAnti‑hallucination absolute rules (must follow)\n- Never invent brand names, partial text, ages, emotions, intentions, or unsupported attributes. No hedges. When verification is insufficient, use the prescribed fallback lexicon.\n\nProduce only the single validated sentence as the final caption.",
+  "prompt_id": "textgrad_42ce013524",
+  "split_csv": "data/splits/flickr30k_main_seed1_val.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal/step_16/val/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal/step_16/val/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal/step_16/val/scores.csv",
+  "data_root": "data",
+  "summary": {
+    "n": 150,
+    "mean_clip": 0.30793009559313456,
+    "mean_siglip": 0.19087822587539752,
+    "mean_caption_len": 20.046666666666667,
+    "generic_rate": 0.0,
+    "mean_delta_clip": -0.016635352720816933,
+    "mean_delta_siglip": -0.007962319813668729,
+    "clip_win_rate": 0.3433333333333333,
+    "siglip_win_rate": 0.43
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_005806",
+      "image_relpath": "images/flickr30k/flickr30k_test_005806.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_005806.jpg",
+      "caption": "woman center foreground, right hand holding woven basket, storefront behind",
+      "clip_score": 0.2080657184123993,
+      "siglip_score": 0.0116632003337144,
+      "delta_clip": -0.16612830758094782,
+      "delta_siglip": -0.1992608588188887
+    },
+    {
+      "image_id": "flickr30k_test_005806",
+      "image_relpath": "images/flickr30k/flickr30k_test_005806.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_005806.jpg",
+      "caption": "woman center foreground, right hand holding woven basket, storefront behind",
+      "clip_score": 0.2080657184123993,
+      "siglip_score": 0.0116632003337144,
+      "delta_clip": -0.1295017004013061,
+      "delta_siglip": -0.1730512659996748
+    },
+    {
+      "image_id": "flickr30k_test_028445",
+      "image_relpath": "images/flickr30k/flickr30k_test_028445.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_028445.jpg",
+      "caption": "man center foreground, right hand holding blue mesh laundry basket full of clothes, red pickup truck right, beige building behind",
+      "clip_score": 0.2415798902511596,
+      "siglip_score": 0.1730547249317169,
+      "delta_clip": -0.12579363584518438,
+      "delta_siglip": -0.043981850147247314
+    },
+    {
+      "image_id": "flickr30k_test_028445",
+      "image_relpath": "images/flickr30k/flickr30k_test_028445.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_028445.jpg",
+      "caption": "man center foreground, right hand holding blue mesh laundry basket full of clothes, red pickup truck right, beige building behind",
+      "clip_score": 0.2415798902511596,
+      "siglip_score": 0.1730547249317169,
+      "delta_clip": -0.1180840134620667,
+      "delta_siglip": -0.0482935905456543
+    },
+    {
+      "image_id": "flickr30k_test_000916",
+      "image_relpath": "images/flickr30k/flickr30k_test_000916.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_000916.jpg",
+      "caption": "two men center foreground, right hand holding woven basket, storefront behind",
+      "clip_score": 0.195343866944313,
+      "siglip_score": 0.0254275649785995,
+      "delta_clip": -0.1140806525945664,
+      "delta_siglip": -0.06602990627288821
+    },
+    {
+      "image_id": "flickr30k_test_000916",
+      "image_relpath": "images/flickr30k/flickr30k_test_000916.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_000916.jpg",
+      "caption": "two men center foreground, right hand holding woven basket, storefront behind",
+      "clip_score": 0.195343866944313,
+      "siglip_score": 0.0254275649785995,
+      "delta_clip": -0.11166749894618988,
+      "delta_siglip": -0.1962656080722809
+    },
+    {
+      "image_id": "flickr30k_test_023554",
+      "image_relpath": "images/flickr30k/flickr30k_test_023554.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_023554.jpg",
+      "caption": "batwoman center foreground, right hand near black mask, purple flagpole left, storefront behind",
+      "clip_score": 0.2785459756851196,
+      "siglip_score": 0.1521202027797699,
+      "delta_clip": -0.10569840669631964,
+      "delta_siglip": -0.0911096930503845
+    },
+    {
+      "image_id": "flickr30k_test_006161",
+      "image_relpath": "images/flickr30k/flickr30k_test_006161.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_006161.jpg",
+      "caption": "woman center foreground, right hand holding woven basket, storefront behind, crowd queueing right, red rectangular signs upper right",
+      "clip_score": 0.2363849729299545,
+      "siglip_score": 0.1217972636222839,
+      "delta_clip": -0.10159693658351901,
+      "delta_siglip": -0.1225425004959106
+    },
+    {
+      "image_id": "flickr30k_test_012572",
+      "image_relpath": "images/flickr30k/flickr30k_test_012572.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_012572.jpg",
+      "caption": "woman center foreground, right hand near woven basket, storefront behind, purple knit beanie, marquee above",
+      "clip_score": 0.2919482588768005,
+      "siglip_score": 0.1630273312330246,
+      "delta_clip": -0.0978436172008515,
+      "delta_siglip": -0.1296174973249435
+    },
+    {
+      "image_id": "flickr30k_test_023900",
+      "image_relpath": "images/flickr30k/flickr30k_test_023900.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_023900.jpg",
+      "caption": "man smiling right hand holding skewers behind glass display sign utiah",
+      "clip_score": 0.2648619413375854,
+      "siglip_score": 0.2426481992006302,
+      "delta_clip": -0.09694468975067139,
+      "delta_siglip": -0.04816742241382599
+    },
+    {
+      "image_id": "flickr30k_test_016590",
+      "image_relpath": "images/flickr30k/flickr30k_test_016590.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_016590.jpg",
+      "caption": "woman center foreground, right hand holding woven basket, blue umbrella above, storefront behind, group of people right, painted metal shutter behind",
+      "clip_score": 0.2713488042354584,
+      "siglip_score": 0.1587940156459808,
+      "delta_clip": -0.09323653578758234,
+      "delta_siglip": -0.06740476191043848
+    },
+    {
+      "image_id": "flickr30k_test_023088",
+      "image_relpath": "images/flickr30k/flickr30k_test_023088.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_023088.jpg",
+      "caption": "two men standing on sidewalk near storefront, one holding briefcase, another with hands in pockets, pedestrians walking past, bicycle parked nearby, marquee above entrance.",
+      "clip_score": 0.2472594380378723,
+      "siglip_score": 0.1384188383817672,
+      "delta_clip": -0.09194755554199222,
+      "delta_siglip": -0.049045279622078
+    }
+  ]
+}

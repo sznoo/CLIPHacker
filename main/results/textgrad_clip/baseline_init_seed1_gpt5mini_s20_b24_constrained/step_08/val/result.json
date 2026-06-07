@@ -1,0 +1,117 @@
+{
+  "prompt": "Generate exactly one short, literal, factual caption (one sentence) describing only visible content in the image. Output exactly one sentence only—no extra text. Total words: 8–20.\n\nDefinitions\n- High‑signal tokens = a visible color or pattern, a concrete specific object class (use the most specific multiword class visible), a clear Arabic numeral count, a clothing/accessory, or legible text/logo copied exactly.\n\nGuidelines (follow unless doing so would break grammar or produce an unnatural sentence)\n1. Early high‑signal placement: at least one high‑signal token should appear within the first five content words. If two high‑signal tokens are clearly visible, both should appear within the first five content words. Ignore a single leading article (a/an/the) when counting content words.\n2. Legible text/logo: if readable text or a logo is visible, copy it exactly (including case). Prefer placing it within the first five content words. If exact copying produces an ungrammatical fragment, integrate it grammatically (e.g., \"STOP sign\", \"sign reading 'STOP'\") while keeping it early.\n3. Specific class: use the most specific visible concrete class (prefer multiword classes such as \"stop sign\", \"fire hydrant\", \"rolling metal door\") rather than generic \"person\" when a specific role or class is clear.\n4. Counts: use Arabic numerals for visible counts and prefer placing the numeral within the first five content words.\n5. Color/pattern adjacency: prefer color or pattern adjectives directly before their noun (e.g., \"red bicycle\"). Use \"noun with [color]\" only when immediate adjacency would violate early‑token placement or grammaticality.\n6. Syntax and fluency: prefer a short present‑tense subject + verb sentence using common verbs and collocations (e.g., \"X sits on Y\", \"X holds Y\", \"X leans against Y\"). A bare noun phrase is allowed only if any verb would force required high‑signal tokens past their allowed positions. Always prioritize grammatical, natural phrasing; if obeying a placement preference would break grammar, relax that preference.\n7. Openings: avoid generic openings (\"There is\", \"A group of\", \"Some people\") unless no confident specific subject can be identified or using a generic opening yields a more natural, grammatical caption.\n8. Word choice and length: prefer common color and class words (e.g., \"red, blue, black, bicycle, truck, dog\") over rare synonyms. Aim for about 9–14 content words while keeping total words within 8–20.\n\nDeterministic subject selection\n- Choose the primary subject by this tie‑breaker order: centermost → largest → highest contrast → visible attribute (color/number/logo) → the subject that yields the most natural grammatical sentence given the placement preferences.\n\nPreferred short templates (use as natural patterns, not rigid forms)\n- \"Red bus sits near 5 people.\"\n- \"2 dogs play on the grass.\"\n- \"STOP sign stands beside a man.\"\n- \"Blue canopy shades market stall with OPEN sign.\"\n\nOutput exactly one sentence only—no extra text.",
+  "prompt_id": "textgrad_e1e3424f0c",
+  "split_csv": "data/splits/flickr30k_main_seed1_val.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_08/val/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_08/val/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_08/val/scores.csv",
+  "summary": {
+    "n": 150,
+    "mean_clip": 0.3142386215925217,
+    "mean_siglip": 0.19155105277895929,
+    "mean_caption_len": 11.9,
+    "generic_rate": 0.0,
+    "mean_delta_clip": -0.010326826721429825,
+    "mean_delta_siglip": -0.007289492910106974,
+    "clip_win_rate": 0.4066666666666667,
+    "siglip_win_rate": 0.4166666666666667
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_006537",
+      "caption": "KILBURN sign stands beside a man in an orange vest.",
+      "clip_score": 0.2703403830528259,
+      "siglip_score": 0.2032225728034973,
+      "delta_clip": -0.12114048004150385,
+      "delta_siglip": -0.014480680227279608
+    },
+    {
+      "image_id": "flickr30k_test_011250",
+      "caption": "Two boys stand in grass near yellow caution tape.",
+      "clip_score": 0.3028560280799866,
+      "siglip_score": 0.2088349163532257,
+      "delta_clip": -0.10973775386810303,
+      "delta_siglip": -0.01168070733547208
+    },
+    {
+      "image_id": "flickr30k_test_016590",
+      "caption": "Blue umbrella shades vendor selling colorful textiles near stone steps.",
+      "clip_score": 0.2762488126754761,
+      "siglip_score": 0.2039325386285781,
+      "delta_clip": -0.08833652734756464,
+      "delta_siglip": -0.022266238927841187
+    },
+    {
+      "image_id": "flickr30k_test_005806",
+      "caption": "Woman in beige sweater packs clothes into open black suitcase.",
+      "clip_score": 0.2900846004486084,
+      "siglip_score": 0.1332746744155883,
+      "delta_clip": -0.08410942554473871,
+      "delta_siglip": -0.0776493847370148
+    },
+    {
+      "image_id": "flickr30k_test_023317",
+      "caption": "Guest Services sign hangs above a woman in a pink jacket and white hat holding a black bag.",
+      "clip_score": 0.3087308704853058,
+      "siglip_score": 0.1931120753288269,
+      "delta_clip": -0.08241704106330872,
+      "delta_siglip": -0.0252764821052551
+    },
+    {
+      "image_id": "flickr30k_test_016590",
+      "caption": "Blue umbrella shades vendor selling colorful textiles near stone steps.",
+      "clip_score": 0.2762488126754761,
+      "siglip_score": 0.2039325386285781,
+      "delta_clip": -0.07640668749809265,
+      "delta_siglip": -0.02498042583465579
+    },
+    {
+      "image_id": "flickr30k_test_000585",
+      "caption": "Red crane lifts equipment as workers in yellow vests stand near construction site.",
+      "clip_score": 0.2660659849643707,
+      "siglip_score": 0.141998142004013,
+      "delta_clip": -0.07093578577041626,
+      "delta_siglip": -0.06593671441078189
+    },
+    {
+      "image_id": "flickr30k_test_011250",
+      "caption": "Two boys stand in grass near yellow caution tape.",
+      "clip_score": 0.3028560280799866,
+      "siglip_score": 0.2088349163532257,
+      "delta_clip": -0.06976675987243652,
+      "delta_siglip": -0.03950586915016169
+    },
+    {
+      "image_id": "flickr30k_test_026513",
+      "caption": "Yellow jacketed cameraman operates camera under black and yellow umbrella.",
+      "clip_score": 0.3336054682731628,
+      "siglip_score": 0.2168996930122375,
+      "delta_clip": -0.0690685510635376,
+      "delta_siglip": -0.04311898350715643
+    },
+    {
+      "image_id": "flickr30k_test_006161",
+      "caption": "Woman in green vest sweeps street as crowd lines sidewalk.",
+      "clip_score": 0.2707264721393585,
+      "siglip_score": 0.2080001980066299,
+      "delta_clip": -0.06725543737411499,
+      "delta_siglip": -0.03633956611156461
+    },
+    {
+      "image_id": "flickr30k_test_003587",
+      "caption": "Man wearing black cap with number 3 and jacket with Coca-Cola logo.",
+      "clip_score": 0.2995116114616394,
+      "siglip_score": 0.2094666659832,
+      "delta_clip": -0.06577533483505249,
+      "delta_siglip": -0.05483740568161019
+    },
+    {
+      "image_id": "flickr30k_test_023023",
+      "caption": "Coca-Cola umbrella shades crowd near food cart.",
+      "clip_score": 0.2578129768371582,
+      "siglip_score": 0.2023802995681762,
+      "delta_clip": -0.06573975086212158,
+      "delta_siglip": -0.01721572875976571
+    }
+  ]
+}

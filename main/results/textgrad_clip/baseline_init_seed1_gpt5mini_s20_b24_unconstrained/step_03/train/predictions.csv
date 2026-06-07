@@ -1,0 +1,845 @@
+split_id,method_id,run_id,order,dataset_index,image_id,image_relpath,reference_captions,prompt_id,prompt_name,prompt_text,caption,candidate_id,selected,model,temperature,top_p,max_new_tokens,generation_config
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_5acfb3d6db,3,26288,flickr30k_test_026288,images/flickr30k/flickr30k_test_026288.jpg,"[""A local man is crouched on the ground next to some fresh fruit that his has just cut open with the knife in his hand."", ""Black male dressed like he maybe homeless hovering over food."", ""A man cutting and skinning a fruit that has green skin."", ""A man is chopping up food on the ground."", ""A man is carving a melon.""]",textgrad_5acfb3d6db,TextGrad Step 3,"Output exactly two lines only.
+
+Line 1 (tags) — required format and rules:
+- Provide a comma-separated list of up to 8 tokens (no punctuation except commas).
+- First token must contain the main object as a lower-case common noun; it may optionally include a count (digit or word) after the noun (examples: ""child 2"", ""child"", ""person one""). If a count is included, place it immediately after the noun in that first token.
+- After the first token, list 2–4 salient visible objects and up to 1–2 clearly visible attributes (color or size). Order by salience (most important first) but free ordering is allowed.
+- Use only lower-case common nouns and basic adjectives (person, child, dog, car, red, small). Do NOT use proper nouns, brand names, inferred facts, emotions, events, or dates.
+- Include colors/sizes only when clearly visible; if uncertain, omit them.
+- No repeated synonyms, no articles, and no verbs in tags.
+
+Line 2 (caption) — required format and rules:
+- One factual short sentence (7–14 words) in present simple or present progressive; main object must appear early in the sentence.
+- If a numeric count is visually certain, include it (digit or spelled-out number allowed). If uncertain, omit the count rather than guess.
+- Verb morphology: for a singular main-object count use third-person singular verb (-s); for plural use base verb (e.g., ""1 child stands"", ""2 children stand"").
+- You may include at most one clearly visible color or size in the caption and one simple spatial relation/preposition (on, in, near, by, in front of, behind).
+- Use only concrete, directly visible facts. Do NOT add proper nouns, inferred intentions, emotions, or invented facts.
+- No punctuation except an optional single period at the end.
+
+Harmonization and anti-hallucination:
+- Ensure the caption contains at least one exact token (noun or visible attribute) from Line 1 so tags and caption reinforce the same salient visual terms.
+- Prefer omission over guessing: if a property (count, color, relation) is not clearly visible, leave it out.
+- If you cannot produce a compliant 7–14 word caption without adding uncertain attributes, produce a concise fallback caption of 2–3 words in the form ""<main noun> <location>"" (e.g., ""child sidewalk"") or ""image unclear"". In this fallback case Line 1 may still list visible tags.
+- If you cannot produce even tags reliably, Line 2 must be ""image unclear"".
+
+Self-checks (must be applied before returning output):
+1. Exactly 2 lines in the output.
+2. Line 1: ≤8 comma-separated tokens; first token = main noun (optionally with count); all lower-case; no forbidden items.
+3. Line 2: either 7–14 words (preferred) or valid 2–3 word fallback; main object early; correct verb form when a count is present.
+4. No proper nouns, inferences, or invented facts.
+5. No punctuation except commas in Line 1 and an optional final period on Line 2.
+If any check fails, replace Line 2 with the fallback ""image unclear"" (or, if tags cannot be produced, ensure Line 2 is ""image unclear"").
+
+Implementation note for the pipeline (meta instruction, not required in the two-line output):
+- When possible in the calling system, generate 3 short caption variants and use an external CLIP-based reranker to select the best-scoring caption. This often improves image-text alignment. The VLM itself should still follow the two-line output rules above.","person, green fruit, brown bag, blue bowl, dirt ground
+person sits on dirt ground near green fruit and blue bowl",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_5acfb3d6db,6,8358,flickr30k_test_008358,images/flickr30k/flickr30k_test_008358.jpg,"[""This guy is in midair while wearing a red soccer uniform."", ""A soccer player in a red shirt in diving into the air."", ""A man wearing a red jersey jumps in the air."", ""A soccer player is diving for the ball."", ""A soccer player diving on the field.""]",textgrad_5acfb3d6db,TextGrad Step 3,"Output exactly two lines only.
+
+Line 1 (tags) — required format and rules:
+- Provide a comma-separated list of up to 8 tokens (no punctuation except commas).
+- First token must contain the main object as a lower-case common noun; it may optionally include a count (digit or word) after the noun (examples: ""child 2"", ""child"", ""person one""). If a count is included, place it immediately after the noun in that first token.
+- After the first token, list 2–4 salient visible objects and up to 1–2 clearly visible attributes (color or size). Order by salience (most important first) but free ordering is allowed.
+- Use only lower-case common nouns and basic adjectives (person, child, dog, car, red, small). Do NOT use proper nouns, brand names, inferred facts, emotions, events, or dates.
+- Include colors/sizes only when clearly visible; if uncertain, omit them.
+- No repeated synonyms, no articles, and no verbs in tags.
+
+Line 2 (caption) — required format and rules:
+- One factual short sentence (7–14 words) in present simple or present progressive; main object must appear early in the sentence.
+- If a numeric count is visually certain, include it (digit or spelled-out number allowed). If uncertain, omit the count rather than guess.
+- Verb morphology: for a singular main-object count use third-person singular verb (-s); for plural use base verb (e.g., ""1 child stands"", ""2 children stand"").
+- You may include at most one clearly visible color or size in the caption and one simple spatial relation/preposition (on, in, near, by, in front of, behind).
+- Use only concrete, directly visible facts. Do NOT add proper nouns, inferred intentions, emotions, or invented facts.
+- No punctuation except an optional single period at the end.
+
+Harmonization and anti-hallucination:
+- Ensure the caption contains at least one exact token (noun or visible attribute) from Line 1 so tags and caption reinforce the same salient visual terms.
+- Prefer omission over guessing: if a property (count, color, relation) is not clearly visible, leave it out.
+- If you cannot produce a compliant 7–14 word caption without adding uncertain attributes, produce a concise fallback caption of 2–3 words in the form ""<main noun> <location>"" (e.g., ""child sidewalk"") or ""image unclear"". In this fallback case Line 1 may still list visible tags.
+- If you cannot produce even tags reliably, Line 2 must be ""image unclear"".
+
+Self-checks (must be applied before returning output):
+1. Exactly 2 lines in the output.
+2. Line 1: ≤8 comma-separated tokens; first token = main noun (optionally with count); all lower-case; no forbidden items.
+3. Line 2: either 7–14 words (preferred) or valid 2–3 word fallback; main object early; correct verb form when a count is present.
+4. No proper nouns, inferences, or invented facts.
+5. No punctuation except commas in Line 1 and an optional final period on Line 2.
+If any check fails, replace Line 2 with the fallback ""image unclear"" (or, if tags cannot be produced, ensure Line 2 is ""image unclear"").
+
+Implementation note for the pipeline (meta instruction, not required in the two-line output):
+- When possible in the calling system, generate 3 short caption variants and use an external CLIP-based reranker to select the best-scoring caption. This often improves image-text alignment. The VLM itself should still follow the two-line output rules above.","goalkeeper dives
+goalkeeper in red dives on grass",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_5acfb3d6db,15,6879,flickr30k_test_006879,images/flickr30k/flickr30k_test_006879.jpg,"[""A little boy in a blue soccer uniform walks, approaching a team member from the opposite team."", ""A boy in blue soccer shirt and shorts stands watching two other children play soccer."", ""A little boy with Adidas shorts and soccer cleats waits patiently."", ""A child is standing on the street and looking at some kid."", ""Little boy dressed in blue wearing cleats.""]",textgrad_5acfb3d6db,TextGrad Step 3,"Output exactly two lines only.
+
+Line 1 (tags) — required format and rules:
+- Provide a comma-separated list of up to 8 tokens (no punctuation except commas).
+- First token must contain the main object as a lower-case common noun; it may optionally include a count (digit or word) after the noun (examples: ""child 2"", ""child"", ""person one""). If a count is included, place it immediately after the noun in that first token.
+- After the first token, list 2–4 salient visible objects and up to 1–2 clearly visible attributes (color or size). Order by salience (most important first) but free ordering is allowed.
+- Use only lower-case common nouns and basic adjectives (person, child, dog, car, red, small). Do NOT use proper nouns, brand names, inferred facts, emotions, events, or dates.
+- Include colors/sizes only when clearly visible; if uncertain, omit them.
+- No repeated synonyms, no articles, and no verbs in tags.
+
+Line 2 (caption) — required format and rules:
+- One factual short sentence (7–14 words) in present simple or present progressive; main object must appear early in the sentence.
+- If a numeric count is visually certain, include it (digit or spelled-out number allowed). If uncertain, omit the count rather than guess.
+- Verb morphology: for a singular main-object count use third-person singular verb (-s); for plural use base verb (e.g., ""1 child stands"", ""2 children stand"").
+- You may include at most one clearly visible color or size in the caption and one simple spatial relation/preposition (on, in, near, by, in front of, behind).
+- Use only concrete, directly visible facts. Do NOT add proper nouns, inferred intentions, emotions, or invented facts.
+- No punctuation except an optional single period at the end.
+
+Harmonization and anti-hallucination:
+- Ensure the caption contains at least one exact token (noun or visible attribute) from Line 1 so tags and caption reinforce the same salient visual terms.
+- Prefer omission over guessing: if a property (count, color, relation) is not clearly visible, leave it out.
+- If you cannot produce a compliant 7–14 word caption without adding uncertain attributes, produce a concise fallback caption of 2–3 words in the form ""<main noun> <location>"" (e.g., ""child sidewalk"") or ""image unclear"". In this fallback case Line 1 may still list visible tags.
+- If you cannot produce even tags reliably, Line 2 must be ""image unclear"".
+
+Self-checks (must be applied before returning output):
+1. Exactly 2 lines in the output.
+2. Line 1: ≤8 comma-separated tokens; first token = main noun (optionally with count); all lower-case; no forbidden items.
+3. Line 2: either 7–14 words (preferred) or valid 2–3 word fallback; main object early; correct verb form when a count is present.
+4. No proper nouns, inferences, or invented facts.
+5. No punctuation except commas in Line 1 and an optional final period on Line 2.
+If any check fails, replace Line 2 with the fallback ""image unclear"" (or, if tags cannot be produced, ensure Line 2 is ""image unclear"").
+
+Implementation note for the pipeline (meta instruction, not required in the two-line output):
+- When possible in the calling system, generate 3 short caption variants and use an external CLIP-based reranker to select the best-scoring caption. This often improves image-text alignment. The VLM itself should still follow the two-line output rules above.","child, blue shirt, blue shorts, blue socks, white shoes, tree, ground, other children
+child stands on ground near tree wearing blue shorts and socks",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_5acfb3d6db,25,25138,flickr30k_test_025138,images/flickr30k/flickr30k_test_025138.jpg,"[""A woman in a black stocking hat and black leather jacket, talking to a man with a beard in a black fleece jacket."", ""A girl in a black sock hat is talking to a man wearing a blue shirt."", ""A woman and man talking to each other in front of a scenic lake."", ""People talking to one another outside near a fountain."", ""A woman in a black beanie looks up at a bearded man.""]",textgrad_5acfb3d6db,TextGrad Step 3,"Output exactly two lines only.
+
+Line 1 (tags) — required format and rules:
+- Provide a comma-separated list of up to 8 tokens (no punctuation except commas).
+- First token must contain the main object as a lower-case common noun; it may optionally include a count (digit or word) after the noun (examples: ""child 2"", ""child"", ""person one""). If a count is included, place it immediately after the noun in that first token.
+- After the first token, list 2–4 salient visible objects and up to 1–2 clearly visible attributes (color or size). Order by salience (most important first) but free ordering is allowed.
+- Use only lower-case common nouns and basic adjectives (person, child, dog, car, red, small). Do NOT use proper nouns, brand names, inferred facts, emotions, events, or dates.
+- Include colors/sizes only when clearly visible; if uncertain, omit them.
+- No repeated synonyms, no articles, and no verbs in tags.
+
+Line 2 (caption) — required format and rules:
+- One factual short sentence (7–14 words) in present simple or present progressive; main object must appear early in the sentence.
+- If a numeric count is visually certain, include it (digit or spelled-out number allowed). If uncertain, omit the count rather than guess.
+- Verb morphology: for a singular main-object count use third-person singular verb (-s); for plural use base verb (e.g., ""1 child stands"", ""2 children stand"").
+- You may include at most one clearly visible color or size in the caption and one simple spatial relation/preposition (on, in, near, by, in front of, behind).
+- Use only concrete, directly visible facts. Do NOT add proper nouns, inferred intentions, emotions, or invented facts.
+- No punctuation except an optional single period at the end.
+
+Harmonization and anti-hallucination:
+- Ensure the caption contains at least one exact token (noun or visible attribute) from Line 1 so tags and caption reinforce the same salient visual terms.
+- Prefer omission over guessing: if a property (count, color, relation) is not clearly visible, leave it out.
+- If you cannot produce a compliant 7–14 word caption without adding uncertain attributes, produce a concise fallback caption of 2–3 words in the form ""<main noun> <location>"" (e.g., ""child sidewalk"") or ""image unclear"". In this fallback case Line 1 may still list visible tags.
+- If you cannot produce even tags reliably, Line 2 must be ""image unclear"".
+
+Self-checks (must be applied before returning output):
+1. Exactly 2 lines in the output.
+2. Line 1: ≤8 comma-separated tokens; first token = main noun (optionally with count); all lower-case; no forbidden items.
+3. Line 2: either 7–14 words (preferred) or valid 2–3 word fallback; main object early; correct verb form when a count is present.
+4. No proper nouns, inferences, or invented facts.
+5. No punctuation except commas in Line 1 and an optional final period on Line 2.
+If any check fails, replace Line 2 with the fallback ""image unclear"" (or, if tags cannot be produced, ensure Line 2 is ""image unclear"").
+
+Implementation note for the pipeline (meta instruction, not required in the two-line output):
+- When possible in the calling system, generate 3 short caption variants and use an external CLIP-based reranker to select the best-scoring caption. This often improves image-text alignment. The VLM itself should still follow the two-line output rules above.","person, man, woman, beanie, glasses, black, blue, gray
+person stands near water with others in front of building",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_5acfb3d6db,31,26274,flickr30k_test_026274,images/flickr30k/flickr30k_test_026274.jpg,"[""A man in a black hat is rearing up on his brown horse while a crowd of people look on from a distance."", ""A man in a black cowboy hat holds on as his horse rears up."", ""A man on a horse galloping onto its back two feet."", ""Cowboy holding on to the horse"", ""Man riding a bucking bronco!""]",textgrad_5acfb3d6db,TextGrad Step 3,"Output exactly two lines only.
+
+Line 1 (tags) — required format and rules:
+- Provide a comma-separated list of up to 8 tokens (no punctuation except commas).
+- First token must contain the main object as a lower-case common noun; it may optionally include a count (digit or word) after the noun (examples: ""child 2"", ""child"", ""person one""). If a count is included, place it immediately after the noun in that first token.
+- After the first token, list 2–4 salient visible objects and up to 1–2 clearly visible attributes (color or size). Order by salience (most important first) but free ordering is allowed.
+- Use only lower-case common nouns and basic adjectives (person, child, dog, car, red, small). Do NOT use proper nouns, brand names, inferred facts, emotions, events, or dates.
+- Include colors/sizes only when clearly visible; if uncertain, omit them.
+- No repeated synonyms, no articles, and no verbs in tags.
+
+Line 2 (caption) — required format and rules:
+- One factual short sentence (7–14 words) in present simple or present progressive; main object must appear early in the sentence.
+- If a numeric count is visually certain, include it (digit or spelled-out number allowed). If uncertain, omit the count rather than guess.
+- Verb morphology: for a singular main-object count use third-person singular verb (-s); for plural use base verb (e.g., ""1 child stands"", ""2 children stand"").
+- You may include at most one clearly visible color or size in the caption and one simple spatial relation/preposition (on, in, near, by, in front of, behind).
+- Use only concrete, directly visible facts. Do NOT add proper nouns, inferred intentions, emotions, or invented facts.
+- No punctuation except an optional single period at the end.
+
+Harmonization and anti-hallucination:
+- Ensure the caption contains at least one exact token (noun or visible attribute) from Line 1 so tags and caption reinforce the same salient visual terms.
+- Prefer omission over guessing: if a property (count, color, relation) is not clearly visible, leave it out.
+- If you cannot produce a compliant 7–14 word caption without adding uncertain attributes, produce a concise fallback caption of 2–3 words in the form ""<main noun> <location>"" (e.g., ""child sidewalk"") or ""image unclear"". In this fallback case Line 1 may still list visible tags.
+- If you cannot produce even tags reliably, Line 2 must be ""image unclear"".
+
+Self-checks (must be applied before returning output):
+1. Exactly 2 lines in the output.
+2. Line 1: ≤8 comma-separated tokens; first token = main noun (optionally with count); all lower-case; no forbidden items.
+3. Line 2: either 7–14 words (preferred) or valid 2–3 word fallback; main object early; correct verb form when a count is present.
+4. No proper nouns, inferences, or invented facts.
+5. No punctuation except commas in Line 1 and an optional final period on Line 2.
+If any check fails, replace Line 2 with the fallback ""image unclear"" (or, if tags cannot be produced, ensure Line 2 is ""image unclear"").
+
+Implementation note for the pipeline (meta instruction, not required in the two-line output):
+- When possible in the calling system, generate 3 short caption variants and use an external CLIP-based reranker to select the best-scoring caption. This often improves image-text alignment. The VLM itself should still follow the two-line output rules above.","horse rider
+one person rides brown horse with red flags nearby",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_5acfb3d6db,38,1002,flickr30k_test_001002,images/flickr30k/flickr30k_test_001002.jpg,"[""Someone wearing a large hat is sitting on colorful blankets working a loom with a pair of men's dress shoes in front of him."", ""An adult in brightly colored clothing and hat, is weaving or beading while sitting on brightly colored rugs."", ""A Hispanic person sitting among colorful fabric making a belt."", ""A gentleman in traditional garb weaving a blanket in a field."", ""A man works on weaving a cloth good for sale at the market.""]",textgrad_5acfb3d6db,TextGrad Step 3,"Output exactly two lines only.
+
+Line 1 (tags) — required format and rules:
+- Provide a comma-separated list of up to 8 tokens (no punctuation except commas).
+- First token must contain the main object as a lower-case common noun; it may optionally include a count (digit or word) after the noun (examples: ""child 2"", ""child"", ""person one""). If a count is included, place it immediately after the noun in that first token.
+- After the first token, list 2–4 salient visible objects and up to 1–2 clearly visible attributes (color or size). Order by salience (most important first) but free ordering is allowed.
+- Use only lower-case common nouns and basic adjectives (person, child, dog, car, red, small). Do NOT use proper nouns, brand names, inferred facts, emotions, events, or dates.
+- Include colors/sizes only when clearly visible; if uncertain, omit them.
+- No repeated synonyms, no articles, and no verbs in tags.
+
+Line 2 (caption) — required format and rules:
+- One factual short sentence (7–14 words) in present simple or present progressive; main object must appear early in the sentence.
+- If a numeric count is visually certain, include it (digit or spelled-out number allowed). If uncertain, omit the count rather than guess.
+- Verb morphology: for a singular main-object count use third-person singular verb (-s); for plural use base verb (e.g., ""1 child stands"", ""2 children stand"").
+- You may include at most one clearly visible color or size in the caption and one simple spatial relation/preposition (on, in, near, by, in front of, behind).
+- Use only concrete, directly visible facts. Do NOT add proper nouns, inferred intentions, emotions, or invented facts.
+- No punctuation except an optional single period at the end.
+
+Harmonization and anti-hallucination:
+- Ensure the caption contains at least one exact token (noun or visible attribute) from Line 1 so tags and caption reinforce the same salient visual terms.
+- Prefer omission over guessing: if a property (count, color, relation) is not clearly visible, leave it out.
+- If you cannot produce a compliant 7–14 word caption without adding uncertain attributes, produce a concise fallback caption of 2–3 words in the form ""<main noun> <location>"" (e.g., ""child sidewalk"") or ""image unclear"". In this fallback case Line 1 may still list visible tags.
+- If you cannot produce even tags reliably, Line 2 must be ""image unclear"".
+
+Self-checks (must be applied before returning output):
+1. Exactly 2 lines in the output.
+2. Line 1: ≤8 comma-separated tokens; first token = main noun (optionally with count); all lower-case; no forbidden items.
+3. Line 2: either 7–14 words (preferred) or valid 2–3 word fallback; main object early; correct verb form when a count is present.
+4. No proper nouns, inferences, or invented facts.
+5. No punctuation except commas in Line 1 and an optional final period on Line 2.
+If any check fails, replace Line 2 with the fallback ""image unclear"" (or, if tags cannot be produced, ensure Line 2 is ""image unclear"").
+
+Implementation note for the pipeline (meta instruction, not required in the two-line output):
+- When possible in the calling system, generate 3 short caption variants and use an external CLIP-based reranker to select the best-scoring caption. This often improves image-text alignment. The VLM itself should still follow the two-line output rules above.","person one, sword, hat, blanket, black, red, blue, orange
+person one sits on blanket near sword and hat",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_5acfb3d6db,40,833,flickr30k_test_000833,images/flickr30k/flickr30k_test_000833.jpg,"[""A beach scene with three boys in swim shorts each holding paddle ball racquets but no ball in sight."", ""Kids play a game of ball with paddles at the water's edge at the beach."", ""Three children are playing paddle ball on the beach."", ""Three boys play with paddles on the beach."", ""Several children playing on a beach.""]",textgrad_5acfb3d6db,TextGrad Step 3,"Output exactly two lines only.
+
+Line 1 (tags) — required format and rules:
+- Provide a comma-separated list of up to 8 tokens (no punctuation except commas).
+- First token must contain the main object as a lower-case common noun; it may optionally include a count (digit or word) after the noun (examples: ""child 2"", ""child"", ""person one""). If a count is included, place it immediately after the noun in that first token.
+- After the first token, list 2–4 salient visible objects and up to 1–2 clearly visible attributes (color or size). Order by salience (most important first) but free ordering is allowed.
+- Use only lower-case common nouns and basic adjectives (person, child, dog, car, red, small). Do NOT use proper nouns, brand names, inferred facts, emotions, events, or dates.
+- Include colors/sizes only when clearly visible; if uncertain, omit them.
+- No repeated synonyms, no articles, and no verbs in tags.
+
+Line 2 (caption) — required format and rules:
+- One factual short sentence (7–14 words) in present simple or present progressive; main object must appear early in the sentence.
+- If a numeric count is visually certain, include it (digit or spelled-out number allowed). If uncertain, omit the count rather than guess.
+- Verb morphology: for a singular main-object count use third-person singular verb (-s); for plural use base verb (e.g., ""1 child stands"", ""2 children stand"").
+- You may include at most one clearly visible color or size in the caption and one simple spatial relation/preposition (on, in, near, by, in front of, behind).
+- Use only concrete, directly visible facts. Do NOT add proper nouns, inferred intentions, emotions, or invented facts.
+- No punctuation except an optional single period at the end.
+
+Harmonization and anti-hallucination:
+- Ensure the caption contains at least one exact token (noun or visible attribute) from Line 1 so tags and caption reinforce the same salient visual terms.
+- Prefer omission over guessing: if a property (count, color, relation) is not clearly visible, leave it out.
+- If you cannot produce a compliant 7–14 word caption without adding uncertain attributes, produce a concise fallback caption of 2–3 words in the form ""<main noun> <location>"" (e.g., ""child sidewalk"") or ""image unclear"". In this fallback case Line 1 may still list visible tags.
+- If you cannot produce even tags reliably, Line 2 must be ""image unclear"".
+
+Self-checks (must be applied before returning output):
+1. Exactly 2 lines in the output.
+2. Line 1: ≤8 comma-separated tokens; first token = main noun (optionally with count); all lower-case; no forbidden items.
+3. Line 2: either 7–14 words (preferred) or valid 2–3 word fallback; main object early; correct verb form when a count is present.
+4. No proper nouns, inferences, or invented facts.
+5. No punctuation except commas in Line 1 and an optional final period on Line 2.
+If any check fails, replace Line 2 with the fallback ""image unclear"" (or, if tags cannot be produced, ensure Line 2 is ""image unclear"").
+
+Implementation note for the pipeline (meta instruction, not required in the two-line output):
+- When possible in the calling system, generate 3 short caption variants and use an external CLIP-based reranker to select the best-scoring caption. This often improves image-text alignment. The VLM itself should still follow the two-line output rules above.","child 3, paddle blue, paddle red, water, beach
+child plays paddle game on beach with friends",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_5acfb3d6db,42,17741,flickr30k_test_017741,images/flickr30k/flickr30k_test_017741.jpg,"[""Two people sit on a bench overlooking a vast amount of windows."", ""Two people sitting on a bench in front of a large window."", ""Two people sitting looking at a glass wall."", ""Two people are siting on a black bench."", ""Two women sitting on a bench.""]",textgrad_5acfb3d6db,TextGrad Step 3,"Output exactly two lines only.
+
+Line 1 (tags) — required format and rules:
+- Provide a comma-separated list of up to 8 tokens (no punctuation except commas).
+- First token must contain the main object as a lower-case common noun; it may optionally include a count (digit or word) after the noun (examples: ""child 2"", ""child"", ""person one""). If a count is included, place it immediately after the noun in that first token.
+- After the first token, list 2–4 salient visible objects and up to 1–2 clearly visible attributes (color or size). Order by salience (most important first) but free ordering is allowed.
+- Use only lower-case common nouns and basic adjectives (person, child, dog, car, red, small). Do NOT use proper nouns, brand names, inferred facts, emotions, events, or dates.
+- Include colors/sizes only when clearly visible; if uncertain, omit them.
+- No repeated synonyms, no articles, and no verbs in tags.
+
+Line 2 (caption) — required format and rules:
+- One factual short sentence (7–14 words) in present simple or present progressive; main object must appear early in the sentence.
+- If a numeric count is visually certain, include it (digit or spelled-out number allowed). If uncertain, omit the count rather than guess.
+- Verb morphology: for a singular main-object count use third-person singular verb (-s); for plural use base verb (e.g., ""1 child stands"", ""2 children stand"").
+- You may include at most one clearly visible color or size in the caption and one simple spatial relation/preposition (on, in, near, by, in front of, behind).
+- Use only concrete, directly visible facts. Do NOT add proper nouns, inferred intentions, emotions, or invented facts.
+- No punctuation except an optional single period at the end.
+
+Harmonization and anti-hallucination:
+- Ensure the caption contains at least one exact token (noun or visible attribute) from Line 1 so tags and caption reinforce the same salient visual terms.
+- Prefer omission over guessing: if a property (count, color, relation) is not clearly visible, leave it out.
+- If you cannot produce a compliant 7–14 word caption without adding uncertain attributes, produce a concise fallback caption of 2–3 words in the form ""<main noun> <location>"" (e.g., ""child sidewalk"") or ""image unclear"". In this fallback case Line 1 may still list visible tags.
+- If you cannot produce even tags reliably, Line 2 must be ""image unclear"".
+
+Self-checks (must be applied before returning output):
+1. Exactly 2 lines in the output.
+2. Line 1: ≤8 comma-separated tokens; first token = main noun (optionally with count); all lower-case; no forbidden items.
+3. Line 2: either 7–14 words (preferred) or valid 2–3 word fallback; main object early; correct verb form when a count is present.
+4. No proper nouns, inferences, or invented facts.
+5. No punctuation except commas in Line 1 and an optional final period on Line 2.
+If any check fails, replace Line 2 with the fallback ""image unclear"" (or, if tags cannot be produced, ensure Line 2 is ""image unclear"").
+
+Implementation note for the pipeline (meta instruction, not required in the two-line output):
+- When possible in the calling system, generate 3 short caption variants and use an external CLIP-based reranker to select the best-scoring caption. This often improves image-text alignment. The VLM itself should still follow the two-line output rules above.","person two, bench, window, bag, dark, wooden floor
+two people sit on a bench near a large window",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_5acfb3d6db,47,22494,flickr30k_test_022494,images/flickr30k/flickr30k_test_022494.jpg,"[""A man in an orange shirt and gray pants with white paint on them looks at the camera while standing near an orange ladder and a gray and white brick wall."", ""A house painter in clothes covered in paint pauses to look at the camera."", ""A man in an orange shirt with an orange ladder next to a brick wall."", ""A man in an orange shirt is holding a ladder."", ""A worker grabs a ladder to move it around.""]",textgrad_5acfb3d6db,TextGrad Step 3,"Output exactly two lines only.
+
+Line 1 (tags) — required format and rules:
+- Provide a comma-separated list of up to 8 tokens (no punctuation except commas).
+- First token must contain the main object as a lower-case common noun; it may optionally include a count (digit or word) after the noun (examples: ""child 2"", ""child"", ""person one""). If a count is included, place it immediately after the noun in that first token.
+- After the first token, list 2–4 salient visible objects and up to 1–2 clearly visible attributes (color or size). Order by salience (most important first) but free ordering is allowed.
+- Use only lower-case common nouns and basic adjectives (person, child, dog, car, red, small). Do NOT use proper nouns, brand names, inferred facts, emotions, events, or dates.
+- Include colors/sizes only when clearly visible; if uncertain, omit them.
+- No repeated synonyms, no articles, and no verbs in tags.
+
+Line 2 (caption) — required format and rules:
+- One factual short sentence (7–14 words) in present simple or present progressive; main object must appear early in the sentence.
+- If a numeric count is visually certain, include it (digit or spelled-out number allowed). If uncertain, omit the count rather than guess.
+- Verb morphology: for a singular main-object count use third-person singular verb (-s); for plural use base verb (e.g., ""1 child stands"", ""2 children stand"").
+- You may include at most one clearly visible color or size in the caption and one simple spatial relation/preposition (on, in, near, by, in front of, behind).
+- Use only concrete, directly visible facts. Do NOT add proper nouns, inferred intentions, emotions, or invented facts.
+- No punctuation except an optional single period at the end.
+
+Harmonization and anti-hallucination:
+- Ensure the caption contains at least one exact token (noun or visible attribute) from Line 1 so tags and caption reinforce the same salient visual terms.
+- Prefer omission over guessing: if a property (count, color, relation) is not clearly visible, leave it out.
+- If you cannot produce a compliant 7–14 word caption without adding uncertain attributes, produce a concise fallback caption of 2–3 words in the form ""<main noun> <location>"" (e.g., ""child sidewalk"") or ""image unclear"". In this fallback case Line 1 may still list visible tags.
+- If you cannot produce even tags reliably, Line 2 must be ""image unclear"".
+
+Self-checks (must be applied before returning output):
+1. Exactly 2 lines in the output.
+2. Line 1: ≤8 comma-separated tokens; first token = main noun (optionally with count); all lower-case; no forbidden items.
+3. Line 2: either 7–14 words (preferred) or valid 2–3 word fallback; main object early; correct verb form when a count is present.
+4. No proper nouns, inferences, or invented facts.
+5. No punctuation except commas in Line 1 and an optional final period on Line 2.
+If any check fails, replace Line 2 with the fallback ""image unclear"" (or, if tags cannot be produced, ensure Line 2 is ""image unclear"").
+
+Implementation note for the pipeline (meta instruction, not required in the two-line output):
+- When possible in the calling system, generate 3 short caption variants and use an external CLIP-based reranker to select the best-scoring caption. This often improves image-text alignment. The VLM itself should still follow the two-line output rules above.","person, ladder, brick, white cloth, orange shirt, gray pants
+person carries ladder near brick wall covered with white cloth",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_5acfb3d6db,53,7264,flickr30k_test_007264,images/flickr30k/flickr30k_test_007264.jpg,"[""Two ladies and a teenage girl all dressed in summer attire are bending down and laughing, showing a small puppy to a little girl."", ""The little girl in a flower dress is talking to the ladies on the street."", ""A woman teaching a young girl not to be afraid of puppies."", ""Three women and a little girl play with a small puppy."", ""A woman bends down and pets a young girl's dog.""]",textgrad_5acfb3d6db,TextGrad Step 3,"Output exactly two lines only.
+
+Line 1 (tags) — required format and rules:
+- Provide a comma-separated list of up to 8 tokens (no punctuation except commas).
+- First token must contain the main object as a lower-case common noun; it may optionally include a count (digit or word) after the noun (examples: ""child 2"", ""child"", ""person one""). If a count is included, place it immediately after the noun in that first token.
+- After the first token, list 2–4 salient visible objects and up to 1–2 clearly visible attributes (color or size). Order by salience (most important first) but free ordering is allowed.
+- Use only lower-case common nouns and basic adjectives (person, child, dog, car, red, small). Do NOT use proper nouns, brand names, inferred facts, emotions, events, or dates.
+- Include colors/sizes only when clearly visible; if uncertain, omit them.
+- No repeated synonyms, no articles, and no verbs in tags.
+
+Line 2 (caption) — required format and rules:
+- One factual short sentence (7–14 words) in present simple or present progressive; main object must appear early in the sentence.
+- If a numeric count is visually certain, include it (digit or spelled-out number allowed). If uncertain, omit the count rather than guess.
+- Verb morphology: for a singular main-object count use third-person singular verb (-s); for plural use base verb (e.g., ""1 child stands"", ""2 children stand"").
+- You may include at most one clearly visible color or size in the caption and one simple spatial relation/preposition (on, in, near, by, in front of, behind).
+- Use only concrete, directly visible facts. Do NOT add proper nouns, inferred intentions, emotions, or invented facts.
+- No punctuation except an optional single period at the end.
+
+Harmonization and anti-hallucination:
+- Ensure the caption contains at least one exact token (noun or visible attribute) from Line 1 so tags and caption reinforce the same salient visual terms.
+- Prefer omission over guessing: if a property (count, color, relation) is not clearly visible, leave it out.
+- If you cannot produce a compliant 7–14 word caption without adding uncertain attributes, produce a concise fallback caption of 2–3 words in the form ""<main noun> <location>"" (e.g., ""child sidewalk"") or ""image unclear"". In this fallback case Line 1 may still list visible tags.
+- If you cannot produce even tags reliably, Line 2 must be ""image unclear"".
+
+Self-checks (must be applied before returning output):
+1. Exactly 2 lines in the output.
+2. Line 1: ≤8 comma-separated tokens; first token = main noun (optionally with count); all lower-case; no forbidden items.
+3. Line 2: either 7–14 words (preferred) or valid 2–3 word fallback; main object early; correct verb form when a count is present.
+4. No proper nouns, inferences, or invented facts.
+5. No punctuation except commas in Line 1 and an optional final period on Line 2.
+If any check fails, replace Line 2 with the fallback ""image unclear"" (or, if tags cannot be produced, ensure Line 2 is ""image unclear"").
+
+Implementation note for the pipeline (meta instruction, not required in the two-line output):
+- When possible in the calling system, generate 3 short caption variants and use an external CLIP-based reranker to select the best-scoring caption. This often improves image-text alignment. The VLM itself should still follow the two-line output rules above.","child, woman, dog, small, white, blue, patterned, skirt
+child stands near woman and dog on sidewalk",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_5acfb3d6db,65,9495,flickr30k_test_009495,images/flickr30k/flickr30k_test_009495.jpg,"[""A woman with a yellow \""Miller\"" bag has her hand on a seated man, while another woman with the same type yellow \""Miller\"" bag is standing close to them."", ""A man and two women talk while looking at his reflection in the mirror."", ""A woman with a yellow shoulder bag gives a man a massage."", ""Two girls with yellow bags hanging out at a bar."", ""A bar with 2 girls and a man sitting on a table""]",textgrad_5acfb3d6db,TextGrad Step 3,"Output exactly two lines only.
+
+Line 1 (tags) — required format and rules:
+- Provide a comma-separated list of up to 8 tokens (no punctuation except commas).
+- First token must contain the main object as a lower-case common noun; it may optionally include a count (digit or word) after the noun (examples: ""child 2"", ""child"", ""person one""). If a count is included, place it immediately after the noun in that first token.
+- After the first token, list 2–4 salient visible objects and up to 1–2 clearly visible attributes (color or size). Order by salience (most important first) but free ordering is allowed.
+- Use only lower-case common nouns and basic adjectives (person, child, dog, car, red, small). Do NOT use proper nouns, brand names, inferred facts, emotions, events, or dates.
+- Include colors/sizes only when clearly visible; if uncertain, omit them.
+- No repeated synonyms, no articles, and no verbs in tags.
+
+Line 2 (caption) — required format and rules:
+- One factual short sentence (7–14 words) in present simple or present progressive; main object must appear early in the sentence.
+- If a numeric count is visually certain, include it (digit or spelled-out number allowed). If uncertain, omit the count rather than guess.
+- Verb morphology: for a singular main-object count use third-person singular verb (-s); for plural use base verb (e.g., ""1 child stands"", ""2 children stand"").
+- You may include at most one clearly visible color or size in the caption and one simple spatial relation/preposition (on, in, near, by, in front of, behind).
+- Use only concrete, directly visible facts. Do NOT add proper nouns, inferred intentions, emotions, or invented facts.
+- No punctuation except an optional single period at the end.
+
+Harmonization and anti-hallucination:
+- Ensure the caption contains at least one exact token (noun or visible attribute) from Line 1 so tags and caption reinforce the same salient visual terms.
+- Prefer omission over guessing: if a property (count, color, relation) is not clearly visible, leave it out.
+- If you cannot produce a compliant 7–14 word caption without adding uncertain attributes, produce a concise fallback caption of 2–3 words in the form ""<main noun> <location>"" (e.g., ""child sidewalk"") or ""image unclear"". In this fallback case Line 1 may still list visible tags.
+- If you cannot produce even tags reliably, Line 2 must be ""image unclear"".
+
+Self-checks (must be applied before returning output):
+1. Exactly 2 lines in the output.
+2. Line 1: ≤8 comma-separated tokens; first token = main noun (optionally with count); all lower-case; no forbidden items.
+3. Line 2: either 7–14 words (preferred) or valid 2–3 word fallback; main object early; correct verb form when a count is present.
+4. No proper nouns, inferences, or invented facts.
+5. No punctuation except commas in Line 1 and an optional final period on Line 2.
+If any check fails, replace Line 2 with the fallback ""image unclear"" (or, if tags cannot be produced, ensure Line 2 is ""image unclear"").
+
+Implementation note for the pipeline (meta instruction, not required in the two-line output):
+- When possible in the calling system, generate 3 short caption variants and use an external CLIP-based reranker to select the best-scoring caption. This often improves image-text alignment. The VLM itself should still follow the two-line output rules above.","person one, bag yellow, jacket brown, bottle red, bottle brown
+person one stands near table with yellow bag",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_5acfb3d6db,72,30218,flickr30k_test_030218,images/flickr30k/flickr30k_test_030218.jpg,"[""An older, bearded man play a small metal whistle while holding an oboe in his arm on a city street in font of a store window."", ""A bearded man, dressed in jeans and a jacket, is preparing to play a flute instrument on the sidewalk."", ""A man in a gray sweater and blue jeans, playing a flute along a street."", ""An old bearded man plays a hand flute on the side of a sidewalk."", ""An old man playing a musical instrument at a city sidewalk.""]",textgrad_5acfb3d6db,TextGrad Step 3,"Output exactly two lines only.
+
+Line 1 (tags) — required format and rules:
+- Provide a comma-separated list of up to 8 tokens (no punctuation except commas).
+- First token must contain the main object as a lower-case common noun; it may optionally include a count (digit or word) after the noun (examples: ""child 2"", ""child"", ""person one""). If a count is included, place it immediately after the noun in that first token.
+- After the first token, list 2–4 salient visible objects and up to 1–2 clearly visible attributes (color or size). Order by salience (most important first) but free ordering is allowed.
+- Use only lower-case common nouns and basic adjectives (person, child, dog, car, red, small). Do NOT use proper nouns, brand names, inferred facts, emotions, events, or dates.
+- Include colors/sizes only when clearly visible; if uncertain, omit them.
+- No repeated synonyms, no articles, and no verbs in tags.
+
+Line 2 (caption) — required format and rules:
+- One factual short sentence (7–14 words) in present simple or present progressive; main object must appear early in the sentence.
+- If a numeric count is visually certain, include it (digit or spelled-out number allowed). If uncertain, omit the count rather than guess.
+- Verb morphology: for a singular main-object count use third-person singular verb (-s); for plural use base verb (e.g., ""1 child stands"", ""2 children stand"").
+- You may include at most one clearly visible color or size in the caption and one simple spatial relation/preposition (on, in, near, by, in front of, behind).
+- Use only concrete, directly visible facts. Do NOT add proper nouns, inferred intentions, emotions, or invented facts.
+- No punctuation except an optional single period at the end.
+
+Harmonization and anti-hallucination:
+- Ensure the caption contains at least one exact token (noun or visible attribute) from Line 1 so tags and caption reinforce the same salient visual terms.
+- Prefer omission over guessing: if a property (count, color, relation) is not clearly visible, leave it out.
+- If you cannot produce a compliant 7–14 word caption without adding uncertain attributes, produce a concise fallback caption of 2–3 words in the form ""<main noun> <location>"" (e.g., ""child sidewalk"") or ""image unclear"". In this fallback case Line 1 may still list visible tags.
+- If you cannot produce even tags reliably, Line 2 must be ""image unclear"".
+
+Self-checks (must be applied before returning output):
+1. Exactly 2 lines in the output.
+2. Line 1: ≤8 comma-separated tokens; first token = main noun (optionally with count); all lower-case; no forbidden items.
+3. Line 2: either 7–14 words (preferred) or valid 2–3 word fallback; main object early; correct verb form when a count is present.
+4. No proper nouns, inferences, or invented facts.
+5. No punctuation except commas in Line 1 and an optional final period on Line 2.
+If any check fails, replace Line 2 with the fallback ""image unclear"" (or, if tags cannot be produced, ensure Line 2 is ""image unclear"").
+
+Implementation note for the pipeline (meta instruction, not required in the two-line output):
+- When possible in the calling system, generate 3 short caption variants and use an external CLIP-based reranker to select the best-scoring caption. This often improves image-text alignment. The VLM itself should still follow the two-line output rules above.","person, flute, jacket, jeans, brown, sidewalk, black, bag
+man plays flute on sidewalk near building",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_5acfb3d6db,76,20622,flickr30k_test_020622,images/flickr30k/flickr30k_test_020622.jpg,"[""A worker with a white hard-hat is at the bottom landing of an exterior fire escape and is struggling to work with the edge of a large yellow sign."", ""A man with a white hard hat with a black logo in the front of the hat holding part of a sign with numbers on it, while standing on a balcony."", ""A man in a white baseball hat takes down a banner hanging from a fire escape."", ""A man taking down a banner from the fire escape of a building."", ""A man putting up a banner from the fire escape.""]",textgrad_5acfb3d6db,TextGrad Step 3,"Output exactly two lines only.
+
+Line 1 (tags) — required format and rules:
+- Provide a comma-separated list of up to 8 tokens (no punctuation except commas).
+- First token must contain the main object as a lower-case common noun; it may optionally include a count (digit or word) after the noun (examples: ""child 2"", ""child"", ""person one""). If a count is included, place it immediately after the noun in that first token.
+- After the first token, list 2–4 salient visible objects and up to 1–2 clearly visible attributes (color or size). Order by salience (most important first) but free ordering is allowed.
+- Use only lower-case common nouns and basic adjectives (person, child, dog, car, red, small). Do NOT use proper nouns, brand names, inferred facts, emotions, events, or dates.
+- Include colors/sizes only when clearly visible; if uncertain, omit them.
+- No repeated synonyms, no articles, and no verbs in tags.
+
+Line 2 (caption) — required format and rules:
+- One factual short sentence (7–14 words) in present simple or present progressive; main object must appear early in the sentence.
+- If a numeric count is visually certain, include it (digit or spelled-out number allowed). If uncertain, omit the count rather than guess.
+- Verb morphology: for a singular main-object count use third-person singular verb (-s); for plural use base verb (e.g., ""1 child stands"", ""2 children stand"").
+- You may include at most one clearly visible color or size in the caption and one simple spatial relation/preposition (on, in, near, by, in front of, behind).
+- Use only concrete, directly visible facts. Do NOT add proper nouns, inferred intentions, emotions, or invented facts.
+- No punctuation except an optional single period at the end.
+
+Harmonization and anti-hallucination:
+- Ensure the caption contains at least one exact token (noun or visible attribute) from Line 1 so tags and caption reinforce the same salient visual terms.
+- Prefer omission over guessing: if a property (count, color, relation) is not clearly visible, leave it out.
+- If you cannot produce a compliant 7–14 word caption without adding uncertain attributes, produce a concise fallback caption of 2–3 words in the form ""<main noun> <location>"" (e.g., ""child sidewalk"") or ""image unclear"". In this fallback case Line 1 may still list visible tags.
+- If you cannot produce even tags reliably, Line 2 must be ""image unclear"".
+
+Self-checks (must be applied before returning output):
+1. Exactly 2 lines in the output.
+2. Line 1: ≤8 comma-separated tokens; first token = main noun (optionally with count); all lower-case; no forbidden items.
+3. Line 2: either 7–14 words (preferred) or valid 2–3 word fallback; main object early; correct verb form when a count is present.
+4. No proper nouns, inferences, or invented facts.
+5. No punctuation except commas in Line 1 and an optional final period on Line 2.
+If any check fails, replace Line 2 with the fallback ""image unclear"" (or, if tags cannot be produced, ensure Line 2 is ""image unclear"").
+
+Implementation note for the pipeline (meta instruction, not required in the two-line output):
+- When possible in the calling system, generate 3 short caption variants and use an external CLIP-based reranker to select the best-scoring caption. This often improves image-text alignment. The VLM itself should still follow the two-line output rules above.","person one, fire escape, red building, black railing, gray sky
+person climbs fire escape on red building",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_5acfb3d6db,88,16636,flickr30k_test_016636,images/flickr30k/flickr30k_test_016636.jpg,"[""A young girl in a blue skirt, walking down a stony path."", ""Little girl in blue skirt standing by big gray rock."", ""A little girl with blue dress comes home from school"", ""A small girl is going to the school."", ""A young child standing by rocks.""]",textgrad_5acfb3d6db,TextGrad Step 3,"Output exactly two lines only.
+
+Line 1 (tags) — required format and rules:
+- Provide a comma-separated list of up to 8 tokens (no punctuation except commas).
+- First token must contain the main object as a lower-case common noun; it may optionally include a count (digit or word) after the noun (examples: ""child 2"", ""child"", ""person one""). If a count is included, place it immediately after the noun in that first token.
+- After the first token, list 2–4 salient visible objects and up to 1–2 clearly visible attributes (color or size). Order by salience (most important first) but free ordering is allowed.
+- Use only lower-case common nouns and basic adjectives (person, child, dog, car, red, small). Do NOT use proper nouns, brand names, inferred facts, emotions, events, or dates.
+- Include colors/sizes only when clearly visible; if uncertain, omit them.
+- No repeated synonyms, no articles, and no verbs in tags.
+
+Line 2 (caption) — required format and rules:
+- One factual short sentence (7–14 words) in present simple or present progressive; main object must appear early in the sentence.
+- If a numeric count is visually certain, include it (digit or spelled-out number allowed). If uncertain, omit the count rather than guess.
+- Verb morphology: for a singular main-object count use third-person singular verb (-s); for plural use base verb (e.g., ""1 child stands"", ""2 children stand"").
+- You may include at most one clearly visible color or size in the caption and one simple spatial relation/preposition (on, in, near, by, in front of, behind).
+- Use only concrete, directly visible facts. Do NOT add proper nouns, inferred intentions, emotions, or invented facts.
+- No punctuation except an optional single period at the end.
+
+Harmonization and anti-hallucination:
+- Ensure the caption contains at least one exact token (noun or visible attribute) from Line 1 so tags and caption reinforce the same salient visual terms.
+- Prefer omission over guessing: if a property (count, color, relation) is not clearly visible, leave it out.
+- If you cannot produce a compliant 7–14 word caption without adding uncertain attributes, produce a concise fallback caption of 2–3 words in the form ""<main noun> <location>"" (e.g., ""child sidewalk"") or ""image unclear"". In this fallback case Line 1 may still list visible tags.
+- If you cannot produce even tags reliably, Line 2 must be ""image unclear"".
+
+Self-checks (must be applied before returning output):
+1. Exactly 2 lines in the output.
+2. Line 1: ≤8 comma-separated tokens; first token = main noun (optionally with count); all lower-case; no forbidden items.
+3. Line 2: either 7–14 words (preferred) or valid 2–3 word fallback; main object early; correct verb form when a count is present.
+4. No proper nouns, inferences, or invented facts.
+5. No punctuation except commas in Line 1 and an optional final period on Line 2.
+If any check fails, replace Line 2 with the fallback ""image unclear"" (or, if tags cannot be produced, ensure Line 2 is ""image unclear"").
+
+Implementation note for the pipeline (meta instruction, not required in the two-line output):
+- When possible in the calling system, generate 3 short caption variants and use an external CLIP-based reranker to select the best-scoring caption. This often improves image-text alignment. The VLM itself should still follow the two-line output rules above.","child
+child stands on rocky path wearing blue skirt and pink sweater",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_5acfb3d6db,89,27198,flickr30k_test_027198,images/flickr30k/flickr30k_test_027198.jpg,"[""Three teenagers, two without shoes having a water gun fight with various types of guns trying to spray each other."", ""Three teenage boys blast each other with water guns in an open field."", ""Two boys getting shot by a water gun by another boy in a yard."", ""Three male teenagers are playing in a field with water guns."", ""Three boys in the middle of a squirt gun battle.""]",textgrad_5acfb3d6db,TextGrad Step 3,"Output exactly two lines only.
+
+Line 1 (tags) — required format and rules:
+- Provide a comma-separated list of up to 8 tokens (no punctuation except commas).
+- First token must contain the main object as a lower-case common noun; it may optionally include a count (digit or word) after the noun (examples: ""child 2"", ""child"", ""person one""). If a count is included, place it immediately after the noun in that first token.
+- After the first token, list 2–4 salient visible objects and up to 1–2 clearly visible attributes (color or size). Order by salience (most important first) but free ordering is allowed.
+- Use only lower-case common nouns and basic adjectives (person, child, dog, car, red, small). Do NOT use proper nouns, brand names, inferred facts, emotions, events, or dates.
+- Include colors/sizes only when clearly visible; if uncertain, omit them.
+- No repeated synonyms, no articles, and no verbs in tags.
+
+Line 2 (caption) — required format and rules:
+- One factual short sentence (7–14 words) in present simple or present progressive; main object must appear early in the sentence.
+- If a numeric count is visually certain, include it (digit or spelled-out number allowed). If uncertain, omit the count rather than guess.
+- Verb morphology: for a singular main-object count use third-person singular verb (-s); for plural use base verb (e.g., ""1 child stands"", ""2 children stand"").
+- You may include at most one clearly visible color or size in the caption and one simple spatial relation/preposition (on, in, near, by, in front of, behind).
+- Use only concrete, directly visible facts. Do NOT add proper nouns, inferred intentions, emotions, or invented facts.
+- No punctuation except an optional single period at the end.
+
+Harmonization and anti-hallucination:
+- Ensure the caption contains at least one exact token (noun or visible attribute) from Line 1 so tags and caption reinforce the same salient visual terms.
+- Prefer omission over guessing: if a property (count, color, relation) is not clearly visible, leave it out.
+- If you cannot produce a compliant 7–14 word caption without adding uncertain attributes, produce a concise fallback caption of 2–3 words in the form ""<main noun> <location>"" (e.g., ""child sidewalk"") or ""image unclear"". In this fallback case Line 1 may still list visible tags.
+- If you cannot produce even tags reliably, Line 2 must be ""image unclear"".
+
+Self-checks (must be applied before returning output):
+1. Exactly 2 lines in the output.
+2. Line 1: ≤8 comma-separated tokens; first token = main noun (optionally with count); all lower-case; no forbidden items.
+3. Line 2: either 7–14 words (preferred) or valid 2–3 word fallback; main object early; correct verb form when a count is present.
+4. No proper nouns, inferences, or invented facts.
+5. No punctuation except commas in Line 1 and an optional final period on Line 2.
+If any check fails, replace Line 2 with the fallback ""image unclear"" (or, if tags cannot be produced, ensure Line 2 is ""image unclear"").
+
+Implementation note for the pipeline (meta instruction, not required in the two-line output):
+- When possible in the calling system, generate 3 short caption variants and use an external CLIP-based reranker to select the best-scoring caption. This often improves image-text alignment. The VLM itself should still follow the two-line output rules above.","person, water gun, grass, running, black, blue, white, jeans
+
+person runs across grass while holding water gun",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_5acfb3d6db,92,6220,flickr30k_test_006220,images/flickr30k/flickr30k_test_006220.jpg,"[""A crowded and active city street in Asia, with stores and billboards lining the street."", ""A busy street during the daytime in an asian city."", ""A crowd of people walking on a sidewalk in a city."", ""City in japan with crowded streets of people"", ""This asian city is very busy.""]",textgrad_5acfb3d6db,TextGrad Step 3,"Output exactly two lines only.
+
+Line 1 (tags) — required format and rules:
+- Provide a comma-separated list of up to 8 tokens (no punctuation except commas).
+- First token must contain the main object as a lower-case common noun; it may optionally include a count (digit or word) after the noun (examples: ""child 2"", ""child"", ""person one""). If a count is included, place it immediately after the noun in that first token.
+- After the first token, list 2–4 salient visible objects and up to 1–2 clearly visible attributes (color or size). Order by salience (most important first) but free ordering is allowed.
+- Use only lower-case common nouns and basic adjectives (person, child, dog, car, red, small). Do NOT use proper nouns, brand names, inferred facts, emotions, events, or dates.
+- Include colors/sizes only when clearly visible; if uncertain, omit them.
+- No repeated synonyms, no articles, and no verbs in tags.
+
+Line 2 (caption) — required format and rules:
+- One factual short sentence (7–14 words) in present simple or present progressive; main object must appear early in the sentence.
+- If a numeric count is visually certain, include it (digit or spelled-out number allowed). If uncertain, omit the count rather than guess.
+- Verb morphology: for a singular main-object count use third-person singular verb (-s); for plural use base verb (e.g., ""1 child stands"", ""2 children stand"").
+- You may include at most one clearly visible color or size in the caption and one simple spatial relation/preposition (on, in, near, by, in front of, behind).
+- Use only concrete, directly visible facts. Do NOT add proper nouns, inferred intentions, emotions, or invented facts.
+- No punctuation except an optional single period at the end.
+
+Harmonization and anti-hallucination:
+- Ensure the caption contains at least one exact token (noun or visible attribute) from Line 1 so tags and caption reinforce the same salient visual terms.
+- Prefer omission over guessing: if a property (count, color, relation) is not clearly visible, leave it out.
+- If you cannot produce a compliant 7–14 word caption without adding uncertain attributes, produce a concise fallback caption of 2–3 words in the form ""<main noun> <location>"" (e.g., ""child sidewalk"") or ""image unclear"". In this fallback case Line 1 may still list visible tags.
+- If you cannot produce even tags reliably, Line 2 must be ""image unclear"".
+
+Self-checks (must be applied before returning output):
+1. Exactly 2 lines in the output.
+2. Line 1: ≤8 comma-separated tokens; first token = main noun (optionally with count); all lower-case; no forbidden items.
+3. Line 2: either 7–14 words (preferred) or valid 2–3 word fallback; main object early; correct verb form when a count is present.
+4. No proper nouns, inferences, or invented facts.
+5. No punctuation except commas in Line 1 and an optional final period on Line 2.
+If any check fails, replace Line 2 with the fallback ""image unclear"" (or, if tags cannot be produced, ensure Line 2 is ""image unclear"").
+
+Implementation note for the pipeline (meta instruction, not required in the two-line output):
+- When possible in the calling system, generate 3 short caption variants and use an external CLIP-based reranker to select the best-scoring caption. This often improves image-text alignment. The VLM itself should still follow the two-line output rules above.","person
+crowd, traffic light, sign, building, green bag, red sign, yellow sign, black bag
+
+crowd gathers on busy street near traffic light",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_5acfb3d6db,103,27960,flickr30k_test_027960,images/flickr30k/flickr30k_test_027960.jpg,"[""4 youngsters line up for a sprint race, while 2 other youths look on while wearing footballs jerseys."", ""Several teens are starting a race as older students observe the action."", ""Four boys standing outside begin to run while two others watch on."", ""Four young boys line up at the starting line to run a race"", ""Several children are participating in some sort of race.""]",textgrad_5acfb3d6db,TextGrad Step 3,"Output exactly two lines only.
+
+Line 1 (tags) — required format and rules:
+- Provide a comma-separated list of up to 8 tokens (no punctuation except commas).
+- First token must contain the main object as a lower-case common noun; it may optionally include a count (digit or word) after the noun (examples: ""child 2"", ""child"", ""person one""). If a count is included, place it immediately after the noun in that first token.
+- After the first token, list 2–4 salient visible objects and up to 1–2 clearly visible attributes (color or size). Order by salience (most important first) but free ordering is allowed.
+- Use only lower-case common nouns and basic adjectives (person, child, dog, car, red, small). Do NOT use proper nouns, brand names, inferred facts, emotions, events, or dates.
+- Include colors/sizes only when clearly visible; if uncertain, omit them.
+- No repeated synonyms, no articles, and no verbs in tags.
+
+Line 2 (caption) — required format and rules:
+- One factual short sentence (7–14 words) in present simple or present progressive; main object must appear early in the sentence.
+- If a numeric count is visually certain, include it (digit or spelled-out number allowed). If uncertain, omit the count rather than guess.
+- Verb morphology: for a singular main-object count use third-person singular verb (-s); for plural use base verb (e.g., ""1 child stands"", ""2 children stand"").
+- You may include at most one clearly visible color or size in the caption and one simple spatial relation/preposition (on, in, near, by, in front of, behind).
+- Use only concrete, directly visible facts. Do NOT add proper nouns, inferred intentions, emotions, or invented facts.
+- No punctuation except an optional single period at the end.
+
+Harmonization and anti-hallucination:
+- Ensure the caption contains at least one exact token (noun or visible attribute) from Line 1 so tags and caption reinforce the same salient visual terms.
+- Prefer omission over guessing: if a property (count, color, relation) is not clearly visible, leave it out.
+- If you cannot produce a compliant 7–14 word caption without adding uncertain attributes, produce a concise fallback caption of 2–3 words in the form ""<main noun> <location>"" (e.g., ""child sidewalk"") or ""image unclear"". In this fallback case Line 1 may still list visible tags.
+- If you cannot produce even tags reliably, Line 2 must be ""image unclear"".
+
+Self-checks (must be applied before returning output):
+1. Exactly 2 lines in the output.
+2. Line 1: ≤8 comma-separated tokens; first token = main noun (optionally with count); all lower-case; no forbidden items.
+3. Line 2: either 7–14 words (preferred) or valid 2–3 word fallback; main object early; correct verb form when a count is present.
+4. No proper nouns, inferences, or invented facts.
+5. No punctuation except commas in Line 1 and an optional final period on Line 2.
+If any check fails, replace Line 2 with the fallback ""image unclear"" (or, if tags cannot be produced, ensure Line 2 is ""image unclear"").
+
+Implementation note for the pipeline (meta instruction, not required in the two-line output):
+- When possible in the calling system, generate 3 short caption variants and use an external CLIP-based reranker to select the best-scoring caption. This often improves image-text alignment. The VLM itself should still follow the two-line output rules above.","child 5
+child, car, person, person, person, person, person, person, person, person, person, person, person, person, person, person, person, person, person, person, person, person, person, person, person, person, person, person, person, person,",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_5acfb3d6db,112,5669,flickr30k_test_005669,images/flickr30k/flickr30k_test_005669.jpg,"[""Several young people adults sit around while a middle-eastern band prepares to play keyboard, drums, violin and a mandolin."", ""An audience listens to a band play as colorful lights light the scene."", ""A man playing an instrument while others sit at a table and watch."", ""A small band performing for people in a nightclub."", ""A group of people enjoying an intimate concert.""]",textgrad_5acfb3d6db,TextGrad Step 3,"Output exactly two lines only.
+
+Line 1 (tags) — required format and rules:
+- Provide a comma-separated list of up to 8 tokens (no punctuation except commas).
+- First token must contain the main object as a lower-case common noun; it may optionally include a count (digit or word) after the noun (examples: ""child 2"", ""child"", ""person one""). If a count is included, place it immediately after the noun in that first token.
+- After the first token, list 2–4 salient visible objects and up to 1–2 clearly visible attributes (color or size). Order by salience (most important first) but free ordering is allowed.
+- Use only lower-case common nouns and basic adjectives (person, child, dog, car, red, small). Do NOT use proper nouns, brand names, inferred facts, emotions, events, or dates.
+- Include colors/sizes only when clearly visible; if uncertain, omit them.
+- No repeated synonyms, no articles, and no verbs in tags.
+
+Line 2 (caption) — required format and rules:
+- One factual short sentence (7–14 words) in present simple or present progressive; main object must appear early in the sentence.
+- If a numeric count is visually certain, include it (digit or spelled-out number allowed). If uncertain, omit the count rather than guess.
+- Verb morphology: for a singular main-object count use third-person singular verb (-s); for plural use base verb (e.g., ""1 child stands"", ""2 children stand"").
+- You may include at most one clearly visible color or size in the caption and one simple spatial relation/preposition (on, in, near, by, in front of, behind).
+- Use only concrete, directly visible facts. Do NOT add proper nouns, inferred intentions, emotions, or invented facts.
+- No punctuation except an optional single period at the end.
+
+Harmonization and anti-hallucination:
+- Ensure the caption contains at least one exact token (noun or visible attribute) from Line 1 so tags and caption reinforce the same salient visual terms.
+- Prefer omission over guessing: if a property (count, color, relation) is not clearly visible, leave it out.
+- If you cannot produce a compliant 7–14 word caption without adding uncertain attributes, produce a concise fallback caption of 2–3 words in the form ""<main noun> <location>"" (e.g., ""child sidewalk"") or ""image unclear"". In this fallback case Line 1 may still list visible tags.
+- If you cannot produce even tags reliably, Line 2 must be ""image unclear"".
+
+Self-checks (must be applied before returning output):
+1. Exactly 2 lines in the output.
+2. Line 1: ≤8 comma-separated tokens; first token = main noun (optionally with count); all lower-case; no forbidden items.
+3. Line 2: either 7–14 words (preferred) or valid 2–3 word fallback; main object early; correct verb form when a count is present.
+4. No proper nouns, inferences, or invented facts.
+5. No punctuation except commas in Line 1 and an optional final period on Line 2.
+If any check fails, replace Line 2 with the fallback ""image unclear"" (or, if tags cannot be produced, ensure Line 2 is ""image unclear"").
+
+Implementation note for the pipeline (meta instruction, not required in the two-line output):
+- When possible in the calling system, generate 3 short caption variants and use an external CLIP-based reranker to select the best-scoring caption. This often improves image-text alignment. The VLM itself should still follow the two-line output rules above.","person one, guitar, microphone, stage, red, seated, audience, small
+person one sits in front of stage with guitar and microphone",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_5acfb3d6db,113,12029,flickr30k_test_012029,images/flickr30k/flickr30k_test_012029.jpg,"[""Four ferry boats are docked at a visitor's center with passengers waiting to board."", ""People congregate on a platform in a river among decorated boats."", ""People are gathered on a platform in water for a ceremony."", ""A group of people waiting to ride boats."", ""People wait to board boats.""]",textgrad_5acfb3d6db,TextGrad Step 3,"Output exactly two lines only.
+
+Line 1 (tags) — required format and rules:
+- Provide a comma-separated list of up to 8 tokens (no punctuation except commas).
+- First token must contain the main object as a lower-case common noun; it may optionally include a count (digit or word) after the noun (examples: ""child 2"", ""child"", ""person one""). If a count is included, place it immediately after the noun in that first token.
+- After the first token, list 2–4 salient visible objects and up to 1–2 clearly visible attributes (color or size). Order by salience (most important first) but free ordering is allowed.
+- Use only lower-case common nouns and basic adjectives (person, child, dog, car, red, small). Do NOT use proper nouns, brand names, inferred facts, emotions, events, or dates.
+- Include colors/sizes only when clearly visible; if uncertain, omit them.
+- No repeated synonyms, no articles, and no verbs in tags.
+
+Line 2 (caption) — required format and rules:
+- One factual short sentence (7–14 words) in present simple or present progressive; main object must appear early in the sentence.
+- If a numeric count is visually certain, include it (digit or spelled-out number allowed). If uncertain, omit the count rather than guess.
+- Verb morphology: for a singular main-object count use third-person singular verb (-s); for plural use base verb (e.g., ""1 child stands"", ""2 children stand"").
+- You may include at most one clearly visible color or size in the caption and one simple spatial relation/preposition (on, in, near, by, in front of, behind).
+- Use only concrete, directly visible facts. Do NOT add proper nouns, inferred intentions, emotions, or invented facts.
+- No punctuation except an optional single period at the end.
+
+Harmonization and anti-hallucination:
+- Ensure the caption contains at least one exact token (noun or visible attribute) from Line 1 so tags and caption reinforce the same salient visual terms.
+- Prefer omission over guessing: if a property (count, color, relation) is not clearly visible, leave it out.
+- If you cannot produce a compliant 7–14 word caption without adding uncertain attributes, produce a concise fallback caption of 2–3 words in the form ""<main noun> <location>"" (e.g., ""child sidewalk"") or ""image unclear"". In this fallback case Line 1 may still list visible tags.
+- If you cannot produce even tags reliably, Line 2 must be ""image unclear"".
+
+Self-checks (must be applied before returning output):
+1. Exactly 2 lines in the output.
+2. Line 1: ≤8 comma-separated tokens; first token = main noun (optionally with count); all lower-case; no forbidden items.
+3. Line 2: either 7–14 words (preferred) or valid 2–3 word fallback; main object early; correct verb form when a count is present.
+4. No proper nouns, inferences, or invented facts.
+5. No punctuation except commas in Line 1 and an optional final period on Line 2.
+If any check fails, replace Line 2 with the fallback ""image unclear"" (or, if tags cannot be produced, ensure Line 2 is ""image unclear"").
+
+Implementation note for the pipeline (meta instruction, not required in the two-line output):
+- When possible in the calling system, generate 3 short caption variants and use an external CLIP-based reranker to select the best-scoring caption. This often improves image-text alignment. The VLM itself should still follow the two-line output rules above.","person, boat, temple, water, people, pink, green, white
+person stands on boat near temple in water",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_5acfb3d6db,118,22101,flickr30k_test_022101,images/flickr30k/flickr30k_test_022101.jpg,"[""Asian people going multiple directions on multiple escalators."", ""A view of people moving up and down on escalators from above."", ""Eight people are on an escalator going up or down."", ""People are going up and down on three escalators."", ""People riding escalators.""]",textgrad_5acfb3d6db,TextGrad Step 3,"Output exactly two lines only.
+
+Line 1 (tags) — required format and rules:
+- Provide a comma-separated list of up to 8 tokens (no punctuation except commas).
+- First token must contain the main object as a lower-case common noun; it may optionally include a count (digit or word) after the noun (examples: ""child 2"", ""child"", ""person one""). If a count is included, place it immediately after the noun in that first token.
+- After the first token, list 2–4 salient visible objects and up to 1–2 clearly visible attributes (color or size). Order by salience (most important first) but free ordering is allowed.
+- Use only lower-case common nouns and basic adjectives (person, child, dog, car, red, small). Do NOT use proper nouns, brand names, inferred facts, emotions, events, or dates.
+- Include colors/sizes only when clearly visible; if uncertain, omit them.
+- No repeated synonyms, no articles, and no verbs in tags.
+
+Line 2 (caption) — required format and rules:
+- One factual short sentence (7–14 words) in present simple or present progressive; main object must appear early in the sentence.
+- If a numeric count is visually certain, include it (digit or spelled-out number allowed). If uncertain, omit the count rather than guess.
+- Verb morphology: for a singular main-object count use third-person singular verb (-s); for plural use base verb (e.g., ""1 child stands"", ""2 children stand"").
+- You may include at most one clearly visible color or size in the caption and one simple spatial relation/preposition (on, in, near, by, in front of, behind).
+- Use only concrete, directly visible facts. Do NOT add proper nouns, inferred intentions, emotions, or invented facts.
+- No punctuation except an optional single period at the end.
+
+Harmonization and anti-hallucination:
+- Ensure the caption contains at least one exact token (noun or visible attribute) from Line 1 so tags and caption reinforce the same salient visual terms.
+- Prefer omission over guessing: if a property (count, color, relation) is not clearly visible, leave it out.
+- If you cannot produce a compliant 7–14 word caption without adding uncertain attributes, produce a concise fallback caption of 2–3 words in the form ""<main noun> <location>"" (e.g., ""child sidewalk"") or ""image unclear"". In this fallback case Line 1 may still list visible tags.
+- If you cannot produce even tags reliably, Line 2 must be ""image unclear"".
+
+Self-checks (must be applied before returning output):
+1. Exactly 2 lines in the output.
+2. Line 1: ≤8 comma-separated tokens; first token = main noun (optionally with count); all lower-case; no forbidden items.
+3. Line 2: either 7–14 words (preferred) or valid 2–3 word fallback; main object early; correct verb form when a count is present.
+4. No proper nouns, inferences, or invented facts.
+5. No punctuation except commas in Line 1 and an optional final period on Line 2.
+If any check fails, replace Line 2 with the fallback ""image unclear"" (or, if tags cannot be produced, ensure Line 2 is ""image unclear"").
+
+Implementation note for the pipeline (meta instruction, not required in the two-line output):
+- When possible in the calling system, generate 3 short caption variants and use an external CLIP-based reranker to select the best-scoring caption. This often improves image-text alignment. The VLM itself should still follow the two-line output rules above.","person, escalator, hand, black, white, gray, blue, red
+
+person stands on escalator near handrail in front of others",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_5acfb3d6db,126,25508,flickr30k_test_025508,images/flickr30k/flickr30k_test_025508.jpg,"[""A man in an orange shirt does a flip off a sand dune in the desert."", ""A young boy is doing a cannon ball outside near the desert sand."", ""Man in t-shirt and shorts doing a backflip on a sand hill."", ""A man is doing a flip in the air off of a sand dune."", ""A boy doing a back flip off of a sand dune.""]",textgrad_5acfb3d6db,TextGrad Step 3,"Output exactly two lines only.
+
+Line 1 (tags) — required format and rules:
+- Provide a comma-separated list of up to 8 tokens (no punctuation except commas).
+- First token must contain the main object as a lower-case common noun; it may optionally include a count (digit or word) after the noun (examples: ""child 2"", ""child"", ""person one""). If a count is included, place it immediately after the noun in that first token.
+- After the first token, list 2–4 salient visible objects and up to 1–2 clearly visible attributes (color or size). Order by salience (most important first) but free ordering is allowed.
+- Use only lower-case common nouns and basic adjectives (person, child, dog, car, red, small). Do NOT use proper nouns, brand names, inferred facts, emotions, events, or dates.
+- Include colors/sizes only when clearly visible; if uncertain, omit them.
+- No repeated synonyms, no articles, and no verbs in tags.
+
+Line 2 (caption) — required format and rules:
+- One factual short sentence (7–14 words) in present simple or present progressive; main object must appear early in the sentence.
+- If a numeric count is visually certain, include it (digit or spelled-out number allowed). If uncertain, omit the count rather than guess.
+- Verb morphology: for a singular main-object count use third-person singular verb (-s); for plural use base verb (e.g., ""1 child stands"", ""2 children stand"").
+- You may include at most one clearly visible color or size in the caption and one simple spatial relation/preposition (on, in, near, by, in front of, behind).
+- Use only concrete, directly visible facts. Do NOT add proper nouns, inferred intentions, emotions, or invented facts.
+- No punctuation except an optional single period at the end.
+
+Harmonization and anti-hallucination:
+- Ensure the caption contains at least one exact token (noun or visible attribute) from Line 1 so tags and caption reinforce the same salient visual terms.
+- Prefer omission over guessing: if a property (count, color, relation) is not clearly visible, leave it out.
+- If you cannot produce a compliant 7–14 word caption without adding uncertain attributes, produce a concise fallback caption of 2–3 words in the form ""<main noun> <location>"" (e.g., ""child sidewalk"") or ""image unclear"". In this fallback case Line 1 may still list visible tags.
+- If you cannot produce even tags reliably, Line 2 must be ""image unclear"".
+
+Self-checks (must be applied before returning output):
+1. Exactly 2 lines in the output.
+2. Line 1: ≤8 comma-separated tokens; first token = main noun (optionally with count); all lower-case; no forbidden items.
+3. Line 2: either 7–14 words (preferred) or valid 2–3 word fallback; main object early; correct verb form when a count is present.
+4. No proper nouns, inferences, or invented facts.
+5. No punctuation except commas in Line 1 and an optional final period on Line 2.
+If any check fails, replace Line 2 with the fallback ""image unclear"" (or, if tags cannot be produced, ensure Line 2 is ""image unclear"").
+
+Implementation note for the pipeline (meta instruction, not required in the two-line output):
+- When possible in the calling system, generate 3 short caption variants and use an external CLIP-based reranker to select the best-scoring caption. This often improves image-text alignment. The VLM itself should still follow the two-line output rules above.","person, sand, sky, orange, blue
+person flips in air above sand dune",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_5acfb3d6db,135,15378,flickr30k_test_015378,images/flickr30k/flickr30k_test_015378.jpg,"[""The man in the red shirt and the woman with the white bag are conversing."", ""A man in a red shirt is interacting with a woman holding a shopping bag."", ""A woman is purchasing items from the man in the red shirt's yard sale."", ""An older man in a black hat and red shirt is talking with a woman."", ""A woman in a black shirt is holding a plastic bag.""]",textgrad_5acfb3d6db,TextGrad Step 3,"Output exactly two lines only.
+
+Line 1 (tags) — required format and rules:
+- Provide a comma-separated list of up to 8 tokens (no punctuation except commas).
+- First token must contain the main object as a lower-case common noun; it may optionally include a count (digit or word) after the noun (examples: ""child 2"", ""child"", ""person one""). If a count is included, place it immediately after the noun in that first token.
+- After the first token, list 2–4 salient visible objects and up to 1–2 clearly visible attributes (color or size). Order by salience (most important first) but free ordering is allowed.
+- Use only lower-case common nouns and basic adjectives (person, child, dog, car, red, small). Do NOT use proper nouns, brand names, inferred facts, emotions, events, or dates.
+- Include colors/sizes only when clearly visible; if uncertain, omit them.
+- No repeated synonyms, no articles, and no verbs in tags.
+
+Line 2 (caption) — required format and rules:
+- One factual short sentence (7–14 words) in present simple or present progressive; main object must appear early in the sentence.
+- If a numeric count is visually certain, include it (digit or spelled-out number allowed). If uncertain, omit the count rather than guess.
+- Verb morphology: for a singular main-object count use third-person singular verb (-s); for plural use base verb (e.g., ""1 child stands"", ""2 children stand"").
+- You may include at most one clearly visible color or size in the caption and one simple spatial relation/preposition (on, in, near, by, in front of, behind).
+- Use only concrete, directly visible facts. Do NOT add proper nouns, inferred intentions, emotions, or invented facts.
+- No punctuation except an optional single period at the end.
+
+Harmonization and anti-hallucination:
+- Ensure the caption contains at least one exact token (noun or visible attribute) from Line 1 so tags and caption reinforce the same salient visual terms.
+- Prefer omission over guessing: if a property (count, color, relation) is not clearly visible, leave it out.
+- If you cannot produce a compliant 7–14 word caption without adding uncertain attributes, produce a concise fallback caption of 2–3 words in the form ""<main noun> <location>"" (e.g., ""child sidewalk"") or ""image unclear"". In this fallback case Line 1 may still list visible tags.
+- If you cannot produce even tags reliably, Line 2 must be ""image unclear"".
+
+Self-checks (must be applied before returning output):
+1. Exactly 2 lines in the output.
+2. Line 1: ≤8 comma-separated tokens; first token = main noun (optionally with count); all lower-case; no forbidden items.
+3. Line 2: either 7–14 words (preferred) or valid 2–3 word fallback; main object early; correct verb form when a count is present.
+4. No proper nouns, inferences, or invented facts.
+5. No punctuation except commas in Line 1 and an optional final period on Line 2.
+If any check fails, replace Line 2 with the fallback ""image unclear"" (or, if tags cannot be produced, ensure Line 2 is ""image unclear"").
+
+Implementation note for the pipeline (meta instruction, not required in the two-line output):
+- When possible in the calling system, generate 3 short caption variants and use an external CLIP-based reranker to select the best-scoring caption. This often improves image-text alignment. The VLM itself should still follow the two-line output rules above.","person one, red shirt, gray pants, black hat, plastic bag
+person stands near wall holding plastic bag",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_5acfb3d6db,140,20146,flickr30k_test_020146,images/flickr30k/flickr30k_test_020146.jpg,"[""The blond girl is opening her drink as she speaks to the person with her."", ""A girl opening her bottled drink while having lunch with a friend."", ""A girl in a black jacket sitting on a ledge talking to someone."", ""Two people sitting on a cement bench chatting over lunch."", ""A woman is sitting in a marble ledge.""]",textgrad_5acfb3d6db,TextGrad Step 3,"Output exactly two lines only.
+
+Line 1 (tags) — required format and rules:
+- Provide a comma-separated list of up to 8 tokens (no punctuation except commas).
+- First token must contain the main object as a lower-case common noun; it may optionally include a count (digit or word) after the noun (examples: ""child 2"", ""child"", ""person one""). If a count is included, place it immediately after the noun in that first token.
+- After the first token, list 2–4 salient visible objects and up to 1–2 clearly visible attributes (color or size). Order by salience (most important first) but free ordering is allowed.
+- Use only lower-case common nouns and basic adjectives (person, child, dog, car, red, small). Do NOT use proper nouns, brand names, inferred facts, emotions, events, or dates.
+- Include colors/sizes only when clearly visible; if uncertain, omit them.
+- No repeated synonyms, no articles, and no verbs in tags.
+
+Line 2 (caption) — required format and rules:
+- One factual short sentence (7–14 words) in present simple or present progressive; main object must appear early in the sentence.
+- If a numeric count is visually certain, include it (digit or spelled-out number allowed). If uncertain, omit the count rather than guess.
+- Verb morphology: for a singular main-object count use third-person singular verb (-s); for plural use base verb (e.g., ""1 child stands"", ""2 children stand"").
+- You may include at most one clearly visible color or size in the caption and one simple spatial relation/preposition (on, in, near, by, in front of, behind).
+- Use only concrete, directly visible facts. Do NOT add proper nouns, inferred intentions, emotions, or invented facts.
+- No punctuation except an optional single period at the end.
+
+Harmonization and anti-hallucination:
+- Ensure the caption contains at least one exact token (noun or visible attribute) from Line 1 so tags and caption reinforce the same salient visual terms.
+- Prefer omission over guessing: if a property (count, color, relation) is not clearly visible, leave it out.
+- If you cannot produce a compliant 7–14 word caption without adding uncertain attributes, produce a concise fallback caption of 2–3 words in the form ""<main noun> <location>"" (e.g., ""child sidewalk"") or ""image unclear"". In this fallback case Line 1 may still list visible tags.
+- If you cannot produce even tags reliably, Line 2 must be ""image unclear"".
+
+Self-checks (must be applied before returning output):
+1. Exactly 2 lines in the output.
+2. Line 1: ≤8 comma-separated tokens; first token = main noun (optionally with count); all lower-case; no forbidden items.
+3. Line 2: either 7–14 words (preferred) or valid 2–3 word fallback; main object early; correct verb form when a count is present.
+4. No proper nouns, inferences, or invented facts.
+5. No punctuation except commas in Line 1 and an optional final period on Line 2.
+If any check fails, replace Line 2 with the fallback ""image unclear"" (or, if tags cannot be produced, ensure Line 2 is ""image unclear"").
+
+Implementation note for the pipeline (meta instruction, not required in the two-line output):
+- When possible in the calling system, generate 3 short caption variants and use an external CLIP-based reranker to select the best-scoring caption. This often improves image-text alignment. The VLM itself should still follow the two-line output rules above.","person one, bottle, jeans, concrete, black, sitting, on ledge
+person sits on concrete ledge near bottle",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_5acfb3d6db,141,19437,flickr30k_test_019437,images/flickr30k/flickr30k_test_019437.jpg,"[""A woman walks past a garage door that says \""no parking any time.\"""", ""A young woman in a denim skit waking in front of a garage."", ""Woman in a black dress walking passed a no parking zone."", ""A woman in a short dress standing by a No Parking sign."", ""A young woman walking by a rolling door.""]",textgrad_5acfb3d6db,TextGrad Step 3,"Output exactly two lines only.
+
+Line 1 (tags) — required format and rules:
+- Provide a comma-separated list of up to 8 tokens (no punctuation except commas).
+- First token must contain the main object as a lower-case common noun; it may optionally include a count (digit or word) after the noun (examples: ""child 2"", ""child"", ""person one""). If a count is included, place it immediately after the noun in that first token.
+- After the first token, list 2–4 salient visible objects and up to 1–2 clearly visible attributes (color or size). Order by salience (most important first) but free ordering is allowed.
+- Use only lower-case common nouns and basic adjectives (person, child, dog, car, red, small). Do NOT use proper nouns, brand names, inferred facts, emotions, events, or dates.
+- Include colors/sizes only when clearly visible; if uncertain, omit them.
+- No repeated synonyms, no articles, and no verbs in tags.
+
+Line 2 (caption) — required format and rules:
+- One factual short sentence (7–14 words) in present simple or present progressive; main object must appear early in the sentence.
+- If a numeric count is visually certain, include it (digit or spelled-out number allowed). If uncertain, omit the count rather than guess.
+- Verb morphology: for a singular main-object count use third-person singular verb (-s); for plural use base verb (e.g., ""1 child stands"", ""2 children stand"").
+- You may include at most one clearly visible color or size in the caption and one simple spatial relation/preposition (on, in, near, by, in front of, behind).
+- Use only concrete, directly visible facts. Do NOT add proper nouns, inferred intentions, emotions, or invented facts.
+- No punctuation except an optional single period at the end.
+
+Harmonization and anti-hallucination:
+- Ensure the caption contains at least one exact token (noun or visible attribute) from Line 1 so tags and caption reinforce the same salient visual terms.
+- Prefer omission over guessing: if a property (count, color, relation) is not clearly visible, leave it out.
+- If you cannot produce a compliant 7–14 word caption without adding uncertain attributes, produce a concise fallback caption of 2–3 words in the form ""<main noun> <location>"" (e.g., ""child sidewalk"") or ""image unclear"". In this fallback case Line 1 may still list visible tags.
+- If you cannot produce even tags reliably, Line 2 must be ""image unclear"".
+
+Self-checks (must be applied before returning output):
+1. Exactly 2 lines in the output.
+2. Line 1: ≤8 comma-separated tokens; first token = main noun (optionally with count); all lower-case; no forbidden items.
+3. Line 2: either 7–14 words (preferred) or valid 2–3 word fallback; main object early; correct verb form when a count is present.
+4. No proper nouns, inferences, or invented facts.
+5. No punctuation except commas in Line 1 and an optional final period on Line 2.
+If any check fails, replace Line 2 with the fallback ""image unclear"" (or, if tags cannot be produced, ensure Line 2 is ""image unclear"").
+
+Implementation note for the pipeline (meta instruction, not required in the two-line output):
+- When possible in the calling system, generate 3 short caption variants and use an external CLIP-based reranker to select the best-scoring caption. This often improves image-text alignment. The VLM itself should still follow the two-line output rules above.","person, door, sign, pavement, yellow, metal, warning, no parking
+person walks on pavement in front of metal door with no parking sign",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"

@@ -1,0 +1,1133 @@
+split_id,method_id,run_id,order,dataset_index,image_id,image_relpath,reference_captions,prompt_id,prompt_name,prompt_text,caption,candidate_id,selected,model,temperature,top_p,max_new_tokens,generation_config
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_899a7f1892,1,18651,flickr30k_test_018651,images/flickr30k/flickr30k_test_018651.jpg,"[""A man in light brown hat, gray coat and a blue vest with a scooter built with baskets full of oranges"", ""A farmer is taking his oranges to the market to sell."", ""A man is standing with vegetables in barrels."", ""An old foreign man selling oranges."", ""Mexican man peddling fresh fruit.""]",textgrad_899a7f1892,TextGrad Step 12,"Output 1–3 candidate captions. Each candidate must be exactly two lines (Line 1 = tags; Line 2 = caption). If multiple candidates are produced, separate candidates with a single blank line. Integrators should rerank candidates externally with CLIP; if you cannot rely on external reranking, produce only one candidate.
+
+Line 1 — tags (format rules; required)
+- Format: 2–5 comma‑separated lower‑case tokens (prefer exactly 3). No punctuation except commas. No surrounding whitespace beyond single spaces around commas.
+- Token types: visible concrete noun(s) or a single visible adjective (color/size) as the sole attribute token. Multiword fused objects (e.g., ""traffic light"", ""wine bottle"") count as one token.
+- Upstream canonicalization (assumed done before this prompt): map detector/classifier labels to a fixed canonical inventory (recommended: COCO / Visual Genome / CLIP‑common). Normalize plurals→singular and map synonyms→canonical ID. Only accept attribute tokens (colors/sizes) if attribute_confidence ≥ attribute_confidence_threshold.
+- Deduplicate tokens. Order tokens by visual discriminativeness (combine detector confidence + CLIP retrieval frequency; prefer higher score first). Prefer fine‑grained nouns when reliably detected.
+- Forbidden tokens: meta/tooling words, proper nouns/brands, dates/events that are identity‑sensitive, inferred identities/emotions/speculation. Scene/event nouns (e.g., parade, stadium) are permitted only if a scene classifier gives high confidence and they map to canonical inventory.
+- If fewer than two high‑confidence specific nouns remain after filtering, do not invent tags. Still produce a conservative fallback (see Line 2 Option B) when at least one reliable noun exists. If no reliable noun exists, leave Line 1 empty and follow the image unclear rule.
+
+Line 2 — caption (format rules; required)
+- Option A (preferred when possible): one factual sentence in present simple or present progressive, 7–13 words long, containing exactly one clear visible verb or one concrete spatial relation. Grammatical structure should be subject + verb + object/prepositional phrase. Allowed verbs: common visible actions (e.g., sits, stands, rides, holds, carries, walks, leans, looks, points, reads, opens, plays, wears, pushes, pulls, places, covers, is holding, is sitting, dances, performs, marches, runs, climbs, jumps, throws, catches, skates). Domain‑specific verbs are allowed only if supported by an activity/pose detector or strong co‑occurrence confidence.
+- Option B (fallback; use when fewer than two high‑confidence nouns or generator uncertainty): a conservative 2–6 word noun + location/scene phrase (e.g., ""dog on sidewalk"", ""man near tree"", ""red car in street""). No sentence punctuation.
+- Main noun requirement: the canonical main noun (Line 1 first token) must appear verbatim or as a canonical synonym (same canonical ID) in Line 2 and appear early in the sentence (within the first 3–4 tokens or within the subject phrase such as ""a/the <main_noun> ..."").
+- Token overlap: Option A captions should share at least two canonical tokens with Line 1 (one must be the main noun). Synonyms are allowed if they map to the same canonical ID. Attributes included in Line 1 must appear verbatim or as canonical synonyms in Line 2 if the attribute_confidence ≥ threshold; otherwise omit them.
+- Allowed extra words: determiners (a, the), prepositions (on, in, near, by, next to, in front of, behind), conjunction ""and"", and small function words. One optional trailing period only. No other punctuation or added objects/attributes not in Line 1 (unless they map to the same canonical ID).
+- Anti‑hallucination: do not introduce new objects, attributes, identities, emotions, or speculative actions not present in Line 1 or supported by detectors (attribute_confidence ≥ threshold). If a required check would fail (main noun missing, insufficient token overlap for Option A, verb unsupported, attribute below threshold, or forbidden token introduced), prefer Option B fallback when possible; if no reliable fallback exists, output exactly: image unclear
+
+Operational parameters and tie‑breaking
+- Parameters (defaults & recommendations): attribute_confidence_threshold = 65% (recommend sweep 60/70/75%), preferred_tag_count = 3, tie_break_delta_confidence = 10 percentage points (adaptive: if two classes' detector confidences are close, prefer the noun with higher CLIP retrieval frequency).
+- Prefer a specific canonical noun when its detector confidence exceeds the next-best by tie_break_delta_confidence. If confidences are close, prefer the noun with higher CLIP retrieval frequency or canonical inventory coverage.
+- When ambiguous, be conservative: omit low‑confidence tokens rather than guessing; prefer Option B when only one reliable noun exists; prefer Option A only when all non‑determiner nouns in the sentence can be traced to Line 1 via canonical IDs.
+- Candidate generation: you may produce up to 2–3 alternate candidates (each as two-line blocks) derived from alternate high‑confidence Line 1 sets if upstream canonicalization provides them. If multiple candidates are not supported, produce a single compliant candidate.
+- Diagnostics (must be logged per candidate, not necessarily exposed to end users): for each candidate, record canonical tokens used (IDs), detector confidences, CLIP retrieval frequencies, which Option (A/B) was used, omitted attributes due to thresholding, and any checks that failed or why a fallback/image unclear was chosen. Use these logs to tune thresholds and preferred_tag_count.
+
+Safety and scoring guidance
+- Maximize canonical lexical overlap between Line 1 and Line 2 to improve CLIP alignment while avoiding hallucination. Prefer discriminative, fine‑grained nouns. Do not use proper nouns, inferred identities, or emotions.
+- Allow canonical synonym mapping rather than literal string matching between Line 1 and Line 2 (both must map to same canonical inventory ID). This reduces brittle rejections while preserving traceability.
+- Scene/event nouns are allowed only with high scene classifier confidence and canonical mapping; keep identity/emotion tokens forbidden.
+
+If you cannot produce a reliable caption even with the conservative fallback rules, output exactly: image unclear
+
+Brief examples (illustrative only)
+- Example A (Option A): Line1: child, motorcycle, red
+  Line2: a child rides a red motorcycle down the street.
+- Example B (fallback Option B): Line1: dog
+  Line2: dog on sidewalk
+- Example C (image unclear): Line1:
+  Line2: image unclear
+
+Strictly follow the rules above. If no valid caption candidate passes these checks after attempting a conservative fallback, return Line 2 = ""image unclear"". Log diagnostics for every candidate to aid tuning and CLIP reranking.","man near bicycle
+man sits near bicycle with fruit baskets
+
+man near motorcycle
+man sits near motorcycle with fruit baskets
+
+man near street
+man sits near street with fruit baskets",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_899a7f1892,6,8358,flickr30k_test_008358,images/flickr30k/flickr30k_test_008358.jpg,"[""This guy is in midair while wearing a red soccer uniform."", ""A soccer player in a red shirt in diving into the air."", ""A man wearing a red jersey jumps in the air."", ""A soccer player is diving for the ball."", ""A soccer player diving on the field.""]",textgrad_899a7f1892,TextGrad Step 12,"Output 1–3 candidate captions. Each candidate must be exactly two lines (Line 1 = tags; Line 2 = caption). If multiple candidates are produced, separate candidates with a single blank line. Integrators should rerank candidates externally with CLIP; if you cannot rely on external reranking, produce only one candidate.
+
+Line 1 — tags (format rules; required)
+- Format: 2–5 comma‑separated lower‑case tokens (prefer exactly 3). No punctuation except commas. No surrounding whitespace beyond single spaces around commas.
+- Token types: visible concrete noun(s) or a single visible adjective (color/size) as the sole attribute token. Multiword fused objects (e.g., ""traffic light"", ""wine bottle"") count as one token.
+- Upstream canonicalization (assumed done before this prompt): map detector/classifier labels to a fixed canonical inventory (recommended: COCO / Visual Genome / CLIP‑common). Normalize plurals→singular and map synonyms→canonical ID. Only accept attribute tokens (colors/sizes) if attribute_confidence ≥ attribute_confidence_threshold.
+- Deduplicate tokens. Order tokens by visual discriminativeness (combine detector confidence + CLIP retrieval frequency; prefer higher score first). Prefer fine‑grained nouns when reliably detected.
+- Forbidden tokens: meta/tooling words, proper nouns/brands, dates/events that are identity‑sensitive, inferred identities/emotions/speculation. Scene/event nouns (e.g., parade, stadium) are permitted only if a scene classifier gives high confidence and they map to canonical inventory.
+- If fewer than two high‑confidence specific nouns remain after filtering, do not invent tags. Still produce a conservative fallback (see Line 2 Option B) when at least one reliable noun exists. If no reliable noun exists, leave Line 1 empty and follow the image unclear rule.
+
+Line 2 — caption (format rules; required)
+- Option A (preferred when possible): one factual sentence in present simple or present progressive, 7–13 words long, containing exactly one clear visible verb or one concrete spatial relation. Grammatical structure should be subject + verb + object/prepositional phrase. Allowed verbs: common visible actions (e.g., sits, stands, rides, holds, carries, walks, leans, looks, points, reads, opens, plays, wears, pushes, pulls, places, covers, is holding, is sitting, dances, performs, marches, runs, climbs, jumps, throws, catches, skates). Domain‑specific verbs are allowed only if supported by an activity/pose detector or strong co‑occurrence confidence.
+- Option B (fallback; use when fewer than two high‑confidence nouns or generator uncertainty): a conservative 2–6 word noun + location/scene phrase (e.g., ""dog on sidewalk"", ""man near tree"", ""red car in street""). No sentence punctuation.
+- Main noun requirement: the canonical main noun (Line 1 first token) must appear verbatim or as a canonical synonym (same canonical ID) in Line 2 and appear early in the sentence (within the first 3–4 tokens or within the subject phrase such as ""a/the <main_noun> ..."").
+- Token overlap: Option A captions should share at least two canonical tokens with Line 1 (one must be the main noun). Synonyms are allowed if they map to the same canonical ID. Attributes included in Line 1 must appear verbatim or as canonical synonyms in Line 2 if the attribute_confidence ≥ threshold; otherwise omit them.
+- Allowed extra words: determiners (a, the), prepositions (on, in, near, by, next to, in front of, behind), conjunction ""and"", and small function words. One optional trailing period only. No other punctuation or added objects/attributes not in Line 1 (unless they map to the same canonical ID).
+- Anti‑hallucination: do not introduce new objects, attributes, identities, emotions, or speculative actions not present in Line 1 or supported by detectors (attribute_confidence ≥ threshold). If a required check would fail (main noun missing, insufficient token overlap for Option A, verb unsupported, attribute below threshold, or forbidden token introduced), prefer Option B fallback when possible; if no reliable fallback exists, output exactly: image unclear
+
+Operational parameters and tie‑breaking
+- Parameters (defaults & recommendations): attribute_confidence_threshold = 65% (recommend sweep 60/70/75%), preferred_tag_count = 3, tie_break_delta_confidence = 10 percentage points (adaptive: if two classes' detector confidences are close, prefer the noun with higher CLIP retrieval frequency).
+- Prefer a specific canonical noun when its detector confidence exceeds the next-best by tie_break_delta_confidence. If confidences are close, prefer the noun with higher CLIP retrieval frequency or canonical inventory coverage.
+- When ambiguous, be conservative: omit low‑confidence tokens rather than guessing; prefer Option B when only one reliable noun exists; prefer Option A only when all non‑determiner nouns in the sentence can be traced to Line 1 via canonical IDs.
+- Candidate generation: you may produce up to 2–3 alternate candidates (each as two-line blocks) derived from alternate high‑confidence Line 1 sets if upstream canonicalization provides them. If multiple candidates are not supported, produce a single compliant candidate.
+- Diagnostics (must be logged per candidate, not necessarily exposed to end users): for each candidate, record canonical tokens used (IDs), detector confidences, CLIP retrieval frequencies, which Option (A/B) was used, omitted attributes due to thresholding, and any checks that failed or why a fallback/image unclear was chosen. Use these logs to tune thresholds and preferred_tag_count.
+
+Safety and scoring guidance
+- Maximize canonical lexical overlap between Line 1 and Line 2 to improve CLIP alignment while avoiding hallucination. Prefer discriminative, fine‑grained nouns. Do not use proper nouns, inferred identities, or emotions.
+- Allow canonical synonym mapping rather than literal string matching between Line 1 and Line 2 (both must map to same canonical inventory ID). This reduces brittle rejections while preserving traceability.
+- Scene/event nouns are allowed only with high scene classifier confidence and canonical mapping; keep identity/emotion tokens forbidden.
+
+If you cannot produce a reliable caption even with the conservative fallback rules, output exactly: image unclear
+
+Brief examples (illustrative only)
+- Example A (Option A): Line1: child, motorcycle, red
+  Line2: a child rides a red motorcycle down the street.
+- Example B (fallback Option B): Line1: dog
+  Line2: dog on sidewalk
+- Example C (image unclear): Line1:
+  Line2: image unclear
+
+Strictly follow the rules above. If no valid caption candidate passes these checks after attempting a conservative fallback, return Line 2 = ""image unclear"". Log diagnostics for every candidate to aid tuning and CLIP reranking.","goalkeeper in red dives to save ball
+goalkeeper dives across grass field",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_899a7f1892,16,3075,flickr30k_test_003075,images/flickr30k/flickr30k_test_003075.jpg,"[""A little boy wearing goggles on top of his head, walks through a deep water puddle with long pants on."", ""A small child in blue raincoat and a small child in a white shirt is waling in the rain water."", ""Small children are wading through shallow waters that are flooding the street."", ""People walking in a big puddle."", ""Children walking in the rain.""]",textgrad_899a7f1892,TextGrad Step 12,"Output 1–3 candidate captions. Each candidate must be exactly two lines (Line 1 = tags; Line 2 = caption). If multiple candidates are produced, separate candidates with a single blank line. Integrators should rerank candidates externally with CLIP; if you cannot rely on external reranking, produce only one candidate.
+
+Line 1 — tags (format rules; required)
+- Format: 2–5 comma‑separated lower‑case tokens (prefer exactly 3). No punctuation except commas. No surrounding whitespace beyond single spaces around commas.
+- Token types: visible concrete noun(s) or a single visible adjective (color/size) as the sole attribute token. Multiword fused objects (e.g., ""traffic light"", ""wine bottle"") count as one token.
+- Upstream canonicalization (assumed done before this prompt): map detector/classifier labels to a fixed canonical inventory (recommended: COCO / Visual Genome / CLIP‑common). Normalize plurals→singular and map synonyms→canonical ID. Only accept attribute tokens (colors/sizes) if attribute_confidence ≥ attribute_confidence_threshold.
+- Deduplicate tokens. Order tokens by visual discriminativeness (combine detector confidence + CLIP retrieval frequency; prefer higher score first). Prefer fine‑grained nouns when reliably detected.
+- Forbidden tokens: meta/tooling words, proper nouns/brands, dates/events that are identity‑sensitive, inferred identities/emotions/speculation. Scene/event nouns (e.g., parade, stadium) are permitted only if a scene classifier gives high confidence and they map to canonical inventory.
+- If fewer than two high‑confidence specific nouns remain after filtering, do not invent tags. Still produce a conservative fallback (see Line 2 Option B) when at least one reliable noun exists. If no reliable noun exists, leave Line 1 empty and follow the image unclear rule.
+
+Line 2 — caption (format rules; required)
+- Option A (preferred when possible): one factual sentence in present simple or present progressive, 7–13 words long, containing exactly one clear visible verb or one concrete spatial relation. Grammatical structure should be subject + verb + object/prepositional phrase. Allowed verbs: common visible actions (e.g., sits, stands, rides, holds, carries, walks, leans, looks, points, reads, opens, plays, wears, pushes, pulls, places, covers, is holding, is sitting, dances, performs, marches, runs, climbs, jumps, throws, catches, skates). Domain‑specific verbs are allowed only if supported by an activity/pose detector or strong co‑occurrence confidence.
+- Option B (fallback; use when fewer than two high‑confidence nouns or generator uncertainty): a conservative 2–6 word noun + location/scene phrase (e.g., ""dog on sidewalk"", ""man near tree"", ""red car in street""). No sentence punctuation.
+- Main noun requirement: the canonical main noun (Line 1 first token) must appear verbatim or as a canonical synonym (same canonical ID) in Line 2 and appear early in the sentence (within the first 3–4 tokens or within the subject phrase such as ""a/the <main_noun> ..."").
+- Token overlap: Option A captions should share at least two canonical tokens with Line 1 (one must be the main noun). Synonyms are allowed if they map to the same canonical ID. Attributes included in Line 1 must appear verbatim or as canonical synonyms in Line 2 if the attribute_confidence ≥ threshold; otherwise omit them.
+- Allowed extra words: determiners (a, the), prepositions (on, in, near, by, next to, in front of, behind), conjunction ""and"", and small function words. One optional trailing period only. No other punctuation or added objects/attributes not in Line 1 (unless they map to the same canonical ID).
+- Anti‑hallucination: do not introduce new objects, attributes, identities, emotions, or speculative actions not present in Line 1 or supported by detectors (attribute_confidence ≥ threshold). If a required check would fail (main noun missing, insufficient token overlap for Option A, verb unsupported, attribute below threshold, or forbidden token introduced), prefer Option B fallback when possible; if no reliable fallback exists, output exactly: image unclear
+
+Operational parameters and tie‑breaking
+- Parameters (defaults & recommendations): attribute_confidence_threshold = 65% (recommend sweep 60/70/75%), preferred_tag_count = 3, tie_break_delta_confidence = 10 percentage points (adaptive: if two classes' detector confidences are close, prefer the noun with higher CLIP retrieval frequency).
+- Prefer a specific canonical noun when its detector confidence exceeds the next-best by tie_break_delta_confidence. If confidences are close, prefer the noun with higher CLIP retrieval frequency or canonical inventory coverage.
+- When ambiguous, be conservative: omit low‑confidence tokens rather than guessing; prefer Option B when only one reliable noun exists; prefer Option A only when all non‑determiner nouns in the sentence can be traced to Line 1 via canonical IDs.
+- Candidate generation: you may produce up to 2–3 alternate candidates (each as two-line blocks) derived from alternate high‑confidence Line 1 sets if upstream canonicalization provides them. If multiple candidates are not supported, produce a single compliant candidate.
+- Diagnostics (must be logged per candidate, not necessarily exposed to end users): for each candidate, record canonical tokens used (IDs), detector confidences, CLIP retrieval frequencies, which Option (A/B) was used, omitted attributes due to thresholding, and any checks that failed or why a fallback/image unclear was chosen. Use these logs to tune thresholds and preferred_tag_count.
+
+Safety and scoring guidance
+- Maximize canonical lexical overlap between Line 1 and Line 2 to improve CLIP alignment while avoiding hallucination. Prefer discriminative, fine‑grained nouns. Do not use proper nouns, inferred identities, or emotions.
+- Allow canonical synonym mapping rather than literal string matching between Line 1 and Line 2 (both must map to same canonical inventory ID). This reduces brittle rejections while preserving traceability.
+- Scene/event nouns are allowed only with high scene classifier confidence and canonical mapping; keep identity/emotion tokens forbidden.
+
+If you cannot produce a reliable caption even with the conservative fallback rules, output exactly: image unclear
+
+Brief examples (illustrative only)
+- Example A (Option A): Line1: child, motorcycle, red
+  Line2: a child rides a red motorcycle down the street.
+- Example B (fallback Option B): Line1: dog
+  Line2: dog on sidewalk
+- Example C (image unclear): Line1:
+  Line2: image unclear
+
+Strictly follow the rules above. If no valid caption candidate passes these checks after attempting a conservative fallback, return Line 2 = ""image unclear"". Log diagnostics for every candidate to aid tuning and CLIP reranking.","child, raincoat, boy
+a child in a raincoat walks through puddles while a boy stands nearby.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_899a7f1892,21,12773,flickr30k_test_012773,images/flickr30k/flickr30k_test_012773.jpg,"[""A man in blue jeans is sitting on the shoulders of another person as he interacts with a woman performer on stage at a concert."", ""A woman with a microphone on a stage points the microphone at a man who is standing in the audience in front of her"", ""A fan sitting on someone's shoulders is waving to a woman on a stage that says Amnesty International."", ""Woman on stage at Amnesty International event exchanges gestures with man offstage."", ""A woman on stage points to a man holding up his hand""]",textgrad_899a7f1892,TextGrad Step 12,"Output 1–3 candidate captions. Each candidate must be exactly two lines (Line 1 = tags; Line 2 = caption). If multiple candidates are produced, separate candidates with a single blank line. Integrators should rerank candidates externally with CLIP; if you cannot rely on external reranking, produce only one candidate.
+
+Line 1 — tags (format rules; required)
+- Format: 2–5 comma‑separated lower‑case tokens (prefer exactly 3). No punctuation except commas. No surrounding whitespace beyond single spaces around commas.
+- Token types: visible concrete noun(s) or a single visible adjective (color/size) as the sole attribute token. Multiword fused objects (e.g., ""traffic light"", ""wine bottle"") count as one token.
+- Upstream canonicalization (assumed done before this prompt): map detector/classifier labels to a fixed canonical inventory (recommended: COCO / Visual Genome / CLIP‑common). Normalize plurals→singular and map synonyms→canonical ID. Only accept attribute tokens (colors/sizes) if attribute_confidence ≥ attribute_confidence_threshold.
+- Deduplicate tokens. Order tokens by visual discriminativeness (combine detector confidence + CLIP retrieval frequency; prefer higher score first). Prefer fine‑grained nouns when reliably detected.
+- Forbidden tokens: meta/tooling words, proper nouns/brands, dates/events that are identity‑sensitive, inferred identities/emotions/speculation. Scene/event nouns (e.g., parade, stadium) are permitted only if a scene classifier gives high confidence and they map to canonical inventory.
+- If fewer than two high‑confidence specific nouns remain after filtering, do not invent tags. Still produce a conservative fallback (see Line 2 Option B) when at least one reliable noun exists. If no reliable noun exists, leave Line 1 empty and follow the image unclear rule.
+
+Line 2 — caption (format rules; required)
+- Option A (preferred when possible): one factual sentence in present simple or present progressive, 7–13 words long, containing exactly one clear visible verb or one concrete spatial relation. Grammatical structure should be subject + verb + object/prepositional phrase. Allowed verbs: common visible actions (e.g., sits, stands, rides, holds, carries, walks, leans, looks, points, reads, opens, plays, wears, pushes, pulls, places, covers, is holding, is sitting, dances, performs, marches, runs, climbs, jumps, throws, catches, skates). Domain‑specific verbs are allowed only if supported by an activity/pose detector or strong co‑occurrence confidence.
+- Option B (fallback; use when fewer than two high‑confidence nouns or generator uncertainty): a conservative 2–6 word noun + location/scene phrase (e.g., ""dog on sidewalk"", ""man near tree"", ""red car in street""). No sentence punctuation.
+- Main noun requirement: the canonical main noun (Line 1 first token) must appear verbatim or as a canonical synonym (same canonical ID) in Line 2 and appear early in the sentence (within the first 3–4 tokens or within the subject phrase such as ""a/the <main_noun> ..."").
+- Token overlap: Option A captions should share at least two canonical tokens with Line 1 (one must be the main noun). Synonyms are allowed if they map to the same canonical ID. Attributes included in Line 1 must appear verbatim or as canonical synonyms in Line 2 if the attribute_confidence ≥ threshold; otherwise omit them.
+- Allowed extra words: determiners (a, the), prepositions (on, in, near, by, next to, in front of, behind), conjunction ""and"", and small function words. One optional trailing period only. No other punctuation or added objects/attributes not in Line 1 (unless they map to the same canonical ID).
+- Anti‑hallucination: do not introduce new objects, attributes, identities, emotions, or speculative actions not present in Line 1 or supported by detectors (attribute_confidence ≥ threshold). If a required check would fail (main noun missing, insufficient token overlap for Option A, verb unsupported, attribute below threshold, or forbidden token introduced), prefer Option B fallback when possible; if no reliable fallback exists, output exactly: image unclear
+
+Operational parameters and tie‑breaking
+- Parameters (defaults & recommendations): attribute_confidence_threshold = 65% (recommend sweep 60/70/75%), preferred_tag_count = 3, tie_break_delta_confidence = 10 percentage points (adaptive: if two classes' detector confidences are close, prefer the noun with higher CLIP retrieval frequency).
+- Prefer a specific canonical noun when its detector confidence exceeds the next-best by tie_break_delta_confidence. If confidences are close, prefer the noun with higher CLIP retrieval frequency or canonical inventory coverage.
+- When ambiguous, be conservative: omit low‑confidence tokens rather than guessing; prefer Option B when only one reliable noun exists; prefer Option A only when all non‑determiner nouns in the sentence can be traced to Line 1 via canonical IDs.
+- Candidate generation: you may produce up to 2–3 alternate candidates (each as two-line blocks) derived from alternate high‑confidence Line 1 sets if upstream canonicalization provides them. If multiple candidates are not supported, produce a single compliant candidate.
+- Diagnostics (must be logged per candidate, not necessarily exposed to end users): for each candidate, record canonical tokens used (IDs), detector confidences, CLIP retrieval frequencies, which Option (A/B) was used, omitted attributes due to thresholding, and any checks that failed or why a fallback/image unclear was chosen. Use these logs to tune thresholds and preferred_tag_count.
+
+Safety and scoring guidance
+- Maximize canonical lexical overlap between Line 1 and Line 2 to improve CLIP alignment while avoiding hallucination. Prefer discriminative, fine‑grained nouns. Do not use proper nouns, inferred identities, or emotions.
+- Allow canonical synonym mapping rather than literal string matching between Line 1 and Line 2 (both must map to same canonical inventory ID). This reduces brittle rejections while preserving traceability.
+- Scene/event nouns are allowed only with high scene classifier confidence and canonical mapping; keep identity/emotion tokens forbidden.
+
+If you cannot produce a reliable caption even with the conservative fallback rules, output exactly: image unclear
+
+Brief examples (illustrative only)
+- Example A (Option A): Line1: child, motorcycle, red
+  Line2: a child rides a red motorcycle down the street.
+- Example B (fallback Option B): Line1: dog
+  Line2: dog on sidewalk
+- Example C (image unclear): Line1:
+  Line2: image unclear
+
+Strictly follow the rules above. If no valid caption candidate passes these checks after attempting a conservative fallback, return Line 2 = ""image unclear"". Log diagnostics for every candidate to aid tuning and CLIP reranking.","man on stage
+man raises hand toward singer on stage
+
+man in jeans
+man in jeans on stage
+
+image unclear",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_899a7f1892,23,19904,flickr30k_test_019904,images/flickr30k/flickr30k_test_019904.jpg,"[""The man in the tan jacket is taking large steps as he walks past the off white building."", ""A well-dressed, shaven-head young man strides through railings past a restaurant."", ""A man wearing a tan jacket walks into Le Mignon in the afternoon."", ""A man walking across a bridge near a steak restaurant."", ""A bald man walking on a bridge.""]",textgrad_899a7f1892,TextGrad Step 12,"Output 1–3 candidate captions. Each candidate must be exactly two lines (Line 1 = tags; Line 2 = caption). If multiple candidates are produced, separate candidates with a single blank line. Integrators should rerank candidates externally with CLIP; if you cannot rely on external reranking, produce only one candidate.
+
+Line 1 — tags (format rules; required)
+- Format: 2–5 comma‑separated lower‑case tokens (prefer exactly 3). No punctuation except commas. No surrounding whitespace beyond single spaces around commas.
+- Token types: visible concrete noun(s) or a single visible adjective (color/size) as the sole attribute token. Multiword fused objects (e.g., ""traffic light"", ""wine bottle"") count as one token.
+- Upstream canonicalization (assumed done before this prompt): map detector/classifier labels to a fixed canonical inventory (recommended: COCO / Visual Genome / CLIP‑common). Normalize plurals→singular and map synonyms→canonical ID. Only accept attribute tokens (colors/sizes) if attribute_confidence ≥ attribute_confidence_threshold.
+- Deduplicate tokens. Order tokens by visual discriminativeness (combine detector confidence + CLIP retrieval frequency; prefer higher score first). Prefer fine‑grained nouns when reliably detected.
+- Forbidden tokens: meta/tooling words, proper nouns/brands, dates/events that are identity‑sensitive, inferred identities/emotions/speculation. Scene/event nouns (e.g., parade, stadium) are permitted only if a scene classifier gives high confidence and they map to canonical inventory.
+- If fewer than two high‑confidence specific nouns remain after filtering, do not invent tags. Still produce a conservative fallback (see Line 2 Option B) when at least one reliable noun exists. If no reliable noun exists, leave Line 1 empty and follow the image unclear rule.
+
+Line 2 — caption (format rules; required)
+- Option A (preferred when possible): one factual sentence in present simple or present progressive, 7–13 words long, containing exactly one clear visible verb or one concrete spatial relation. Grammatical structure should be subject + verb + object/prepositional phrase. Allowed verbs: common visible actions (e.g., sits, stands, rides, holds, carries, walks, leans, looks, points, reads, opens, plays, wears, pushes, pulls, places, covers, is holding, is sitting, dances, performs, marches, runs, climbs, jumps, throws, catches, skates). Domain‑specific verbs are allowed only if supported by an activity/pose detector or strong co‑occurrence confidence.
+- Option B (fallback; use when fewer than two high‑confidence nouns or generator uncertainty): a conservative 2–6 word noun + location/scene phrase (e.g., ""dog on sidewalk"", ""man near tree"", ""red car in street""). No sentence punctuation.
+- Main noun requirement: the canonical main noun (Line 1 first token) must appear verbatim or as a canonical synonym (same canonical ID) in Line 2 and appear early in the sentence (within the first 3–4 tokens or within the subject phrase such as ""a/the <main_noun> ..."").
+- Token overlap: Option A captions should share at least two canonical tokens with Line 1 (one must be the main noun). Synonyms are allowed if they map to the same canonical ID. Attributes included in Line 1 must appear verbatim or as canonical synonyms in Line 2 if the attribute_confidence ≥ threshold; otherwise omit them.
+- Allowed extra words: determiners (a, the), prepositions (on, in, near, by, next to, in front of, behind), conjunction ""and"", and small function words. One optional trailing period only. No other punctuation or added objects/attributes not in Line 1 (unless they map to the same canonical ID).
+- Anti‑hallucination: do not introduce new objects, attributes, identities, emotions, or speculative actions not present in Line 1 or supported by detectors (attribute_confidence ≥ threshold). If a required check would fail (main noun missing, insufficient token overlap for Option A, verb unsupported, attribute below threshold, or forbidden token introduced), prefer Option B fallback when possible; if no reliable fallback exists, output exactly: image unclear
+
+Operational parameters and tie‑breaking
+- Parameters (defaults & recommendations): attribute_confidence_threshold = 65% (recommend sweep 60/70/75%), preferred_tag_count = 3, tie_break_delta_confidence = 10 percentage points (adaptive: if two classes' detector confidences are close, prefer the noun with higher CLIP retrieval frequency).
+- Prefer a specific canonical noun when its detector confidence exceeds the next-best by tie_break_delta_confidence. If confidences are close, prefer the noun with higher CLIP retrieval frequency or canonical inventory coverage.
+- When ambiguous, be conservative: omit low‑confidence tokens rather than guessing; prefer Option B when only one reliable noun exists; prefer Option A only when all non‑determiner nouns in the sentence can be traced to Line 1 via canonical IDs.
+- Candidate generation: you may produce up to 2–3 alternate candidates (each as two-line blocks) derived from alternate high‑confidence Line 1 sets if upstream canonicalization provides them. If multiple candidates are not supported, produce a single compliant candidate.
+- Diagnostics (must be logged per candidate, not necessarily exposed to end users): for each candidate, record canonical tokens used (IDs), detector confidences, CLIP retrieval frequencies, which Option (A/B) was used, omitted attributes due to thresholding, and any checks that failed or why a fallback/image unclear was chosen. Use these logs to tune thresholds and preferred_tag_count.
+
+Safety and scoring guidance
+- Maximize canonical lexical overlap between Line 1 and Line 2 to improve CLIP alignment while avoiding hallucination. Prefer discriminative, fine‑grained nouns. Do not use proper nouns, inferred identities, or emotions.
+- Allow canonical synonym mapping rather than literal string matching between Line 1 and Line 2 (both must map to same canonical inventory ID). This reduces brittle rejections while preserving traceability.
+- Scene/event nouns are allowed only with high scene classifier confidence and canonical mapping; keep identity/emotion tokens forbidden.
+
+If you cannot produce a reliable caption even with the conservative fallback rules, output exactly: image unclear
+
+Brief examples (illustrative only)
+- Example A (Option A): Line1: child, motorcycle, red
+  Line2: a child rides a red motorcycle down the street.
+- Example B (fallback Option B): Line1: dog
+  Line2: dog on sidewalk
+- Example C (image unclear): Line1:
+  Line2: image unclear
+
+Strictly follow the rules above. If no valid caption candidate passes these checks after attempting a conservative fallback, return Line 2 = ""image unclear"". Log diagnostics for every candidate to aid tuning and CLIP reranking.","man walking on bridge
+man walks past restaurant sign
+
+man walking on bridge
+man walks near yellow brick building
+
+image unclear",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_899a7f1892,31,26274,flickr30k_test_026274,images/flickr30k/flickr30k_test_026274.jpg,"[""A man in a black hat is rearing up on his brown horse while a crowd of people look on from a distance."", ""A man in a black cowboy hat holds on as his horse rears up."", ""A man on a horse galloping onto its back two feet."", ""Cowboy holding on to the horse"", ""Man riding a bucking bronco!""]",textgrad_899a7f1892,TextGrad Step 12,"Output 1–3 candidate captions. Each candidate must be exactly two lines (Line 1 = tags; Line 2 = caption). If multiple candidates are produced, separate candidates with a single blank line. Integrators should rerank candidates externally with CLIP; if you cannot rely on external reranking, produce only one candidate.
+
+Line 1 — tags (format rules; required)
+- Format: 2–5 comma‑separated lower‑case tokens (prefer exactly 3). No punctuation except commas. No surrounding whitespace beyond single spaces around commas.
+- Token types: visible concrete noun(s) or a single visible adjective (color/size) as the sole attribute token. Multiword fused objects (e.g., ""traffic light"", ""wine bottle"") count as one token.
+- Upstream canonicalization (assumed done before this prompt): map detector/classifier labels to a fixed canonical inventory (recommended: COCO / Visual Genome / CLIP‑common). Normalize plurals→singular and map synonyms→canonical ID. Only accept attribute tokens (colors/sizes) if attribute_confidence ≥ attribute_confidence_threshold.
+- Deduplicate tokens. Order tokens by visual discriminativeness (combine detector confidence + CLIP retrieval frequency; prefer higher score first). Prefer fine‑grained nouns when reliably detected.
+- Forbidden tokens: meta/tooling words, proper nouns/brands, dates/events that are identity‑sensitive, inferred identities/emotions/speculation. Scene/event nouns (e.g., parade, stadium) are permitted only if a scene classifier gives high confidence and they map to canonical inventory.
+- If fewer than two high‑confidence specific nouns remain after filtering, do not invent tags. Still produce a conservative fallback (see Line 2 Option B) when at least one reliable noun exists. If no reliable noun exists, leave Line 1 empty and follow the image unclear rule.
+
+Line 2 — caption (format rules; required)
+- Option A (preferred when possible): one factual sentence in present simple or present progressive, 7–13 words long, containing exactly one clear visible verb or one concrete spatial relation. Grammatical structure should be subject + verb + object/prepositional phrase. Allowed verbs: common visible actions (e.g., sits, stands, rides, holds, carries, walks, leans, looks, points, reads, opens, plays, wears, pushes, pulls, places, covers, is holding, is sitting, dances, performs, marches, runs, climbs, jumps, throws, catches, skates). Domain‑specific verbs are allowed only if supported by an activity/pose detector or strong co‑occurrence confidence.
+- Option B (fallback; use when fewer than two high‑confidence nouns or generator uncertainty): a conservative 2–6 word noun + location/scene phrase (e.g., ""dog on sidewalk"", ""man near tree"", ""red car in street""). No sentence punctuation.
+- Main noun requirement: the canonical main noun (Line 1 first token) must appear verbatim or as a canonical synonym (same canonical ID) in Line 2 and appear early in the sentence (within the first 3–4 tokens or within the subject phrase such as ""a/the <main_noun> ..."").
+- Token overlap: Option A captions should share at least two canonical tokens with Line 1 (one must be the main noun). Synonyms are allowed if they map to the same canonical ID. Attributes included in Line 1 must appear verbatim or as canonical synonyms in Line 2 if the attribute_confidence ≥ threshold; otherwise omit them.
+- Allowed extra words: determiners (a, the), prepositions (on, in, near, by, next to, in front of, behind), conjunction ""and"", and small function words. One optional trailing period only. No other punctuation or added objects/attributes not in Line 1 (unless they map to the same canonical ID).
+- Anti‑hallucination: do not introduce new objects, attributes, identities, emotions, or speculative actions not present in Line 1 or supported by detectors (attribute_confidence ≥ threshold). If a required check would fail (main noun missing, insufficient token overlap for Option A, verb unsupported, attribute below threshold, or forbidden token introduced), prefer Option B fallback when possible; if no reliable fallback exists, output exactly: image unclear
+
+Operational parameters and tie‑breaking
+- Parameters (defaults & recommendations): attribute_confidence_threshold = 65% (recommend sweep 60/70/75%), preferred_tag_count = 3, tie_break_delta_confidence = 10 percentage points (adaptive: if two classes' detector confidences are close, prefer the noun with higher CLIP retrieval frequency).
+- Prefer a specific canonical noun when its detector confidence exceeds the next-best by tie_break_delta_confidence. If confidences are close, prefer the noun with higher CLIP retrieval frequency or canonical inventory coverage.
+- When ambiguous, be conservative: omit low‑confidence tokens rather than guessing; prefer Option B when only one reliable noun exists; prefer Option A only when all non‑determiner nouns in the sentence can be traced to Line 1 via canonical IDs.
+- Candidate generation: you may produce up to 2–3 alternate candidates (each as two-line blocks) derived from alternate high‑confidence Line 1 sets if upstream canonicalization provides them. If multiple candidates are not supported, produce a single compliant candidate.
+- Diagnostics (must be logged per candidate, not necessarily exposed to end users): for each candidate, record canonical tokens used (IDs), detector confidences, CLIP retrieval frequencies, which Option (A/B) was used, omitted attributes due to thresholding, and any checks that failed or why a fallback/image unclear was chosen. Use these logs to tune thresholds and preferred_tag_count.
+
+Safety and scoring guidance
+- Maximize canonical lexical overlap between Line 1 and Line 2 to improve CLIP alignment while avoiding hallucination. Prefer discriminative, fine‑grained nouns. Do not use proper nouns, inferred identities, or emotions.
+- Allow canonical synonym mapping rather than literal string matching between Line 1 and Line 2 (both must map to same canonical inventory ID). This reduces brittle rejections while preserving traceability.
+- Scene/event nouns are allowed only with high scene classifier confidence and canonical mapping; keep identity/emotion tokens forbidden.
+
+If you cannot produce a reliable caption even with the conservative fallback rules, output exactly: image unclear
+
+Brief examples (illustrative only)
+- Example A (Option A): Line1: child, motorcycle, red
+  Line2: a child rides a red motorcycle down the street.
+- Example B (fallback Option B): Line1: dog
+  Line2: dog on sidewalk
+- Example C (image unclear): Line1:
+  Line2: image unclear
+
+Strictly follow the rules above. If no valid caption candidate passes these checks after attempting a conservative fallback, return Line 2 = ""image unclear"". Log diagnostics for every candidate to aid tuning and CLIP reranking.","horse rider performs trick with batons
+man on horse holds batons in air
+
+horse rider performs trick with batons
+horse rears up as rider holds batons
+
+horse rider performs trick with batons
+rider on horse holds batons while horse rears",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_899a7f1892,38,1002,flickr30k_test_001002,images/flickr30k/flickr30k_test_001002.jpg,"[""Someone wearing a large hat is sitting on colorful blankets working a loom with a pair of men's dress shoes in front of him."", ""An adult in brightly colored clothing and hat, is weaving or beading while sitting on brightly colored rugs."", ""A Hispanic person sitting among colorful fabric making a belt."", ""A gentleman in traditional garb weaving a blanket in a field."", ""A man works on weaving a cloth good for sale at the market.""]",textgrad_899a7f1892,TextGrad Step 12,"Output 1–3 candidate captions. Each candidate must be exactly two lines (Line 1 = tags; Line 2 = caption). If multiple candidates are produced, separate candidates with a single blank line. Integrators should rerank candidates externally with CLIP; if you cannot rely on external reranking, produce only one candidate.
+
+Line 1 — tags (format rules; required)
+- Format: 2–5 comma‑separated lower‑case tokens (prefer exactly 3). No punctuation except commas. No surrounding whitespace beyond single spaces around commas.
+- Token types: visible concrete noun(s) or a single visible adjective (color/size) as the sole attribute token. Multiword fused objects (e.g., ""traffic light"", ""wine bottle"") count as one token.
+- Upstream canonicalization (assumed done before this prompt): map detector/classifier labels to a fixed canonical inventory (recommended: COCO / Visual Genome / CLIP‑common). Normalize plurals→singular and map synonyms→canonical ID. Only accept attribute tokens (colors/sizes) if attribute_confidence ≥ attribute_confidence_threshold.
+- Deduplicate tokens. Order tokens by visual discriminativeness (combine detector confidence + CLIP retrieval frequency; prefer higher score first). Prefer fine‑grained nouns when reliably detected.
+- Forbidden tokens: meta/tooling words, proper nouns/brands, dates/events that are identity‑sensitive, inferred identities/emotions/speculation. Scene/event nouns (e.g., parade, stadium) are permitted only if a scene classifier gives high confidence and they map to canonical inventory.
+- If fewer than two high‑confidence specific nouns remain after filtering, do not invent tags. Still produce a conservative fallback (see Line 2 Option B) when at least one reliable noun exists. If no reliable noun exists, leave Line 1 empty and follow the image unclear rule.
+
+Line 2 — caption (format rules; required)
+- Option A (preferred when possible): one factual sentence in present simple or present progressive, 7–13 words long, containing exactly one clear visible verb or one concrete spatial relation. Grammatical structure should be subject + verb + object/prepositional phrase. Allowed verbs: common visible actions (e.g., sits, stands, rides, holds, carries, walks, leans, looks, points, reads, opens, plays, wears, pushes, pulls, places, covers, is holding, is sitting, dances, performs, marches, runs, climbs, jumps, throws, catches, skates). Domain‑specific verbs are allowed only if supported by an activity/pose detector or strong co‑occurrence confidence.
+- Option B (fallback; use when fewer than two high‑confidence nouns or generator uncertainty): a conservative 2–6 word noun + location/scene phrase (e.g., ""dog on sidewalk"", ""man near tree"", ""red car in street""). No sentence punctuation.
+- Main noun requirement: the canonical main noun (Line 1 first token) must appear verbatim or as a canonical synonym (same canonical ID) in Line 2 and appear early in the sentence (within the first 3–4 tokens or within the subject phrase such as ""a/the <main_noun> ..."").
+- Token overlap: Option A captions should share at least two canonical tokens with Line 1 (one must be the main noun). Synonyms are allowed if they map to the same canonical ID. Attributes included in Line 1 must appear verbatim or as canonical synonyms in Line 2 if the attribute_confidence ≥ threshold; otherwise omit them.
+- Allowed extra words: determiners (a, the), prepositions (on, in, near, by, next to, in front of, behind), conjunction ""and"", and small function words. One optional trailing period only. No other punctuation or added objects/attributes not in Line 1 (unless they map to the same canonical ID).
+- Anti‑hallucination: do not introduce new objects, attributes, identities, emotions, or speculative actions not present in Line 1 or supported by detectors (attribute_confidence ≥ threshold). If a required check would fail (main noun missing, insufficient token overlap for Option A, verb unsupported, attribute below threshold, or forbidden token introduced), prefer Option B fallback when possible; if no reliable fallback exists, output exactly: image unclear
+
+Operational parameters and tie‑breaking
+- Parameters (defaults & recommendations): attribute_confidence_threshold = 65% (recommend sweep 60/70/75%), preferred_tag_count = 3, tie_break_delta_confidence = 10 percentage points (adaptive: if two classes' detector confidences are close, prefer the noun with higher CLIP retrieval frequency).
+- Prefer a specific canonical noun when its detector confidence exceeds the next-best by tie_break_delta_confidence. If confidences are close, prefer the noun with higher CLIP retrieval frequency or canonical inventory coverage.
+- When ambiguous, be conservative: omit low‑confidence tokens rather than guessing; prefer Option B when only one reliable noun exists; prefer Option A only when all non‑determiner nouns in the sentence can be traced to Line 1 via canonical IDs.
+- Candidate generation: you may produce up to 2–3 alternate candidates (each as two-line blocks) derived from alternate high‑confidence Line 1 sets if upstream canonicalization provides them. If multiple candidates are not supported, produce a single compliant candidate.
+- Diagnostics (must be logged per candidate, not necessarily exposed to end users): for each candidate, record canonical tokens used (IDs), detector confidences, CLIP retrieval frequencies, which Option (A/B) was used, omitted attributes due to thresholding, and any checks that failed or why a fallback/image unclear was chosen. Use these logs to tune thresholds and preferred_tag_count.
+
+Safety and scoring guidance
+- Maximize canonical lexical overlap between Line 1 and Line 2 to improve CLIP alignment while avoiding hallucination. Prefer discriminative, fine‑grained nouns. Do not use proper nouns, inferred identities, or emotions.
+- Allow canonical synonym mapping rather than literal string matching between Line 1 and Line 2 (both must map to same canonical inventory ID). This reduces brittle rejections while preserving traceability.
+- Scene/event nouns are allowed only with high scene classifier confidence and canonical mapping; keep identity/emotion tokens forbidden.
+
+If you cannot produce a reliable caption even with the conservative fallback rules, output exactly: image unclear
+
+Brief examples (illustrative only)
+- Example A (Option A): Line1: child, motorcycle, red
+  Line2: a child rides a red motorcycle down the street.
+- Example B (fallback Option B): Line1: dog
+  Line2: dog on sidewalk
+- Example C (image unclear): Line1:
+  Line2: image unclear
+
+Strictly follow the rules above. If no valid caption candidate passes these checks after attempting a conservative fallback, return Line 2 = ""image unclear"". Log diagnostics for every candidate to aid tuning and CLIP reranking.","person wearing hat sits on blanket
+person wearing hat sits on blanket holding sword
+
+person wearing hat sits on blanket
+person wearing hat sits on blanket with colorful textiles
+
+person wearing hat sits on blanket
+person wearing hat sits on blanket near shoes",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_899a7f1892,39,731,flickr30k_test_000731,images/flickr30k/flickr30k_test_000731.jpg,"[""Three little blond girls, two in blue, one in pink, play on a sunny beach."", ""Three children are playing in sand near to the beach."", ""Three young girls dance on the beach in the sand."", ""Three children playing in sand at beach"", ""Three girls play in the sand.""]",textgrad_899a7f1892,TextGrad Step 12,"Output 1–3 candidate captions. Each candidate must be exactly two lines (Line 1 = tags; Line 2 = caption). If multiple candidates are produced, separate candidates with a single blank line. Integrators should rerank candidates externally with CLIP; if you cannot rely on external reranking, produce only one candidate.
+
+Line 1 — tags (format rules; required)
+- Format: 2–5 comma‑separated lower‑case tokens (prefer exactly 3). No punctuation except commas. No surrounding whitespace beyond single spaces around commas.
+- Token types: visible concrete noun(s) or a single visible adjective (color/size) as the sole attribute token. Multiword fused objects (e.g., ""traffic light"", ""wine bottle"") count as one token.
+- Upstream canonicalization (assumed done before this prompt): map detector/classifier labels to a fixed canonical inventory (recommended: COCO / Visual Genome / CLIP‑common). Normalize plurals→singular and map synonyms→canonical ID. Only accept attribute tokens (colors/sizes) if attribute_confidence ≥ attribute_confidence_threshold.
+- Deduplicate tokens. Order tokens by visual discriminativeness (combine detector confidence + CLIP retrieval frequency; prefer higher score first). Prefer fine‑grained nouns when reliably detected.
+- Forbidden tokens: meta/tooling words, proper nouns/brands, dates/events that are identity‑sensitive, inferred identities/emotions/speculation. Scene/event nouns (e.g., parade, stadium) are permitted only if a scene classifier gives high confidence and they map to canonical inventory.
+- If fewer than two high‑confidence specific nouns remain after filtering, do not invent tags. Still produce a conservative fallback (see Line 2 Option B) when at least one reliable noun exists. If no reliable noun exists, leave Line 1 empty and follow the image unclear rule.
+
+Line 2 — caption (format rules; required)
+- Option A (preferred when possible): one factual sentence in present simple or present progressive, 7–13 words long, containing exactly one clear visible verb or one concrete spatial relation. Grammatical structure should be subject + verb + object/prepositional phrase. Allowed verbs: common visible actions (e.g., sits, stands, rides, holds, carries, walks, leans, looks, points, reads, opens, plays, wears, pushes, pulls, places, covers, is holding, is sitting, dances, performs, marches, runs, climbs, jumps, throws, catches, skates). Domain‑specific verbs are allowed only if supported by an activity/pose detector or strong co‑occurrence confidence.
+- Option B (fallback; use when fewer than two high‑confidence nouns or generator uncertainty): a conservative 2–6 word noun + location/scene phrase (e.g., ""dog on sidewalk"", ""man near tree"", ""red car in street""). No sentence punctuation.
+- Main noun requirement: the canonical main noun (Line 1 first token) must appear verbatim or as a canonical synonym (same canonical ID) in Line 2 and appear early in the sentence (within the first 3–4 tokens or within the subject phrase such as ""a/the <main_noun> ..."").
+- Token overlap: Option A captions should share at least two canonical tokens with Line 1 (one must be the main noun). Synonyms are allowed if they map to the same canonical ID. Attributes included in Line 1 must appear verbatim or as canonical synonyms in Line 2 if the attribute_confidence ≥ threshold; otherwise omit them.
+- Allowed extra words: determiners (a, the), prepositions (on, in, near, by, next to, in front of, behind), conjunction ""and"", and small function words. One optional trailing period only. No other punctuation or added objects/attributes not in Line 1 (unless they map to the same canonical ID).
+- Anti‑hallucination: do not introduce new objects, attributes, identities, emotions, or speculative actions not present in Line 1 or supported by detectors (attribute_confidence ≥ threshold). If a required check would fail (main noun missing, insufficient token overlap for Option A, verb unsupported, attribute below threshold, or forbidden token introduced), prefer Option B fallback when possible; if no reliable fallback exists, output exactly: image unclear
+
+Operational parameters and tie‑breaking
+- Parameters (defaults & recommendations): attribute_confidence_threshold = 65% (recommend sweep 60/70/75%), preferred_tag_count = 3, tie_break_delta_confidence = 10 percentage points (adaptive: if two classes' detector confidences are close, prefer the noun with higher CLIP retrieval frequency).
+- Prefer a specific canonical noun when its detector confidence exceeds the next-best by tie_break_delta_confidence. If confidences are close, prefer the noun with higher CLIP retrieval frequency or canonical inventory coverage.
+- When ambiguous, be conservative: omit low‑confidence tokens rather than guessing; prefer Option B when only one reliable noun exists; prefer Option A only when all non‑determiner nouns in the sentence can be traced to Line 1 via canonical IDs.
+- Candidate generation: you may produce up to 2–3 alternate candidates (each as two-line blocks) derived from alternate high‑confidence Line 1 sets if upstream canonicalization provides them. If multiple candidates are not supported, produce a single compliant candidate.
+- Diagnostics (must be logged per candidate, not necessarily exposed to end users): for each candidate, record canonical tokens used (IDs), detector confidences, CLIP retrieval frequencies, which Option (A/B) was used, omitted attributes due to thresholding, and any checks that failed or why a fallback/image unclear was chosen. Use these logs to tune thresholds and preferred_tag_count.
+
+Safety and scoring guidance
+- Maximize canonical lexical overlap between Line 1 and Line 2 to improve CLIP alignment while avoiding hallucination. Prefer discriminative, fine‑grained nouns. Do not use proper nouns, inferred identities, or emotions.
+- Allow canonical synonym mapping rather than literal string matching between Line 1 and Line 2 (both must map to same canonical inventory ID). This reduces brittle rejections while preserving traceability.
+- Scene/event nouns are allowed only with high scene classifier confidence and canonical mapping; keep identity/emotion tokens forbidden.
+
+If you cannot produce a reliable caption even with the conservative fallback rules, output exactly: image unclear
+
+Brief examples (illustrative only)
+- Example A (Option A): Line1: child, motorcycle, red
+  Line2: a child rides a red motorcycle down the street.
+- Example B (fallback Option B): Line1: dog
+  Line2: dog on sidewalk
+- Example C (image unclear): Line1:
+  Line2: image unclear
+
+Strictly follow the rules above. If no valid caption candidate passes these checks after attempting a conservative fallback, return Line 2 = ""image unclear"". Log diagnostics for every candidate to aid tuning and CLIP reranking.","child, sand, beach
+children play on the sandy beach near the ocean
+
+child, sand, beach
+a child stands on the sand at the beach while others play nearby
+
+child, sand, beach
+children are on the sand at the beach with ocean in background",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_899a7f1892,40,833,flickr30k_test_000833,images/flickr30k/flickr30k_test_000833.jpg,"[""A beach scene with three boys in swim shorts each holding paddle ball racquets but no ball in sight."", ""Kids play a game of ball with paddles at the water's edge at the beach."", ""Three children are playing paddle ball on the beach."", ""Three boys play with paddles on the beach."", ""Several children playing on a beach.""]",textgrad_899a7f1892,TextGrad Step 12,"Output 1–3 candidate captions. Each candidate must be exactly two lines (Line 1 = tags; Line 2 = caption). If multiple candidates are produced, separate candidates with a single blank line. Integrators should rerank candidates externally with CLIP; if you cannot rely on external reranking, produce only one candidate.
+
+Line 1 — tags (format rules; required)
+- Format: 2–5 comma‑separated lower‑case tokens (prefer exactly 3). No punctuation except commas. No surrounding whitespace beyond single spaces around commas.
+- Token types: visible concrete noun(s) or a single visible adjective (color/size) as the sole attribute token. Multiword fused objects (e.g., ""traffic light"", ""wine bottle"") count as one token.
+- Upstream canonicalization (assumed done before this prompt): map detector/classifier labels to a fixed canonical inventory (recommended: COCO / Visual Genome / CLIP‑common). Normalize plurals→singular and map synonyms→canonical ID. Only accept attribute tokens (colors/sizes) if attribute_confidence ≥ attribute_confidence_threshold.
+- Deduplicate tokens. Order tokens by visual discriminativeness (combine detector confidence + CLIP retrieval frequency; prefer higher score first). Prefer fine‑grained nouns when reliably detected.
+- Forbidden tokens: meta/tooling words, proper nouns/brands, dates/events that are identity‑sensitive, inferred identities/emotions/speculation. Scene/event nouns (e.g., parade, stadium) are permitted only if a scene classifier gives high confidence and they map to canonical inventory.
+- If fewer than two high‑confidence specific nouns remain after filtering, do not invent tags. Still produce a conservative fallback (see Line 2 Option B) when at least one reliable noun exists. If no reliable noun exists, leave Line 1 empty and follow the image unclear rule.
+
+Line 2 — caption (format rules; required)
+- Option A (preferred when possible): one factual sentence in present simple or present progressive, 7–13 words long, containing exactly one clear visible verb or one concrete spatial relation. Grammatical structure should be subject + verb + object/prepositional phrase. Allowed verbs: common visible actions (e.g., sits, stands, rides, holds, carries, walks, leans, looks, points, reads, opens, plays, wears, pushes, pulls, places, covers, is holding, is sitting, dances, performs, marches, runs, climbs, jumps, throws, catches, skates). Domain‑specific verbs are allowed only if supported by an activity/pose detector or strong co‑occurrence confidence.
+- Option B (fallback; use when fewer than two high‑confidence nouns or generator uncertainty): a conservative 2–6 word noun + location/scene phrase (e.g., ""dog on sidewalk"", ""man near tree"", ""red car in street""). No sentence punctuation.
+- Main noun requirement: the canonical main noun (Line 1 first token) must appear verbatim or as a canonical synonym (same canonical ID) in Line 2 and appear early in the sentence (within the first 3–4 tokens or within the subject phrase such as ""a/the <main_noun> ..."").
+- Token overlap: Option A captions should share at least two canonical tokens with Line 1 (one must be the main noun). Synonyms are allowed if they map to the same canonical ID. Attributes included in Line 1 must appear verbatim or as canonical synonyms in Line 2 if the attribute_confidence ≥ threshold; otherwise omit them.
+- Allowed extra words: determiners (a, the), prepositions (on, in, near, by, next to, in front of, behind), conjunction ""and"", and small function words. One optional trailing period only. No other punctuation or added objects/attributes not in Line 1 (unless they map to the same canonical ID).
+- Anti‑hallucination: do not introduce new objects, attributes, identities, emotions, or speculative actions not present in Line 1 or supported by detectors (attribute_confidence ≥ threshold). If a required check would fail (main noun missing, insufficient token overlap for Option A, verb unsupported, attribute below threshold, or forbidden token introduced), prefer Option B fallback when possible; if no reliable fallback exists, output exactly: image unclear
+
+Operational parameters and tie‑breaking
+- Parameters (defaults & recommendations): attribute_confidence_threshold = 65% (recommend sweep 60/70/75%), preferred_tag_count = 3, tie_break_delta_confidence = 10 percentage points (adaptive: if two classes' detector confidences are close, prefer the noun with higher CLIP retrieval frequency).
+- Prefer a specific canonical noun when its detector confidence exceeds the next-best by tie_break_delta_confidence. If confidences are close, prefer the noun with higher CLIP retrieval frequency or canonical inventory coverage.
+- When ambiguous, be conservative: omit low‑confidence tokens rather than guessing; prefer Option B when only one reliable noun exists; prefer Option A only when all non‑determiner nouns in the sentence can be traced to Line 1 via canonical IDs.
+- Candidate generation: you may produce up to 2–3 alternate candidates (each as two-line blocks) derived from alternate high‑confidence Line 1 sets if upstream canonicalization provides them. If multiple candidates are not supported, produce a single compliant candidate.
+- Diagnostics (must be logged per candidate, not necessarily exposed to end users): for each candidate, record canonical tokens used (IDs), detector confidences, CLIP retrieval frequencies, which Option (A/B) was used, omitted attributes due to thresholding, and any checks that failed or why a fallback/image unclear was chosen. Use these logs to tune thresholds and preferred_tag_count.
+
+Safety and scoring guidance
+- Maximize canonical lexical overlap between Line 1 and Line 2 to improve CLIP alignment while avoiding hallucination. Prefer discriminative, fine‑grained nouns. Do not use proper nouns, inferred identities, or emotions.
+- Allow canonical synonym mapping rather than literal string matching between Line 1 and Line 2 (both must map to same canonical inventory ID). This reduces brittle rejections while preserving traceability.
+- Scene/event nouns are allowed only with high scene classifier confidence and canonical mapping; keep identity/emotion tokens forbidden.
+
+If you cannot produce a reliable caption even with the conservative fallback rules, output exactly: image unclear
+
+Brief examples (illustrative only)
+- Example A (Option A): Line1: child, motorcycle, red
+  Line2: a child rides a red motorcycle down the street.
+- Example B (fallback Option B): Line1: dog
+  Line2: dog on sidewalk
+- Example C (image unclear): Line1:
+  Line2: image unclear
+
+Strictly follow the rules above. If no valid caption candidate passes these checks after attempting a conservative fallback, return Line 2 = ""image unclear"". Log diagnostics for every candidate to aid tuning and CLIP reranking.","child, beach, frisbee
+children play frisbee on the beach
+
+child, beach, frisbee
+child holds frisbee on beach
+
+child, beach, frisbee
+children stand on beach holding frisbees",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_899a7f1892,50,23784,flickr30k_test_023784,images/flickr30k/flickr30k_test_023784.jpg,"[""A very aged woman wearing blue is standing in front of a pile of things, many in black trash bags."", ""Smiling woman in a blue apron standing in front of a pile of bags and boxes."", ""An elderly hispanic woman wears a blue vest in front of a pile of boxes."", ""A woman wearing a blue vest seems to be in a very messy area."", ""A woman in a blue smock in a blue smock is smiling.""]",textgrad_899a7f1892,TextGrad Step 12,"Output 1–3 candidate captions. Each candidate must be exactly two lines (Line 1 = tags; Line 2 = caption). If multiple candidates are produced, separate candidates with a single blank line. Integrators should rerank candidates externally with CLIP; if you cannot rely on external reranking, produce only one candidate.
+
+Line 1 — tags (format rules; required)
+- Format: 2–5 comma‑separated lower‑case tokens (prefer exactly 3). No punctuation except commas. No surrounding whitespace beyond single spaces around commas.
+- Token types: visible concrete noun(s) or a single visible adjective (color/size) as the sole attribute token. Multiword fused objects (e.g., ""traffic light"", ""wine bottle"") count as one token.
+- Upstream canonicalization (assumed done before this prompt): map detector/classifier labels to a fixed canonical inventory (recommended: COCO / Visual Genome / CLIP‑common). Normalize plurals→singular and map synonyms→canonical ID. Only accept attribute tokens (colors/sizes) if attribute_confidence ≥ attribute_confidence_threshold.
+- Deduplicate tokens. Order tokens by visual discriminativeness (combine detector confidence + CLIP retrieval frequency; prefer higher score first). Prefer fine‑grained nouns when reliably detected.
+- Forbidden tokens: meta/tooling words, proper nouns/brands, dates/events that are identity‑sensitive, inferred identities/emotions/speculation. Scene/event nouns (e.g., parade, stadium) are permitted only if a scene classifier gives high confidence and they map to canonical inventory.
+- If fewer than two high‑confidence specific nouns remain after filtering, do not invent tags. Still produce a conservative fallback (see Line 2 Option B) when at least one reliable noun exists. If no reliable noun exists, leave Line 1 empty and follow the image unclear rule.
+
+Line 2 — caption (format rules; required)
+- Option A (preferred when possible): one factual sentence in present simple or present progressive, 7–13 words long, containing exactly one clear visible verb or one concrete spatial relation. Grammatical structure should be subject + verb + object/prepositional phrase. Allowed verbs: common visible actions (e.g., sits, stands, rides, holds, carries, walks, leans, looks, points, reads, opens, plays, wears, pushes, pulls, places, covers, is holding, is sitting, dances, performs, marches, runs, climbs, jumps, throws, catches, skates). Domain‑specific verbs are allowed only if supported by an activity/pose detector or strong co‑occurrence confidence.
+- Option B (fallback; use when fewer than two high‑confidence nouns or generator uncertainty): a conservative 2–6 word noun + location/scene phrase (e.g., ""dog on sidewalk"", ""man near tree"", ""red car in street""). No sentence punctuation.
+- Main noun requirement: the canonical main noun (Line 1 first token) must appear verbatim or as a canonical synonym (same canonical ID) in Line 2 and appear early in the sentence (within the first 3–4 tokens or within the subject phrase such as ""a/the <main_noun> ..."").
+- Token overlap: Option A captions should share at least two canonical tokens with Line 1 (one must be the main noun). Synonyms are allowed if they map to the same canonical ID. Attributes included in Line 1 must appear verbatim or as canonical synonyms in Line 2 if the attribute_confidence ≥ threshold; otherwise omit them.
+- Allowed extra words: determiners (a, the), prepositions (on, in, near, by, next to, in front of, behind), conjunction ""and"", and small function words. One optional trailing period only. No other punctuation or added objects/attributes not in Line 1 (unless they map to the same canonical ID).
+- Anti‑hallucination: do not introduce new objects, attributes, identities, emotions, or speculative actions not present in Line 1 or supported by detectors (attribute_confidence ≥ threshold). If a required check would fail (main noun missing, insufficient token overlap for Option A, verb unsupported, attribute below threshold, or forbidden token introduced), prefer Option B fallback when possible; if no reliable fallback exists, output exactly: image unclear
+
+Operational parameters and tie‑breaking
+- Parameters (defaults & recommendations): attribute_confidence_threshold = 65% (recommend sweep 60/70/75%), preferred_tag_count = 3, tie_break_delta_confidence = 10 percentage points (adaptive: if two classes' detector confidences are close, prefer the noun with higher CLIP retrieval frequency).
+- Prefer a specific canonical noun when its detector confidence exceeds the next-best by tie_break_delta_confidence. If confidences are close, prefer the noun with higher CLIP retrieval frequency or canonical inventory coverage.
+- When ambiguous, be conservative: omit low‑confidence tokens rather than guessing; prefer Option B when only one reliable noun exists; prefer Option A only when all non‑determiner nouns in the sentence can be traced to Line 1 via canonical IDs.
+- Candidate generation: you may produce up to 2–3 alternate candidates (each as two-line blocks) derived from alternate high‑confidence Line 1 sets if upstream canonicalization provides them. If multiple candidates are not supported, produce a single compliant candidate.
+- Diagnostics (must be logged per candidate, not necessarily exposed to end users): for each candidate, record canonical tokens used (IDs), detector confidences, CLIP retrieval frequencies, which Option (A/B) was used, omitted attributes due to thresholding, and any checks that failed or why a fallback/image unclear was chosen. Use these logs to tune thresholds and preferred_tag_count.
+
+Safety and scoring guidance
+- Maximize canonical lexical overlap between Line 1 and Line 2 to improve CLIP alignment while avoiding hallucination. Prefer discriminative, fine‑grained nouns. Do not use proper nouns, inferred identities, or emotions.
+- Allow canonical synonym mapping rather than literal string matching between Line 1 and Line 2 (both must map to same canonical inventory ID). This reduces brittle rejections while preserving traceability.
+- Scene/event nouns are allowed only with high scene classifier confidence and canonical mapping; keep identity/emotion tokens forbidden.
+
+If you cannot produce a reliable caption even with the conservative fallback rules, output exactly: image unclear
+
+Brief examples (illustrative only)
+- Example A (Option A): Line1: child, motorcycle, red
+  Line2: a child rides a red motorcycle down the street.
+- Example B (fallback Option B): Line1: dog
+  Line2: dog on sidewalk
+- Example C (image unclear): Line1:
+  Line2: image unclear
+
+Strictly follow the rules above. If no valid caption candidate passes these checks after attempting a conservative fallback, return Line 2 = ""image unclear"". Log diagnostics for every candidate to aid tuning and CLIP reranking.","woman wearing blue vest
+a woman wearing a blue vest smiles while standing near bags
+
+woman smiling
+a woman smiles while standing near bags
+
+woman in blue vest
+a woman in a blue vest stands near bags",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_899a7f1892,61,22178,flickr30k_test_022178,images/flickr30k/flickr30k_test_022178.jpg,"[""A man with gray hair is sitting on a stool reading a newspaper in a market type setting."", ""An elderly outdoor market vegetable vendor sits with his wares and reads a newspaper."", ""A man in a white shirt reads while waiting to sell fruit."", ""A man in reads the newspaper and sells his produce."", ""A man reads his newspaper while selling fruit.""]",textgrad_899a7f1892,TextGrad Step 12,"Output 1–3 candidate captions. Each candidate must be exactly two lines (Line 1 = tags; Line 2 = caption). If multiple candidates are produced, separate candidates with a single blank line. Integrators should rerank candidates externally with CLIP; if you cannot rely on external reranking, produce only one candidate.
+
+Line 1 — tags (format rules; required)
+- Format: 2–5 comma‑separated lower‑case tokens (prefer exactly 3). No punctuation except commas. No surrounding whitespace beyond single spaces around commas.
+- Token types: visible concrete noun(s) or a single visible adjective (color/size) as the sole attribute token. Multiword fused objects (e.g., ""traffic light"", ""wine bottle"") count as one token.
+- Upstream canonicalization (assumed done before this prompt): map detector/classifier labels to a fixed canonical inventory (recommended: COCO / Visual Genome / CLIP‑common). Normalize plurals→singular and map synonyms→canonical ID. Only accept attribute tokens (colors/sizes) if attribute_confidence ≥ attribute_confidence_threshold.
+- Deduplicate tokens. Order tokens by visual discriminativeness (combine detector confidence + CLIP retrieval frequency; prefer higher score first). Prefer fine‑grained nouns when reliably detected.
+- Forbidden tokens: meta/tooling words, proper nouns/brands, dates/events that are identity‑sensitive, inferred identities/emotions/speculation. Scene/event nouns (e.g., parade, stadium) are permitted only if a scene classifier gives high confidence and they map to canonical inventory.
+- If fewer than two high‑confidence specific nouns remain after filtering, do not invent tags. Still produce a conservative fallback (see Line 2 Option B) when at least one reliable noun exists. If no reliable noun exists, leave Line 1 empty and follow the image unclear rule.
+
+Line 2 — caption (format rules; required)
+- Option A (preferred when possible): one factual sentence in present simple or present progressive, 7–13 words long, containing exactly one clear visible verb or one concrete spatial relation. Grammatical structure should be subject + verb + object/prepositional phrase. Allowed verbs: common visible actions (e.g., sits, stands, rides, holds, carries, walks, leans, looks, points, reads, opens, plays, wears, pushes, pulls, places, covers, is holding, is sitting, dances, performs, marches, runs, climbs, jumps, throws, catches, skates). Domain‑specific verbs are allowed only if supported by an activity/pose detector or strong co‑occurrence confidence.
+- Option B (fallback; use when fewer than two high‑confidence nouns or generator uncertainty): a conservative 2–6 word noun + location/scene phrase (e.g., ""dog on sidewalk"", ""man near tree"", ""red car in street""). No sentence punctuation.
+- Main noun requirement: the canonical main noun (Line 1 first token) must appear verbatim or as a canonical synonym (same canonical ID) in Line 2 and appear early in the sentence (within the first 3–4 tokens or within the subject phrase such as ""a/the <main_noun> ..."").
+- Token overlap: Option A captions should share at least two canonical tokens with Line 1 (one must be the main noun). Synonyms are allowed if they map to the same canonical ID. Attributes included in Line 1 must appear verbatim or as canonical synonyms in Line 2 if the attribute_confidence ≥ threshold; otherwise omit them.
+- Allowed extra words: determiners (a, the), prepositions (on, in, near, by, next to, in front of, behind), conjunction ""and"", and small function words. One optional trailing period only. No other punctuation or added objects/attributes not in Line 1 (unless they map to the same canonical ID).
+- Anti‑hallucination: do not introduce new objects, attributes, identities, emotions, or speculative actions not present in Line 1 or supported by detectors (attribute_confidence ≥ threshold). If a required check would fail (main noun missing, insufficient token overlap for Option A, verb unsupported, attribute below threshold, or forbidden token introduced), prefer Option B fallback when possible; if no reliable fallback exists, output exactly: image unclear
+
+Operational parameters and tie‑breaking
+- Parameters (defaults & recommendations): attribute_confidence_threshold = 65% (recommend sweep 60/70/75%), preferred_tag_count = 3, tie_break_delta_confidence = 10 percentage points (adaptive: if two classes' detector confidences are close, prefer the noun with higher CLIP retrieval frequency).
+- Prefer a specific canonical noun when its detector confidence exceeds the next-best by tie_break_delta_confidence. If confidences are close, prefer the noun with higher CLIP retrieval frequency or canonical inventory coverage.
+- When ambiguous, be conservative: omit low‑confidence tokens rather than guessing; prefer Option B when only one reliable noun exists; prefer Option A only when all non‑determiner nouns in the sentence can be traced to Line 1 via canonical IDs.
+- Candidate generation: you may produce up to 2–3 alternate candidates (each as two-line blocks) derived from alternate high‑confidence Line 1 sets if upstream canonicalization provides them. If multiple candidates are not supported, produce a single compliant candidate.
+- Diagnostics (must be logged per candidate, not necessarily exposed to end users): for each candidate, record canonical tokens used (IDs), detector confidences, CLIP retrieval frequencies, which Option (A/B) was used, omitted attributes due to thresholding, and any checks that failed or why a fallback/image unclear was chosen. Use these logs to tune thresholds and preferred_tag_count.
+
+Safety and scoring guidance
+- Maximize canonical lexical overlap between Line 1 and Line 2 to improve CLIP alignment while avoiding hallucination. Prefer discriminative, fine‑grained nouns. Do not use proper nouns, inferred identities, or emotions.
+- Allow canonical synonym mapping rather than literal string matching between Line 1 and Line 2 (both must map to same canonical inventory ID). This reduces brittle rejections while preserving traceability.
+- Scene/event nouns are allowed only with high scene classifier confidence and canonical mapping; keep identity/emotion tokens forbidden.
+
+If you cannot produce a reliable caption even with the conservative fallback rules, output exactly: image unclear
+
+Brief examples (illustrative only)
+- Example A (Option A): Line1: child, motorcycle, red
+  Line2: a child rides a red motorcycle down the street.
+- Example B (fallback Option B): Line1: dog
+  Line2: dog on sidewalk
+- Example C (image unclear): Line1:
+  Line2: image unclear
+
+Strictly follow the rules above. If no valid caption candidate passes these checks after attempting a conservative fallback, return Line 2 = ""image unclear"". Log diagnostics for every candidate to aid tuning and CLIP reranking.","apples, man, newspaper
+a man sits reading a newspaper near a fruit stall
+
+apples, man, chair
+a man sits on a chair reading a newspaper near apples
+
+apples, man, street
+a man sits on a street reading a newspaper near apples",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_899a7f1892,66,30359,flickr30k_test_030359,images/flickr30k/flickr30k_test_030359.jpg,"[""A soccer game with 5 guys in the picture but three of them are about to commence in a three way kick."", ""A group of soccer teammates are fighting over the soccer ball while in a stadium full of supporters."", ""Five young men, three in yellow, one in red and one in white are playing soccer."", ""A soccer player is attempting to score a goal."", ""Guys are play soccer on the field.""]",textgrad_899a7f1892,TextGrad Step 12,"Output 1–3 candidate captions. Each candidate must be exactly two lines (Line 1 = tags; Line 2 = caption). If multiple candidates are produced, separate candidates with a single blank line. Integrators should rerank candidates externally with CLIP; if you cannot rely on external reranking, produce only one candidate.
+
+Line 1 — tags (format rules; required)
+- Format: 2–5 comma‑separated lower‑case tokens (prefer exactly 3). No punctuation except commas. No surrounding whitespace beyond single spaces around commas.
+- Token types: visible concrete noun(s) or a single visible adjective (color/size) as the sole attribute token. Multiword fused objects (e.g., ""traffic light"", ""wine bottle"") count as one token.
+- Upstream canonicalization (assumed done before this prompt): map detector/classifier labels to a fixed canonical inventory (recommended: COCO / Visual Genome / CLIP‑common). Normalize plurals→singular and map synonyms→canonical ID. Only accept attribute tokens (colors/sizes) if attribute_confidence ≥ attribute_confidence_threshold.
+- Deduplicate tokens. Order tokens by visual discriminativeness (combine detector confidence + CLIP retrieval frequency; prefer higher score first). Prefer fine‑grained nouns when reliably detected.
+- Forbidden tokens: meta/tooling words, proper nouns/brands, dates/events that are identity‑sensitive, inferred identities/emotions/speculation. Scene/event nouns (e.g., parade, stadium) are permitted only if a scene classifier gives high confidence and they map to canonical inventory.
+- If fewer than two high‑confidence specific nouns remain after filtering, do not invent tags. Still produce a conservative fallback (see Line 2 Option B) when at least one reliable noun exists. If no reliable noun exists, leave Line 1 empty and follow the image unclear rule.
+
+Line 2 — caption (format rules; required)
+- Option A (preferred when possible): one factual sentence in present simple or present progressive, 7–13 words long, containing exactly one clear visible verb or one concrete spatial relation. Grammatical structure should be subject + verb + object/prepositional phrase. Allowed verbs: common visible actions (e.g., sits, stands, rides, holds, carries, walks, leans, looks, points, reads, opens, plays, wears, pushes, pulls, places, covers, is holding, is sitting, dances, performs, marches, runs, climbs, jumps, throws, catches, skates). Domain‑specific verbs are allowed only if supported by an activity/pose detector or strong co‑occurrence confidence.
+- Option B (fallback; use when fewer than two high‑confidence nouns or generator uncertainty): a conservative 2–6 word noun + location/scene phrase (e.g., ""dog on sidewalk"", ""man near tree"", ""red car in street""). No sentence punctuation.
+- Main noun requirement: the canonical main noun (Line 1 first token) must appear verbatim or as a canonical synonym (same canonical ID) in Line 2 and appear early in the sentence (within the first 3–4 tokens or within the subject phrase such as ""a/the <main_noun> ..."").
+- Token overlap: Option A captions should share at least two canonical tokens with Line 1 (one must be the main noun). Synonyms are allowed if they map to the same canonical ID. Attributes included in Line 1 must appear verbatim or as canonical synonyms in Line 2 if the attribute_confidence ≥ threshold; otherwise omit them.
+- Allowed extra words: determiners (a, the), prepositions (on, in, near, by, next to, in front of, behind), conjunction ""and"", and small function words. One optional trailing period only. No other punctuation or added objects/attributes not in Line 1 (unless they map to the same canonical ID).
+- Anti‑hallucination: do not introduce new objects, attributes, identities, emotions, or speculative actions not present in Line 1 or supported by detectors (attribute_confidence ≥ threshold). If a required check would fail (main noun missing, insufficient token overlap for Option A, verb unsupported, attribute below threshold, or forbidden token introduced), prefer Option B fallback when possible; if no reliable fallback exists, output exactly: image unclear
+
+Operational parameters and tie‑breaking
+- Parameters (defaults & recommendations): attribute_confidence_threshold = 65% (recommend sweep 60/70/75%), preferred_tag_count = 3, tie_break_delta_confidence = 10 percentage points (adaptive: if two classes' detector confidences are close, prefer the noun with higher CLIP retrieval frequency).
+- Prefer a specific canonical noun when its detector confidence exceeds the next-best by tie_break_delta_confidence. If confidences are close, prefer the noun with higher CLIP retrieval frequency or canonical inventory coverage.
+- When ambiguous, be conservative: omit low‑confidence tokens rather than guessing; prefer Option B when only one reliable noun exists; prefer Option A only when all non‑determiner nouns in the sentence can be traced to Line 1 via canonical IDs.
+- Candidate generation: you may produce up to 2–3 alternate candidates (each as two-line blocks) derived from alternate high‑confidence Line 1 sets if upstream canonicalization provides them. If multiple candidates are not supported, produce a single compliant candidate.
+- Diagnostics (must be logged per candidate, not necessarily exposed to end users): for each candidate, record canonical tokens used (IDs), detector confidences, CLIP retrieval frequencies, which Option (A/B) was used, omitted attributes due to thresholding, and any checks that failed or why a fallback/image unclear was chosen. Use these logs to tune thresholds and preferred_tag_count.
+
+Safety and scoring guidance
+- Maximize canonical lexical overlap between Line 1 and Line 2 to improve CLIP alignment while avoiding hallucination. Prefer discriminative, fine‑grained nouns. Do not use proper nouns, inferred identities, or emotions.
+- Allow canonical synonym mapping rather than literal string matching between Line 1 and Line 2 (both must map to same canonical inventory ID). This reduces brittle rejections while preserving traceability.
+- Scene/event nouns are allowed only with high scene classifier confidence and canonical mapping; keep identity/emotion tokens forbidden.
+
+If you cannot produce a reliable caption even with the conservative fallback rules, output exactly: image unclear
+
+Brief examples (illustrative only)
+- Example A (Option A): Line1: child, motorcycle, red
+  Line2: a child rides a red motorcycle down the street.
+- Example B (fallback Option B): Line1: dog
+  Line2: dog on sidewalk
+- Example C (image unclear): Line1:
+  Line2: image unclear
+
+Strictly follow the rules above. If no valid caption candidate passes these checks after attempting a conservative fallback, return Line 2 = ""image unclear"". Log diagnostics for every candidate to aid tuning and CLIP reranking.","player, ball, goalkeeper, stadium
+a player heads the ball while goalkeeper dives to save in stadium
+
+player, ball, goalkeeper, stadium
+player jumps to head ball as goalkeeper dives in stadium
+
+player, ball, goalkeeper, stadium
+goalkeeper dives to block ball as player heads it in stadium",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_899a7f1892,71,18233,flickr30k_test_018233,images/flickr30k/flickr30k_test_018233.jpg,"[""Here is a picture of Asian dancers performing a new dance in front of their class and teacher."", ""Young girl balances on a reclined man's legs as part of a performance in front of an audience"", ""A man in black lies on his back while a little girl stands on his feet."", ""Circus actors play with a child while other children watch."", ""Children watch while an acrobatic team performs stunts.""]",textgrad_899a7f1892,TextGrad Step 12,"Output 1–3 candidate captions. Each candidate must be exactly two lines (Line 1 = tags; Line 2 = caption). If multiple candidates are produced, separate candidates with a single blank line. Integrators should rerank candidates externally with CLIP; if you cannot rely on external reranking, produce only one candidate.
+
+Line 1 — tags (format rules; required)
+- Format: 2–5 comma‑separated lower‑case tokens (prefer exactly 3). No punctuation except commas. No surrounding whitespace beyond single spaces around commas.
+- Token types: visible concrete noun(s) or a single visible adjective (color/size) as the sole attribute token. Multiword fused objects (e.g., ""traffic light"", ""wine bottle"") count as one token.
+- Upstream canonicalization (assumed done before this prompt): map detector/classifier labels to a fixed canonical inventory (recommended: COCO / Visual Genome / CLIP‑common). Normalize plurals→singular and map synonyms→canonical ID. Only accept attribute tokens (colors/sizes) if attribute_confidence ≥ attribute_confidence_threshold.
+- Deduplicate tokens. Order tokens by visual discriminativeness (combine detector confidence + CLIP retrieval frequency; prefer higher score first). Prefer fine‑grained nouns when reliably detected.
+- Forbidden tokens: meta/tooling words, proper nouns/brands, dates/events that are identity‑sensitive, inferred identities/emotions/speculation. Scene/event nouns (e.g., parade, stadium) are permitted only if a scene classifier gives high confidence and they map to canonical inventory.
+- If fewer than two high‑confidence specific nouns remain after filtering, do not invent tags. Still produce a conservative fallback (see Line 2 Option B) when at least one reliable noun exists. If no reliable noun exists, leave Line 1 empty and follow the image unclear rule.
+
+Line 2 — caption (format rules; required)
+- Option A (preferred when possible): one factual sentence in present simple or present progressive, 7–13 words long, containing exactly one clear visible verb or one concrete spatial relation. Grammatical structure should be subject + verb + object/prepositional phrase. Allowed verbs: common visible actions (e.g., sits, stands, rides, holds, carries, walks, leans, looks, points, reads, opens, plays, wears, pushes, pulls, places, covers, is holding, is sitting, dances, performs, marches, runs, climbs, jumps, throws, catches, skates). Domain‑specific verbs are allowed only if supported by an activity/pose detector or strong co‑occurrence confidence.
+- Option B (fallback; use when fewer than two high‑confidence nouns or generator uncertainty): a conservative 2–6 word noun + location/scene phrase (e.g., ""dog on sidewalk"", ""man near tree"", ""red car in street""). No sentence punctuation.
+- Main noun requirement: the canonical main noun (Line 1 first token) must appear verbatim or as a canonical synonym (same canonical ID) in Line 2 and appear early in the sentence (within the first 3–4 tokens or within the subject phrase such as ""a/the <main_noun> ..."").
+- Token overlap: Option A captions should share at least two canonical tokens with Line 1 (one must be the main noun). Synonyms are allowed if they map to the same canonical ID. Attributes included in Line 1 must appear verbatim or as canonical synonyms in Line 2 if the attribute_confidence ≥ threshold; otherwise omit them.
+- Allowed extra words: determiners (a, the), prepositions (on, in, near, by, next to, in front of, behind), conjunction ""and"", and small function words. One optional trailing period only. No other punctuation or added objects/attributes not in Line 1 (unless they map to the same canonical ID).
+- Anti‑hallucination: do not introduce new objects, attributes, identities, emotions, or speculative actions not present in Line 1 or supported by detectors (attribute_confidence ≥ threshold). If a required check would fail (main noun missing, insufficient token overlap for Option A, verb unsupported, attribute below threshold, or forbidden token introduced), prefer Option B fallback when possible; if no reliable fallback exists, output exactly: image unclear
+
+Operational parameters and tie‑breaking
+- Parameters (defaults & recommendations): attribute_confidence_threshold = 65% (recommend sweep 60/70/75%), preferred_tag_count = 3, tie_break_delta_confidence = 10 percentage points (adaptive: if two classes' detector confidences are close, prefer the noun with higher CLIP retrieval frequency).
+- Prefer a specific canonical noun when its detector confidence exceeds the next-best by tie_break_delta_confidence. If confidences are close, prefer the noun with higher CLIP retrieval frequency or canonical inventory coverage.
+- When ambiguous, be conservative: omit low‑confidence tokens rather than guessing; prefer Option B when only one reliable noun exists; prefer Option A only when all non‑determiner nouns in the sentence can be traced to Line 1 via canonical IDs.
+- Candidate generation: you may produce up to 2–3 alternate candidates (each as two-line blocks) derived from alternate high‑confidence Line 1 sets if upstream canonicalization provides them. If multiple candidates are not supported, produce a single compliant candidate.
+- Diagnostics (must be logged per candidate, not necessarily exposed to end users): for each candidate, record canonical tokens used (IDs), detector confidences, CLIP retrieval frequencies, which Option (A/B) was used, omitted attributes due to thresholding, and any checks that failed or why a fallback/image unclear was chosen. Use these logs to tune thresholds and preferred_tag_count.
+
+Safety and scoring guidance
+- Maximize canonical lexical overlap between Line 1 and Line 2 to improve CLIP alignment while avoiding hallucination. Prefer discriminative, fine‑grained nouns. Do not use proper nouns, inferred identities, or emotions.
+- Allow canonical synonym mapping rather than literal string matching between Line 1 and Line 2 (both must map to same canonical inventory ID). This reduces brittle rejections while preserving traceability.
+- Scene/event nouns are allowed only with high scene classifier confidence and canonical mapping; keep identity/emotion tokens forbidden.
+
+If you cannot produce a reliable caption even with the conservative fallback rules, output exactly: image unclear
+
+Brief examples (illustrative only)
+- Example A (Option A): Line1: child, motorcycle, red
+  Line2: a child rides a red motorcycle down the street.
+- Example B (fallback Option B): Line1: dog
+  Line2: dog on sidewalk
+- Example C (image unclear): Line1:
+  Line2: image unclear
+
+Strictly follow the rules above. If no valid caption candidate passes these checks after attempting a conservative fallback, return Line 2 = ""image unclear"". Log diagnostics for every candidate to aid tuning and CLIP reranking.","child, performer, red
+a child performs with a red lantern above.
+
+child, performer, red
+child and performer on red mat.
+
+child, performer, red
+child performs acrobatic stunt with performer.",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_899a7f1892,72,30218,flickr30k_test_030218,images/flickr30k/flickr30k_test_030218.jpg,"[""An older, bearded man play a small metal whistle while holding an oboe in his arm on a city street in font of a store window."", ""A bearded man, dressed in jeans and a jacket, is preparing to play a flute instrument on the sidewalk."", ""A man in a gray sweater and blue jeans, playing a flute along a street."", ""An old bearded man plays a hand flute on the side of a sidewalk."", ""An old man playing a musical instrument at a city sidewalk.""]",textgrad_899a7f1892,TextGrad Step 12,"Output 1–3 candidate captions. Each candidate must be exactly two lines (Line 1 = tags; Line 2 = caption). If multiple candidates are produced, separate candidates with a single blank line. Integrators should rerank candidates externally with CLIP; if you cannot rely on external reranking, produce only one candidate.
+
+Line 1 — tags (format rules; required)
+- Format: 2–5 comma‑separated lower‑case tokens (prefer exactly 3). No punctuation except commas. No surrounding whitespace beyond single spaces around commas.
+- Token types: visible concrete noun(s) or a single visible adjective (color/size) as the sole attribute token. Multiword fused objects (e.g., ""traffic light"", ""wine bottle"") count as one token.
+- Upstream canonicalization (assumed done before this prompt): map detector/classifier labels to a fixed canonical inventory (recommended: COCO / Visual Genome / CLIP‑common). Normalize plurals→singular and map synonyms→canonical ID. Only accept attribute tokens (colors/sizes) if attribute_confidence ≥ attribute_confidence_threshold.
+- Deduplicate tokens. Order tokens by visual discriminativeness (combine detector confidence + CLIP retrieval frequency; prefer higher score first). Prefer fine‑grained nouns when reliably detected.
+- Forbidden tokens: meta/tooling words, proper nouns/brands, dates/events that are identity‑sensitive, inferred identities/emotions/speculation. Scene/event nouns (e.g., parade, stadium) are permitted only if a scene classifier gives high confidence and they map to canonical inventory.
+- If fewer than two high‑confidence specific nouns remain after filtering, do not invent tags. Still produce a conservative fallback (see Line 2 Option B) when at least one reliable noun exists. If no reliable noun exists, leave Line 1 empty and follow the image unclear rule.
+
+Line 2 — caption (format rules; required)
+- Option A (preferred when possible): one factual sentence in present simple or present progressive, 7–13 words long, containing exactly one clear visible verb or one concrete spatial relation. Grammatical structure should be subject + verb + object/prepositional phrase. Allowed verbs: common visible actions (e.g., sits, stands, rides, holds, carries, walks, leans, looks, points, reads, opens, plays, wears, pushes, pulls, places, covers, is holding, is sitting, dances, performs, marches, runs, climbs, jumps, throws, catches, skates). Domain‑specific verbs are allowed only if supported by an activity/pose detector or strong co‑occurrence confidence.
+- Option B (fallback; use when fewer than two high‑confidence nouns or generator uncertainty): a conservative 2–6 word noun + location/scene phrase (e.g., ""dog on sidewalk"", ""man near tree"", ""red car in street""). No sentence punctuation.
+- Main noun requirement: the canonical main noun (Line 1 first token) must appear verbatim or as a canonical synonym (same canonical ID) in Line 2 and appear early in the sentence (within the first 3–4 tokens or within the subject phrase such as ""a/the <main_noun> ..."").
+- Token overlap: Option A captions should share at least two canonical tokens with Line 1 (one must be the main noun). Synonyms are allowed if they map to the same canonical ID. Attributes included in Line 1 must appear verbatim or as canonical synonyms in Line 2 if the attribute_confidence ≥ threshold; otherwise omit them.
+- Allowed extra words: determiners (a, the), prepositions (on, in, near, by, next to, in front of, behind), conjunction ""and"", and small function words. One optional trailing period only. No other punctuation or added objects/attributes not in Line 1 (unless they map to the same canonical ID).
+- Anti‑hallucination: do not introduce new objects, attributes, identities, emotions, or speculative actions not present in Line 1 or supported by detectors (attribute_confidence ≥ threshold). If a required check would fail (main noun missing, insufficient token overlap for Option A, verb unsupported, attribute below threshold, or forbidden token introduced), prefer Option B fallback when possible; if no reliable fallback exists, output exactly: image unclear
+
+Operational parameters and tie‑breaking
+- Parameters (defaults & recommendations): attribute_confidence_threshold = 65% (recommend sweep 60/70/75%), preferred_tag_count = 3, tie_break_delta_confidence = 10 percentage points (adaptive: if two classes' detector confidences are close, prefer the noun with higher CLIP retrieval frequency).
+- Prefer a specific canonical noun when its detector confidence exceeds the next-best by tie_break_delta_confidence. If confidences are close, prefer the noun with higher CLIP retrieval frequency or canonical inventory coverage.
+- When ambiguous, be conservative: omit low‑confidence tokens rather than guessing; prefer Option B when only one reliable noun exists; prefer Option A only when all non‑determiner nouns in the sentence can be traced to Line 1 via canonical IDs.
+- Candidate generation: you may produce up to 2–3 alternate candidates (each as two-line blocks) derived from alternate high‑confidence Line 1 sets if upstream canonicalization provides them. If multiple candidates are not supported, produce a single compliant candidate.
+- Diagnostics (must be logged per candidate, not necessarily exposed to end users): for each candidate, record canonical tokens used (IDs), detector confidences, CLIP retrieval frequencies, which Option (A/B) was used, omitted attributes due to thresholding, and any checks that failed or why a fallback/image unclear was chosen. Use these logs to tune thresholds and preferred_tag_count.
+
+Safety and scoring guidance
+- Maximize canonical lexical overlap between Line 1 and Line 2 to improve CLIP alignment while avoiding hallucination. Prefer discriminative, fine‑grained nouns. Do not use proper nouns, inferred identities, or emotions.
+- Allow canonical synonym mapping rather than literal string matching between Line 1 and Line 2 (both must map to same canonical inventory ID). This reduces brittle rejections while preserving traceability.
+- Scene/event nouns are allowed only with high scene classifier confidence and canonical mapping; keep identity/emotion tokens forbidden.
+
+If you cannot produce a reliable caption even with the conservative fallback rules, output exactly: image unclear
+
+Brief examples (illustrative only)
+- Example A (Option A): Line1: child, motorcycle, red
+  Line2: a child rides a red motorcycle down the street.
+- Example B (fallback Option B): Line1: dog
+  Line2: dog on sidewalk
+- Example C (image unclear): Line1:
+  Line2: image unclear
+
+Strictly follow the rules above. If no valid caption candidate passes these checks after attempting a conservative fallback, return Line 2 = ""image unclear"". Log diagnostics for every candidate to aid tuning and CLIP reranking.","man playing flute on sidewalk
+a man plays a flute on the sidewalk near a building
+
+man holding flute
+a man holds a flute while standing on the sidewalk
+
+image unclear",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_899a7f1892,78,28178,flickr30k_test_028178,images/flickr30k/flickr30k_test_028178.jpg,"[""A man in a black sweater with a red undershirt playing a trumpet in front of a lighted Christmas tree."", ""The man playing a trumpet in front of a christmas tree looks intense."", ""A man in a black sweater and red shirt plays the trumpet by a tree."", ""A guy with a beard wearing his glasses is blowing on a trumpet."", ""A musician playing some smooth music.""]",textgrad_899a7f1892,TextGrad Step 12,"Output 1–3 candidate captions. Each candidate must be exactly two lines (Line 1 = tags; Line 2 = caption). If multiple candidates are produced, separate candidates with a single blank line. Integrators should rerank candidates externally with CLIP; if you cannot rely on external reranking, produce only one candidate.
+
+Line 1 — tags (format rules; required)
+- Format: 2–5 comma‑separated lower‑case tokens (prefer exactly 3). No punctuation except commas. No surrounding whitespace beyond single spaces around commas.
+- Token types: visible concrete noun(s) or a single visible adjective (color/size) as the sole attribute token. Multiword fused objects (e.g., ""traffic light"", ""wine bottle"") count as one token.
+- Upstream canonicalization (assumed done before this prompt): map detector/classifier labels to a fixed canonical inventory (recommended: COCO / Visual Genome / CLIP‑common). Normalize plurals→singular and map synonyms→canonical ID. Only accept attribute tokens (colors/sizes) if attribute_confidence ≥ attribute_confidence_threshold.
+- Deduplicate tokens. Order tokens by visual discriminativeness (combine detector confidence + CLIP retrieval frequency; prefer higher score first). Prefer fine‑grained nouns when reliably detected.
+- Forbidden tokens: meta/tooling words, proper nouns/brands, dates/events that are identity‑sensitive, inferred identities/emotions/speculation. Scene/event nouns (e.g., parade, stadium) are permitted only if a scene classifier gives high confidence and they map to canonical inventory.
+- If fewer than two high‑confidence specific nouns remain after filtering, do not invent tags. Still produce a conservative fallback (see Line 2 Option B) when at least one reliable noun exists. If no reliable noun exists, leave Line 1 empty and follow the image unclear rule.
+
+Line 2 — caption (format rules; required)
+- Option A (preferred when possible): one factual sentence in present simple or present progressive, 7–13 words long, containing exactly one clear visible verb or one concrete spatial relation. Grammatical structure should be subject + verb + object/prepositional phrase. Allowed verbs: common visible actions (e.g., sits, stands, rides, holds, carries, walks, leans, looks, points, reads, opens, plays, wears, pushes, pulls, places, covers, is holding, is sitting, dances, performs, marches, runs, climbs, jumps, throws, catches, skates). Domain‑specific verbs are allowed only if supported by an activity/pose detector or strong co‑occurrence confidence.
+- Option B (fallback; use when fewer than two high‑confidence nouns or generator uncertainty): a conservative 2–6 word noun + location/scene phrase (e.g., ""dog on sidewalk"", ""man near tree"", ""red car in street""). No sentence punctuation.
+- Main noun requirement: the canonical main noun (Line 1 first token) must appear verbatim or as a canonical synonym (same canonical ID) in Line 2 and appear early in the sentence (within the first 3–4 tokens or within the subject phrase such as ""a/the <main_noun> ..."").
+- Token overlap: Option A captions should share at least two canonical tokens with Line 1 (one must be the main noun). Synonyms are allowed if they map to the same canonical ID. Attributes included in Line 1 must appear verbatim or as canonical synonyms in Line 2 if the attribute_confidence ≥ threshold; otherwise omit them.
+- Allowed extra words: determiners (a, the), prepositions (on, in, near, by, next to, in front of, behind), conjunction ""and"", and small function words. One optional trailing period only. No other punctuation or added objects/attributes not in Line 1 (unless they map to the same canonical ID).
+- Anti‑hallucination: do not introduce new objects, attributes, identities, emotions, or speculative actions not present in Line 1 or supported by detectors (attribute_confidence ≥ threshold). If a required check would fail (main noun missing, insufficient token overlap for Option A, verb unsupported, attribute below threshold, or forbidden token introduced), prefer Option B fallback when possible; if no reliable fallback exists, output exactly: image unclear
+
+Operational parameters and tie‑breaking
+- Parameters (defaults & recommendations): attribute_confidence_threshold = 65% (recommend sweep 60/70/75%), preferred_tag_count = 3, tie_break_delta_confidence = 10 percentage points (adaptive: if two classes' detector confidences are close, prefer the noun with higher CLIP retrieval frequency).
+- Prefer a specific canonical noun when its detector confidence exceeds the next-best by tie_break_delta_confidence. If confidences are close, prefer the noun with higher CLIP retrieval frequency or canonical inventory coverage.
+- When ambiguous, be conservative: omit low‑confidence tokens rather than guessing; prefer Option B when only one reliable noun exists; prefer Option A only when all non‑determiner nouns in the sentence can be traced to Line 1 via canonical IDs.
+- Candidate generation: you may produce up to 2–3 alternate candidates (each as two-line blocks) derived from alternate high‑confidence Line 1 sets if upstream canonicalization provides them. If multiple candidates are not supported, produce a single compliant candidate.
+- Diagnostics (must be logged per candidate, not necessarily exposed to end users): for each candidate, record canonical tokens used (IDs), detector confidences, CLIP retrieval frequencies, which Option (A/B) was used, omitted attributes due to thresholding, and any checks that failed or why a fallback/image unclear was chosen. Use these logs to tune thresholds and preferred_tag_count.
+
+Safety and scoring guidance
+- Maximize canonical lexical overlap between Line 1 and Line 2 to improve CLIP alignment while avoiding hallucination. Prefer discriminative, fine‑grained nouns. Do not use proper nouns, inferred identities, or emotions.
+- Allow canonical synonym mapping rather than literal string matching between Line 1 and Line 2 (both must map to same canonical inventory ID). This reduces brittle rejections while preserving traceability.
+- Scene/event nouns are allowed only with high scene classifier confidence and canonical mapping; keep identity/emotion tokens forbidden.
+
+If you cannot produce a reliable caption even with the conservative fallback rules, output exactly: image unclear
+
+Brief examples (illustrative only)
+- Example A (Option A): Line1: child, motorcycle, red
+  Line2: a child rides a red motorcycle down the street.
+- Example B (fallback Option B): Line1: dog
+  Line2: dog on sidewalk
+- Example C (image unclear): Line1:
+  Line2: image unclear
+
+Strictly follow the rules above. If no valid caption candidate passes these checks after attempting a conservative fallback, return Line 2 = ""image unclear"". Log diagnostics for every candidate to aid tuning and CLIP reranking.","man playing trumpet
+man holds trumpet near decorated tree
+
+man in red shirt plays trumpet
+man wears red shirt while playing trumpet
+
+image unclear",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_899a7f1892,99,30831,flickr30k_test_030831,images/flickr30k/flickr30k_test_030831.jpg,"[""A woman holds her mouth wide open as she is placing a stack of crackers in."", ""A black-haired woman wearing glasses attempts to eat a pile of cookies."", ""A young person about to put several cookies in his or her mouth."", ""A woman with glasses about to take a bite out of a huge cookie."", ""Asian man eating a cracker sandwich in the kitchen.""]",textgrad_899a7f1892,TextGrad Step 12,"Output 1–3 candidate captions. Each candidate must be exactly two lines (Line 1 = tags; Line 2 = caption). If multiple candidates are produced, separate candidates with a single blank line. Integrators should rerank candidates externally with CLIP; if you cannot rely on external reranking, produce only one candidate.
+
+Line 1 — tags (format rules; required)
+- Format: 2–5 comma‑separated lower‑case tokens (prefer exactly 3). No punctuation except commas. No surrounding whitespace beyond single spaces around commas.
+- Token types: visible concrete noun(s) or a single visible adjective (color/size) as the sole attribute token. Multiword fused objects (e.g., ""traffic light"", ""wine bottle"") count as one token.
+- Upstream canonicalization (assumed done before this prompt): map detector/classifier labels to a fixed canonical inventory (recommended: COCO / Visual Genome / CLIP‑common). Normalize plurals→singular and map synonyms→canonical ID. Only accept attribute tokens (colors/sizes) if attribute_confidence ≥ attribute_confidence_threshold.
+- Deduplicate tokens. Order tokens by visual discriminativeness (combine detector confidence + CLIP retrieval frequency; prefer higher score first). Prefer fine‑grained nouns when reliably detected.
+- Forbidden tokens: meta/tooling words, proper nouns/brands, dates/events that are identity‑sensitive, inferred identities/emotions/speculation. Scene/event nouns (e.g., parade, stadium) are permitted only if a scene classifier gives high confidence and they map to canonical inventory.
+- If fewer than two high‑confidence specific nouns remain after filtering, do not invent tags. Still produce a conservative fallback (see Line 2 Option B) when at least one reliable noun exists. If no reliable noun exists, leave Line 1 empty and follow the image unclear rule.
+
+Line 2 — caption (format rules; required)
+- Option A (preferred when possible): one factual sentence in present simple or present progressive, 7–13 words long, containing exactly one clear visible verb or one concrete spatial relation. Grammatical structure should be subject + verb + object/prepositional phrase. Allowed verbs: common visible actions (e.g., sits, stands, rides, holds, carries, walks, leans, looks, points, reads, opens, plays, wears, pushes, pulls, places, covers, is holding, is sitting, dances, performs, marches, runs, climbs, jumps, throws, catches, skates). Domain‑specific verbs are allowed only if supported by an activity/pose detector or strong co‑occurrence confidence.
+- Option B (fallback; use when fewer than two high‑confidence nouns or generator uncertainty): a conservative 2–6 word noun + location/scene phrase (e.g., ""dog on sidewalk"", ""man near tree"", ""red car in street""). No sentence punctuation.
+- Main noun requirement: the canonical main noun (Line 1 first token) must appear verbatim or as a canonical synonym (same canonical ID) in Line 2 and appear early in the sentence (within the first 3–4 tokens or within the subject phrase such as ""a/the <main_noun> ..."").
+- Token overlap: Option A captions should share at least two canonical tokens with Line 1 (one must be the main noun). Synonyms are allowed if they map to the same canonical ID. Attributes included in Line 1 must appear verbatim or as canonical synonyms in Line 2 if the attribute_confidence ≥ threshold; otherwise omit them.
+- Allowed extra words: determiners (a, the), prepositions (on, in, near, by, next to, in front of, behind), conjunction ""and"", and small function words. One optional trailing period only. No other punctuation or added objects/attributes not in Line 1 (unless they map to the same canonical ID).
+- Anti‑hallucination: do not introduce new objects, attributes, identities, emotions, or speculative actions not present in Line 1 or supported by detectors (attribute_confidence ≥ threshold). If a required check would fail (main noun missing, insufficient token overlap for Option A, verb unsupported, attribute below threshold, or forbidden token introduced), prefer Option B fallback when possible; if no reliable fallback exists, output exactly: image unclear
+
+Operational parameters and tie‑breaking
+- Parameters (defaults & recommendations): attribute_confidence_threshold = 65% (recommend sweep 60/70/75%), preferred_tag_count = 3, tie_break_delta_confidence = 10 percentage points (adaptive: if two classes' detector confidences are close, prefer the noun with higher CLIP retrieval frequency).
+- Prefer a specific canonical noun when its detector confidence exceeds the next-best by tie_break_delta_confidence. If confidences are close, prefer the noun with higher CLIP retrieval frequency or canonical inventory coverage.
+- When ambiguous, be conservative: omit low‑confidence tokens rather than guessing; prefer Option B when only one reliable noun exists; prefer Option A only when all non‑determiner nouns in the sentence can be traced to Line 1 via canonical IDs.
+- Candidate generation: you may produce up to 2–3 alternate candidates (each as two-line blocks) derived from alternate high‑confidence Line 1 sets if upstream canonicalization provides them. If multiple candidates are not supported, produce a single compliant candidate.
+- Diagnostics (must be logged per candidate, not necessarily exposed to end users): for each candidate, record canonical tokens used (IDs), detector confidences, CLIP retrieval frequencies, which Option (A/B) was used, omitted attributes due to thresholding, and any checks that failed or why a fallback/image unclear was chosen. Use these logs to tune thresholds and preferred_tag_count.
+
+Safety and scoring guidance
+- Maximize canonical lexical overlap between Line 1 and Line 2 to improve CLIP alignment while avoiding hallucination. Prefer discriminative, fine‑grained nouns. Do not use proper nouns, inferred identities, or emotions.
+- Allow canonical synonym mapping rather than literal string matching between Line 1 and Line 2 (both must map to same canonical inventory ID). This reduces brittle rejections while preserving traceability.
+- Scene/event nouns are allowed only with high scene classifier confidence and canonical mapping; keep identity/emotion tokens forbidden.
+
+If you cannot produce a reliable caption even with the conservative fallback rules, output exactly: image unclear
+
+Brief examples (illustrative only)
+- Example A (Option A): Line1: child, motorcycle, red
+  Line2: a child rides a red motorcycle down the street.
+- Example B (fallback Option B): Line1: dog
+  Line2: dog on sidewalk
+- Example C (image unclear): Line1:
+  Line2: image unclear
+
+Strictly follow the rules above. If no valid caption candidate passes these checks after attempting a conservative fallback, return Line 2 = ""image unclear"". Log diagnostics for every candidate to aid tuning and CLIP reranking.","person eating cookies in kitchen
+a person is holding and eating a stack of cookies near a microwave
+
+person wearing necklace in kitchen
+a person wearing a dark beaded necklace is eating cookies in a kitchen
+
+person near microwave in kitchen
+a person is eating cookies near a microwave in a kitchen",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_899a7f1892,108,26129,flickr30k_test_026129,images/flickr30k/flickr30k_test_026129.jpg,"[""Two men skiing up a hill but stopped and pointing at something as they on our their trek."", ""Two men wearing snowshoes stopping to observe something on the ground."", ""Two guys with snowshoes making their way through the woods."", ""Two men in snowshoes tracking the prints of an animal."", ""Two people wearing snowshoes are tracking something.""]",textgrad_899a7f1892,TextGrad Step 12,"Output 1–3 candidate captions. Each candidate must be exactly two lines (Line 1 = tags; Line 2 = caption). If multiple candidates are produced, separate candidates with a single blank line. Integrators should rerank candidates externally with CLIP; if you cannot rely on external reranking, produce only one candidate.
+
+Line 1 — tags (format rules; required)
+- Format: 2–5 comma‑separated lower‑case tokens (prefer exactly 3). No punctuation except commas. No surrounding whitespace beyond single spaces around commas.
+- Token types: visible concrete noun(s) or a single visible adjective (color/size) as the sole attribute token. Multiword fused objects (e.g., ""traffic light"", ""wine bottle"") count as one token.
+- Upstream canonicalization (assumed done before this prompt): map detector/classifier labels to a fixed canonical inventory (recommended: COCO / Visual Genome / CLIP‑common). Normalize plurals→singular and map synonyms→canonical ID. Only accept attribute tokens (colors/sizes) if attribute_confidence ≥ attribute_confidence_threshold.
+- Deduplicate tokens. Order tokens by visual discriminativeness (combine detector confidence + CLIP retrieval frequency; prefer higher score first). Prefer fine‑grained nouns when reliably detected.
+- Forbidden tokens: meta/tooling words, proper nouns/brands, dates/events that are identity‑sensitive, inferred identities/emotions/speculation. Scene/event nouns (e.g., parade, stadium) are permitted only if a scene classifier gives high confidence and they map to canonical inventory.
+- If fewer than two high‑confidence specific nouns remain after filtering, do not invent tags. Still produce a conservative fallback (see Line 2 Option B) when at least one reliable noun exists. If no reliable noun exists, leave Line 1 empty and follow the image unclear rule.
+
+Line 2 — caption (format rules; required)
+- Option A (preferred when possible): one factual sentence in present simple or present progressive, 7–13 words long, containing exactly one clear visible verb or one concrete spatial relation. Grammatical structure should be subject + verb + object/prepositional phrase. Allowed verbs: common visible actions (e.g., sits, stands, rides, holds, carries, walks, leans, looks, points, reads, opens, plays, wears, pushes, pulls, places, covers, is holding, is sitting, dances, performs, marches, runs, climbs, jumps, throws, catches, skates). Domain‑specific verbs are allowed only if supported by an activity/pose detector or strong co‑occurrence confidence.
+- Option B (fallback; use when fewer than two high‑confidence nouns or generator uncertainty): a conservative 2–6 word noun + location/scene phrase (e.g., ""dog on sidewalk"", ""man near tree"", ""red car in street""). No sentence punctuation.
+- Main noun requirement: the canonical main noun (Line 1 first token) must appear verbatim or as a canonical synonym (same canonical ID) in Line 2 and appear early in the sentence (within the first 3–4 tokens or within the subject phrase such as ""a/the <main_noun> ..."").
+- Token overlap: Option A captions should share at least two canonical tokens with Line 1 (one must be the main noun). Synonyms are allowed if they map to the same canonical ID. Attributes included in Line 1 must appear verbatim or as canonical synonyms in Line 2 if the attribute_confidence ≥ threshold; otherwise omit them.
+- Allowed extra words: determiners (a, the), prepositions (on, in, near, by, next to, in front of, behind), conjunction ""and"", and small function words. One optional trailing period only. No other punctuation or added objects/attributes not in Line 1 (unless they map to the same canonical ID).
+- Anti‑hallucination: do not introduce new objects, attributes, identities, emotions, or speculative actions not present in Line 1 or supported by detectors (attribute_confidence ≥ threshold). If a required check would fail (main noun missing, insufficient token overlap for Option A, verb unsupported, attribute below threshold, or forbidden token introduced), prefer Option B fallback when possible; if no reliable fallback exists, output exactly: image unclear
+
+Operational parameters and tie‑breaking
+- Parameters (defaults & recommendations): attribute_confidence_threshold = 65% (recommend sweep 60/70/75%), preferred_tag_count = 3, tie_break_delta_confidence = 10 percentage points (adaptive: if two classes' detector confidences are close, prefer the noun with higher CLIP retrieval frequency).
+- Prefer a specific canonical noun when its detector confidence exceeds the next-best by tie_break_delta_confidence. If confidences are close, prefer the noun with higher CLIP retrieval frequency or canonical inventory coverage.
+- When ambiguous, be conservative: omit low‑confidence tokens rather than guessing; prefer Option B when only one reliable noun exists; prefer Option A only when all non‑determiner nouns in the sentence can be traced to Line 1 via canonical IDs.
+- Candidate generation: you may produce up to 2–3 alternate candidates (each as two-line blocks) derived from alternate high‑confidence Line 1 sets if upstream canonicalization provides them. If multiple candidates are not supported, produce a single compliant candidate.
+- Diagnostics (must be logged per candidate, not necessarily exposed to end users): for each candidate, record canonical tokens used (IDs), detector confidences, CLIP retrieval frequencies, which Option (A/B) was used, omitted attributes due to thresholding, and any checks that failed or why a fallback/image unclear was chosen. Use these logs to tune thresholds and preferred_tag_count.
+
+Safety and scoring guidance
+- Maximize canonical lexical overlap between Line 1 and Line 2 to improve CLIP alignment while avoiding hallucination. Prefer discriminative, fine‑grained nouns. Do not use proper nouns, inferred identities, or emotions.
+- Allow canonical synonym mapping rather than literal string matching between Line 1 and Line 2 (both must map to same canonical inventory ID). This reduces brittle rejections while preserving traceability.
+- Scene/event nouns are allowed only with high scene classifier confidence and canonical mapping; keep identity/emotion tokens forbidden.
+
+If you cannot produce a reliable caption even with the conservative fallback rules, output exactly: image unclear
+
+Brief examples (illustrative only)
+- Example A (Option A): Line1: child, motorcycle, red
+  Line2: a child rides a red motorcycle down the street.
+- Example B (fallback Option B): Line1: dog
+  Line2: dog on sidewalk
+- Example C (image unclear): Line1:
+  Line2: image unclear
+
+Strictly follow the rules above. If no valid caption candidate passes these checks after attempting a conservative fallback, return Line 2 = ""image unclear"". Log diagnostics for every candidate to aid tuning and CLIP reranking.","person snowshoeing in snowy forest
+two people adjusting snowshoes in snow-covered woods
+
+person snowshoeing in snowy forest
+man and woman preparing snowshoes in winter woods
+
+person snowshoeing in snowy forest
+individuals securing snowshoes on snowy trail",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_899a7f1892,116,23037,flickr30k_test_023037,images/flickr30k/flickr30k_test_023037.jpg,"[""A man with a black t-shirt is holding a yellow electric guitar on stage at a music event."", ""A man in black clothing plays electric guitar on stage."", ""A man in a black shirt playing guitar in a band."", ""A guy playing a guitar on a stage smiling."", ""A musician is entertaining the crowd.""]",textgrad_899a7f1892,TextGrad Step 12,"Output 1–3 candidate captions. Each candidate must be exactly two lines (Line 1 = tags; Line 2 = caption). If multiple candidates are produced, separate candidates with a single blank line. Integrators should rerank candidates externally with CLIP; if you cannot rely on external reranking, produce only one candidate.
+
+Line 1 — tags (format rules; required)
+- Format: 2–5 comma‑separated lower‑case tokens (prefer exactly 3). No punctuation except commas. No surrounding whitespace beyond single spaces around commas.
+- Token types: visible concrete noun(s) or a single visible adjective (color/size) as the sole attribute token. Multiword fused objects (e.g., ""traffic light"", ""wine bottle"") count as one token.
+- Upstream canonicalization (assumed done before this prompt): map detector/classifier labels to a fixed canonical inventory (recommended: COCO / Visual Genome / CLIP‑common). Normalize plurals→singular and map synonyms→canonical ID. Only accept attribute tokens (colors/sizes) if attribute_confidence ≥ attribute_confidence_threshold.
+- Deduplicate tokens. Order tokens by visual discriminativeness (combine detector confidence + CLIP retrieval frequency; prefer higher score first). Prefer fine‑grained nouns when reliably detected.
+- Forbidden tokens: meta/tooling words, proper nouns/brands, dates/events that are identity‑sensitive, inferred identities/emotions/speculation. Scene/event nouns (e.g., parade, stadium) are permitted only if a scene classifier gives high confidence and they map to canonical inventory.
+- If fewer than two high‑confidence specific nouns remain after filtering, do not invent tags. Still produce a conservative fallback (see Line 2 Option B) when at least one reliable noun exists. If no reliable noun exists, leave Line 1 empty and follow the image unclear rule.
+
+Line 2 — caption (format rules; required)
+- Option A (preferred when possible): one factual sentence in present simple or present progressive, 7–13 words long, containing exactly one clear visible verb or one concrete spatial relation. Grammatical structure should be subject + verb + object/prepositional phrase. Allowed verbs: common visible actions (e.g., sits, stands, rides, holds, carries, walks, leans, looks, points, reads, opens, plays, wears, pushes, pulls, places, covers, is holding, is sitting, dances, performs, marches, runs, climbs, jumps, throws, catches, skates). Domain‑specific verbs are allowed only if supported by an activity/pose detector or strong co‑occurrence confidence.
+- Option B (fallback; use when fewer than two high‑confidence nouns or generator uncertainty): a conservative 2–6 word noun + location/scene phrase (e.g., ""dog on sidewalk"", ""man near tree"", ""red car in street""). No sentence punctuation.
+- Main noun requirement: the canonical main noun (Line 1 first token) must appear verbatim or as a canonical synonym (same canonical ID) in Line 2 and appear early in the sentence (within the first 3–4 tokens or within the subject phrase such as ""a/the <main_noun> ..."").
+- Token overlap: Option A captions should share at least two canonical tokens with Line 1 (one must be the main noun). Synonyms are allowed if they map to the same canonical ID. Attributes included in Line 1 must appear verbatim or as canonical synonyms in Line 2 if the attribute_confidence ≥ threshold; otherwise omit them.
+- Allowed extra words: determiners (a, the), prepositions (on, in, near, by, next to, in front of, behind), conjunction ""and"", and small function words. One optional trailing period only. No other punctuation or added objects/attributes not in Line 1 (unless they map to the same canonical ID).
+- Anti‑hallucination: do not introduce new objects, attributes, identities, emotions, or speculative actions not present in Line 1 or supported by detectors (attribute_confidence ≥ threshold). If a required check would fail (main noun missing, insufficient token overlap for Option A, verb unsupported, attribute below threshold, or forbidden token introduced), prefer Option B fallback when possible; if no reliable fallback exists, output exactly: image unclear
+
+Operational parameters and tie‑breaking
+- Parameters (defaults & recommendations): attribute_confidence_threshold = 65% (recommend sweep 60/70/75%), preferred_tag_count = 3, tie_break_delta_confidence = 10 percentage points (adaptive: if two classes' detector confidences are close, prefer the noun with higher CLIP retrieval frequency).
+- Prefer a specific canonical noun when its detector confidence exceeds the next-best by tie_break_delta_confidence. If confidences are close, prefer the noun with higher CLIP retrieval frequency or canonical inventory coverage.
+- When ambiguous, be conservative: omit low‑confidence tokens rather than guessing; prefer Option B when only one reliable noun exists; prefer Option A only when all non‑determiner nouns in the sentence can be traced to Line 1 via canonical IDs.
+- Candidate generation: you may produce up to 2–3 alternate candidates (each as two-line blocks) derived from alternate high‑confidence Line 1 sets if upstream canonicalization provides them. If multiple candidates are not supported, produce a single compliant candidate.
+- Diagnostics (must be logged per candidate, not necessarily exposed to end users): for each candidate, record canonical tokens used (IDs), detector confidences, CLIP retrieval frequencies, which Option (A/B) was used, omitted attributes due to thresholding, and any checks that failed or why a fallback/image unclear was chosen. Use these logs to tune thresholds and preferred_tag_count.
+
+Safety and scoring guidance
+- Maximize canonical lexical overlap between Line 1 and Line 2 to improve CLIP alignment while avoiding hallucination. Prefer discriminative, fine‑grained nouns. Do not use proper nouns, inferred identities, or emotions.
+- Allow canonical synonym mapping rather than literal string matching between Line 1 and Line 2 (both must map to same canonical inventory ID). This reduces brittle rejections while preserving traceability.
+- Scene/event nouns are allowed only with high scene classifier confidence and canonical mapping; keep identity/emotion tokens forbidden.
+
+If you cannot produce a reliable caption even with the conservative fallback rules, output exactly: image unclear
+
+Brief examples (illustrative only)
+- Example A (Option A): Line1: child, motorcycle, red
+  Line2: a child rides a red motorcycle down the street.
+- Example B (fallback Option B): Line1: dog
+  Line2: dog on sidewalk
+- Example C (image unclear): Line1:
+  Line2: image unclear
+
+Strictly follow the rules above. If no valid caption candidate passes these checks after attempting a conservative fallback, return Line 2 = ""image unclear"". Log diagnostics for every candidate to aid tuning and CLIP reranking.","man playing guitar on stage
+a man plays a light-colored electric guitar on a stage
+
+man holding guitar
+a man is holding a guitar while performing
+
+image unclear",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_899a7f1892,125,3536,flickr30k_test_003536,images/flickr30k/flickr30k_test_003536.jpg,"[""A young boy pretending to play with an ice sculpture gun"", ""A warmly dressed boy pretending an icicle is a gun."", ""Boy holding an icicle pretending it is a gun."", ""A boy holds a large icicle."", ""A boy holds an icicle""]",textgrad_899a7f1892,TextGrad Step 12,"Output 1–3 candidate captions. Each candidate must be exactly two lines (Line 1 = tags; Line 2 = caption). If multiple candidates are produced, separate candidates with a single blank line. Integrators should rerank candidates externally with CLIP; if you cannot rely on external reranking, produce only one candidate.
+
+Line 1 — tags (format rules; required)
+- Format: 2–5 comma‑separated lower‑case tokens (prefer exactly 3). No punctuation except commas. No surrounding whitespace beyond single spaces around commas.
+- Token types: visible concrete noun(s) or a single visible adjective (color/size) as the sole attribute token. Multiword fused objects (e.g., ""traffic light"", ""wine bottle"") count as one token.
+- Upstream canonicalization (assumed done before this prompt): map detector/classifier labels to a fixed canonical inventory (recommended: COCO / Visual Genome / CLIP‑common). Normalize plurals→singular and map synonyms→canonical ID. Only accept attribute tokens (colors/sizes) if attribute_confidence ≥ attribute_confidence_threshold.
+- Deduplicate tokens. Order tokens by visual discriminativeness (combine detector confidence + CLIP retrieval frequency; prefer higher score first). Prefer fine‑grained nouns when reliably detected.
+- Forbidden tokens: meta/tooling words, proper nouns/brands, dates/events that are identity‑sensitive, inferred identities/emotions/speculation. Scene/event nouns (e.g., parade, stadium) are permitted only if a scene classifier gives high confidence and they map to canonical inventory.
+- If fewer than two high‑confidence specific nouns remain after filtering, do not invent tags. Still produce a conservative fallback (see Line 2 Option B) when at least one reliable noun exists. If no reliable noun exists, leave Line 1 empty and follow the image unclear rule.
+
+Line 2 — caption (format rules; required)
+- Option A (preferred when possible): one factual sentence in present simple or present progressive, 7–13 words long, containing exactly one clear visible verb or one concrete spatial relation. Grammatical structure should be subject + verb + object/prepositional phrase. Allowed verbs: common visible actions (e.g., sits, stands, rides, holds, carries, walks, leans, looks, points, reads, opens, plays, wears, pushes, pulls, places, covers, is holding, is sitting, dances, performs, marches, runs, climbs, jumps, throws, catches, skates). Domain‑specific verbs are allowed only if supported by an activity/pose detector or strong co‑occurrence confidence.
+- Option B (fallback; use when fewer than two high‑confidence nouns or generator uncertainty): a conservative 2–6 word noun + location/scene phrase (e.g., ""dog on sidewalk"", ""man near tree"", ""red car in street""). No sentence punctuation.
+- Main noun requirement: the canonical main noun (Line 1 first token) must appear verbatim or as a canonical synonym (same canonical ID) in Line 2 and appear early in the sentence (within the first 3–4 tokens or within the subject phrase such as ""a/the <main_noun> ..."").
+- Token overlap: Option A captions should share at least two canonical tokens with Line 1 (one must be the main noun). Synonyms are allowed if they map to the same canonical ID. Attributes included in Line 1 must appear verbatim or as canonical synonyms in Line 2 if the attribute_confidence ≥ threshold; otherwise omit them.
+- Allowed extra words: determiners (a, the), prepositions (on, in, near, by, next to, in front of, behind), conjunction ""and"", and small function words. One optional trailing period only. No other punctuation or added objects/attributes not in Line 1 (unless they map to the same canonical ID).
+- Anti‑hallucination: do not introduce new objects, attributes, identities, emotions, or speculative actions not present in Line 1 or supported by detectors (attribute_confidence ≥ threshold). If a required check would fail (main noun missing, insufficient token overlap for Option A, verb unsupported, attribute below threshold, or forbidden token introduced), prefer Option B fallback when possible; if no reliable fallback exists, output exactly: image unclear
+
+Operational parameters and tie‑breaking
+- Parameters (defaults & recommendations): attribute_confidence_threshold = 65% (recommend sweep 60/70/75%), preferred_tag_count = 3, tie_break_delta_confidence = 10 percentage points (adaptive: if two classes' detector confidences are close, prefer the noun with higher CLIP retrieval frequency).
+- Prefer a specific canonical noun when its detector confidence exceeds the next-best by tie_break_delta_confidence. If confidences are close, prefer the noun with higher CLIP retrieval frequency or canonical inventory coverage.
+- When ambiguous, be conservative: omit low‑confidence tokens rather than guessing; prefer Option B when only one reliable noun exists; prefer Option A only when all non‑determiner nouns in the sentence can be traced to Line 1 via canonical IDs.
+- Candidate generation: you may produce up to 2–3 alternate candidates (each as two-line blocks) derived from alternate high‑confidence Line 1 sets if upstream canonicalization provides them. If multiple candidates are not supported, produce a single compliant candidate.
+- Diagnostics (must be logged per candidate, not necessarily exposed to end users): for each candidate, record canonical tokens used (IDs), detector confidences, CLIP retrieval frequencies, which Option (A/B) was used, omitted attributes due to thresholding, and any checks that failed or why a fallback/image unclear was chosen. Use these logs to tune thresholds and preferred_tag_count.
+
+Safety and scoring guidance
+- Maximize canonical lexical overlap between Line 1 and Line 2 to improve CLIP alignment while avoiding hallucination. Prefer discriminative, fine‑grained nouns. Do not use proper nouns, inferred identities, or emotions.
+- Allow canonical synonym mapping rather than literal string matching between Line 1 and Line 2 (both must map to same canonical inventory ID). This reduces brittle rejections while preserving traceability.
+- Scene/event nouns are allowed only with high scene classifier confidence and canonical mapping; keep identity/emotion tokens forbidden.
+
+If you cannot produce a reliable caption even with the conservative fallback rules, output exactly: image unclear
+
+Brief examples (illustrative only)
+- Example A (Option A): Line1: child, motorcycle, red
+  Line2: a child rides a red motorcycle down the street.
+- Example B (fallback Option B): Line1: dog
+  Line2: dog on sidewalk
+- Example C (image unclear): Line1:
+  Line2: image unclear
+
+Strictly follow the rules above. If no valid caption candidate passes these checks after attempting a conservative fallback, return Line 2 = ""image unclear"". Log diagnostics for every candidate to aid tuning and CLIP reranking.","child, tree, jacket
+child holds paper near tree
+
+child, tree, jacket
+child stands near tree holding paper
+
+child, tree, jacket
+child examines paper by tree",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_899a7f1892,126,25508,flickr30k_test_025508,images/flickr30k/flickr30k_test_025508.jpg,"[""A man in an orange shirt does a flip off a sand dune in the desert."", ""A young boy is doing a cannon ball outside near the desert sand."", ""Man in t-shirt and shorts doing a backflip on a sand hill."", ""A man is doing a flip in the air off of a sand dune."", ""A boy doing a back flip off of a sand dune.""]",textgrad_899a7f1892,TextGrad Step 12,"Output 1–3 candidate captions. Each candidate must be exactly two lines (Line 1 = tags; Line 2 = caption). If multiple candidates are produced, separate candidates with a single blank line. Integrators should rerank candidates externally with CLIP; if you cannot rely on external reranking, produce only one candidate.
+
+Line 1 — tags (format rules; required)
+- Format: 2–5 comma‑separated lower‑case tokens (prefer exactly 3). No punctuation except commas. No surrounding whitespace beyond single spaces around commas.
+- Token types: visible concrete noun(s) or a single visible adjective (color/size) as the sole attribute token. Multiword fused objects (e.g., ""traffic light"", ""wine bottle"") count as one token.
+- Upstream canonicalization (assumed done before this prompt): map detector/classifier labels to a fixed canonical inventory (recommended: COCO / Visual Genome / CLIP‑common). Normalize plurals→singular and map synonyms→canonical ID. Only accept attribute tokens (colors/sizes) if attribute_confidence ≥ attribute_confidence_threshold.
+- Deduplicate tokens. Order tokens by visual discriminativeness (combine detector confidence + CLIP retrieval frequency; prefer higher score first). Prefer fine‑grained nouns when reliably detected.
+- Forbidden tokens: meta/tooling words, proper nouns/brands, dates/events that are identity‑sensitive, inferred identities/emotions/speculation. Scene/event nouns (e.g., parade, stadium) are permitted only if a scene classifier gives high confidence and they map to canonical inventory.
+- If fewer than two high‑confidence specific nouns remain after filtering, do not invent tags. Still produce a conservative fallback (see Line 2 Option B) when at least one reliable noun exists. If no reliable noun exists, leave Line 1 empty and follow the image unclear rule.
+
+Line 2 — caption (format rules; required)
+- Option A (preferred when possible): one factual sentence in present simple or present progressive, 7–13 words long, containing exactly one clear visible verb or one concrete spatial relation. Grammatical structure should be subject + verb + object/prepositional phrase. Allowed verbs: common visible actions (e.g., sits, stands, rides, holds, carries, walks, leans, looks, points, reads, opens, plays, wears, pushes, pulls, places, covers, is holding, is sitting, dances, performs, marches, runs, climbs, jumps, throws, catches, skates). Domain‑specific verbs are allowed only if supported by an activity/pose detector or strong co‑occurrence confidence.
+- Option B (fallback; use when fewer than two high‑confidence nouns or generator uncertainty): a conservative 2–6 word noun + location/scene phrase (e.g., ""dog on sidewalk"", ""man near tree"", ""red car in street""). No sentence punctuation.
+- Main noun requirement: the canonical main noun (Line 1 first token) must appear verbatim or as a canonical synonym (same canonical ID) in Line 2 and appear early in the sentence (within the first 3–4 tokens or within the subject phrase such as ""a/the <main_noun> ..."").
+- Token overlap: Option A captions should share at least two canonical tokens with Line 1 (one must be the main noun). Synonyms are allowed if they map to the same canonical ID. Attributes included in Line 1 must appear verbatim or as canonical synonyms in Line 2 if the attribute_confidence ≥ threshold; otherwise omit them.
+- Allowed extra words: determiners (a, the), prepositions (on, in, near, by, next to, in front of, behind), conjunction ""and"", and small function words. One optional trailing period only. No other punctuation or added objects/attributes not in Line 1 (unless they map to the same canonical ID).
+- Anti‑hallucination: do not introduce new objects, attributes, identities, emotions, or speculative actions not present in Line 1 or supported by detectors (attribute_confidence ≥ threshold). If a required check would fail (main noun missing, insufficient token overlap for Option A, verb unsupported, attribute below threshold, or forbidden token introduced), prefer Option B fallback when possible; if no reliable fallback exists, output exactly: image unclear
+
+Operational parameters and tie‑breaking
+- Parameters (defaults & recommendations): attribute_confidence_threshold = 65% (recommend sweep 60/70/75%), preferred_tag_count = 3, tie_break_delta_confidence = 10 percentage points (adaptive: if two classes' detector confidences are close, prefer the noun with higher CLIP retrieval frequency).
+- Prefer a specific canonical noun when its detector confidence exceeds the next-best by tie_break_delta_confidence. If confidences are close, prefer the noun with higher CLIP retrieval frequency or canonical inventory coverage.
+- When ambiguous, be conservative: omit low‑confidence tokens rather than guessing; prefer Option B when only one reliable noun exists; prefer Option A only when all non‑determiner nouns in the sentence can be traced to Line 1 via canonical IDs.
+- Candidate generation: you may produce up to 2–3 alternate candidates (each as two-line blocks) derived from alternate high‑confidence Line 1 sets if upstream canonicalization provides them. If multiple candidates are not supported, produce a single compliant candidate.
+- Diagnostics (must be logged per candidate, not necessarily exposed to end users): for each candidate, record canonical tokens used (IDs), detector confidences, CLIP retrieval frequencies, which Option (A/B) was used, omitted attributes due to thresholding, and any checks that failed or why a fallback/image unclear was chosen. Use these logs to tune thresholds and preferred_tag_count.
+
+Safety and scoring guidance
+- Maximize canonical lexical overlap between Line 1 and Line 2 to improve CLIP alignment while avoiding hallucination. Prefer discriminative, fine‑grained nouns. Do not use proper nouns, inferred identities, or emotions.
+- Allow canonical synonym mapping rather than literal string matching between Line 1 and Line 2 (both must map to same canonical inventory ID). This reduces brittle rejections while preserving traceability.
+- Scene/event nouns are allowed only with high scene classifier confidence and canonical mapping; keep identity/emotion tokens forbidden.
+
+If you cannot produce a reliable caption even with the conservative fallback rules, output exactly: image unclear
+
+Brief examples (illustrative only)
+- Example A (Option A): Line1: child, motorcycle, red
+  Line2: a child rides a red motorcycle down the street.
+- Example B (fallback Option B): Line1: dog
+  Line2: dog on sidewalk
+- Example C (image unclear): Line1:
+  Line2: image unclear
+
+Strictly follow the rules above. If no valid caption candidate passes these checks after attempting a conservative fallback, return Line 2 = ""image unclear"". Log diagnostics for every candidate to aid tuning and CLIP reranking.","person jumping in desert
+a person performs a flip above a sand dune
+
+person, sand, sky
+person jumping in desert
+
+image unclear",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_899a7f1892,135,15378,flickr30k_test_015378,images/flickr30k/flickr30k_test_015378.jpg,"[""The man in the red shirt and the woman with the white bag are conversing."", ""A man in a red shirt is interacting with a woman holding a shopping bag."", ""A woman is purchasing items from the man in the red shirt's yard sale."", ""An older man in a black hat and red shirt is talking with a woman."", ""A woman in a black shirt is holding a plastic bag.""]",textgrad_899a7f1892,TextGrad Step 12,"Output 1–3 candidate captions. Each candidate must be exactly two lines (Line 1 = tags; Line 2 = caption). If multiple candidates are produced, separate candidates with a single blank line. Integrators should rerank candidates externally with CLIP; if you cannot rely on external reranking, produce only one candidate.
+
+Line 1 — tags (format rules; required)
+- Format: 2–5 comma‑separated lower‑case tokens (prefer exactly 3). No punctuation except commas. No surrounding whitespace beyond single spaces around commas.
+- Token types: visible concrete noun(s) or a single visible adjective (color/size) as the sole attribute token. Multiword fused objects (e.g., ""traffic light"", ""wine bottle"") count as one token.
+- Upstream canonicalization (assumed done before this prompt): map detector/classifier labels to a fixed canonical inventory (recommended: COCO / Visual Genome / CLIP‑common). Normalize plurals→singular and map synonyms→canonical ID. Only accept attribute tokens (colors/sizes) if attribute_confidence ≥ attribute_confidence_threshold.
+- Deduplicate tokens. Order tokens by visual discriminativeness (combine detector confidence + CLIP retrieval frequency; prefer higher score first). Prefer fine‑grained nouns when reliably detected.
+- Forbidden tokens: meta/tooling words, proper nouns/brands, dates/events that are identity‑sensitive, inferred identities/emotions/speculation. Scene/event nouns (e.g., parade, stadium) are permitted only if a scene classifier gives high confidence and they map to canonical inventory.
+- If fewer than two high‑confidence specific nouns remain after filtering, do not invent tags. Still produce a conservative fallback (see Line 2 Option B) when at least one reliable noun exists. If no reliable noun exists, leave Line 1 empty and follow the image unclear rule.
+
+Line 2 — caption (format rules; required)
+- Option A (preferred when possible): one factual sentence in present simple or present progressive, 7–13 words long, containing exactly one clear visible verb or one concrete spatial relation. Grammatical structure should be subject + verb + object/prepositional phrase. Allowed verbs: common visible actions (e.g., sits, stands, rides, holds, carries, walks, leans, looks, points, reads, opens, plays, wears, pushes, pulls, places, covers, is holding, is sitting, dances, performs, marches, runs, climbs, jumps, throws, catches, skates). Domain‑specific verbs are allowed only if supported by an activity/pose detector or strong co‑occurrence confidence.
+- Option B (fallback; use when fewer than two high‑confidence nouns or generator uncertainty): a conservative 2–6 word noun + location/scene phrase (e.g., ""dog on sidewalk"", ""man near tree"", ""red car in street""). No sentence punctuation.
+- Main noun requirement: the canonical main noun (Line 1 first token) must appear verbatim or as a canonical synonym (same canonical ID) in Line 2 and appear early in the sentence (within the first 3–4 tokens or within the subject phrase such as ""a/the <main_noun> ..."").
+- Token overlap: Option A captions should share at least two canonical tokens with Line 1 (one must be the main noun). Synonyms are allowed if they map to the same canonical ID. Attributes included in Line 1 must appear verbatim or as canonical synonyms in Line 2 if the attribute_confidence ≥ threshold; otherwise omit them.
+- Allowed extra words: determiners (a, the), prepositions (on, in, near, by, next to, in front of, behind), conjunction ""and"", and small function words. One optional trailing period only. No other punctuation or added objects/attributes not in Line 1 (unless they map to the same canonical ID).
+- Anti‑hallucination: do not introduce new objects, attributes, identities, emotions, or speculative actions not present in Line 1 or supported by detectors (attribute_confidence ≥ threshold). If a required check would fail (main noun missing, insufficient token overlap for Option A, verb unsupported, attribute below threshold, or forbidden token introduced), prefer Option B fallback when possible; if no reliable fallback exists, output exactly: image unclear
+
+Operational parameters and tie‑breaking
+- Parameters (defaults & recommendations): attribute_confidence_threshold = 65% (recommend sweep 60/70/75%), preferred_tag_count = 3, tie_break_delta_confidence = 10 percentage points (adaptive: if two classes' detector confidences are close, prefer the noun with higher CLIP retrieval frequency).
+- Prefer a specific canonical noun when its detector confidence exceeds the next-best by tie_break_delta_confidence. If confidences are close, prefer the noun with higher CLIP retrieval frequency or canonical inventory coverage.
+- When ambiguous, be conservative: omit low‑confidence tokens rather than guessing; prefer Option B when only one reliable noun exists; prefer Option A only when all non‑determiner nouns in the sentence can be traced to Line 1 via canonical IDs.
+- Candidate generation: you may produce up to 2–3 alternate candidates (each as two-line blocks) derived from alternate high‑confidence Line 1 sets if upstream canonicalization provides them. If multiple candidates are not supported, produce a single compliant candidate.
+- Diagnostics (must be logged per candidate, not necessarily exposed to end users): for each candidate, record canonical tokens used (IDs), detector confidences, CLIP retrieval frequencies, which Option (A/B) was used, omitted attributes due to thresholding, and any checks that failed or why a fallback/image unclear was chosen. Use these logs to tune thresholds and preferred_tag_count.
+
+Safety and scoring guidance
+- Maximize canonical lexical overlap between Line 1 and Line 2 to improve CLIP alignment while avoiding hallucination. Prefer discriminative, fine‑grained nouns. Do not use proper nouns, inferred identities, or emotions.
+- Allow canonical synonym mapping rather than literal string matching between Line 1 and Line 2 (both must map to same canonical inventory ID). This reduces brittle rejections while preserving traceability.
+- Scene/event nouns are allowed only with high scene classifier confidence and canonical mapping; keep identity/emotion tokens forbidden.
+
+If you cannot produce a reliable caption even with the conservative fallback rules, output exactly: image unclear
+
+Brief examples (illustrative only)
+- Example A (Option A): Line1: child, motorcycle, red
+  Line2: a child rides a red motorcycle down the street.
+- Example B (fallback Option B): Line1: dog
+  Line2: dog on sidewalk
+- Example C (image unclear): Line1:
+  Line2: image unclear
+
+Strictly follow the rules above. If no valid caption candidate passes these checks after attempting a conservative fallback, return Line 2 = ""image unclear"". Log diagnostics for every candidate to aid tuning and CLIP reranking.","man in red shirt
+man in red shirt stands near woman holding plastic bag
+
+woman with sunglasses
+woman with sunglasses holds plastic bag near man in red shirt
+
+image unclear",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_899a7f1892,143,12897,flickr30k_test_012897,images/flickr30k/flickr30k_test_012897.jpg,"[""A white person surrounded by green grass and trees paints on a canvas while outside."", ""A Woman in a blue shirt and big hat paints outside with trees in the background."", ""An female artist, wearing a sunhat and glasses, paints on a canvas outdoors."", ""Determined to capture the essence of this landscape before sunset."", ""A woman in a blue shirt and straw hat is painting outside.""]",textgrad_899a7f1892,TextGrad Step 12,"Output 1–3 candidate captions. Each candidate must be exactly two lines (Line 1 = tags; Line 2 = caption). If multiple candidates are produced, separate candidates with a single blank line. Integrators should rerank candidates externally with CLIP; if you cannot rely on external reranking, produce only one candidate.
+
+Line 1 — tags (format rules; required)
+- Format: 2–5 comma‑separated lower‑case tokens (prefer exactly 3). No punctuation except commas. No surrounding whitespace beyond single spaces around commas.
+- Token types: visible concrete noun(s) or a single visible adjective (color/size) as the sole attribute token. Multiword fused objects (e.g., ""traffic light"", ""wine bottle"") count as one token.
+- Upstream canonicalization (assumed done before this prompt): map detector/classifier labels to a fixed canonical inventory (recommended: COCO / Visual Genome / CLIP‑common). Normalize plurals→singular and map synonyms→canonical ID. Only accept attribute tokens (colors/sizes) if attribute_confidence ≥ attribute_confidence_threshold.
+- Deduplicate tokens. Order tokens by visual discriminativeness (combine detector confidence + CLIP retrieval frequency; prefer higher score first). Prefer fine‑grained nouns when reliably detected.
+- Forbidden tokens: meta/tooling words, proper nouns/brands, dates/events that are identity‑sensitive, inferred identities/emotions/speculation. Scene/event nouns (e.g., parade, stadium) are permitted only if a scene classifier gives high confidence and they map to canonical inventory.
+- If fewer than two high‑confidence specific nouns remain after filtering, do not invent tags. Still produce a conservative fallback (see Line 2 Option B) when at least one reliable noun exists. If no reliable noun exists, leave Line 1 empty and follow the image unclear rule.
+
+Line 2 — caption (format rules; required)
+- Option A (preferred when possible): one factual sentence in present simple or present progressive, 7–13 words long, containing exactly one clear visible verb or one concrete spatial relation. Grammatical structure should be subject + verb + object/prepositional phrase. Allowed verbs: common visible actions (e.g., sits, stands, rides, holds, carries, walks, leans, looks, points, reads, opens, plays, wears, pushes, pulls, places, covers, is holding, is sitting, dances, performs, marches, runs, climbs, jumps, throws, catches, skates). Domain‑specific verbs are allowed only if supported by an activity/pose detector or strong co‑occurrence confidence.
+- Option B (fallback; use when fewer than two high‑confidence nouns or generator uncertainty): a conservative 2–6 word noun + location/scene phrase (e.g., ""dog on sidewalk"", ""man near tree"", ""red car in street""). No sentence punctuation.
+- Main noun requirement: the canonical main noun (Line 1 first token) must appear verbatim or as a canonical synonym (same canonical ID) in Line 2 and appear early in the sentence (within the first 3–4 tokens or within the subject phrase such as ""a/the <main_noun> ..."").
+- Token overlap: Option A captions should share at least two canonical tokens with Line 1 (one must be the main noun). Synonyms are allowed if they map to the same canonical ID. Attributes included in Line 1 must appear verbatim or as canonical synonyms in Line 2 if the attribute_confidence ≥ threshold; otherwise omit them.
+- Allowed extra words: determiners (a, the), prepositions (on, in, near, by, next to, in front of, behind), conjunction ""and"", and small function words. One optional trailing period only. No other punctuation or added objects/attributes not in Line 1 (unless they map to the same canonical ID).
+- Anti‑hallucination: do not introduce new objects, attributes, identities, emotions, or speculative actions not present in Line 1 or supported by detectors (attribute_confidence ≥ threshold). If a required check would fail (main noun missing, insufficient token overlap for Option A, verb unsupported, attribute below threshold, or forbidden token introduced), prefer Option B fallback when possible; if no reliable fallback exists, output exactly: image unclear
+
+Operational parameters and tie‑breaking
+- Parameters (defaults & recommendations): attribute_confidence_threshold = 65% (recommend sweep 60/70/75%), preferred_tag_count = 3, tie_break_delta_confidence = 10 percentage points (adaptive: if two classes' detector confidences are close, prefer the noun with higher CLIP retrieval frequency).
+- Prefer a specific canonical noun when its detector confidence exceeds the next-best by tie_break_delta_confidence. If confidences are close, prefer the noun with higher CLIP retrieval frequency or canonical inventory coverage.
+- When ambiguous, be conservative: omit low‑confidence tokens rather than guessing; prefer Option B when only one reliable noun exists; prefer Option A only when all non‑determiner nouns in the sentence can be traced to Line 1 via canonical IDs.
+- Candidate generation: you may produce up to 2–3 alternate candidates (each as two-line blocks) derived from alternate high‑confidence Line 1 sets if upstream canonicalization provides them. If multiple candidates are not supported, produce a single compliant candidate.
+- Diagnostics (must be logged per candidate, not necessarily exposed to end users): for each candidate, record canonical tokens used (IDs), detector confidences, CLIP retrieval frequencies, which Option (A/B) was used, omitted attributes due to thresholding, and any checks that failed or why a fallback/image unclear was chosen. Use these logs to tune thresholds and preferred_tag_count.
+
+Safety and scoring guidance
+- Maximize canonical lexical overlap between Line 1 and Line 2 to improve CLIP alignment while avoiding hallucination. Prefer discriminative, fine‑grained nouns. Do not use proper nouns, inferred identities, or emotions.
+- Allow canonical synonym mapping rather than literal string matching between Line 1 and Line 2 (both must map to same canonical inventory ID). This reduces brittle rejections while preserving traceability.
+- Scene/event nouns are allowed only with high scene classifier confidence and canonical mapping; keep identity/emotion tokens forbidden.
+
+If you cannot produce a reliable caption even with the conservative fallback rules, output exactly: image unclear
+
+Brief examples (illustrative only)
+- Example A (Option A): Line1: child, motorcycle, red
+  Line2: a child rides a red motorcycle down the street.
+- Example B (fallback Option B): Line1: dog
+  Line2: dog on sidewalk
+- Example C (image unclear): Line1:
+  Line2: image unclear
+
+Strictly follow the rules above. If no valid caption candidate passes these checks after attempting a conservative fallback, return Line 2 = ""image unclear"". Log diagnostics for every candidate to aid tuning and CLIP reranking.","person painting outdoors
+a person paints on an easel in a grassy area
+
+person, easel, painting
+person paints on an easel outdoors
+
+image unclear",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_899a7f1892,146,5524,flickr30k_test_005524,images/flickr30k/flickr30k_test_005524.jpg,"[""A young, black girl in a white shirt is wearing a party hat and covering her mouth with her right hand."", ""A child is holding their hand over their mouth wearing a birthday hat."", ""A little African-American girl gets a big surprise on her birthday."", ""A young girl wearing a party hat is laughing."", ""A girl wearing a dog paw-spotted party hat.""]",textgrad_899a7f1892,TextGrad Step 12,"Output 1–3 candidate captions. Each candidate must be exactly two lines (Line 1 = tags; Line 2 = caption). If multiple candidates are produced, separate candidates with a single blank line. Integrators should rerank candidates externally with CLIP; if you cannot rely on external reranking, produce only one candidate.
+
+Line 1 — tags (format rules; required)
+- Format: 2–5 comma‑separated lower‑case tokens (prefer exactly 3). No punctuation except commas. No surrounding whitespace beyond single spaces around commas.
+- Token types: visible concrete noun(s) or a single visible adjective (color/size) as the sole attribute token. Multiword fused objects (e.g., ""traffic light"", ""wine bottle"") count as one token.
+- Upstream canonicalization (assumed done before this prompt): map detector/classifier labels to a fixed canonical inventory (recommended: COCO / Visual Genome / CLIP‑common). Normalize plurals→singular and map synonyms→canonical ID. Only accept attribute tokens (colors/sizes) if attribute_confidence ≥ attribute_confidence_threshold.
+- Deduplicate tokens. Order tokens by visual discriminativeness (combine detector confidence + CLIP retrieval frequency; prefer higher score first). Prefer fine‑grained nouns when reliably detected.
+- Forbidden tokens: meta/tooling words, proper nouns/brands, dates/events that are identity‑sensitive, inferred identities/emotions/speculation. Scene/event nouns (e.g., parade, stadium) are permitted only if a scene classifier gives high confidence and they map to canonical inventory.
+- If fewer than two high‑confidence specific nouns remain after filtering, do not invent tags. Still produce a conservative fallback (see Line 2 Option B) when at least one reliable noun exists. If no reliable noun exists, leave Line 1 empty and follow the image unclear rule.
+
+Line 2 — caption (format rules; required)
+- Option A (preferred when possible): one factual sentence in present simple or present progressive, 7–13 words long, containing exactly one clear visible verb or one concrete spatial relation. Grammatical structure should be subject + verb + object/prepositional phrase. Allowed verbs: common visible actions (e.g., sits, stands, rides, holds, carries, walks, leans, looks, points, reads, opens, plays, wears, pushes, pulls, places, covers, is holding, is sitting, dances, performs, marches, runs, climbs, jumps, throws, catches, skates). Domain‑specific verbs are allowed only if supported by an activity/pose detector or strong co‑occurrence confidence.
+- Option B (fallback; use when fewer than two high‑confidence nouns or generator uncertainty): a conservative 2–6 word noun + location/scene phrase (e.g., ""dog on sidewalk"", ""man near tree"", ""red car in street""). No sentence punctuation.
+- Main noun requirement: the canonical main noun (Line 1 first token) must appear verbatim or as a canonical synonym (same canonical ID) in Line 2 and appear early in the sentence (within the first 3–4 tokens or within the subject phrase such as ""a/the <main_noun> ..."").
+- Token overlap: Option A captions should share at least two canonical tokens with Line 1 (one must be the main noun). Synonyms are allowed if they map to the same canonical ID. Attributes included in Line 1 must appear verbatim or as canonical synonyms in Line 2 if the attribute_confidence ≥ threshold; otherwise omit them.
+- Allowed extra words: determiners (a, the), prepositions (on, in, near, by, next to, in front of, behind), conjunction ""and"", and small function words. One optional trailing period only. No other punctuation or added objects/attributes not in Line 1 (unless they map to the same canonical ID).
+- Anti‑hallucination: do not introduce new objects, attributes, identities, emotions, or speculative actions not present in Line 1 or supported by detectors (attribute_confidence ≥ threshold). If a required check would fail (main noun missing, insufficient token overlap for Option A, verb unsupported, attribute below threshold, or forbidden token introduced), prefer Option B fallback when possible; if no reliable fallback exists, output exactly: image unclear
+
+Operational parameters and tie‑breaking
+- Parameters (defaults & recommendations): attribute_confidence_threshold = 65% (recommend sweep 60/70/75%), preferred_tag_count = 3, tie_break_delta_confidence = 10 percentage points (adaptive: if two classes' detector confidences are close, prefer the noun with higher CLIP retrieval frequency).
+- Prefer a specific canonical noun when its detector confidence exceeds the next-best by tie_break_delta_confidence. If confidences are close, prefer the noun with higher CLIP retrieval frequency or canonical inventory coverage.
+- When ambiguous, be conservative: omit low‑confidence tokens rather than guessing; prefer Option B when only one reliable noun exists; prefer Option A only when all non‑determiner nouns in the sentence can be traced to Line 1 via canonical IDs.
+- Candidate generation: you may produce up to 2–3 alternate candidates (each as two-line blocks) derived from alternate high‑confidence Line 1 sets if upstream canonicalization provides them. If multiple candidates are not supported, produce a single compliant candidate.
+- Diagnostics (must be logged per candidate, not necessarily exposed to end users): for each candidate, record canonical tokens used (IDs), detector confidences, CLIP retrieval frequencies, which Option (A/B) was used, omitted attributes due to thresholding, and any checks that failed or why a fallback/image unclear was chosen. Use these logs to tune thresholds and preferred_tag_count.
+
+Safety and scoring guidance
+- Maximize canonical lexical overlap between Line 1 and Line 2 to improve CLIP alignment while avoiding hallucination. Prefer discriminative, fine‑grained nouns. Do not use proper nouns, inferred identities, or emotions.
+- Allow canonical synonym mapping rather than literal string matching between Line 1 and Line 2 (both must map to same canonical inventory ID). This reduces brittle rejections while preserving traceability.
+- Scene/event nouns are allowed only with high scene classifier confidence and canonical mapping; keep identity/emotion tokens forbidden.
+
+If you cannot produce a reliable caption even with the conservative fallback rules, output exactly: image unclear
+
+Brief examples (illustrative only)
+- Example A (Option A): Line1: child, motorcycle, red
+  Line2: a child rides a red motorcycle down the street.
+- Example B (fallback Option B): Line1: dog
+  Line2: dog on sidewalk
+- Example C (image unclear): Line1:
+  Line2: image unclear
+
+Strictly follow the rules above. If no valid caption candidate passes these checks after attempting a conservative fallback, return Line 2 = ""image unclear"". Log diagnostics for every candidate to aid tuning and CLIP reranking.","child, balloon, party hat
+a child blows a balloon while wearing a party hat
+
+child, balloon, party hat
+child holds balloon tied with string
+
+child, balloon, party hat
+child leans forward blowing balloon",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"
+flickr30k_main_seed1_train,textgrad_clip,textgrad_clip__textgrad_899a7f1892,148,7436,flickr30k_test_007436,images/flickr30k/flickr30k_test_007436.jpg,"[""An elderly woman looking at her cellphone, and a young black man looking toward her."", ""A group of people hanging out on the street as a woman looks at her phone."", ""Everyone on the street in the city seem to be busy doing their own thing."", ""An elderly woman checks her cellphone while standing on the curb."", ""An older lady takes a moment to check her phone in a busy street.""]",textgrad_899a7f1892,TextGrad Step 12,"Output 1–3 candidate captions. Each candidate must be exactly two lines (Line 1 = tags; Line 2 = caption). If multiple candidates are produced, separate candidates with a single blank line. Integrators should rerank candidates externally with CLIP; if you cannot rely on external reranking, produce only one candidate.
+
+Line 1 — tags (format rules; required)
+- Format: 2–5 comma‑separated lower‑case tokens (prefer exactly 3). No punctuation except commas. No surrounding whitespace beyond single spaces around commas.
+- Token types: visible concrete noun(s) or a single visible adjective (color/size) as the sole attribute token. Multiword fused objects (e.g., ""traffic light"", ""wine bottle"") count as one token.
+- Upstream canonicalization (assumed done before this prompt): map detector/classifier labels to a fixed canonical inventory (recommended: COCO / Visual Genome / CLIP‑common). Normalize plurals→singular and map synonyms→canonical ID. Only accept attribute tokens (colors/sizes) if attribute_confidence ≥ attribute_confidence_threshold.
+- Deduplicate tokens. Order tokens by visual discriminativeness (combine detector confidence + CLIP retrieval frequency; prefer higher score first). Prefer fine‑grained nouns when reliably detected.
+- Forbidden tokens: meta/tooling words, proper nouns/brands, dates/events that are identity‑sensitive, inferred identities/emotions/speculation. Scene/event nouns (e.g., parade, stadium) are permitted only if a scene classifier gives high confidence and they map to canonical inventory.
+- If fewer than two high‑confidence specific nouns remain after filtering, do not invent tags. Still produce a conservative fallback (see Line 2 Option B) when at least one reliable noun exists. If no reliable noun exists, leave Line 1 empty and follow the image unclear rule.
+
+Line 2 — caption (format rules; required)
+- Option A (preferred when possible): one factual sentence in present simple or present progressive, 7–13 words long, containing exactly one clear visible verb or one concrete spatial relation. Grammatical structure should be subject + verb + object/prepositional phrase. Allowed verbs: common visible actions (e.g., sits, stands, rides, holds, carries, walks, leans, looks, points, reads, opens, plays, wears, pushes, pulls, places, covers, is holding, is sitting, dances, performs, marches, runs, climbs, jumps, throws, catches, skates). Domain‑specific verbs are allowed only if supported by an activity/pose detector or strong co‑occurrence confidence.
+- Option B (fallback; use when fewer than two high‑confidence nouns or generator uncertainty): a conservative 2–6 word noun + location/scene phrase (e.g., ""dog on sidewalk"", ""man near tree"", ""red car in street""). No sentence punctuation.
+- Main noun requirement: the canonical main noun (Line 1 first token) must appear verbatim or as a canonical synonym (same canonical ID) in Line 2 and appear early in the sentence (within the first 3–4 tokens or within the subject phrase such as ""a/the <main_noun> ..."").
+- Token overlap: Option A captions should share at least two canonical tokens with Line 1 (one must be the main noun). Synonyms are allowed if they map to the same canonical ID. Attributes included in Line 1 must appear verbatim or as canonical synonyms in Line 2 if the attribute_confidence ≥ threshold; otherwise omit them.
+- Allowed extra words: determiners (a, the), prepositions (on, in, near, by, next to, in front of, behind), conjunction ""and"", and small function words. One optional trailing period only. No other punctuation or added objects/attributes not in Line 1 (unless they map to the same canonical ID).
+- Anti‑hallucination: do not introduce new objects, attributes, identities, emotions, or speculative actions not present in Line 1 or supported by detectors (attribute_confidence ≥ threshold). If a required check would fail (main noun missing, insufficient token overlap for Option A, verb unsupported, attribute below threshold, or forbidden token introduced), prefer Option B fallback when possible; if no reliable fallback exists, output exactly: image unclear
+
+Operational parameters and tie‑breaking
+- Parameters (defaults & recommendations): attribute_confidence_threshold = 65% (recommend sweep 60/70/75%), preferred_tag_count = 3, tie_break_delta_confidence = 10 percentage points (adaptive: if two classes' detector confidences are close, prefer the noun with higher CLIP retrieval frequency).
+- Prefer a specific canonical noun when its detector confidence exceeds the next-best by tie_break_delta_confidence. If confidences are close, prefer the noun with higher CLIP retrieval frequency or canonical inventory coverage.
+- When ambiguous, be conservative: omit low‑confidence tokens rather than guessing; prefer Option B when only one reliable noun exists; prefer Option A only when all non‑determiner nouns in the sentence can be traced to Line 1 via canonical IDs.
+- Candidate generation: you may produce up to 2–3 alternate candidates (each as two-line blocks) derived from alternate high‑confidence Line 1 sets if upstream canonicalization provides them. If multiple candidates are not supported, produce a single compliant candidate.
+- Diagnostics (must be logged per candidate, not necessarily exposed to end users): for each candidate, record canonical tokens used (IDs), detector confidences, CLIP retrieval frequencies, which Option (A/B) was used, omitted attributes due to thresholding, and any checks that failed or why a fallback/image unclear was chosen. Use these logs to tune thresholds and preferred_tag_count.
+
+Safety and scoring guidance
+- Maximize canonical lexical overlap between Line 1 and Line 2 to improve CLIP alignment while avoiding hallucination. Prefer discriminative, fine‑grained nouns. Do not use proper nouns, inferred identities, or emotions.
+- Allow canonical synonym mapping rather than literal string matching between Line 1 and Line 2 (both must map to same canonical inventory ID). This reduces brittle rejections while preserving traceability.
+- Scene/event nouns are allowed only with high scene classifier confidence and canonical mapping; keep identity/emotion tokens forbidden.
+
+If you cannot produce a reliable caption even with the conservative fallback rules, output exactly: image unclear
+
+Brief examples (illustrative only)
+- Example A (Option A): Line1: child, motorcycle, red
+  Line2: a child rides a red motorcycle down the street.
+- Example B (fallback Option B): Line1: dog
+  Line2: dog on sidewalk
+- Example C (image unclear): Line1:
+  Line2: image unclear
+
+Strictly follow the rules above. If no valid caption candidate passes these checks after attempting a conservative fallback, return Line 2 = ""image unclear"". Log diagnostics for every candidate to aid tuning and CLIP reranking.","woman holding phone
+woman stands near yellow truck
+
+man wearing cap
+man walks near fire hydrant
+
+yellow truck parked
+yellow truck parked on street",0,1,Qwen/Qwen3-VL-8B-Instruct,0.0,,64,"{""temperature"": 0.0, ""top_p"": null, ""max_new_tokens"": 64}"

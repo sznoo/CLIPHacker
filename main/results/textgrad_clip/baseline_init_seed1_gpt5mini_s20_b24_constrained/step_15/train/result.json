@@ -1,0 +1,117 @@
+{
+  "prompt": "Generate exactly one short, literal, factual caption (one grammatically correct sentence) describing only visible content in the image. Output exactly one sentence only — no extra text. Total words: 8–14 (prefer 9–12). Follow these prioritized rules (apply in order):\n\n1) Subject selection: choose the candidate subject that yields the most high‑signal tokens (see rule 3). If tied, prefer larger area. If a person’s detector_confidence is within ±0.10 of the top candidate, select the person. Prefer subjects that enable early discriminative tokens rather than choosing by area alone.\n\n2) Visibility (deterministic): an object counts as \"clearly visible\" if area ≥1.5% OR (area ≥0.8% AND detector_confidence ≥0.45). Small‑object exception: treat as visible if area ≥0.6% AND detector_confidence ≥0.75, or area ≥0.4% AND detector_confidence ≥0.80. Additionally, allow top‑2 detections to be treated as visible if detector_confidence ≥0.35 AND area ≥0.5%. Do not invent attributes not supported by the detections.\n\n3) High‑signal tokens (definition and placement): a high‑signal token is a visible color or pattern, a concrete multiword class (e.g., \"stop sign\", \"double‑decker bus\"), a clear Arabic numeral, a clothing/accessory term, or short legible text/logo (1–3 tokens). Require at least one high‑signal token within the first 2 content words (a single leading article does not count). If two distinct high‑signal tokens are clearly visible, include both within the first 3 content words unless grammar absolutely prevents it.\n\n4) OCR/text copying: allow copying short readable text/logos of 1–3 tokens when OCR_confidence ≥0.55 AND OCR_bbox_area ≥0.8%, or when OCR_confidence ≥0.60 AND OCR_bbox_area ≥0.8% (both thresholds apply). Do not copy phone numbers or runs of ≥5 consecutive digits; do not copy unreadable or low‑confidence text. Prefer concise insertion like: shirt NIKE or shirt \"NIKE\".\n\n5) Second object allowance: you may append one compact post‑nominal prepositional or participial phrase (one relation only, e.g., \"by market stall\", \"on sidewalk\") if that second short phrase adds a distinct high‑signal token (color, multiword class, numeral, or logo). No stacked relations or long descriptive chains.\n\n6) Wording, modifiers, verbs, and length: start the caption with [Color/Number/Multiword_class] + [class] when such a token is available (avoid beginning with a leading article that delays signals). Allow up to two pre‑nominal high‑signal modifiers, OR one pre‑nominal modifier plus one short post‑nominal relation as in rule 5. Use present‑tense, concise S V (+ O) sentences. Prefer specific, high‑information verbs (examples: strums, rides, kicks, dives, dribbles, holds, holds onto, carries, wears, reads, drinks, pours, pushes, pulls, stands beside, sits on, walks past, walks toward, passes, stops at) rather than bland copula verbs. Favor multiword concrete classes over generic labels (e.g., \"red double‑decker bus\" rather than \"vehicle\").\n\n7) Numbers and formatting: use Arabic numerals for visible counts that meet visibility/OCR rules. Use common collocations and natural grammar. Keep captions dense with concrete tokens and minimal function words.\n\n8) Safety and literalness: do not invent unseen attributes, emotions, intentions, or dialogue. Do not hallucinate unreadable text. If no high‑signal token meets the visibility/OCR thresholds, prefer the next visible candidate that provides at least one high‑signal token, but never violate the visibility and OCR safety rules.\n\nFinal constraints: one sentence only, 8–14 words, literal description of visible content, follow the visibility and OCR thresholds above, do not output fallback phrases (e.g., \"image unclear\"), and do not add any extra commentary.",
+  "prompt_id": "textgrad_d94841e133",
+  "split_csv": "data/splits/flickr30k_main_seed1_train.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_15/train/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_15/train/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_15/train/scores.csv",
+  "summary": {
+    "n": 24,
+    "mean_clip": 0.31153198207418126,
+    "mean_siglip": 0.1858100090175867,
+    "mean_caption_len": 11.041666666666666,
+    "generic_rate": 0.041666666666666664,
+    "mean_delta_clip": -0.0069144455095132215,
+    "mean_delta_siglip": 0.005603409993151824,
+    "clip_win_rate": 0.3333333333333333,
+    "siglip_win_rate": 0.5416666666666666
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_023643",
+      "caption": "Girl with pink headband smiles under market umbrella.",
+      "clip_score": 0.2573896646499634,
+      "siglip_score": 0.1585321426391601,
+      "delta_clip": -0.06952238082885742,
+      "delta_siglip": -0.11739283800125128
+    },
+    {
+      "image_id": "flickr30k_test_019253",
+      "caption": "Woman wearing purple jacket and green scarf looks down.",
+      "clip_score": 0.3184491991996765,
+      "siglip_score": 0.2471322566270828,
+      "delta_clip": -0.053751468658447266,
+      "delta_siglip": -0.027645811438560514
+    },
+    {
+      "image_id": "flickr30k_test_022494",
+      "caption": "Man in orange shirt carries orange ladder near brick wall.",
+      "clip_score": 0.3104771375656128,
+      "siglip_score": 0.1987255811691284,
+      "delta_clip": -0.05064097046852112,
+      "delta_siglip": -0.016979292035102816
+    },
+    {
+      "image_id": "flickr30k_test_027960",
+      "caption": "Youth football players in white jerseys run with a ball on a dirt field.",
+      "clip_score": 0.2841889262199402,
+      "siglip_score": 0.150006428360939,
+      "delta_clip": -0.031674742698669434,
+      "delta_siglip": -0.005785495042800903
+    },
+    {
+      "image_id": "flickr30k_test_026274",
+      "caption": "Rider in cowboy hat holds lasso while horse rears on grass.",
+      "clip_score": 0.2826805710792541,
+      "siglip_score": 0.1178454011678695,
+      "delta_clip": -0.027063906192779597,
+      "delta_siglip": 0.020755060017108903
+    },
+    {
+      "image_id": "flickr30k_test_008358",
+      "caption": "Red goalkeeper in jersey number one dives across grassy field.",
+      "clip_score": 0.3372859358787536,
+      "siglip_score": 0.1984191387891769,
+      "delta_clip": -0.0208274126052857,
+      "delta_siglip": -0.0030926913022994995
+    },
+    {
+      "image_id": "flickr30k_test_003276",
+      "caption": "Man in glasses sits at long banquet table with wine bottles and floral centerpieces.",
+      "clip_score": 0.2725998163223266,
+      "siglip_score": 0.1017889231443405,
+      "delta_clip": -0.018611162900924683,
+      "delta_siglip": -0.05042557418346401
+    },
+    {
+      "image_id": "flickr30k_test_014348",
+      "caption": "Red jersey batter swings bat at ball near home plate.",
+      "clip_score": 0.2745926976203918,
+      "siglip_score": 0.1411177217960357,
+      "delta_clip": -0.017563343048095703,
+      "delta_siglip": -0.014385849237441989
+    },
+    {
+      "image_id": "flickr30k_test_013247",
+      "caption": "People walk past the Outdoor World store with a Bass Pro Shops sign.",
+      "clip_score": 0.3229126632213592,
+      "siglip_score": 0.2164790034294128,
+      "delta_clip": -0.016456931829452515,
+      "delta_siglip": 0.06528846919536588
+    },
+    {
+      "image_id": "flickr30k_test_016557",
+      "caption": "Woman in black jacket with \"HORA YEDA PEACEMENT JA\" badge raises fist at protest.",
+      "clip_score": 0.2830139994621277,
+      "siglip_score": 0.209469273686409,
+      "delta_clip": -0.013115286827087402,
+      "delta_siglip": 0.06838521361351019
+    },
+    {
+      "image_id": "flickr30k_test_029824",
+      "caption": "Woman in purple shirt stands behind London 2012 Olympics welcome desk.",
+      "clip_score": 0.3790765702724457,
+      "siglip_score": 0.2541625797748565,
+      "delta_clip": -0.012578725814819336,
+      "delta_siglip": 0.0081561207771301
+    },
+    {
+      "image_id": "flickr30k_test_027728",
+      "caption": "Diver in black wetsuit with yellow hose and \"Suacqua\" logo stands in ocean.",
+      "clip_score": 0.3121803998947143,
+      "siglip_score": 0.1585448086261749,
+      "delta_clip": -0.007257580757141113,
+      "delta_siglip": 0.02923084795475009
+    }
+  ]
+}

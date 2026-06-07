@@ -1,0 +1,142 @@
+{
+  "prompt": "Output exactly one concise, information‑dense caption: a single grammatical sentence composed of comma‑separated short phrases. Produce only that single sentence and nothing else.\n\nFollow these deterministic, implementation‑friendly rules when forming the caption. Apply numeric verification where available, but allow pragmatic heuristics if exact detectors are unavailable. Keep all VERIFIED tokens and pronouns precise; never invent brands, celebrity names, ages, emotions, intentions, or unsupported attributes.\n\n1) Subject groups and placement\n- Identify up to 1–3 prominent subject groups in order of prominence. Front‑load subject nouns and any VERIFIED discriminative props so they appear within the first 6–8 words. Use spatial anchors (left/center/right) and include \"foreground\"/\"background\" only when depth is VERIFIED (rule 4). Use a digit only if Count is VERIFIED; otherwise use singular/plural noun forms (person/people, dog/dogs, vehicle/vehicles).\n\n2) Count verification (relaxed)\n- Emit a digit only when either (a) each instance has visible_fraction ≥ 0.45, centroid distance between instances ≥ 0.10 × image_width, and pairwise IoU < 0.10; OR (b) a clear repeating/patterned structure is detected (e.g., chorus line, row of identical performers) and instances are visually separable even if some are partially occluded. If Count is not VERIFIED, use a plural noun without a digit.\n\n3) Contact / micro‑action verification (practical)\n- Assert a contact micro‑action only when overlap_area / min(bbox_area) ≥ 0.10 AND there is contiguous boundary evidence (≈6+ adjacent overlap pixels), OR contact_classifier_confidence ≥ 0.55. If between borderline thresholds (≈0.07–0.10), use \"near\" phrasing (e.g., \"right hand near woven basket\"). When VERIFIED, include exactly one micro‑action using the template: \"left|right [hand|foot|part] [strong‑verb] [object]\" (e.g., \"right hand holding woven basket\"). Motion verbs (jumping, diving, running, holding) are allowed only with VERIFIED contact or motion evidence (airborne pose, strong motion blur, or motion_classifier_confidence ≥ 0.60).\n\n4) Depth / foreground verification\n- Include \"foreground\"/\"background\" when EITHER (a) subject_bbox_area ≥ 1.5 × any overlapping bbox_area AND pairwise IoU < 0.20 AND subject centroid is lower (visually in front), OR (b) segmentation mask shows >60% unoccluded area. Otherwise omit depth tokens.\n\n5) Fine classes & cue‑pair pragmatics\n- Emit a fine class (bicycle, motorbike/scooter, vendor/produce stand, ladder, performer, etc.) only when EITHER classifier_confidence ≥ 0.60 OR a prescribed cue‑pair is spatially satisfied within ~12% image width. Recognized cue‑pairs remain as defined (spokes+pedals ⇒ bicycle, engine casing+exhaust ⇒ motorbike, baskets+scale ⇒ vendor, rungs+rails ⇒ ladder, stage+audience or mic+facing_audience ⇒ performer). If cue‑pair fails and no classifier_confidence, use a dataset‑aware fallback from the lexicon: woven basket, pile of fruit, two‑wheeled vehicle, painted metal shutter, signboard/marquee, storefront, cart, minivan, pillow, chorus line, parade. Prefer marquee/storefront fallbacks for street/performance scenes.\n\n6) OCR / signage (practical, high‑value)\n- Quote exact text only when OCR_confidence ≥ 0.65 AND text_bbox_area ≥ 0.003 × image_area AND contrast_ratio ≥ 1.5 (or font_size_estimate ≥ 7pt). Allow a targeted exception to quote short, uppercase, centered marquee text (≤3 words) when OCR_confidence ≥ 0.60 and text_bbox_area ≥ 0.004 × image_area and local saliency/objectness is high. Otherwise do NOT invent characters; emit a compact positional descriptor (e.g., \"marquee behind\", \"two red rectangular signs at upper right\").\n\n7) Descriptor priority and pruning (preserve discriminative tokens)\n- Descriptor priority (high → low): (A) VERIFIED discriminative props or quoted text, (B) VERIFIED part‑relations/micro‑actions, (C) VERIFIED fine class, (D) clothing & clear pose/orientation, (E) color & costume patterns, (F) object state/material, (G) viewpoint/orientation, (H) lighting/reflection, (I) background. Note: color and costume descriptors are promoted above material/lighting because patterned costumes and colors are highly discriminative; text‑bearing structural backgrounds (marquee, storefront, stage) are treated as high‑priority background anchors and should be retained when VERIFIED.\n- Target length: aim for 10–14 words. Hard cap: 18 words. Allow up to 20 words only when a quoted text string is emitted or two VERIFIED fine classes are present. When over cap, prune iteratively in this order: H (lighting) → F (material/texture) → I (background) unless a background is text‑bearing or structural and VERIFIED (then keep). Never drop VERIFIED tokens from categories A–C or VERIFIED part‑relations. Tie‑break removals by token length then lexicographic order.\n\n8) Spatial relations and salient nearby objects\n- Include up to 2–3 highest‑confidence nearby salient objects and their compact spatial relations (left/right/behind/among) when those objects are VERIFIED or high‑priority discriminative tokens. Prioritize inclusion of any verified signboard/marquee as a background anchor phrase (e.g., \"marquee behind\", \"storefront behind\") even if background area is modest.\n\n9) Cropping and occlusion\n- If subject_bbox_intersection_area / subject_bbox_area < 0.95, append a compact phrase \"partially cropped at [top|bottom|left|right]\" indicating the clipped side(s).\n\n10) Anti‑hallucination and safe fallbacks\n- Never invent brand names, celebrity names, ages, emotions, intentions, or unseen attributes. Avoid hedged language like \"probably\" in the final caption; prefer safe fallbacks from the lexicon when uncertain. Use plural nouns without digits when counts are not VERIFIED.\n\n11) Implementation/diagnostics (developer only)\n- Internally record which numeric checks passed (Count/Contact/Depth/OCR/FineClass) for each emitted token to aid calibration. Do NOT include these diagnostics in the caption.\n\nMicro‑templates and exemplars (follow these patterns exactly as style examples; they obey the rules above):\n- \"1 woman center foreground, right hand holding woven basket of oranges, storefront behind.\"\n- \"two dogs left foreground, small white dog jumping at car passenger window, woman leaning out.\"\n- \"1 person right foreground, standing by two‑wheeled vehicle with visible pedals and chain, metal shutter behind.\"\n- \"1 boy center foreground, seated on red toy ride, playground court behind.\"\n- \"many dancers center foreground, line of red/gold sequined costumes, marquee behind.\"\n- Borderline OCR/contact examples:\n  - \"1 man left foreground, three red rectangular signs at upper right, bridge behind.\"\n  - \"1 child center foreground, right hand near woven basket, wet pavement reflecting light.\"\n  - \"people center foreground, clustered near storefront, raincoats visible.\"\n\nFinal emission rule: apply the verification rules and pruning deterministically, assemble a single comma‑separated grammatical sentence that is concise and information‑dense, and output exactly that one caption sentence and nothing else.",
+  "prompt_id": "textgrad_17824f66f1",
+  "split_csv": "data/splits/flickr30k_main_seed1_val.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal/step_13/val/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal/step_13/val/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal/step_13/val/scores.csv",
+  "data_root": "data",
+  "summary": {
+    "n": 150,
+    "mean_clip": 0.3055846496423085,
+    "mean_siglip": 0.1966679309805234,
+    "mean_caption_len": 20.613333333333333,
+    "generic_rate": 0.02,
+    "mean_delta_clip": -0.01898079867164294,
+    "mean_delta_siglip": -0.002172614708542826,
+    "clip_win_rate": 0.27666666666666667,
+    "siglip_win_rate": 0.46
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_028445",
+      "image_relpath": "images/flickr30k/flickr30k_test_028445.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_028445.jpg",
+      "caption": "man center foreground, right hand holding blue mesh laundry basket filled with clothes, red pickup truck right, building with windows background.",
+      "clip_score": 0.2310881465673446,
+      "siglip_score": 0.1792959719896316,
+      "delta_clip": -0.13628537952899938,
+      "delta_siglip": -0.03774060308933261
+    },
+    {
+      "image_id": "flickr30k_test_028445",
+      "image_relpath": "images/flickr30k/flickr30k_test_028445.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_028445.jpg",
+      "caption": "man center foreground, right hand holding blue mesh laundry basket filled with clothes, red pickup truck right, building with windows background.",
+      "clip_score": 0.2310881465673446,
+      "siglip_score": 0.1792959719896316,
+      "delta_clip": -0.1285757571458817,
+      "delta_siglip": -0.04205234348773959
+    },
+    {
+      "image_id": "flickr30k_test_016835",
+      "image_relpath": "images/flickr30k/flickr30k_test_016835.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_016835.jpg",
+      "caption": "Man center foreground, right hand near flaming torch, black hat and checkered shirt, crowd seated behind, \"Front St E\" sign above.",
+      "clip_score": 0.2845645546913147,
+      "siglip_score": 0.1498456299304962,
+      "delta_clip": -0.09847098588943481,
+      "delta_siglip": -0.09104737639427182
+    },
+    {
+      "image_id": "flickr30k_test_016590",
+      "image_relpath": "images/flickr30k/flickr30k_test_016590.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_016590.jpg",
+      "caption": "woman center foreground, right hand near woven basket, blue-and-white striped umbrella above, stone steps and railing behind.",
+      "clip_score": 0.2751790285110473,
+      "siglip_score": 0.1856262534856796,
+      "delta_clip": -0.08940631151199341,
+      "delta_siglip": -0.04057252407073969
+    },
+    {
+      "image_id": "flickr30k_test_023317",
+      "image_relpath": "images/flickr30k/flickr30k_test_023317.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_023317.jpg",
+      "caption": "woman center foreground, pink jacket, blue skirt, white hat, right hand near mouth, black bag, guest services marquee above, man in cowboy hat seated right background, red barrel with WM logo at lower right.",
+      "clip_score": 0.3057835698127746,
+      "siglip_score": 0.2668443918228149,
+      "delta_clip": -0.0853643417358399,
+      "delta_siglip": 0.04845583438873288
+    },
+    {
+      "image_id": "flickr30k_test_011250",
+      "image_relpath": "images/flickr30k/flickr30k_test_011250.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_011250.jpg",
+      "caption": "Two children center foreground, older boy in brown shirt holding hands with younger child in red striped shirt, yellow caution tape behind, airplane visible in distance.",
+      "clip_score": 0.3285979628562927,
+      "siglip_score": 0.2642201781272888,
+      "delta_clip": -0.08399581909179688,
+      "delta_siglip": 0.04370455443859103
+    },
+    {
+      "image_id": "flickr30k_test_016715",
+      "image_relpath": "images/flickr30k/flickr30k_test_016715.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_016715.jpg",
+      "caption": "woman center foreground, right hand holding wooden post, patterned dress and headwrap, dry field background, bundle of stalks right side.",
+      "clip_score": 0.2803221940994262,
+      "siglip_score": 0.1623937487602234,
+      "delta_clip": -0.08010983467102056,
+      "delta_siglip": -0.028087079524993813
+    },
+    {
+      "image_id": "flickr30k_test_014144",
+      "image_relpath": "images/flickr30k/flickr30k_test_014144.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_014144.jpg",
+      "caption": "Man center foreground, right hand holding angle grinder, sparks flying, row of metal lockers right side.",
+      "clip_score": 0.2815004587173462,
+      "siglip_score": 0.2434295266866684,
+      "delta_clip": -0.08010298013687128,
+      "delta_siglip": 0.012600377202033997
+    },
+    {
+      "image_id": "flickr30k_test_016590",
+      "image_relpath": "images/flickr30k/flickr30k_test_016590.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_016590.jpg",
+      "caption": "woman center foreground, right hand near woven basket, blue-and-white striped umbrella above, stone steps and railing behind.",
+      "clip_score": 0.2751790285110473,
+      "siglip_score": 0.1856262534856796,
+      "delta_clip": -0.07747647166252142,
+      "delta_siglip": -0.043286710977554294
+    },
+    {
+      "image_id": "flickr30k_test_026513",
+      "image_relpath": "images/flickr30k/flickr30k_test_026513.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_026513.jpg",
+      "caption": "Person in yellow jacket operating camera rig center foreground, person in blue hooded jacket standing left, person in blue jacket walking left, camera equipment and tripod setup, potted plants and building facade background.",
+      "clip_score": 0.3257354497909546,
+      "siglip_score": 0.2380415499210357,
+      "delta_clip": -0.0769385695457458,
+      "delta_siglip": -0.02197712659835821
+    },
+    {
+      "image_id": "flickr30k_test_010223",
+      "image_relpath": "images/flickr30k/flickr30k_test_010223.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_010223.jpg",
+      "caption": "man center foreground, right hand holding bottle of whiskey, left hand holding glass, seated in brown chair, window with blinds behind.",
+      "clip_score": 0.2748658657073974,
+      "siglip_score": 0.1843698322772979,
+      "delta_clip": -0.0769195556640625,
+      "delta_siglip": -0.012977942824363708
+    },
+    {
+      "image_id": "flickr30k_test_006537",
+      "image_relpath": "images/flickr30k/flickr30k_test_006537.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_006537.jpg",
+      "caption": "Person in orange safety vest center foreground, walking toward train platform, Kilburn station sign visible left, yellow train on right.",
+      "clip_score": 0.315544068813324,
+      "siglip_score": 0.2382014095783233,
+      "delta_clip": -0.0759367942810058,
+      "delta_siglip": 0.020498156547546414
+    }
+  ]
+}

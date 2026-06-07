@@ -1,0 +1,142 @@
+{
+  "prompt": "Output exactly one concise, information‑dense caption: a single grammatical sentence of comma‑separated short phrases. Use digits for counts; do not infer, hedge, paraphrase, or add anything not visually present. Output nothing else.\n\nRequired phrase ordering (include each item only if clearly visible; omit unverifiable items). Aim for ≤30 words; allow up to +10% length only to include a required high‑priority item (legible text, a necessary relation phrase, or a clear background anchor).\n\n1) Start with: [digit] + subject noun(s) + spatial anchor. Spatial rules: if subject width >60% image width use \"center\"; otherwise choose left/center/right by centroid. Add depth only if clearly determinable by size/overlap: use [foreground|midground|background]; if depth unclear omit. If partly out of frame, append \"partially cropped at [edge]\".\n\n2) Immediately after, include one visible action+part phrase if any micro‑action cue is present (format: \"[body/part] [verb] [object/target]\" or \"holding [object] with [hand]\"). Micro‑action cues (include action if any apply): visible limb‑object contact, object visibly held by hand, visible deformation/pressure, object displacement (midair or off ground), clear gaze toward an object, or motion blur on limbs. If none of these cues apply, include exactly \"no-action-visible\".\n\n3) Then add up to 1–3 high‑signal descriptor(s) chosen by this priority order and cap:\n A) legible text (transcribe exact string in quotes and localize, e.g. \"'NO PARKING' on door at background right\") — include only if all characters are clearly legible;\n B) reflection/wetness or surface condition (e.g., \"wet pavement with reflections\");\n C) material/texture (e.g., \"rusted metal\", \"woven straw\");\n D) distinctive accessory (e.g., \"white hard hat\", \"red pennant\");\n E) color. If more than 3 candidates, select highest‑ranked; if tie, choose lexicographically.\n\n4) If a person/object clearly interacts with another object/structure, include one concise part‑level relation phrase (e.g., \"sitting on metal chair\", \"rear wheel off ground\", \"holding pennant over awning\"). Include the interacting part (hand, foot, rear wheel, stern).\n\n5) Optionally include exactly one viewpoint token when obvious: {close-up, medium, wide, high-angle, low-angle}.\n\n6) Optionally include exactly one lighting token when obvious: {backlit, front-lit, rim-lit, long-shadow-left, long-shadow-right}.\n\n7) If visible, append one concise background anchor noun phrase (single phrase, e.g., \"stone embankment\", \"storefront window\", \"pier with canopy\"). Omit if no clear anchor.\n\nPre‑output verification (apply before emitting):\n- Transcribe legible text only if all characters readable; otherwise omit text.\n- Include action only if a micro‑action cue above is present; otherwise use \"no-action-visible\".\n- Include at most 3 descriptors from the priority list.\n- If count is uncertain, do not invent a digit.\n- If spatial depth is unclear, omit foreground/midground/background rather than guess.\n- If a subject is partially out of frame, include the exact cropped edge.\n- If any check fails, remove the uncertain token and recheck.\n\nStyle constraints:\n- Use compact, active, factual phrasing and concrete nouns (prefer specific labels: \"acoustic guitar\", \"hard hat\", \"pier\").\n- Do not infer ages, emotions, roles, relationships, or unseen attributes.\n- Keep phrases comma‑separated in one sentence; do not output tags, lists, or extra lines.\n\nExamples (bad → corrected; follow exact target format):\n- Bad: \"Several people in a busy scene.\" → Good: \"3 people left foreground, standing, colorful saris, medium, storefront window behind.\"\n- Bad: \"1 boat\" → Good: \"1 pier center foreground, people on platform, small pavilion with spire, wide, stone embankment behind.\"\n- Bad: \"man with cap\" → Good: \"1 worker center foreground, standing on fire‑escape platform, white hard hat, red brick facade behind.\"\n- Bad: \"player diving\" → Good: \"1 goalkeeper center foreground, mid‑air dive to right with outstretched gloved hands, white soccer ball to right, goal net behind.\"\n- Bad: \"musician playing\" → Good: \"1 man right foreground, right hand on flute, open tip box on ground, medium, storefront window behind.\"\n- Bad: \"kids running\" → Good: \"5 boys center foreground, leaning forward as if starting sprint, green training bibs, dirt field with parked cars behind.\"\n\nUse these rules to produce exactly one caption that follows the ordering and verification checklist.",
+  "prompt_id": "textgrad_4e86359040",
+  "split_csv": "data/splits/flickr30k_main_seed1_val.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal/step_03/val/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal/step_03/val/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal/step_03/val/scores.csv",
+  "data_root": "data",
+  "summary": {
+    "n": 150,
+    "mean_clip": 0.2990028138955434,
+    "mean_siglip": 0.1941684927543004,
+    "mean_caption_len": 23.933333333333334,
+    "generic_rate": 0.0,
+    "mean_delta_clip": -0.02556263441840808,
+    "mean_delta_siglip": -0.004672052934765815,
+    "clip_win_rate": 0.2,
+    "siglip_win_rate": 0.44333333333333336
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_003587",
+      "image_relpath": "images/flickr30k/flickr30k_test_003587.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_003587.jpg",
+      "caption": "1 man center foreground, no-action-visible, black cap with \"3\" and \"ALBAN\", black jacket with \"Plus\", \"Coca-Cola\", \"Snap-on\", \"NASCAR\", \"OREO\", \"Arbela\", \"DAR\", \"TIME CHAMP\", \"DAR\", \"",
+      "clip_score": 0.2491545975208282,
+      "siglip_score": 0.1266632229089737,
+      "delta_clip": -0.1161323487758637,
+      "delta_siglip": -0.1376408487558365
+    },
+    {
+      "image_id": "flickr30k_test_021601",
+      "image_relpath": "images/flickr30k/flickr30k_test_021601.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_021601.jpg",
+      "caption": "1 man center foreground, walking with cane, beige coat, green cap, no-action-visible, wet pavement with reflections, stone embankment behind.",
+      "clip_score": 0.2328571379184723,
+      "siglip_score": 0.1188969612121582,
+      "delta_clip": -0.11057734489440912,
+      "delta_siglip": -0.10905036330223081
+    },
+    {
+      "image_id": "flickr30k_test_001063",
+      "image_relpath": "images/flickr30k/flickr30k_test_001063.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_001063.jpg",
+      "caption": "1 man center foreground, pointing finger right, olive tank top, green towel on couch, sitting on couch, yellow wall background, no-action-visible",
+      "clip_score": 0.2333354651927948,
+      "siglip_score": 0.1750446259975433,
+      "delta_clip": -0.10668575763702393,
+      "delta_siglip": -0.060936942696571295
+    },
+    {
+      "image_id": "flickr30k_test_007385",
+      "image_relpath": "images/flickr30k/flickr30k_test_007385.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_007385.jpg",
+      "caption": "10 dancers center foreground, midair tossing green frisbees, colorful patterned suits, blue pants, long-shadow-right, storefront with \"Kroger\" sign behind.",
+      "clip_score": 0.2703409194946289,
+      "siglip_score": 0.1747114956378936,
+      "delta_clip": -0.0985159277915954,
+      "delta_siglip": -0.00021693110466011745
+    },
+    {
+      "image_id": "flickr30k_test_004799",
+      "image_relpath": "images/flickr30k/flickr30k_test_004799.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_004799.jpg",
+      "caption": "1 toddler right foreground, holding mop with right hand, light blue onesie with cartoon, wooden floor, kitchen cabinets background, medium.",
+      "clip_score": 0.254479169845581,
+      "siglip_score": 0.1804097890853881,
+      "delta_clip": -0.09813612699508673,
+      "delta_siglip": -0.0508867502212525
+    },
+    {
+      "image_id": "flickr30k_test_023317",
+      "image_relpath": "images/flickr30k/flickr30k_test_023317.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_023317.jpg",
+      "caption": "1 woman center foreground, holding black bag with right hand, pink jacket, blue skirt, \"GUEST SERVICES\" sign above, red barrel with \"WM\" sticker at right, people seated at counter behind.",
+      "clip_score": 0.2932197749614715,
+      "siglip_score": 0.2529492974281311,
+      "delta_clip": -0.097928136587143,
+      "delta_siglip": 0.0345607399940491
+    },
+    {
+      "image_id": "flickr30k_test_001063",
+      "image_relpath": "images/flickr30k/flickr30k_test_001063.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_001063.jpg",
+      "caption": "1 man center foreground, pointing finger right, olive tank top, green towel on couch, sitting on couch, yellow wall background, no-action-visible",
+      "clip_score": 0.2333354651927948,
+      "siglip_score": 0.1750446259975433,
+      "delta_clip": -0.09225660562515259,
+      "delta_siglip": -0.03950920701026919
+    },
+    {
+      "image_id": "flickr30k_test_026513",
+      "image_relpath": "images/flickr30k/flickr30k_test_026513.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_026513.jpg",
+      "caption": "3 people center midground, holding camera with hands, wet pavement with reflections, yellow raincoat, holding camera on tripod, stone embankment behind.",
+      "clip_score": 0.3110483884811401,
+      "siglip_score": 0.1938338577747345,
+      "delta_clip": -0.0916256308555603,
+      "delta_siglip": -0.06618481874465942
+    },
+    {
+      "image_id": "flickr30k_test_013980",
+      "image_relpath": "images/flickr30k/flickr30k_test_013980.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_013980.jpg",
+      "caption": "1 crowd center midground, no-action-visible, dim lighting, \"NO PARKING\" on door at background right, stone embankment behind.",
+      "clip_score": 0.2299703061580658,
+      "siglip_score": 0.0798238888382911,
+      "delta_clip": -0.08846625685691828,
+      "delta_siglip": -0.0822137817740441
+    },
+    {
+      "image_id": "flickr30k_test_016590",
+      "image_relpath": "images/flickr30k/flickr30k_test_016590.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_016590.jpg",
+      "caption": "3 people center midground, standing near fountain, holding items with hands, colorful woven textiles, blue umbrella, stone embankment behind.",
+      "clip_score": 0.277397096157074,
+      "siglip_score": 0.2177720814943313,
+      "delta_clip": -0.08718824386596674,
+      "delta_siglip": -0.008426696062087985
+    },
+    {
+      "image_id": "flickr30k_test_023554",
+      "image_relpath": "images/flickr30k/flickr30k_test_023554.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_023554.jpg",
+      "caption": "2 people center foreground, Batman costume wearer leaning toward Batgirl costume wearer, glossy black latex, yellow belt, purple flag above, wet pavement with reflections, crowd behind.",
+      "clip_score": 0.2976484894752502,
+      "siglip_score": 0.2332494705915451,
+      "delta_clip": -0.08659589290618902,
+      "delta_siglip": -0.009980425238609286
+    },
+    {
+      "image_id": "flickr30k_test_028445",
+      "image_relpath": "images/flickr30k/flickr30k_test_028445.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_028445.jpg",
+      "caption": "1 man center foreground, holding blue mesh laundry hamper with both hands, no-action-visible, red pickup truck right background, \"XTR\" on tailgate, paved road with gravel shoulder, bright sunlight.",
+      "clip_score": 0.2810233235359192,
+      "siglip_score": 0.1772621273994445,
+      "delta_clip": -0.0863502025604248,
+      "delta_siglip": -0.03977444767951971
+    }
+  ]
+}

@@ -1,0 +1,117 @@
+{
+  "prompt": "Output exactly two lines only.\n\nLine 1 (tags) — required format and rules:\n- Provide exactly 2–5 comma-separated tokens (no punctuation except commas). First token = main object (lower-case common noun), optionally with a visually certain count immediately after the noun (digit or word). Examples: \"child\", \"child 2\", \"person one\".\n- At least 2 tokens must be nouns (including the main noun). At most 1 token may be a visible attribute (color or size). Do NOT include verbs, proper nouns, brand names, inferred facts, emotions, events, or dates.\n- Use only lower-case common nouns and simple adjectives (dog, child, car, red, small). No articles in tags. No repeated words or near-synonyms — deduplicate and prefer the most specific single noun (e.g., choose \"child\" not \"person, child\").\n- Order tags by salience (most discriminative first). Prefer compact, high-information nouns over long exhaustive lists.\n\nLine 2 (caption) — required format and rules:\n- One factual short sentence in present simple or present progressive of 7–14 words, OR a valid 2–3 word fallback caption (main noun + short location, e.g., \"child sidewalk\") if a compliant 7–14 word caption would require guessing. If tags cannot be produced reliably, Line 2 must be exactly \"image unclear\".\n- Place the main noun within positions 1–3 of the sentence. If a visually certain numeric count is shown in Line 1, reflect it in the caption and use correct verb morphology: singular -> third-person singular verb (adds -s), plural -> base verb (e.g., \"1 child stands\", \"2 children stand\").\n- Include at most one clearly visible color or size in the caption and at most one simple spatial relation/preposition (on, in, near, by, in front of, behind). Use only concrete, directly visible facts. Do NOT add proper nouns, intentions, emotions, or invented facts.\n- No punctuation except an optional single period at the end.\n\nHarmonization and anti-hallucination:\n- Ensure lexical reinforcement: prefer at least two exact token overlaps between Line 1 and Line 2 (noun or attribute). If only one overlap is possible, ensure it is the main noun. Overlap strongly improves alignment.\n- Prefer omission over guessing: if a property (count, color, relation) is not clearly visible, omit it rather than invent it.\n- If you cannot produce a compliant caption without adding uncertain attributes, produce the 2–3 word fallback (main noun + location) or \"image unclear\" as specified above.\n\nCandidate generation and (required) reranking:\n- Internally generate N = 3 candidate compliant outputs (each candidate = Line1 tags + Line2 caption obeying rules). Score and select the best candidate before output.\n- If a CLIP scorer is available, use it to rerank candidates. If not available, use this proxy score:\n  proxy_score = 5*(main-noun overlap) + 3*(each additional exact overlap) + 2*(visible attribute overlap) - 2*(duplicates collapsed penalty) - 1*(each tag beyond 3).\n  Higher score wins. Break ties by preferring more overlaps, then shorter tag lists.\n\nDeterministic self-checks (must pass before returning output):\n1. Deduplicate tags; ensure 2–5 comma-separated tokens, all lower-case, nouns/adjectives only, ≤1 attribute.\n2. Ensure Line 2 length = 7–14 words OR valid 2–3 word fallback OR exactly \"image unclear\".\n3. Ensure at least one exact token overlap between tags and caption; prefer ≥2 overlaps.\n4. If Line 1 includes a numeric count, ensure caption verb morphology matches that count.\n5. No forbidden items (proper nouns, inferred facts); no punctuation except commas in Line 1 and optional final period in Line 2.\nIf any check fails, replace Line 2 with \"image unclear\". If tags cannot be produced reliably, return only tags you can trust (2–5 tokens) and Line 2 = \"image unclear\".\n\nPractical guidance:\n- Keep tags compact and discriminative (2–4 nouns is ideal). A single clear color or size is allowed only when obvious.\n- Avoid listing many small objects; instead choose the most salient objects that distinguish the image.\n- When uncertain about count, color, or relation, omit them from both tags and caption.\n\nPositive examples (correct):\n- Example A:\n  Line1: child, blanket, red\n  Line2: child sits on blanket holding a red toy.\n  (main noun early; two overlaps: child, blanket; one visible attribute red)\n- Example B:\n  Line1: dog 2, ball\n  Line2: 2 dogs play near a ball on grass.\n  (numeric count reflected; correct plural verb form; overlaps: dog, ball)\n\nNegative examples (common errors and fixes):\n- Bad: \"person, person, person, car, red, red\" + \"person stands by car.\"\n  Fix: deduplicate and reduce tags to \"person, car, red\"; ensure 2–5 tokens.\n- Bad: Line1 \"child 2, dog\" + Line2 \"child stands near dog\"\n  Fix: If Line1 uses \"child 2\", caption must read \"2 children stand near dog\" (plural verb and noun form).\n\nImplementation checklist to append inside the prompt:\n- Generate 3 candidates, apply proxy/CLIP rerank, run self-checks 1–5, output the top candidate if it passes; otherwise output tags you can trust and Line 2 = \"image unclear\". The VLM must follow the two-line output format exactly.",
+  "prompt_id": "textgrad_fc3d51810c",
+  "split_csv": "data/splits/flickr30k_main_seed1_val.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24/step_03/val/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24/step_03/val/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24/step_03/val/scores.csv",
+  "summary": {
+    "n": 150,
+    "mean_clip": 0.2893658763170242,
+    "mean_siglip": 0.15947043980161343,
+    "mean_caption_len": 13.433333333333334,
+    "generic_rate": 0.0,
+    "mean_delta_clip": -0.03519957199692726,
+    "mean_delta_siglip": -0.039370105887452767,
+    "clip_win_rate": 0.14333333333333334,
+    "siglip_win_rate": 0.16
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_011250",
+      "caption": "child, child, grass, tape\ntwo children stand near yellow tape on grass.",
+      "clip_score": 0.2652224004268646,
+      "siglip_score": 0.1933319270610809,
+      "delta_clip": -0.14737138152122498,
+      "delta_siglip": -0.027183696627616882
+    },
+    {
+      "image_id": "flickr30k_test_018677",
+      "caption": "person, person, plate, wall\ntwo people stand near a wall holding a plate.",
+      "clip_score": 0.1991779953241348,
+      "siglip_score": 0.1075816825032234,
+      "delta_clip": -0.1391554027795792,
+      "delta_siglip": -0.10514830797910689
+    },
+    {
+      "image_id": "flickr30k_test_010850",
+      "caption": "person, person, coat, zipper\ntwo people stand near each other wearing coats",
+      "clip_score": 0.1975571513175964,
+      "siglip_score": 0.1194672510027885,
+      "delta_clip": -0.11422115564346311,
+      "delta_siglip": -0.10151679068803789
+    },
+    {
+      "image_id": "flickr30k_test_023317",
+      "caption": "woman, hat, bag, counter\nwoman stands near counter holding a bag",
+      "clip_score": 0.2783266901969909,
+      "siglip_score": 0.1238929778337478,
+      "delta_clip": -0.11282122135162359,
+      "delta_siglip": -0.09449557960033421
+    },
+    {
+      "image_id": "flickr30k_test_011250",
+      "caption": "child, child, grass, tape\ntwo children stand near yellow tape on grass.",
+      "clip_score": 0.2652224004268646,
+      "siglip_score": 0.1933319270610809,
+      "delta_clip": -0.10740038752555847,
+      "delta_siglip": -0.05500885844230649
+    },
+    {
+      "image_id": "flickr30k_test_016590",
+      "caption": "child, person, blanket, blue, umbrella\nchild stands near person holding a blue umbrella and blanket.",
+      "clip_score": 0.2614626288414001,
+      "siglip_score": 0.1266957372426986,
+      "delta_clip": -0.10312271118164062,
+      "delta_siglip": -0.0995030403137207
+    },
+    {
+      "image_id": "flickr30k_test_026513",
+      "caption": "person, camera, tripod, umbrella, yellow\n\nperson operates camera on tripod under yellow umbrella",
+      "clip_score": 0.3044909834861755,
+      "siglip_score": 0.1944235116243362,
+      "delta_clip": -0.0981830358505249,
+      "delta_siglip": -0.06559516489505773
+    },
+    {
+      "image_id": "flickr30k_test_026142",
+      "caption": "person, water, bottle, green  \nperson drinks water from a green bottle.",
+      "clip_score": 0.2846171855926513,
+      "siglip_score": 0.1190161705017089,
+      "delta_clip": -0.09339439868927008,
+      "delta_siglip": -0.10593430697917941
+    },
+    {
+      "image_id": "flickr30k_test_000585",
+      "caption": "crane, worker, building, yellow, bench\ncrane stands near workers and a yellow bench in front of a building.",
+      "clip_score": 0.2440989017486572,
+      "siglip_score": 0.1091041266918182,
+      "delta_clip": -0.09290286898612979,
+      "delta_siglip": -0.0988307297229767
+    },
+    {
+      "image_id": "flickr30k_test_011286",
+      "caption": "person, rock, water, orange\nthree people walk on rocks near flowing water",
+      "clip_score": 0.2660557329654693,
+      "siglip_score": 0.1707448214292526,
+      "delta_clip": -0.09169986844062811,
+      "delta_siglip": -0.054341092705726596
+    },
+    {
+      "image_id": "flickr30k_test_006851",
+      "caption": "child, soldier, poster, boy, blue\ntwo children stand in front of soldiers holding a safety poster.",
+      "clip_score": 0.3014858365058899,
+      "siglip_score": 0.1977404803037643,
+      "delta_clip": -0.09120729565620422,
+      "delta_siglip": -0.0595010370016098
+    },
+    {
+      "image_id": "flickr30k_test_016590",
+      "caption": "child, person, blanket, blue, umbrella\nchild stands near person holding a blue umbrella and blanket.",
+      "clip_score": 0.2614626288414001,
+      "siglip_score": 0.1266957372426986,
+      "delta_clip": -0.09119287133216863,
+      "delta_siglip": -0.1022172272205353
+    }
+  ]
+}

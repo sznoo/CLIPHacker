@@ -1,0 +1,117 @@
+{
+  "prompt": "Generate exactly one short, literal, factual caption (one sentence) describing only visible content in the image. Output exactly one sentence only—no extra text. Total words: 8–20.\n\nDefinitions\n- High‑signal token = a visible color/pattern; a concrete, specific object class (prefer multiword classes like \"stop sign\", \"fire hydrant\", \"rolling metal door\"); a clear Arabic numeral; a clothing/accessory; or legible text/logo copied exactly when it meets OCR prominence rules below.\n- Content words = all words except a single leading article (a/an/the) if present.\n\nVisibility and OCR (deterministic)\n- An object is \"clearly visible\" if area ≥1.5% of image OR (area ≥0.8% AND detector_confidence ≥0.45).\n- Copy legible text/logo exactly only if OCR_confidence ≥0.60 AND OCR_bbox_area ≥1.5% AND OCR_token_count ≤6 AND the text contains no run of ≥5 consecutive digits and does not match phone‑number patterns; format copied text as \"sign reading 'TEXT'\" or \"shirt with 'TEXT'\".\n- Treat counts/digits as visible only if digits are clearly legible per the OCR/visibility rules above.\n\nSalience and subject selection (deterministic)\n- Compute a salience score: Salience = 0.5*(area_norm) + 0.3*(detector_confidence) + 0.15*(center_score) + 0.05*(local_contrast). If area >40% of image, multiply its area_norm by 0.5 before computing Salience (to downweight large background regions).\n- Choose the subject with the highest salience. If two candidates are within 5% salience, pick the one that yields more distinct high‑signal tokens early (see placement rules).\n\nPlacement and high‑signal token rules\n- Require at least one high‑signal token within the first 4 content words, unless doing so forces an unnatural subject‑verb order; in that case allow a single deterministic exception per caption with the token placed no later than the first 6 content words.\n- If two distinct high‑signal tokens are clearly visible, require both to appear within the first five content words only when this does not make the sentence ungrammatical; otherwise include both as early as grammar allows and prefer placing one before the verb.\n- When a visible numeral/count meets visibility rules, use Arabic numerals and place it early.\n\nClass and wording preferences\n- Use the most specific concrete class visible (prefer multiword classes). Place one distinctive attribute (color, pattern, accessory) directly before its noun when available (e.g., \"red bicycle\").\n- Prefer concise present‑tense S + V (+ O) sentences using common collocations (\"X holds Y\", \"X sits on Y\", \"X leans against Y\").\n- Avoid generic openings (\"There is\", \"A group of\", \"Some people\") unless no subject meets the \"clearly visible\" thresholds.\n- Avoid long subordinate clauses and conjunctions like \"while\", \"as\", or stacked prepositional phrases unless they add a distinct high‑signal token and keep total words ≤20. Allow at most one compact additional descriptor or prepositional phrase.\n\nDeterministic tie‑breakers and limits\n- When subjects tie, prefer the one that yields more distinct high‑signal tokens early (color, multiword class, accessory).\n- For OCR/text: forbid copying long digit sequences and phone numbers; include text only when it meets the OCR rules above.\n- Limit modifiers: at most one extra descriptive phrase (e.g., \"woman in blue jacket, holding a phone\" counts as compact). Aim for ~9–12 content words when possible.\n\nExamples (do not output these; follow style)\n- Good: \"Young woman in red coat holds a black umbrella.\" \n- Good: \"White stop sign beside a brick building.\"\n- Bad: \"A group of people sitting at a table while others stand in the background and talk.\" (too generic/long)\n- Bad: \"Man leans on sign with 212-625-9212 printed.\" (do not copy phone numbers / low‑confidence OCR)\n\nOutput rule reminder: produce exactly one one‑sentence caption, no extra text, within 8–20 words, following the deterministic visibility, OCR, salience, placement, and syntax rules above.",
+  "prompt_id": "textgrad_168c484817",
+  "split_csv": "data/splits/flickr30k_main_seed1_train.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_11/train/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_11/train/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_11/train/scores.csv",
+  "summary": {
+    "n": 24,
+    "mean_clip": 0.3132445787390073,
+    "mean_siglip": 0.19166454983254275,
+    "mean_caption_len": 12.291666666666666,
+    "generic_rate": 0.041666666666666664,
+    "mean_delta_clip": -0.012221350645025574,
+    "mean_delta_siglip": -0.0021007129301627487,
+    "clip_win_rate": 0.3333333333333333,
+    "siglip_win_rate": 0.4166666666666667
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_027768",
+      "caption": "Woman in red sweatshirt holds a beige pillow while smiling.",
+      "clip_score": 0.2716314494609833,
+      "siglip_score": 0.18438121676445,
+      "delta_clip": -0.070556491613388,
+      "delta_siglip": -0.04743610322475442
+    },
+    {
+      "image_id": "flickr30k_test_023641",
+      "caption": "Woman in striped shirt walks on wet cobblestone path under leafy trees.",
+      "clip_score": 0.2903746366500854,
+      "siglip_score": 0.1758271306753158,
+      "delta_clip": -0.047868371009826716,
+      "delta_siglip": -0.003811001777648898
+    },
+    {
+      "image_id": "flickr30k_test_024011",
+      "caption": "Dancers in striped costumes perform on a street in front of Radio City Music Hall.",
+      "clip_score": 0.3337390422821045,
+      "siglip_score": 0.2105042040348053,
+      "delta_clip": -0.04771536588668823,
+      "delta_siglip": 0.03790219128131869
+    },
+    {
+      "image_id": "flickr30k_test_021782",
+      "caption": "Man leans against a yellow sign with stickers and phone number.",
+      "clip_score": 0.2932087779045105,
+      "siglip_score": 0.1688995212316513,
+      "delta_clip": -0.046239316463470403,
+      "delta_siglip": -0.032125726342201205
+    },
+    {
+      "image_id": "flickr30k_test_014180",
+      "caption": "People ride bicycles near a modern white-domed building with trees.",
+      "clip_score": 0.2850245833396911,
+      "siglip_score": 0.2023004293441772,
+      "delta_clip": -0.037206053733825684,
+      "delta_siglip": 0.025237560272216797
+    },
+    {
+      "image_id": "flickr30k_test_024189",
+      "caption": "Man in green shirt bends over bags near tree while woman in green headband watches.",
+      "clip_score": 0.2977889776229858,
+      "siglip_score": 0.2086134254932403,
+      "delta_clip": -0.028825372457504328,
+      "delta_siglip": -0.02880255877971649
+    },
+    {
+      "image_id": "flickr30k_test_013576",
+      "caption": "Boy in Mets jersey sits on red toy motorcycle.",
+      "clip_score": 0.3801251053810119,
+      "siglip_score": 0.244530439376831,
+      "delta_clip": -0.028632879257202204,
+      "delta_siglip": -0.027911782264709528
+    },
+    {
+      "image_id": "flickr30k_test_005582",
+      "caption": "Black-and-white dog leaps toward car window as brown dog walks nearby.",
+      "clip_score": 0.3269896209239959,
+      "siglip_score": 0.2043839395046234,
+      "delta_clip": -0.027298629283905085,
+      "delta_siglip": 0.028049752116203308
+    },
+    {
+      "image_id": "flickr30k_test_007169",
+      "caption": "Woman in red bag walks past girl with colorful backpack near stone bench.",
+      "clip_score": 0.2645035684108734,
+      "siglip_score": 0.201150506734848,
+      "delta_clip": -0.02653941512107849,
+      "delta_siglip": -0.029347240924835205
+    },
+    {
+      "image_id": "flickr30k_test_027960",
+      "caption": "Youth football players in white jerseys run with a green ball on a dirt field.",
+      "clip_score": 0.2896237373352051,
+      "siglip_score": 0.1459478437900543,
+      "delta_clip": -0.02623993158340454,
+      "delta_siglip": -0.009844079613685608
+    },
+    {
+      "image_id": "flickr30k_test_023643",
+      "caption": "Girl in red dress smiles under a black umbrella at an outdoor art market.",
+      "clip_score": 0.3049955666065216,
+      "siglip_score": 0.2186223566532135,
+      "delta_clip": -0.021916478872299194,
+      "delta_siglip": -0.057302623987197876
+    },
+    {
+      "image_id": "flickr30k_test_012029",
+      "caption": "People gather on a floating platform near a temple on the riverbank.",
+      "clip_score": 0.3293800950050354,
+      "siglip_score": 0.1830558776855468,
+      "delta_clip": -0.021804690361022894,
+      "delta_siglip": 0.04144102334976188
+    }
+  ]
+}

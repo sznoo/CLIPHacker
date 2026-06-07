@@ -1,0 +1,117 @@
+{
+  "prompt": "Output exactly one literal, factual sentence (8–20 words) describing only visible content in the image. Do not add labels, examples, lists, annotations, or any extra text.\n\nDefinitions: content words exclude a single leading article (a/an/the) and punctuation. A high‑signal token is one of: visible color or pattern, a concrete object class (prefer the most specific multiword class available, e.g., \"electric guitar\", \"motorbike\"), a clear count (Arabic numeral), clothing/accessory, or legible text/logo copied verbatim.\n\nPrimary rules:\n- Include at least two high‑signal tokens within the first four content words when two are clearly visible; otherwise include at least one high‑signal token within the first three content words.\n- If a visible color/pattern exists, place it immediately before its noun (e.g., \"red bicycle\"). Use \"noun with [attribute]\" only if the color cannot appear within the required early content words.\n- Prefer the most specific visible concrete class; do not use generic nouns like \"object\", \"instrument\", or \"item\" when a specific class is clearly visible. Use \"person\" only when a more specific subject is not visually identifiable.\n- If any legible text or logo is present and confidently readable, copy it exactly and place it within the first six content words.\n- Use Arabic numerals for clear counts and place them early. Use \"several\" only for indistinct groups (>3).\n- Allow either a short noun‑phrase caption (no verb) or a concise present‑tense sentence (present simple or present‑participle). If you use a verb, you may place it after the first four content words to keep high‑signal tokens early.\n- Include at most one short spatial connector (\"next to\", \"on\", \"near\", \"in front of\") to link the primary subject to a nearby object or surface.\n- Choose the primary subject deterministically: prefer the centermost, largest, highest‑contrast, or the object with an explicit visible attribute (color/number/logo).\n- Do not infer unseen attributes (age, emotion, intent, relationships) and avoid figurative or subjective language. Do not invent specific attributes when they are not visually evident; fall back to a safe generic only if the specific class or attribute is not clearly visible.\n- Count content words carefully (exclude the single leading article and punctuation) when locating the first N content words.\n- Avoid leading generic templates like \"A person...\" or \"There is...\" when a more specific subject is visible.\n\nOutput exactly one short sentence only—no extra text.",
+  "prompt_id": "textgrad_2946798e90",
+  "split_csv": "data/splits/flickr30k_main_seed1_val.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_05/val/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_05/val/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_constrained/step_05/val/scores.csv",
+  "summary": {
+    "n": 150,
+    "mean_clip": 0.31170162320137024,
+    "mean_siglip": 0.1865480003505945,
+    "mean_caption_len": 11.16,
+    "generic_rate": 0.02,
+    "mean_delta_clip": -0.01286382511258126,
+    "mean_delta_siglip": -0.01229254533847173,
+    "clip_win_rate": 0.3566666666666667,
+    "siglip_win_rate": 0.36666666666666664
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_005250",
+      "caption": "Several people walk near a staircase with visible text \"100 TO 117\".",
+      "clip_score": 0.2123951613903045,
+      "siglip_score": 0.0311969555914402,
+      "delta_clip": -0.14898917078971868,
+      "delta_siglip": -0.1780432425439357
+    },
+    {
+      "image_id": "flickr30k_test_023317",
+      "caption": "Guest Services sign above woman in pink jacket and blue skirt.",
+      "clip_score": 0.2729394435882568,
+      "siglip_score": 0.1881691962480545,
+      "delta_clip": -0.11820846796035772,
+      "delta_siglip": -0.0302193611860275
+    },
+    {
+      "image_id": "flickr30k_test_011250",
+      "caption": "Two children stand near yellow caution tape on grassy field.",
+      "clip_score": 0.2994362413883209,
+      "siglip_score": 0.2241139411926269,
+      "delta_clip": -0.11315754055976868,
+      "delta_siglip": 0.0035983175039291104
+    },
+    {
+      "image_id": "flickr30k_test_005250",
+      "caption": "Several people walk near a staircase with visible text \"100 TO 117\".",
+      "clip_score": 0.2123951613903045,
+      "siglip_score": 0.0311969555914402,
+      "delta_clip": -0.10117653012275701,
+      "delta_siglip": -0.1856303922832012
+    },
+    {
+      "image_id": "flickr30k_test_006851",
+      "caption": "Keeping us safe for poster held by two soldiers and two children.",
+      "clip_score": 0.3054066300392151,
+      "siglip_score": 0.2531886696815491,
+      "delta_clip": -0.08728650212287903,
+      "delta_siglip": -0.004052847623825018
+    },
+    {
+      "image_id": "flickr30k_test_026513",
+      "caption": "Yellow jacket person operates camera near tripod with crew on wet pavement.",
+      "clip_score": 0.3166736364364624,
+      "siglip_score": 0.23154878616333,
+      "delta_clip": -0.08600038290023798,
+      "delta_siglip": -0.028469890356063926
+    },
+    {
+      "image_id": "flickr30k_test_011340",
+      "caption": "Moments caught photography watermark visible on tennis court surface.",
+      "clip_score": 0.2421941459178924,
+      "siglip_score": 0.2051883190870285,
+      "delta_clip": -0.08258858323097229,
+      "delta_siglip": 0.063291996717453
+    },
+    {
+      "image_id": "flickr30k_test_006161",
+      "caption": "Woman in green vest sweeps street near crowd.",
+      "clip_score": 0.2609323859214782,
+      "siglip_score": 0.1929599940776825,
+      "delta_clip": -0.0770495235919953,
+      "delta_siglip": -0.051379770040512
+    },
+    {
+      "image_id": "flickr30k_test_017698",
+      "caption": "Several people in military uniforms stand near a building with white helmets.",
+      "clip_score": 0.2778427302837372,
+      "siglip_score": 0.1882676184177398,
+      "delta_clip": -0.07364353537559509,
+      "delta_siglip": -0.07177224755287176
+    },
+    {
+      "image_id": "flickr30k_test_023317",
+      "caption": "Guest Services sign above woman in pink jacket and blue skirt.",
+      "clip_score": 0.2729394435882568,
+      "siglip_score": 0.1881691962480545,
+      "delta_clip": -0.07339110970497131,
+      "delta_siglip": -0.08971749246120447
+    },
+    {
+      "image_id": "flickr30k_test_011250",
+      "caption": "Two children stand near yellow caution tape on grassy field.",
+      "clip_score": 0.2994362413883209,
+      "siglip_score": 0.2241139411926269,
+      "delta_clip": -0.07318654656410217,
+      "delta_siglip": -0.024226844310760498
+    },
+    {
+      "image_id": "flickr30k_test_023900",
+      "caption": "UTIAH sign with person holding skewers near food stall.",
+      "clip_score": 0.2903550863265991,
+      "siglip_score": 0.2372404038906097,
+      "delta_clip": -0.07145154476165766,
+      "delta_siglip": -0.05357521772384646
+    }
+  ]
+}
