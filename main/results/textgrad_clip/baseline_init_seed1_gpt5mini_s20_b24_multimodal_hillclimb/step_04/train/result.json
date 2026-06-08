@@ -1,0 +1,142 @@
+{
+  "prompt": "Write a caption for this image.",
+  "prompt_id": "textgrad_7f3b4f879f",
+  "split_csv": "data/splits/flickr30k_main_seed1_train.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_04/train/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_04/train/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_04/train/scores.csv",
+  "data_root": "data",
+  "summary": {
+    "n": 24,
+    "mean_clip": 0.3233468408385913,
+    "mean_siglip": 0.19246246510495735,
+    "mean_caption_len": 24.125,
+    "generic_rate": 0.041666666666666664,
+    "mean_delta_clip": -9.934107467191033e-09,
+    "mean_delta_siglip": 9.934107461408622e-09,
+    "clip_win_rate": 0.0,
+    "siglip_win_rate": 0.25
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_012886",
+      "image_relpath": "images/flickr30k/flickr30k_test_012886.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_012886.jpg",
+      "caption": "A joyful hiker beams with delight while trekking through a snowy forest, equipped with poles and a backpack, embracing the winter adventure.",
+      "clip_score": 0.2952877879142761,
+      "siglip_score": 0.1845297366380691,
+      "delta_clip": -8.940696716308594e-08,
+      "delta_siglip": 5.96046448031462e-08
+    },
+    {
+      "image_id": "flickr30k_test_015736",
+      "image_relpath": "images/flickr30k/flickr30k_test_015736.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_015736.jpg",
+      "caption": "A graceful greyhound with a white and brown coat wades through shallow water, its reflection shimmering beneath its slender legs.",
+      "clip_score": 0.3477455377578735,
+      "siglip_score": 0.2097704410552978,
+      "delta_clip": -5.960464483090178e-08,
+      "delta_siglip": 5.96046448031462e-08
+    },
+    {
+      "image_id": "flickr30k_test_017070",
+      "image_relpath": "images/flickr30k/flickr30k_test_017070.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_017070.jpg",
+      "caption": "A farmer walks through a golden cornfield, heading toward a distant farmhouse and silo under a clear blue sky.",
+      "clip_score": 0.3402104377746582,
+      "siglip_score": 0.1950360983610153,
+      "delta_clip": -5.960464477539063e-08,
+      "delta_siglip": 1.4901161193847656e-08
+    },
+    {
+      "image_id": "flickr30k_test_024370",
+      "image_relpath": "images/flickr30k/flickr30k_test_024370.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_024370.jpg",
+      "caption": "A sunny day in a European city, with a grand, tree-lined street flanked by classic architecture and pedestrians strolling along the sidewalks.",
+      "clip_score": 0.2645592391490936,
+      "siglip_score": 0.1000408753752708,
+      "delta_clip": -2.9802322443206464e-08,
+      "delta_siglip": -7.450580599699386e-08
+    },
+    {
+      "image_id": "flickr30k_test_027768",
+      "image_relpath": "images/flickr30k/flickr30k_test_027768.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_027768.jpg",
+      "caption": "A vibrant red-haired woman in a bold red sweatshirt laughs joyfully as she playfully tosses a pillow, capturing a moment of spontaneous, carefree fun in a bustling urban setting.",
+      "clip_score": 0.3421879410743713,
+      "siglip_score": 0.2318173199892044,
+      "delta_clip": 0.0,
+      "delta_siglip": 0.0
+    },
+    {
+      "image_id": "flickr30k_test_002067",
+      "image_relpath": "images/flickr30k/flickr30k_test_002067.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_002067.jpg",
+      "caption": "A street musician plays an electric guitar for passersby in a lively urban square, captivating a young girl in a pink dress and drawing the attention of nearby diners at an outdoor café.",
+      "clip_score": 0.3339895009994507,
+      "siglip_score": 0.2306694835424423,
+      "delta_clip": 0.0,
+      "delta_siglip": 0.0
+    },
+    {
+      "image_id": "flickr30k_test_015474",
+      "image_relpath": "images/flickr30k/flickr30k_test_015474.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_015474.jpg",
+      "caption": "Boats glide through a bustling river market, where vendors and locals navigate wooden canoes past colorful stilt houses and lively storefronts.",
+      "clip_score": 0.3287834227085113,
+      "siglip_score": 0.1707606017589569,
+      "delta_clip": 0.0,
+      "delta_siglip": 0.0
+    },
+    {
+      "image_id": "flickr30k_test_021351",
+      "image_relpath": "images/flickr30k/flickr30k_test_021351.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_021351.jpg",
+      "caption": "A street musician plays violin in a vibrant underground station, surrounded by colorful abstract art installations that illuminate the tunnel-like space.",
+      "clip_score": 0.3453696668148041,
+      "siglip_score": 0.2322316020727157,
+      "delta_clip": 0.0,
+      "delta_siglip": 0.0
+    },
+    {
+      "image_id": "flickr30k_test_000069",
+      "image_relpath": "images/flickr30k/flickr30k_test_000069.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_000069.jpg",
+      "caption": "A man in a suit stands beside a glowing, oversized red sculpture of a futuristic car, illuminated at night against a city backdrop with vintage street lamps and a building facade.",
+      "clip_score": 0.3287597894668579,
+      "siglip_score": 0.1793792098760604,
+      "delta_clip": 0.0,
+      "delta_siglip": 0.0
+    },
+    {
+      "image_id": "flickr30k_test_030974",
+      "image_relpath": "images/flickr30k/flickr30k_test_030974.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_030974.jpg",
+      "caption": "Construction workers in safety vests and hard hats stand near a cement mixer truck on a busy worksite, with heavy machinery and vehicles in the background.",
+      "clip_score": 0.2768062055110931,
+      "siglip_score": 0.2054117172956466,
+      "delta_clip": 0.0,
+      "delta_siglip": 0.0
+    },
+    {
+      "image_id": "flickr30k_test_003349",
+      "image_relpath": "images/flickr30k/flickr30k_test_003349.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_003349.jpg",
+      "caption": "A child in a red coat gazes in wonder at a fiery, surreal display inside a LOEWE store window, while the reflection reveals bustling city life and shoppers passing by.",
+      "clip_score": 0.3639986515045166,
+      "siglip_score": 0.2755575776100158,
+      "delta_clip": 0.0,
+      "delta_siglip": 0.0
+    },
+    {
+      "image_id": "flickr30k_test_007565",
+      "image_relpath": "images/flickr30k/flickr30k_test_007565.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_007565.jpg",
+      "caption": "A curious baby crawls across a sun-dappled wooden floor, reaching toward a plastic water bottle, bathed in warm, golden light.",
+      "clip_score": 0.3438549637794494,
+      "siglip_score": 0.268446147441864,
+      "delta_clip": 0.0,
+      "delta_siglip": 0.0
+    }
+  ]
+}

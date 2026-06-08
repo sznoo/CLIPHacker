@@ -1,0 +1,142 @@
+{
+  "prompt": "Produce exactly one concise caption (one sentence) that states only visually verifiable facts. Include 2–6 discrete visual facts drawn from this checklist in the given priority order when present: 1) legible text: transcribe exact words; 2) counts and object types (e.g., \"2 people\", \"one bicycle\"); 3) key color/material/texture for those objects (e.g., \"orange backpack\", \"wooden façade\"); 4) pose/action/orientation (e.g., \"person seen from behind walking away; holding two poles\"); 5) simple spatial layout (foreground / midground / background placement); 6) lighting/viewpoint/occlusion cues (e.g., \"bright sunlight casting long shadows\", \"elevated vantage; tree partially obscures façade\"). Use canonical object names and exact counts, standard direction words (left/right/foreground/background), and numerals or short words for numbers. Do not infer roles, emotions, intentions, or use metaphors, slogans, or marketing language (avoid \"farmer\", \"happy\", \"adventure\", etc.). If text is not clearly legible, omit it rather than guess. Keep the caption factual, compact, and limited to one sentence containing 2–6 concrete facts—no lists, tags, extra sentences, or commentary. Example (good): \"Sign reads 'Outdoor World'; two adults walk toward the store entrance; timber façade and concrete forecourt; overcast sky.\" Counterexample (bad): \"A happy farmer enjoys a sunny day in the countryside.\"",
+  "prompt_id": "textgrad_1d8c701270",
+  "split_csv": "data/splits/flickr30k_main_seed1_train.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_14/train/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_14/train/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_14/train/scores.csv",
+  "data_root": "data",
+  "summary": {
+    "n": 24,
+    "mean_clip": 0.32267429679632187,
+    "mean_siglip": 0.19818436540663234,
+    "mean_caption_len": 39.458333333333336,
+    "generic_rate": 0.125,
+    "mean_delta_clip": 0.0033429693430662016,
+    "mean_delta_siglip": -0.003200313697258636,
+    "clip_win_rate": 0.5416666666666666,
+    "siglip_win_rate": 0.4166666666666667
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_008358",
+      "image_relpath": "images/flickr30k/flickr30k_test_008358.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_008358.jpg",
+      "caption": "One person in a red jersey with the number 1, black shorts, and red socks is diving horizontally across a grassy field; green foliage is in the background.",
+      "clip_score": 0.2984676957130432,
+      "siglip_score": 0.170500099658966,
+      "delta_clip": -0.059645652770996094,
+      "delta_siglip": -0.031011730432510404
+    },
+    {
+      "image_id": "flickr30k_test_014180",
+      "image_relpath": "images/flickr30k/flickr30k_test_014180.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_014180.jpg",
+      "caption": "Three people ride bicycles in the foreground; two tricycle vendors operate in the midground; a large white curved building with blue accents is in the background; trees with green and red leaves frame the scene.",
+      "clip_score": 0.2770926058292389,
+      "siglip_score": 0.1700573861598968,
+      "delta_clip": -0.0451380312442779,
+      "delta_siglip": -0.007005482912063599
+    },
+    {
+      "image_id": "flickr30k_test_008727",
+      "image_relpath": "images/flickr30k/flickr30k_test_008727.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_008727.jpg",
+      "caption": "Two children sit on a carpeted floor; one wears a white shirt with red patterned sleeves and holds a magazine, the other wears a blue onesie and leans forward; a person in light blue pajamas sits in the background on a gray couch; scattered wrapping paper and a book are on the floor.",
+      "clip_score": 0.3245812654495239,
+      "siglip_score": 0.1967111676931381,
+      "delta_clip": -0.023273885250091553,
+      "delta_siglip": -0.0365803986787796
+    },
+    {
+      "image_id": "flickr30k_test_003863",
+      "image_relpath": "images/flickr30k/flickr30k_test_003863.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_003863.jpg",
+      "caption": "Six people jump mid-air over a cracked white salt flat; one yellow ball floats above them; clear blue sky overhead; long shadows cast on the ground.",
+      "clip_score": 0.3234221637248993,
+      "siglip_score": 0.2299017906188964,
+      "delta_clip": -0.022127300500869695,
+      "delta_siglip": 0.007141888141631997
+    },
+    {
+      "image_id": "flickr30k_test_012029",
+      "image_relpath": "images/flickr30k/flickr30k_test_012029.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_012029.jpg",
+      "caption": "A floating shrine with a white domed roof and red doors is surrounded by people on a wooden platform; behind it, a stone embankment rises to a temple complex with white domed structures; several small boats are moored nearby; the scene is viewed from across the water under diffuse daylight.",
+      "clip_score": 0.3305006027221679,
+      "siglip_score": 0.1843058913946151,
+      "delta_clip": -0.02068418264389038,
+      "delta_siglip": 0.04269103705883018
+    },
+    {
+      "image_id": "flickr30k_test_027386",
+      "image_relpath": "images/flickr30k/flickr30k_test_027386.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_027386.jpg",
+      "caption": "Seven hikers with backpacks walk single file along a dirt path on a grassy slope; mountains with snow caps are visible in the background; the sky is overcast.",
+      "clip_score": 0.3311197757720947,
+      "siglip_score": 0.195994883775711,
+      "delta_clip": -0.016976594924926758,
+      "delta_siglip": -0.007474362850189209
+    },
+    {
+      "image_id": "flickr30k_test_027960",
+      "image_relpath": "images/flickr30k/flickr30k_test_027960.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_027960.jpg",
+      "caption": "Five boys in athletic attire run across a dirt field; one wears a white shirt with visible green trim, another wears a black shirt with the number 58, and a third wears a white shirt with blue pants; cars are parked in the background behind a low wall; bright sunlight casts long shadows.",
+      "clip_score": 0.2998856902122497,
+      "siglip_score": 0.1582956165075302,
+      "delta_clip": -0.01597797870635992,
+      "delta_siglip": 0.002503693103790311
+    },
+    {
+      "image_id": "flickr30k_test_027198",
+      "image_relpath": "images/flickr30k/flickr30k_test_027198.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_027198.jpg",
+      "caption": "Three people run across a grassy field; one holds a water gun and sprays water toward another; the third runs away from the spray; bright sunlight illuminates the scene.",
+      "clip_score": 0.3225617408752441,
+      "siglip_score": 0.1882458180189132,
+      "delta_clip": -0.015938758850097712,
+      "delta_siglip": 0.047372251749038724
+    },
+    {
+      "image_id": "flickr30k_test_007637",
+      "image_relpath": "images/flickr30k/flickr30k_test_007637.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_007637.jpg",
+      "caption": "Two people in a sandy area; one stands wearing a black shirt and blue jeans with white gloves, the other bends over; both wear gloves; background shows sand with tire tracks.",
+      "clip_score": 0.3157212734222412,
+      "siglip_score": 0.1963522732257843,
+      "delta_clip": -0.014580577611923162,
+      "delta_siglip": 0.003796517848968506
+    },
+    {
+      "image_id": "flickr30k_test_019437",
+      "image_relpath": "images/flickr30k/flickr30k_test_019437.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_019437.jpg",
+      "caption": "A woman in a dark dress walks toward the right in front of a metal roll-up door with yellow \"NO PARKING ANY TIME\" stenciled on it; two \"WARNING\" signs are mounted on the wall flanking the door; a green trash can is in the foreground left; bright sunlight casts long shadows.",
+      "clip_score": 0.3228504657745361,
+      "siglip_score": 0.1934509724378585,
+      "delta_clip": -0.007556766271591242,
+      "delta_siglip": 0.044023290276527405
+    },
+    {
+      "image_id": "flickr30k_test_019904",
+      "image_relpath": "images/flickr30k/flickr30k_test_019904.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_019904.jpg",
+      "caption": "A man in a beige jacket walks on a metal railing; two red signs read \"LE MIGNON\" and \"FRANK SPECIALITIES RESTAURANT\"; the building has a yellow brick façade with black lanterns; the viewpoint is from above the railing.",
+      "clip_score": 0.323911041021347,
+      "siglip_score": 0.2435669749975204,
+      "delta_clip": -0.007410734891891535,
+      "delta_siglip": -0.04095767438411718
+    },
+    {
+      "image_id": "flickr30k_test_028917",
+      "image_relpath": "images/flickr30k/flickr30k_test_028917.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_028917.jpg",
+      "caption": "Player in white jersey with number 5 dribbles a basketball while being guarded by a player in black jersey with number 0; both are in midground on a wooden court with a referee and spectators in the background.",
+      "clip_score": 0.2557069957256317,
+      "siglip_score": 0.1571540832519531,
+      "delta_clip": 0.001851111650466919,
+      "delta_siglip": -0.04732578992843631
+    }
+  ]
+}

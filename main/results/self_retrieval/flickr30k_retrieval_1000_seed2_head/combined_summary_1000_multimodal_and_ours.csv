@@ -1,0 +1,5 @@
+scorer,source,method_id,prompt_id,prompt_name,n,r@1,r@5,r@10,mrr,median_rank,mean_rank,mean_positive_score,mean_hardest_negative_score,mean_margin
+clip,qwen_behavior_residual_best,qwen_behavior_residual_best,behavior_residual_best,Behavior Residual Best,1000,0.827,0.963,0.986,0.8858614350536166,1.0,1.863,0.3254684255868196,0.2970838706940412,0.0283845548927783
+clip,qwen_textgrad_multimodal_best,qwen_textgrad_multimodal_best,textgrad_multimodal_best,TextGrad Multimodal Best,1000,0.806,0.953,0.976,0.8708681497212784,1.0,3.492,0.3249098669737577,0.2980661791414022,0.0268436878323555
+siglip,qwen_textgrad_multimodal_best,qwen_textgrad_multimodal_best,textgrad_multimodal_best,TextGrad Multimodal Best,1000,0.956,0.992,0.996,0.9733356470268228,1.0,1.852,0.1919284590370953,0.1221430443348363,0.069785414702259
+siglip,qwen_behavior_residual_best,qwen_behavior_residual_best,behavior_residual_best,Behavior Residual Best,1000,0.952,0.996,0.997,0.9727323284823284,1.0,1.268,0.1942816700674593,0.1276461498923599,0.0666355201750993

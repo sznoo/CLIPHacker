@@ -1,0 +1,142 @@
+{
+  "prompt": "Produce exactly one concise caption (one sentence) that states only visually verifiable facts. Include 2–6 discrete visual facts drawn from this checklist in the given priority order when present: 1) legible text: transcribe exact words; 2) counts and object types (e.g., \"2 people\", \"one bicycle\"); 3) key color/material/texture for those objects (e.g., \"orange backpack\", \"wooden façade\"); 4) pose/action/orientation (e.g., \"person seen from behind walking away; holding two poles\"); 5) simple spatial layout (foreground / midground / background placement); 6) lighting/viewpoint/occlusion cues (e.g., \"bright sunlight casting long shadows\", \"elevated vantage; tree partially obscures façade\"). Use canonical object names and exact counts, standard direction words (left/right/foreground/background), and numerals or short words for numbers. Do not infer roles, emotions, intentions, or use metaphors, slogans, or marketing language (avoid \"farmer\", \"happy\", \"adventure\", etc.). If text is not clearly legible, omit it rather than guess. Keep the caption factual, compact, and limited to one sentence containing 2–6 concrete facts—no lists, tags, extra sentences, or commentary. Example (good): \"Sign reads 'Outdoor World'; two adults walk toward the store entrance; timber façade and concrete forecourt; overcast sky.\" Counterexample (bad): \"A happy farmer enjoys a sunny day in the countryside.\"",
+  "prompt_id": "textgrad_1d8c701270",
+  "split_csv": "data/splits/flickr30k_main_seed1_train.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_12/train/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_12/train/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_12/train/scores.csv",
+  "data_root": "data",
+  "summary": {
+    "n": 24,
+    "mean_clip": 0.32724442332983017,
+    "mean_siglip": 0.194883565728863,
+    "mean_caption_len": 38.375,
+    "generic_rate": 0.125,
+    "mean_delta_clip": 0.006008164336284001,
+    "mean_delta_siglip": 0.005717705003917217,
+    "clip_win_rate": 0.625,
+    "siglip_win_rate": 0.5416666666666666
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_018651",
+      "image_relpath": "images/flickr30k/flickr30k_test_018651.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_018651.jpg",
+      "caption": "One man wearing a straw hat and jacket stands beside a bicycle with a red seat; two woven baskets hold oranges in the foreground; a brick wall and wooden door are visible in the background; bright sunlight casts shadows.",
+      "clip_score": 0.3317649364471435,
+      "siglip_score": 0.1939855515956878,
+      "delta_clip": -0.07045873999595648,
+      "delta_siglip": -0.002558127045631381
+    },
+    {
+      "image_id": "flickr30k_test_008358",
+      "image_relpath": "images/flickr30k/flickr30k_test_008358.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_008358.jpg",
+      "caption": "One person in a red jersey with the number 1, black shorts, and red socks is diving horizontally across a grassy field; green foliage is in the background.",
+      "clip_score": 0.2984676957130432,
+      "siglip_score": 0.170500099658966,
+      "delta_clip": -0.059645652770996094,
+      "delta_siglip": -0.031011730432510404
+    },
+    {
+      "image_id": "flickr30k_test_003536",
+      "image_relpath": "images/flickr30k/flickr30k_test_003536.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_003536.jpg",
+      "caption": "One person wearing a gray beanie, blue and gray jacket, and beige pants stands in the foreground holding a white object; a tree trunk is to their right; a hedge and bare trees are in the background; ground is covered with fallen leaves.",
+      "clip_score": 0.2834676504135132,
+      "siglip_score": 0.1495287120342254,
+      "delta_clip": -0.0588231086730957,
+      "delta_siglip": -0.04744201898574829
+    },
+    {
+      "image_id": "flickr30k_test_030218",
+      "image_relpath": "images/flickr30k/flickr30k_test_030218.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_030218.jpg",
+      "caption": "Man with long white hair plays a wooden flute while standing on a sidewalk; black folding stool and black case are on the ground nearby; pedestrians are visible in the background; building has a light-colored wall and dark base; pavement is gray with white rectangular tiles.",
+      "clip_score": 0.3095046877861023,
+      "siglip_score": 0.255167007446289,
+      "delta_clip": -0.04459071159362793,
+      "delta_siglip": 0.03256088495254511
+    },
+    {
+      "image_id": "flickr30k_test_023784",
+      "image_relpath": "images/flickr30k/flickr30k_test_023784.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_023784.jpg",
+      "caption": "One woman with dark hair and earrings wears a light blue sleeveless vest over a dark shirt; she is seated in the foreground, facing forward, with plastic bags and cardboard boxes visible in the background.",
+      "clip_score": 0.2862270176410675,
+      "siglip_score": 0.185353621840477,
+      "delta_clip": -0.03851941227912897,
+      "delta_siglip": -0.0326438099145889
+    },
+    {
+      "image_id": "flickr30k_test_003075",
+      "image_relpath": "images/flickr30k/flickr30k_test_003075.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_003075.jpg",
+      "caption": "Two children stand in shallow water; one wears a blue raincoat with a red belt, the other wears a white shirt and khaki pants with sunglasses on their head; a beige van is parked in the background; a person in a blue shirt is partially visible to the right.",
+      "clip_score": 0.3476170897483825,
+      "siglip_score": 0.200851708650589,
+      "delta_clip": -0.022937715053558405,
+      "delta_siglip": -0.018698260188102722
+    },
+    {
+      "image_id": "flickr30k_test_025508",
+      "image_relpath": "images/flickr30k/flickr30k_test_025508.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_025508.jpg",
+      "caption": "One person performs an aerial flip above a sand dune; the sky is clear blue; the person wears orange shorts; the dune slopes upward from the foreground; sunlight illuminates the scene from above.",
+      "clip_score": 0.3447626829147339,
+      "siglip_score": 0.2071888446807861,
+      "delta_clip": -0.02091622352600092,
+      "delta_siglip": 0.012705862522125216
+    },
+    {
+      "image_id": "flickr30k_test_019904",
+      "image_relpath": "images/flickr30k/flickr30k_test_019904.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_019904.jpg",
+      "caption": "A man in a beige jacket walks on a metal railing; two red signs read \"LE MIGNON\" and \"FRANK SPECIALITIES RESTAURANT\"; the building has a yellow brick façade with black lanterns; the viewpoint is from above the railing.",
+      "clip_score": 0.323911041021347,
+      "siglip_score": 0.2435669749975204,
+      "delta_clip": -0.007410734891891535,
+      "delta_siglip": -0.04095767438411718
+    },
+    {
+      "image_id": "flickr30k_test_015378",
+      "image_relpath": "images/flickr30k/flickr30k_test_015378.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_015378.jpg",
+      "caption": "Two people stand near a cardboard box and a black suitcase; one wears a red shirt and black hat, the other holds a plastic bag; concrete wall in background; bright sunlight casts shadows.",
+      "clip_score": 0.3006374537944793,
+      "siglip_score": 0.2214977443218231,
+      "delta_clip": -0.0038085281848908026,
+      "delta_siglip": -0.014961302280425998
+    },
+    {
+      "image_id": "flickr30k_test_030359",
+      "image_relpath": "images/flickr30k/flickr30k_test_030359.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_030359.jpg",
+      "caption": "Sign reads \"THAT CALLS FOR A\"; goalkeeper in red jersey dives left; three players in yellow jerseys and one in white jersey jump for the ball; action occurs in midground with spectators in background.",
+      "clip_score": 0.2940182089805603,
+      "siglip_score": 0.1414361745119094,
+      "delta_clip": 0.0017847418785095215,
+      "delta_siglip": -0.012377157807350186
+    },
+    {
+      "image_id": "flickr30k_test_028178",
+      "image_relpath": "images/flickr30k/flickr30k_test_028178.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_028178.jpg",
+      "caption": "One man with glasses and a beard plays a brass trumpet; he wears a dark suit with a red shirt collar; behind him is a green tree decorated with string lights and a sheer ribbon; the scene is illuminated by artificial light at night.",
+      "clip_score": 0.3908699750900268,
+      "siglip_score": 0.2311430424451828,
+      "delta_clip": 0.00314491987228388,
+      "delta_siglip": 0.0064667016267777044
+    },
+    {
+      "image_id": "flickr30k_test_012897",
+      "image_relpath": "images/flickr30k/flickr30k_test_012897.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_012897.jpg",
+      "caption": "One person wearing a blue shirt and wide-brimmed hat stands in front of a wooden easel holding a paintbrush; the easel supports a blank white canvas; green foliage is in the background; bright sunlight illuminates the scene.",
+      "clip_score": 0.3594906330108642,
+      "siglip_score": 0.1819802671670913,
+      "delta_clip": 0.008690297603607122,
+      "delta_siglip": 0.0012514144182204923
+    }
+  ]
+}

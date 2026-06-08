@@ -1,0 +1,142 @@
+{
+  "prompt": "Produce exactly one concise caption (one sentence) containing only visually verifiable facts. The caption must contain 2–6 discrete facts; a discrete fact = one atomic clause (keep clauses short and separate them with semicolons). Use numerals for counts (e.g., \"2 people\"). Do not output lists, tags, multiple captions, JSON, or extra sentences.\n\n1) Text-first: If any text in the image is clearly readable, transcribe it exactly and place that transcription first in quotes (e.g., \"Sign reads 'Outdoor World'\"). If text is not clearly legible, omit any mention of text.\n\n2) Per-object mini-template (use when you describe a person or prominent object): one clause per described object that follows this structure where applicable — [count] [object] [1–2 visible attributes: color/material/pattern] [single clear action/pose if visible] [, coarse location]. Example clause: \"2 people in red jackets walking, center foreground.\" Each such clause counts as one discrete fact.\n\n3) Canonical nouns and numerals: Use simple object names (person, child, bicycle, car, storefront, bench, boat, goat, duffel, blanket, satellite dish, etc.). Use \"person\" unless age/sex/role is visually indisputable. Use numerals (1, 2, 3).\n\n4) Spatial anchors: For every object/person clause include a coarse spatial tag when determinable (foreground / midground / background and left / center / right as applicable). This can be part of the clause after a comma.\n\n5) Appearance and action: Limit to 1–2 clearly visible appearance attributes (color, material, pattern) and at most one clear action/pose verb (standing, sitting, walking, paddling, bending, mid‑air, holding, leaning). If the action is not unambiguous, omit it.\n\n6) Lighting/viewpoint/occlusion: Include one lighting or viewpoint fact only if clearly visible (bright sunlight/long shadows/overcast/elevated vantage/partially obscured by tree). This counts as one discrete fact.\n\n7) Factuality and no inference: Do not infer roles, emotions, intentions, age, or gender unless unmistakable from visible evidence (uniform, explicit label). If uncertain about any detail, omit it.\n\n8) Fact counting: Keep total clauses (facts) between 2 and 6. Use semicolons to separate facts; commas may be used inside clauses. Each semicolon-separated clause counts as one fact.\n\nGood examples:\n\"Sign reads 'Outdoor World'; 2 people in red jackets walking, center foreground; timber façade with round logo above the sign; overcast sky.\"\n\"3 wooden boats with conical-hat drivers, left midground; muddy brown water; stilted wooden shopfronts along the riverbank, right background.\"\n\nBad example:\n\"A happy farmer enjoys a sunny day in the countryside.\"\n\nNow produce the single-sentence caption following these rules.",
+  "prompt_id": "textgrad_12e8b52862",
+  "split_csv": "data/splits/flickr30k_main_seed1_val.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_07/val/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_07/val/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_07/val/scores.csv",
+  "data_root": "data",
+  "summary": {
+    "n": 150,
+    "mean_clip": 0.3059797819455465,
+    "mean_siglip": 0.18637113297979035,
+    "mean_caption_len": 28.273333333333333,
+    "generic_rate": 0.0,
+    "mean_delta_clip": -0.018585666368405026,
+    "mean_delta_siglip": -0.012469412709275884,
+    "clip_win_rate": 0.30333333333333334,
+    "siglip_win_rate": 0.37666666666666665
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_007385",
+      "image_relpath": "images/flickr30k/flickr30k_test_007385.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_007385.jpg",
+      "caption": "\"1 person in blue and multicolored patterned outfit mid-air, foreground; 2 people in similar outfits standing, midground; storefront with 'Kroger' sign visible, background; bright sunlight casting long shadows; 3 green frisbees in flight.\"",
+      "clip_score": 0.244954764842987,
+      "siglip_score": 0.1168511509895324,
+      "delta_clip": -0.1239020824432373,
+      "delta_siglip": -0.05807727575302131
+    },
+    {
+      "image_id": "flickr30k_test_011250",
+      "image_relpath": "images/flickr30k/flickr30k_test_011250.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_011250.jpg",
+      "caption": "\"2 children standing in grassy field, one in brown shirt holding hands with other in red striped shirt; yellow caution tape across field, midground; clear blue sky with scattered clouds; bright sunlight.\"",
+      "clip_score": 0.2942890524864197,
+      "siglip_score": 0.2356145977973938,
+      "delta_clip": -0.11830472946166992,
+      "delta_siglip": 0.015098974108696012
+    },
+    {
+      "image_id": "flickr30k_test_016715",
+      "image_relpath": "images/flickr30k/flickr30k_test_016715.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_016715.jpg",
+      "caption": "1 person in patterned clothing holding a wooden tool, midground; dry field with straw stubble, background; bright sunlight casting long shadows.",
+      "clip_score": 0.2462407946586609,
+      "siglip_score": 0.1343957483768463,
+      "delta_clip": -0.11419123411178589,
+      "delta_siglip": -0.05608507990837089
+    },
+    {
+      "image_id": "flickr30k_test_001839",
+      "image_relpath": "images/flickr30k/flickr30k_test_001839.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_001839.jpg",
+      "caption": "\"1 person in yellow jacket and blue pants holding colorful objects, center foreground; 2 people sitting on bench, left midground; brick building with windows, right background; bright sunlight.\"",
+      "clip_score": 0.2549803555011749,
+      "siglip_score": 0.1101284325122833,
+      "delta_clip": -0.09714362025260925,
+      "delta_siglip": -0.16028246283531192
+    },
+    {
+      "image_id": "flickr30k_test_016715",
+      "image_relpath": "images/flickr30k/flickr30k_test_016715.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_016715.jpg",
+      "caption": "1 person in patterned clothing holding a wooden tool, midground; dry field with straw stubble, background; bright sunlight casting long shadows.",
+      "clip_score": 0.2462407946586609,
+      "siglip_score": 0.1343957483768463,
+      "delta_clip": -0.0956070721149444,
+      "delta_siglip": -0.001025348901748574
+    },
+    {
+      "image_id": "flickr30k_test_028445",
+      "image_relpath": "images/flickr30k/flickr30k_test_028445.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_028445.jpg",
+      "caption": "\"1 person with gray hair and mustache, holding a blue mesh laundry hamper, center foreground; red pickup truck with 'XTR' visible, right background; paved road and residential buildings in background; bright sunlight.\"",
+      "clip_score": 0.275620698928833,
+      "siglip_score": 0.2124812602996826,
+      "delta_clip": -0.09175282716751099,
+      "delta_siglip": -0.004555314779281616
+    },
+    {
+      "image_id": "flickr30k_test_030835",
+      "image_relpath": "images/flickr30k/flickr30k_test_030835.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_030835.jpg",
+      "caption": "\"2 people in yellow jackets holding long poles, right foreground; green roof with red and white stripes; bright sky with scattered clouds.\"",
+      "clip_score": 0.2564385533332824,
+      "siglip_score": 0.2109163701534271,
+      "delta_clip": -0.08987283706665039,
+      "delta_siglip": -0.016528010368347196
+    },
+    {
+      "image_id": "flickr30k_test_003587",
+      "image_relpath": "images/flickr30k/flickr30k_test_003587.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_003587.jpg",
+      "caption": "\"1 person wearing a black cap with '3' and 'ALBAN' text, black jacket with 'Plus', 'Coca-Cola', 'Snap-on', and 'NASCAR' logos, sitting, foreground.\"",
+      "clip_score": 0.2764954566955566,
+      "siglip_score": 0.1850904524326324,
+      "delta_clip": -0.08879148960113531,
+      "delta_siglip": -0.07921361923217779
+    },
+    {
+      "image_id": "flickr30k_test_002727",
+      "image_relpath": "images/flickr30k/flickr30k_test_002727.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_002727.jpg",
+      "caption": "\"1 person in green patterned shirt sitting, foreground; 2 people in white shirts sitting, right midground; neon sign reads 'KIRIN', background; wooden wall with bamboo poles, left background.\"",
+      "clip_score": 0.2506121098995209,
+      "siglip_score": 0.2135758697986602,
+      "delta_clip": -0.08523464202880854,
+      "delta_siglip": -0.06060615181922921
+    },
+    {
+      "image_id": "flickr30k_test_014144",
+      "image_relpath": "images/flickr30k/flickr30k_test_014144.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_014144.jpg",
+      "caption": "1 person in dark clothing grinding metal, foreground; bright sparks flying; row of gray lockers, right background; fluorescent lights overhead.",
+      "clip_score": 0.2765124440193176,
+      "siglip_score": 0.2313746064901352,
+      "delta_clip": -0.08509099483489985,
+      "delta_siglip": 0.0005454570055007935
+    },
+    {
+      "image_id": "flickr30k_test_028445",
+      "image_relpath": "images/flickr30k/flickr30k_test_028445.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_028445.jpg",
+      "caption": "\"1 person with gray hair and mustache, holding a blue mesh laundry hamper, center foreground; red pickup truck with 'XTR' visible, right background; paved road and residential buildings in background; bright sunlight.\"",
+      "clip_score": 0.275620698928833,
+      "siglip_score": 0.2124812602996826,
+      "delta_clip": -0.08404320478439331,
+      "delta_siglip": -0.008867055177688599
+    },
+    {
+      "image_id": "flickr30k_test_000051",
+      "image_relpath": "images/flickr30k/flickr30k_test_000051.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_000051.jpg",
+      "caption": "\"2 people in white uniforms, one kneeling holding wooden sticks, other standing in defensive stance, red and blue mat floor; elevated vantage.\"",
+      "clip_score": 0.2879944443702698,
+      "siglip_score": 0.16609987616539,
+      "delta_clip": -0.08061724901199341,
+      "delta_siglip": -0.02007366716861722
+    }
+  ]
+}

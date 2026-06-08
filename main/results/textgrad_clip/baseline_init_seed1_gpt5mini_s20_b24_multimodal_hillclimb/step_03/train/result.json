@@ -1,0 +1,142 @@
+{
+  "prompt": "Write a caption for this image.",
+  "prompt_id": "textgrad_7f3b4f879f",
+  "split_csv": "data/splits/flickr30k_main_seed1_train.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_03/train/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_03/train/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_03/train/scores.csv",
+  "data_root": "data",
+  "summary": {
+    "n": 24,
+    "mean_clip": 0.32686656589309376,
+    "mean_siglip": 0.18957166032244754,
+    "mean_caption_len": 24.916666666666668,
+    "generic_rate": 0.0,
+    "mean_delta_clip": 6.829698872418133e-09,
+    "mean_delta_siglip": 6.829698879357027e-09,
+    "clip_win_rate": 0.16666666666666666,
+    "siglip_win_rate": 0.16666666666666666
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_027960",
+      "image_relpath": "images/flickr30k/flickr30k_test_027960.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_027960.jpg",
+      "caption": "Young athletes in a spirited flag football game, sprinting across a sunlit dirt field with determination and teamwork.",
+      "clip_score": 0.3158636093139648,
+      "siglip_score": 0.1557919979095459,
+      "delta_clip": -5.960464483090178e-08,
+      "delta_siglip": 7.450580599699386e-08
+    },
+    {
+      "image_id": "flickr30k_test_005669",
+      "image_relpath": "images/flickr30k/flickr30k_test_005669.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_005669.jpg",
+      "caption": "A live music performance captivates an intimate audience, with musicians on stage bathed in dramatic lighting while seated fans enjoy the show.",
+      "clip_score": 0.247290164232254,
+      "siglip_score": 0.1153213530778884,
+      "delta_clip": -4.4703483609298544e-08,
+      "delta_siglip": -1.4901161193847656e-08
+    },
+    {
+      "image_id": "flickr30k_test_026288",
+      "image_relpath": "images/flickr30k/flickr30k_test_026288.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_026288.jpg",
+      "caption": "A vendor crouches beside his vibrant stall, skillfully preparing and displaying fresh jackfruit slices on banana leaves, with a whole fruit and colorful produce in the background.",
+      "clip_score": 0.3779732286930084,
+      "siglip_score": 0.2201389819383621,
+      "delta_clip": 0.0,
+      "delta_siglip": 0.0
+    },
+    {
+      "image_id": "flickr30k_test_008358",
+      "image_relpath": "images/flickr30k/flickr30k_test_008358.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_008358.jpg",
+      "caption": "A soccer goalkeeper in a red jersey dives dramatically across the grass, fully extended in an athletic save attempt.",
+      "clip_score": 0.3581133484840393,
+      "siglip_score": 0.2015118300914764,
+      "delta_clip": 0.0,
+      "delta_siglip": 0.0
+    },
+    {
+      "image_id": "flickr30k_test_026274",
+      "image_relpath": "images/flickr30k/flickr30k_test_026274.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_026274.jpg",
+      "caption": "A cowboy rides a bucking bronco at a rodeo, wielding a lasso as the crowd watches in excitement.",
+      "clip_score": 0.3097444772720337,
+      "siglip_score": 0.0970903411507606,
+      "delta_clip": 0.0,
+      "delta_siglip": 0.0
+    },
+    {
+      "image_id": "flickr30k_test_001002",
+      "image_relpath": "images/flickr30k/flickr30k_test_001002.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_001002.jpg",
+      "caption": "A craftsman in traditional Andean attire sits cross-legged, meticulously working on a handcrafted sword, surrounded by vibrant textiles and artisan tools under the open sky.",
+      "clip_score": 0.3589109182357788,
+      "siglip_score": 0.2321808040142059,
+      "delta_clip": 0.0,
+      "delta_siglip": 0.0
+    },
+    {
+      "image_id": "flickr30k_test_006879",
+      "image_relpath": "images/flickr30k/flickr30k_test_006879.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_006879.jpg",
+      "caption": "A young soccer player in a blue uniform stands alone on a gritty field, gazing toward teammates in the distance — a moment of quiet focus before the game begins.",
+      "clip_score": 0.335654616355896,
+      "siglip_score": 0.1824628263711929,
+      "delta_clip": 0.0,
+      "delta_siglip": 0.0
+    },
+    {
+      "image_id": "flickr30k_test_025138",
+      "image_relpath": "images/flickr30k/flickr30k_test_025138.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_025138.jpg",
+      "caption": "Four friends stand by a canal, chatting and enjoying a scenic walk along the water’s edge.",
+      "clip_score": 0.2813203632831573,
+      "siglip_score": 0.1486082226037979,
+      "delta_clip": 0.0,
+      "delta_siglip": 0.0
+    },
+    {
+      "image_id": "flickr30k_test_022494",
+      "image_relpath": "images/flickr30k/flickr30k_test_022494.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_022494.jpg",
+      "caption": "A worker in an orange shirt and paint-splattered overalls stands on a wooden walkway, holding a ladder, as he pauses during a renovation project beside a weathered brick chimney and a white brick wall.",
+      "clip_score": 0.3611181080341339,
+      "siglip_score": 0.2157048732042312,
+      "delta_clip": 0.0,
+      "delta_siglip": 0.0
+    },
+    {
+      "image_id": "flickr30k_test_007264",
+      "image_relpath": "images/flickr30k/flickr30k_test_007264.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_007264.jpg",
+      "caption": "A joyful street moment: a woman and a little girl share a sweet interaction with a small dog, surrounded by friends in a lively urban setting.",
+      "clip_score": 0.3317039608955383,
+      "siglip_score": 0.244750440120697,
+      "delta_clip": 0.0,
+      "delta_siglip": 0.0
+    },
+    {
+      "image_id": "flickr30k_test_009495",
+      "image_relpath": "images/flickr30k/flickr30k_test_009495.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_009495.jpg",
+      "caption": "“Late-night bar scene: Two women in matching yellow delivery bags chat and mingle, while a man in a jacket leans in, perhaps sharing a joke or a drink — a snapshot of urban nightlife and camaraderie.”",
+      "clip_score": 0.289983332157135,
+      "siglip_score": 0.2011572122573852,
+      "delta_clip": 0.0,
+      "delta_siglip": 0.0
+    },
+    {
+      "image_id": "flickr30k_test_030218",
+      "image_relpath": "images/flickr30k/flickr30k_test_030218.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_030218.jpg",
+      "caption": "A street musician with a long white beard plays a flute on a city sidewalk, surrounded by passersby and storefronts.",
+      "clip_score": 0.3540953993797302,
+      "siglip_score": 0.2226061224937439,
+      "delta_clip": 0.0,
+      "delta_siglip": 0.0
+    }
+  ]
+}

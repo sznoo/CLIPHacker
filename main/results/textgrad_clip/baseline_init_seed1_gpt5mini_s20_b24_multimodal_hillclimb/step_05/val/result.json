@@ -1,0 +1,142 @@
+{
+  "prompt": "Produce exactly one concise caption (one sentence) that states only visually verifiable facts. Include 2–6 discrete visual facts drawn from this checklist in the given priority order when present: 1) legible text: transcribe exact words; 2) counts and object types (e.g., \"2 people\", \"one bicycle\"); 3) key color/material/texture for those objects (e.g., \"orange backpack\", \"wooden façade\"); 4) pose/action/orientation (e.g., \"person seen from behind walking away; holding two poles\"); 5) simple spatial layout (foreground / midground / background placement); 6) lighting/viewpoint/occlusion cues (e.g., \"bright sunlight casting long shadows\", \"elevated vantage; tree partially obscures façade\"). Use canonical object names and exact counts, standard direction words (left/right/foreground/background), and numerals or short words for numbers. Do not infer roles, emotions, intentions, or use metaphors, slogans, or marketing language (avoid \"farmer\", \"happy\", \"adventure\", etc.). If text is not clearly legible, omit it rather than guess. Keep the caption factual, compact, and limited to one sentence containing 2–6 concrete facts—no lists, tags, extra sentences, or commentary. Example (good): \"Sign reads 'Outdoor World'; two adults walk toward the store entrance; timber façade and concrete forecourt; overcast sky.\" Counterexample (bad): \"A happy farmer enjoys a sunny day in the countryside.\"",
+  "prompt_id": "textgrad_1d8c701270",
+  "split_csv": "data/splits/flickr30k_main_seed1_val.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_05/val/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_05/val/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_05/val/scores.csv",
+  "data_root": "data",
+  "summary": {
+    "n": 150,
+    "mean_clip": 0.32824947039286295,
+    "mean_siglip": 0.19234900827209156,
+    "mean_caption_len": 37.64,
+    "generic_rate": 0.07333333333333333,
+    "mean_delta_clip": 0.003684022078911465,
+    "mean_delta_siglip": -0.0064915374169747025,
+    "clip_win_rate": 0.5366666666666666,
+    "siglip_win_rate": 0.4633333333333333
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_006537",
+      "image_relpath": "images/flickr30k/flickr30k_test_006537.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_006537.jpg",
+      "caption": "Sign reads 'KILBURN'; one person in orange high-visibility vest walks away from camera; train on right; platform with yellow safety line; overcast sky.",
+      "clip_score": 0.3040151000022888,
+      "siglip_score": 0.2602385580539703,
+      "delta_clip": -0.08746576309204096,
+      "delta_siglip": 0.04253530502319339
+    },
+    {
+      "image_id": "flickr30k_test_028445",
+      "image_relpath": "images/flickr30k/flickr30k_test_028445.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_028445.jpg",
+      "caption": "Man with gray hair and mustache rides a bicycle in foreground, carrying a blue mesh laundry hamper filled with clothes; red pickup truck with \"XTR\" visible is parked to the right; beige building with windows is in the background; bright sunlight casts shadows.",
+      "clip_score": 0.2883385419845581,
+      "siglip_score": 0.1985928416252136,
+      "delta_clip": -0.07903498411178589,
+      "delta_siglip": -0.01844373345375061
+    },
+    {
+      "image_id": "flickr30k_test_017956",
+      "image_relpath": "images/flickr30k/flickr30k_test_017956.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_017956.jpg",
+      "caption": "A crowd of people stands in the foreground, some holding cameras; a large red-walled building with a yellow-tiled roof is in the background; one person wears a beige hat; another holds a pink flag; bright daylight illuminates the scene.",
+      "clip_score": 0.2587714195251465,
+      "siglip_score": 0.1132923513650894,
+      "delta_clip": -0.07493394613265991,
+      "delta_siglip": -0.0733024030923843
+    },
+    {
+      "image_id": "flickr30k_test_016590",
+      "image_relpath": "images/flickr30k/flickr30k_test_016590.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_016590.jpg",
+      "caption": "Three people stand near a metal fence in the foreground; one holds a blue-and-white striped umbrella; a blue door is visible in the background; stone steps and a cobblestone path are present.",
+      "clip_score": 0.2897944450378418,
+      "siglip_score": 0.1581504046916961,
+      "delta_clip": -0.07479089498519892,
+      "delta_siglip": -0.06804837286472318
+    },
+    {
+      "image_id": "flickr30k_test_028445",
+      "image_relpath": "images/flickr30k/flickr30k_test_028445.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_028445.jpg",
+      "caption": "Man with gray hair and mustache rides a bicycle in foreground, carrying a blue mesh laundry hamper filled with clothes; red pickup truck with \"XTR\" visible is parked to the right; beige building with windows is in the background; bright sunlight casts shadows.",
+      "clip_score": 0.2883385419845581,
+      "siglip_score": 0.1985928416252136,
+      "delta_clip": -0.07132536172866821,
+      "delta_siglip": -0.022755473852157593
+    },
+    {
+      "image_id": "flickr30k_test_023317",
+      "image_relpath": "images/flickr30k/flickr30k_test_023317.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_023317.jpg",
+      "caption": "Sign reads 'GUEST SERVICES'; one woman in pink jacket and blue skirt stands near a red barrel; one man in a cowboy hat sits at a counter; wooden structure with visible beams; bright daylight.",
+      "clip_score": 0.3208966255187988,
+      "siglip_score": 0.2355598509311676,
+      "delta_clip": -0.07025128602981573,
+      "delta_siglip": 0.0171712934970856
+    },
+    {
+      "image_id": "flickr30k_test_008305",
+      "image_relpath": "images/flickr30k/flickr30k_test_008305.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_008305.jpg",
+      "caption": "Sign reads 'gk'; one bicycle; one white van; one person crouching in foreground; cobblestone pavement; tree branches partially obscure upper left.",
+      "clip_score": 0.2295368909835815,
+      "siglip_score": 0.1586468070745468,
+      "delta_clip": -0.06999629735946661,
+      "delta_siglip": 0.0036785900592803955
+    },
+    {
+      "image_id": "flickr30k_test_016590",
+      "image_relpath": "images/flickr30k/flickr30k_test_016590.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_016590.jpg",
+      "caption": "Three people stand near a metal fence in the foreground; one holds a blue-and-white striped umbrella; a blue door is visible in the background; stone steps and a cobblestone path are present.",
+      "clip_score": 0.2897944450378418,
+      "siglip_score": 0.1581504046916961,
+      "delta_clip": -0.06286105513572693,
+      "delta_siglip": -0.07076255977153778
+    },
+    {
+      "image_id": "flickr30k_test_017956",
+      "image_relpath": "images/flickr30k/flickr30k_test_017956.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_017956.jpg",
+      "caption": "A crowd of people stands in the foreground, some holding cameras; a large red-walled building with a yellow-tiled roof is in the background; one person wears a beige hat; another holds a pink flag; bright daylight illuminates the scene.",
+      "clip_score": 0.2587714195251465,
+      "siglip_score": 0.1132923513650894,
+      "delta_clip": -0.05944335460662842,
+      "delta_siglip": -0.061525985598564106
+    },
+    {
+      "image_id": "flickr30k_test_007385",
+      "image_relpath": "images/flickr30k/flickr30k_test_007385.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_007385.jpg",
+      "caption": "Dancers in blue and multicolored patterned outfits throw green and white frisbees; one dancer in foreground raises right leg high; store sign reads \"Kroger\"; bright sunlight casts long shadows on asphalt.",
+      "clip_score": 0.3108167648315429,
+      "siglip_score": 0.1758161187171936,
+      "delta_clip": -0.058040082454681396,
+      "delta_siglip": 0.0008876919746398926
+    },
+    {
+      "image_id": "flickr30k_test_010223",
+      "image_relpath": "images/flickr30k/flickr30k_test_010223.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_010223.jpg",
+      "caption": "One man sits in a brown leather chair, holding a clear glass and a bottle labeled \"THE BOURBON\"; he wears a gray long-sleeved shirt and blue jeans; a silver watch is on his left wrist; a window with white blinds is to his right.",
+      "clip_score": 0.2955630421638489,
+      "siglip_score": 0.1900721192359924,
+      "delta_clip": -0.05622237920761103,
+      "delta_siglip": -0.007275655865669195
+    },
+    {
+      "image_id": "flickr30k_test_014144",
+      "image_relpath": "images/flickr30k/flickr30k_test_014144.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_014144.jpg",
+      "caption": "One person wearing a dark blue jacket and dark pants grinds metal near a row of gray lockers; bright sparks fly from the grinder; the scene is illuminated by overhead fluorescent lights.",
+      "clip_score": 0.306547075510025,
+      "siglip_score": 0.2281901240348816,
+      "delta_clip": -0.05505636334419245,
+      "delta_siglip": -0.0026390254497528076
+    }
+  ]
+}

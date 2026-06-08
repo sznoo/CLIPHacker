@@ -1,0 +1,142 @@
+{
+  "prompt": "Produce exactly one concise caption (one sentence) that states only visually verifiable facts. Include 2–6 discrete visual facts drawn from this checklist in the given priority order when present: 1) legible text: transcribe exact words; 2) counts and object types (e.g., \"2 people\", \"one bicycle\"); 3) key color/material/texture for those objects (e.g., \"orange backpack\", \"wooden façade\"); 4) pose/action/orientation (e.g., \"person seen from behind walking away; holding two poles\"); 5) simple spatial layout (foreground / midground / background placement); 6) lighting/viewpoint/occlusion cues (e.g., \"bright sunlight casting long shadows\", \"elevated vantage; tree partially obscures façade\"). Use canonical object names and exact counts, standard direction words (left/right/foreground/background), and numerals or short words for numbers. Do not infer roles, emotions, intentions, or use metaphors, slogans, or marketing language (avoid \"farmer\", \"happy\", \"adventure\", etc.). If text is not clearly legible, omit it rather than guess. Keep the caption factual, compact, and limited to one sentence containing 2–6 concrete facts—no lists, tags, extra sentences, or commentary. Example (good): \"Sign reads 'Outdoor World'; two adults walk toward the store entrance; timber façade and concrete forecourt; overcast sky.\" Counterexample (bad): \"A happy farmer enjoys a sunny day in the countryside.\"",
+  "prompt_id": "textgrad_1d8c701270",
+  "split_csv": "data/splits/flickr30k_main_seed1_train.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_18/train/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_18/train/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_18/train/scores.csv",
+  "data_root": "data",
+  "summary": {
+    "n": 24,
+    "mean_clip": 0.32236840948462486,
+    "mean_siglip": 0.20288055328031374,
+    "mean_caption_len": 37.625,
+    "generic_rate": 0.041666666666666664,
+    "mean_delta_clip": -0.002126348515351618,
+    "mean_delta_siglip": 0.004083087357381979,
+    "clip_win_rate": 0.4166666666666667,
+    "siglip_win_rate": 0.5416666666666666
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_008358",
+      "image_relpath": "images/flickr30k/flickr30k_test_008358.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_008358.jpg",
+      "caption": "One person in a red jersey with the number 1, black shorts, and red socks is diving horizontally across a grassy field; green foliage is in the background.",
+      "clip_score": 0.2984676957130432,
+      "siglip_score": 0.170500099658966,
+      "delta_clip": -0.059645652770996094,
+      "delta_siglip": -0.031011730432510404
+    },
+    {
+      "image_id": "flickr30k_test_027523",
+      "image_relpath": "images/flickr30k/flickr30k_test_027523.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_027523.jpg",
+      "caption": "One person wearing a blue cap and plaid shirt sits on a wooden bench, carving a wooden figurine; a completed wooden head sculpture and a framed picture rest on a table in front; a striped bag hangs on the bench to the right; sunlight casts shadows across the scene.",
+      "clip_score": 0.2945517301559448,
+      "siglip_score": 0.2313033789396286,
+      "delta_clip": -0.04718583822250366,
+      "delta_siglip": 0.027823194861412104
+    },
+    {
+      "image_id": "flickr30k_test_009495",
+      "image_relpath": "images/flickr30k/flickr30k_test_009495.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_009495.jpg",
+      "caption": "Two people stand in a room with patterned wallpaper; one carries a yellow and black bag over their shoulder, the other holds a white paper; a wooden table is in the foreground; a wall-mounted light fixture is visible above.",
+      "clip_score": 0.250187337398529,
+      "siglip_score": 0.1343316733837127,
+      "delta_clip": -0.03979599475860601,
+      "delta_siglip": -0.06682553887367249
+    },
+    {
+      "image_id": "flickr30k_test_003961",
+      "image_relpath": "images/flickr30k/flickr30k_test_003961.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_003961.jpg",
+      "caption": "A woman holds a red bag with \"American Girl Place\" text; she stands behind a white tablecloth-covered table; an American flag hangs above; foliage is in the foreground; glass window reflects interior and exterior elements.",
+      "clip_score": 0.3100873827934265,
+      "siglip_score": 0.2482828199863433,
+      "delta_clip": -0.0393612384796142,
+      "delta_siglip": -0.0223625600337983
+    },
+    {
+      "image_id": "flickr30k_test_015736",
+      "image_relpath": "images/flickr30k/flickr30k_test_015736.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_015736.jpg",
+      "caption": "A white and brown dog with a red collar walks through shallow water; its legs are partially submerged, and its reflection is visible in the water; the dog is oriented toward the left side of the frame.",
+      "clip_score": 0.3111463785171509,
+      "siglip_score": 0.1898394972085952,
+      "delta_clip": -0.03659921884536743,
+      "delta_siglip": -0.0199308842420578
+    },
+    {
+      "image_id": "flickr30k_test_013247",
+      "image_relpath": "images/flickr30k/flickr30k_test_013247.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_013247.jpg",
+      "caption": "Sign reads 'Outdoor World' and 'Bass Pro Shops'; four people walk on the concrete forecourt; wooden façade with rusted metal roof; overcast sky.",
+      "clip_score": 0.3059132397174835,
+      "siglip_score": 0.193254217505455,
+      "delta_clip": -0.03345635533332819,
+      "delta_siglip": 0.04206368327140808
+    },
+    {
+      "image_id": "flickr30k_test_030685",
+      "image_relpath": "images/flickr30k/flickr30k_test_030685.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_030685.jpg",
+      "caption": "Two people stand in a hallway; one holds a red cup, the other gestures with an open hand; white walls display stickers including \"Squidoo\" and \"Flock\"; wooden floor in foreground; recessed lighting visible.",
+      "clip_score": 0.3113686442375183,
+      "siglip_score": 0.2086710035800933,
+      "delta_clip": -0.028038799762725775,
+      "delta_siglip": -0.024857491254806602
+    },
+    {
+      "image_id": "flickr30k_test_010401",
+      "image_relpath": "images/flickr30k/flickr30k_test_010401.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_010401.jpg",
+      "caption": "One person in a blue sweater with white collar and cuffs jumps toward a pile of brown leaves in the foreground; a silver vehicle is visible in the background; green grass and scattered leaves surround the scene.",
+      "clip_score": 0.3124134838581085,
+      "siglip_score": 0.1969839483499527,
+      "delta_clip": -0.02335777878761286,
+      "delta_siglip": 0.01480840146541601
+    },
+    {
+      "image_id": "flickr30k_test_025027",
+      "image_relpath": "images/flickr30k/flickr30k_test_025027.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_025027.jpg",
+      "caption": "Three people sit on a green metal bench; one wears a blue headscarf and orange patterned top, another wears a purple headscarf and yellow top, and the third wears a teal headscarf; all are seen from behind; background shows partial vehicles and structures.",
+      "clip_score": 0.3129965960979461,
+      "siglip_score": 0.2241441309452057,
+      "delta_clip": -0.016365855932235773,
+      "delta_siglip": 0.009921997785568293
+    },
+    {
+      "image_id": "flickr30k_test_021284",
+      "image_relpath": "images/flickr30k/flickr30k_test_021284.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_021284.jpg",
+      "caption": "Sign reads \"No Jews, No Arabs, No Muslims, No Christians\"; multiple people wearing black hats; some individuals holding Palestinian flags; crowd in foreground with barricades in midground; bright daylight.",
+      "clip_score": 0.3060727715492248,
+      "siglip_score": 0.1762964427471161,
+      "delta_clip": -0.016193628311157282,
+      "delta_siglip": -0.059562548995018005
+    },
+    {
+      "image_id": "flickr30k_test_021750",
+      "image_relpath": "images/flickr30k/flickr30k_test_021750.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_021750.jpg",
+      "caption": "Two women embrace in the foreground; one holds white takeout containers and a beige folder, the other carries a red plastic bag; background contains blurred vehicles and construction equipment.",
+      "clip_score": 0.3120957016944885,
+      "siglip_score": 0.2361432909965515,
+      "delta_clip": -0.01184022426605219,
+      "delta_siglip": 0.06926806271076202
+    },
+    {
+      "image_id": "flickr30k_test_023643",
+      "image_relpath": "images/flickr30k/flickr30k_test_023643.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_023643.jpg",
+      "caption": "A young girl with curly hair and a red-and-white patterned top sits in the foreground under a large black umbrella with \"Capehart\" printed on it; behind her, a wooden easel displays two black-and-white caricatures; a blue backpack rests on the ground to her left; a person in a white",
+      "clip_score": 0.3181234002113342,
+      "siglip_score": 0.2028076350688934,
+      "delta_clip": -0.008788645267486628,
+      "delta_siglip": -0.07311734557151797
+    }
+  ]
+}

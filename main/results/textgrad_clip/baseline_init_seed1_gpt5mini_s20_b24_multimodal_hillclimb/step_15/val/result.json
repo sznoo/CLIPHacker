@@ -1,0 +1,142 @@
+{
+  "prompt": "Produce exactly one concise caption: one sentence of 10–25 words that states only visually verifiable facts. Include 2–6 discrete facts drawn from the following fixed order; omit any item that is not clearly visible.\n\nOrder of facts (use this sequence if present):\n1) Legible text or logos: if any prominent text/logo is readable, transcribe the exact characters in double quotes and give its location (e.g., Sign reads \"London 2012\" above banner). If illegible, omit text.\n2) Counts and object types: use numerals (e.g., 2 people, 1 bicycle) and canonical object names (sign, person, child, adult, bicycle, bench, table, ball, net, goal, badge, lanyard, brochure, chair, car, storefront).\n3) Color/material/texture for those objects (attach modifiers to the object, not as separate facts).\n4) Pose/action/orientation (use dynamic verbs and indicate midair/grounded and left/right/toward/away when visible).\n5) Simple spatial relation(s) using foreground / midground / background and left / right.\n6) Lighting / viewpoint / occlusion cues (e.g., bright sunlight casting long shadows; elevated vantage).\n\nFact-count rules: transcribed text/logo = 1 fact; each \"numeral + object type\" = 1 fact; color/material modifiers do not count separately if attached to an object; pose/action = 1 fact; spatial relation = 1 fact; lighting/viewpoint = 1 fact. Total facts must be between 2 and 6.\n\nAdditional rules:\n- Use numerals for counts and normalized directions (left/right/foreground/midground/background).\n- Permit role or scene labels (e.g., goalkeeper, vendor) only when visually supported; immediately follow the role with the visible evidence that justifies it in parentheses (e.g., goalkeeper (gloves, full-size net behind)).\n- Mention small, scene-defining objects (ball, net, badge, knife, brochures) when they are clearly visible and relate them to people or furniture.\n- Do not infer emotions, intentions, or nonvisual attributes; do not use metaphors, marketing language, or hedging (no \"appears to be\", \"seems\", \"maybe\").\n- Keep wording compact; avoid filler conjunctions and long subordinate clauses. Use commas or semicolons to separate facts; do not produce lists, tags, JSON, multiple sentences, or multiple candidates.\n\nMicro-examples:\nGood: \"Sign reads \"Outdoor World\" above entrance; 2 adults walk toward entrance; timber façade; overcast sky.\"\nBad: \"A happy farmer enjoys a sunny day in the countryside.\"\nGood (role justified): \"Goalkeeper (gloves, full-size net behind); 1 player in red jersey diving midair to the right toward ball; grass field.\"\nBad (role unjustified): \"Vendor handing out brochures\" — unless brochures and a table with staff badge are visible.\n\nProduce a single, one-sentence caption that obeys all rules above.",
+  "prompt_id": "textgrad_9441d7522a",
+  "split_csv": "data/splits/flickr30k_main_seed1_val.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_15/val/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_15/val/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_15/val/scores.csv",
+  "data_root": "data",
+  "summary": {
+    "n": 150,
+    "mean_clip": 0.2959885393579801,
+    "mean_siglip": 0.18953934694329896,
+    "mean_caption_len": 21.213333333333335,
+    "generic_rate": 0.0,
+    "mean_delta_clip": -0.0285769089559714,
+    "mean_delta_siglip": -0.009301198745767274,
+    "clip_win_rate": 0.18333333333333332,
+    "siglip_win_rate": 0.4
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_016715",
+      "image_relpath": "images/flickr30k/flickr30k_test_016715.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_016715.jpg",
+      "caption": "1 adult holds wooden tool upright; 1 child stands beside her in midground; dry straw-covered ground; bright sunlight casting long shadows.",
+      "clip_score": 0.2286723256111145,
+      "siglip_score": 0.1630663573741912,
+      "delta_clip": -0.13175970315933228,
+      "delta_siglip": -0.027414470911026
+    },
+    {
+      "image_id": "flickr30k_test_007385",
+      "image_relpath": "images/flickr30k/flickr30k_test_007385.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_007385.jpg",
+      "caption": "Sign reads \"Foods\" above storefront; 10+ people in blue patterned suits throw green frisbees midair; bright sunlight casts long shadows; foreground performers toss discs left and right.",
+      "clip_score": 0.246229201555252,
+      "siglip_score": 0.1562108993530273,
+      "delta_clip": -0.12262764573097232,
+      "delta_siglip": -0.018717527389526423
+    },
+    {
+      "image_id": "flickr30k_test_012572",
+      "image_relpath": "images/flickr30k/flickr30k_test_012572.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_012572.jpg",
+      "caption": "Sign reads \"Domino's Pizza\" in blue and white; 1 adult wearing purple knit hat; hand near chin; foreground right.",
+      "clip_score": 0.2705303430557251,
+      "siglip_score": 0.2410671114921569,
+      "delta_clip": -0.11926153302192688,
+      "delta_siglip": -0.051577717065811185
+    },
+    {
+      "image_id": "flickr30k_test_016715",
+      "image_relpath": "images/flickr30k/flickr30k_test_016715.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_016715.jpg",
+      "caption": "1 adult holds wooden tool upright; 1 child stands beside her in midground; dry straw-covered ground; bright sunlight casting long shadows.",
+      "clip_score": 0.2286723256111145,
+      "siglip_score": 0.1630663573741912,
+      "delta_clip": -0.11317554116249079,
+      "delta_siglip": 0.027645260095596313
+    },
+    {
+      "image_id": "flickr30k_test_011286",
+      "image_relpath": "images/flickr30k/flickr30k_test_011286.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_011286.jpg",
+      "caption": "Three people walk on rocky riverbank; midground stream flows right; bright sunlight.",
+      "clip_score": 0.2501714825630188,
+      "siglip_score": 0.1429986953735351,
+      "delta_clip": -0.10758411884307861,
+      "delta_siglip": -0.08208721876144409
+    },
+    {
+      "image_id": "flickr30k_test_011250",
+      "image_relpath": "images/flickr30k/flickr30k_test_011250.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_011250.jpg",
+      "caption": "Two children, one in brown shirt and camouflage shorts, hold hands; yellow caution tape in midground; clear blue sky overhead.",
+      "clip_score": 0.3059088885784149,
+      "siglip_score": 0.2161958813667297,
+      "delta_clip": -0.10668489336967468,
+      "delta_siglip": -0.004319742321968079
+    },
+    {
+      "image_id": "flickr30k_test_027769",
+      "image_relpath": "images/flickr30k/flickr30k_test_027769.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_027769.jpg",
+      "caption": "Goalkeeper (gloves, full-size net behind) blocks shot; 2 players in green and red jerseys; ball near left foot; indoor rink; bright overhead lighting.",
+      "clip_score": 0.2657028138637543,
+      "siglip_score": 0.1466012597084045,
+      "delta_clip": -0.1054517924785614,
+      "delta_siglip": -0.03356575965881348
+    },
+    {
+      "image_id": "flickr30k_test_013546",
+      "image_relpath": "images/flickr30k/flickr30k_test_013546.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_013546.jpg",
+      "caption": "1 child stands grounded on yellow platform; adult hand grips foreground rail; blurred background trees and fence; bright daylight.",
+      "clip_score": 0.2716794610023498,
+      "siglip_score": 0.1600624322891235,
+      "delta_clip": -0.1053887307643891,
+      "delta_siglip": -0.04936692118644709
+    },
+    {
+      "image_id": "flickr30k_test_005806",
+      "image_relpath": "images/flickr30k/flickr30k_test_005806.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_005806.jpg",
+      "caption": "1 adult crouches in foreground packing suitcase; 1 red backpack and 2 plastic bins visible in midground; bright indoor lighting.",
+      "clip_score": 0.2701950371265411,
+      "siglip_score": 0.1708680093288421,
+      "delta_clip": -0.10399898886680603,
+      "delta_siglip": -0.040056049823760986
+    },
+    {
+      "image_id": "flickr30k_test_016590",
+      "image_relpath": "images/flickr30k/flickr30k_test_016590.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_016590.jpg",
+      "caption": "1 child in white shirt walks right; 2 adults and 1 child near fountain; blue umbrella; stone steps; bright daylight.",
+      "clip_score": 0.2619691491127014,
+      "siglip_score": 0.167475163936615,
+      "delta_clip": -0.1026161909103393,
+      "delta_siglip": -0.0587236136198043
+    },
+    {
+      "image_id": "flickr30k_test_027769",
+      "image_relpath": "images/flickr30k/flickr30k_test_027769.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_027769.jpg",
+      "caption": "Goalkeeper (gloves, full-size net behind) blocks shot; 2 players in green and red jerseys; ball near left foot; indoor rink; bright overhead lighting.",
+      "clip_score": 0.2657028138637543,
+      "siglip_score": 0.1466012597084045,
+      "delta_clip": -0.09772214293479914,
+      "delta_siglip": -0.011516124010086087
+    },
+    {
+      "image_id": "flickr30k_test_006161",
+      "image_relpath": "images/flickr30k/flickr30k_test_006161.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_006161.jpg",
+      "caption": "Person in straw hat sweeps sidewalk; 1 child runs toward right; crowd queues midground; buildings line both sides; overcast sky.",
+      "clip_score": 0.2433870583772659,
+      "siglip_score": 0.2285212129354477,
+      "delta_clip": -0.09459485113620761,
+      "delta_siglip": -0.015818551182746804
+    }
+  ]
+}

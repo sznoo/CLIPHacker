@@ -1,0 +1,142 @@
+{
+  "prompt": "Produce exactly one concise caption (one sentence) that states only visually verifiable facts. The caption MUST contain 2–6 discrete facts (clauses) in a single sentence separated by semicolons; define a “fact” as one clause drawn from the prioritized checklist below and include items in this priority order when they are visibly present: 1) legible text (transcribe exact characters in single quotes and give approximate placement, e.g., \"Sign reads 'DUNG ANH' on riverbank\"); 2) numeric counts and canonical object types (use digits, e.g., \"2 people\", \"1 bicycle\"); 3) one discriminative attribute per counted object when visible (color, material, pattern, logo/text, or a visible part, e.g., \"red plastic basin\", \"blue Mets jersey with orange script\", \"handlebars\"); 4) pose/action/orientation for people or animals if clearly visible (one concise verb phrase, e.g., \"standing and speaking\", \"mid-jump with bent knees\", \"looking toward camera\"); 5) simple spatial layout using foreground/midground/background or left/right relations; 6) lighting, viewpoint, or occlusion cues if present (e.g., \"bright sunlight casting long shadows\", \"viewed through glass with reflections\", \"foreground foliage partially obscures table\"). Rules and format requirements: do not infer roles, emotions, intentions, metaphors, slogans, or marketing language; do not use vague quantifiers such as \"several,\" \"many,\" or \"a group of\" — use digits or omit; transcribe text only if clearly legible (if only partial, label it explicitly as partial, e.g., \"partial text: 'AMER...'\"); use canonical object names (e.g., \"chain-link fence,\" \"wooden skiff,\" \"ride-on motorcycle\") and include one visible part detail when available; each counted object mentioned MUST include at least one visible attribute if visible; keep the caption compact and factual (no lists, tags, JSON, extra sentences, or commentary). Before returning the caption, apply this internal checklist: A) was any clearly legible text transcribed and placed? B) are numeric counts included for visible instances? C) does each counted object have ≥1 visible attribute? D) are visible people given a pose/action/gaze clause? E) are visible occlusion/reflection/layering cues noted? If any checklist item applies to the image but is missing from the caption, regenerate once automatically to include the missing required items; then return the single final sentence with 2–6 facts only.",
+  "prompt_id": "textgrad_b7af8b09ed",
+  "split_csv": "data/splits/flickr30k_main_seed1_val.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_17/val/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_17/val/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_17/val/scores.csv",
+  "data_root": "data",
+  "summary": {
+    "n": 150,
+    "mean_clip": 0.3216347771883011,
+    "mean_siglip": 0.1895676979422569,
+    "mean_caption_len": 41.24666666666667,
+    "generic_rate": 0.07333333333333333,
+    "mean_delta_clip": -0.0029306711256504095,
+    "mean_delta_siglip": -0.009272847746809327,
+    "clip_win_rate": 0.48,
+    "siglip_win_rate": 0.38666666666666666
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_007385",
+      "image_relpath": "images/flickr30k/flickr30k_test_007385.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_007385.jpg",
+      "caption": "Sign reads 'Rudolph's' above storefront; 1 person in foreground wearing blue pants and multicolored jacket with white sneakers; 1 person mid-air with raised leg; 1 person in background wearing blue pants and multicolored jacket; bright sunlight casting long shadows on pavement; 1 white fris",
+      "clip_score": 0.216886505484581,
+      "siglip_score": 0.0808816999197006,
+      "delta_clip": -0.15197034180164332,
+      "delta_siglip": -0.09404672682285312
+    },
+    {
+      "image_id": "flickr30k_test_026513",
+      "image_relpath": "images/flickr30k/flickr30k_test_026513.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_026513.jpg",
+      "caption": "Four people are present; one wears a blue hooded jacket and holds an umbrella; another wears a yellow raincoat and operates a camera on a tripod; a third wears a gray jacket and holds a camera; a fourth wears a blue jacket and khaki pants; equipment including a tripod, camera, and bags is in",
+      "clip_score": 0.2977600693702698,
+      "siglip_score": 0.2393140643835067,
+      "delta_clip": -0.10491394996643061,
+      "delta_siglip": -0.02070461213588723
+    },
+    {
+      "image_id": "flickr30k_test_016835",
+      "image_relpath": "images/flickr30k/flickr30k_test_016835.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_016835.jpg",
+      "caption": "Sign reads 'Front St E' above street; 1 man in black hat and checkered shirt stands on street; 1 red fire extinguisher lies on ground; crowd of 20+ people sits on sidewalk; flames erupt from black metal frame structure; foreground fire burns near black pole.",
+      "clip_score": 0.2815683484077453,
+      "siglip_score": 0.1407904922962188,
+      "delta_clip": -0.1014671921730042,
+      "delta_siglip": -0.10010251402854922
+    },
+    {
+      "image_id": "flickr30k_test_007385",
+      "image_relpath": "images/flickr30k/flickr30k_test_007385.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_007385.jpg",
+      "caption": "Sign reads 'Rudolph's' above storefront; 1 person in foreground wearing blue pants and multicolored jacket with white sneakers; 1 person mid-air with raised leg; 1 person in background wearing blue pants and multicolored jacket; bright sunlight casting long shadows on pavement; 1 white fris",
+      "clip_score": 0.216886505484581,
+      "siglip_score": 0.0808816999197006,
+      "delta_clip": -0.0936032086610794,
+      "delta_siglip": -0.04653871059417722
+    },
+    {
+      "image_id": "flickr30k_test_012572",
+      "image_relpath": "images/flickr30k/flickr30k_test_012572.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_012572.jpg",
+      "caption": "Sign reads 'Pizza' in white text on blue background; 1 person wearing purple knitted beanie and dark jacket; person looking slightly downward and to the left; foreground subject partially obscures background signage; indoor lighting with ceiling fixtures visible.",
+      "clip_score": 0.3000118732452392,
+      "siglip_score": 0.210790678858757,
+      "delta_clip": -0.08978000283241278,
+      "delta_siglip": -0.08185414969921109
+    },
+    {
+      "image_id": "flickr30k_test_028445",
+      "image_relpath": "images/flickr30k/flickr30k_test_028445.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_028445.jpg",
+      "caption": "1 man with gray hair and mustache; 1 blue mesh laundry hamper on bicycle handlebars; red pickup truck with 'XTR' text on rear fender; man holding handlebars while seated on bicycle; foreground shows paved road and midground has parked RVs and greenery; bright sunlight casting shadows.",
+      "clip_score": 0.2780222296714782,
+      "siglip_score": 0.2022353559732437,
+      "delta_clip": -0.08935129642486578,
+      "delta_siglip": -0.014801219105720492
+    },
+    {
+      "image_id": "flickr30k_test_011250",
+      "image_relpath": "images/flickr30k/flickr30k_test_011250.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_011250.jpg",
+      "caption": "Two children stand in a grassy field; older boy wears brown shirt with partial text 'LAKE PLACID' and camouflage shorts; younger child wears red striped shirt and blue jeans; both gaze toward right; yellow caution tape runs horizontally across midground; bright sunlight illuminates scene.",
+      "clip_score": 0.3261044919490814,
+      "siglip_score": 0.1936156451702118,
+      "delta_clip": -0.08648928999900818,
+      "delta_siglip": -0.026899978518485995
+    },
+    {
+      "image_id": "flickr30k_test_006537",
+      "image_relpath": "images/flickr30k/flickr30k_test_006537.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_006537.jpg",
+      "caption": "Sign reads 'KILBURN' on brick wall; 1 person in orange high-visibility vest walks away from camera; 1 yellow train on right side of platform; platform has wet surface with puddles; overhead lighting fixtures illuminate station; partial text: 'STAY IN TRAIN' visible on digital display.",
+      "clip_score": 0.3076859414577484,
+      "siglip_score": 0.2528433203697204,
+      "delta_clip": -0.08379492163658137,
+      "delta_siglip": 0.03514006733894351
+    },
+    {
+      "image_id": "flickr30k_test_028445",
+      "image_relpath": "images/flickr30k/flickr30k_test_028445.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_028445.jpg",
+      "caption": "1 man with gray hair and mustache; 1 blue mesh laundry hamper on bicycle handlebars; red pickup truck with 'XTR' text on rear fender; man holding handlebars while seated on bicycle; foreground shows paved road and midground has parked RVs and greenery; bright sunlight casting shadows.",
+      "clip_score": 0.2780222296714782,
+      "siglip_score": 0.2022353559732437,
+      "delta_clip": -0.0816416740417481,
+      "delta_siglip": -0.019112959504127475
+    },
+    {
+      "image_id": "flickr30k_test_026753",
+      "image_relpath": "images/flickr30k/flickr30k_test_026753.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_026753.jpg",
+      "caption": "A person in a black t-shirt with partial text 'LOVE' and 'FUCK' visible; 1 bicycle in background; 4 people in midground; one person mid-grind on rail; bright sunlight casting shadows.",
+      "clip_score": 0.2565416693687439,
+      "siglip_score": 0.1055357307195663,
+      "delta_clip": -0.07504957914352411,
+      "delta_siglip": -0.052005276083946186
+    },
+    {
+      "image_id": "flickr30k_test_006161",
+      "image_relpath": "images/flickr30k/flickr30k_test_006161.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_006161.jpg",
+      "caption": "A woman in a straw hat and green vest sweeps the sidewalk; a crowd of people lines the street; a red lantern hangs above; buildings flank both sides; the scene is viewed from a low angle with partial occlusion by foreground foliage.",
+      "clip_score": 0.2633690536022186,
+      "siglip_score": 0.171878233551979,
+      "delta_clip": -0.07461285591125494,
+      "delta_siglip": -0.07246153056621549
+    },
+    {
+      "image_id": "flickr30k_test_005250",
+      "image_relpath": "images/flickr30k/flickr30k_test_005250.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_005250.jpg",
+      "caption": "Sign reads '100 TO 117' on wall; 1 woman in black dress holding red flowers; 1 woman in black coat holding purple flowers; 1 person in blue jacket walking; 1 person in dark suit partially visible; background staircase with wooden railing.",
+      "clip_score": 0.2870697975158691,
+      "siglip_score": 0.1173449903726577,
+      "delta_clip": -0.07431453466415411,
+      "delta_siglip": -0.09189520776271819
+    }
+  ]
+}

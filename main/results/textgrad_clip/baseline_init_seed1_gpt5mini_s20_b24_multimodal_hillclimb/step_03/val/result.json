@@ -1,0 +1,142 @@
+{
+  "prompt": "Write exactly one concise, information-dense caption (12–30 words) as a single sentence describing only visually verifiable details. Do not infer emotions, intentions, or activity labels unless directly supported by visible props. Use this slot order and include only items you can see: [count] [primary subject] [specific visible action/pose] on/in [surface] wearing [distinct clothing/markings] holding/near [visible prop] background: [distinct anchor] lighting: [color/direction]; include one camera-relative spatial relation (e.g., foreground, left/right, behind). If a required slot is not visible, state \"no [slot] visible\" (e.g., \"no ball visible\") or use \"about N\"/\"at least N\" if uncertain. Use concrete tokens (colors, numbers, object types, clothing parts); avoid subjective/adjectival judgments (e.g., excited, skillful, beautiful). Produce exactly one sentence caption and nothing else.",
+  "prompt_id": "textgrad_e6ea81338f",
+  "split_csv": "data/splits/flickr30k_main_seed1_val.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_03/val/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_03/val/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_03/val/scores.csv",
+  "data_root": "data",
+  "summary": {
+    "n": 150,
+    "mean_clip": 0.31693947811921436,
+    "mean_siglip": 0.18317340120673176,
+    "mean_caption_len": 27.633333333333333,
+    "generic_rate": 0.013333333333333334,
+    "mean_delta_clip": -0.007625970194737116,
+    "mean_delta_siglip": -0.015667144482334458,
+    "clip_win_rate": 0.41,
+    "siglip_win_rate": 0.32
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_023317",
+      "image_relpath": "images/flickr30k/flickr30k_test_023317.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_023317.jpg",
+      "caption": "One woman in pink jacket and blue skirt stands near guest services counter holding black bag, wearing white hat, background: red barrel with WM logo.",
+      "clip_score": 0.2955488562583923,
+      "siglip_score": 0.2301149070262909,
+      "delta_clip": -0.09559905529022222,
+      "delta_siglip": 0.01172634959220889
+    },
+    {
+      "image_id": "flickr30k_test_003587",
+      "image_relpath": "images/flickr30k/flickr30k_test_003587.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_003587.jpg",
+      "caption": "One man seated in foreground wearing black cap with number 3 and black jacket with red number 3, Coca-Cola, and OREO logos, background: blurred crowd.",
+      "clip_score": 0.2772222757339477,
+      "siglip_score": 0.2046332359313964,
+      "delta_clip": -0.0880646705627442,
+      "delta_siglip": -0.05967083573341378
+    },
+    {
+      "image_id": "flickr30k_test_020473",
+      "image_relpath": "images/flickr30k/flickr30k_test_020473.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_020473.jpg",
+      "caption": "One woman standing on paved ground wearing black leather jacket and pants, holding phone, background: building with windows, lighting: overcast; foreground.",
+      "clip_score": 0.2839395999908447,
+      "siglip_score": 0.1640446782112121,
+      "delta_clip": -0.08275103569030756,
+      "delta_siglip": -0.06303244829177859
+    },
+    {
+      "image_id": "flickr30k_test_020473",
+      "image_relpath": "images/flickr30k/flickr30k_test_020473.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_020473.jpg",
+      "caption": "One woman standing on paved ground wearing black leather jacket and pants, holding phone, background: building with windows, lighting: overcast; foreground.",
+      "clip_score": 0.2839395999908447,
+      "siglip_score": 0.1640446782112121,
+      "delta_clip": -0.07996231317520136,
+      "delta_siglip": -0.0369687974452973
+    },
+    {
+      "image_id": "flickr30k_test_024264",
+      "image_relpath": "images/flickr30k/flickr30k_test_024264.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_024264.jpg",
+      "caption": "One person walks on paved ground near building entrance wearing dark pants and light top, holding no visible prop; background: stone wall, blue sky, white tent; lighting: bright daylight; person is in foreground.",
+      "clip_score": 0.2317893356084823,
+      "siglip_score": 0.0999510958790779,
+      "delta_clip": -0.07860668003559118,
+      "delta_siglip": -0.13111675530672068
+    },
+    {
+      "image_id": "flickr30k_test_016835",
+      "image_relpath": "images/flickr30k/flickr30k_test_016835.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_016835.jpg",
+      "caption": "One man standing on pavement wearing black hat, white shirt, black shorts, red socks, holding no prop, background: brick building with \"Front St E\" sign, lighting: orange flames; foreground.",
+      "clip_score": 0.3076026141643524,
+      "siglip_score": 0.1841066628694534,
+      "delta_clip": -0.0754329264163971,
+      "delta_siglip": -0.05678634345531461
+    },
+    {
+      "image_id": "flickr30k_test_016538",
+      "image_relpath": "images/flickr30k/flickr30k_test_016538.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_016538.jpg",
+      "caption": "One rider on a brown horse galloping on dirt wearing blue shirt and white hat holding rope, background: Ed's Body Shop sign, lighting: daylight; rider in foreground.",
+      "clip_score": 0.2708670198917389,
+      "siglip_score": 0.14311583340168,
+      "delta_clip": -0.07511982321739191,
+      "delta_siglip": 0.0023774951696395874
+    },
+    {
+      "image_id": "flickr30k_test_030505",
+      "image_relpath": "images/flickr30k/flickr30k_test_030505.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_030505.jpg",
+      "caption": "About 50 people in foreground wearing black hats and jackets holding colorful pom-poms on street behind buildings; lighting: bright daylight.",
+      "clip_score": 0.2663183510303497,
+      "siglip_score": 0.1610496342182159,
+      "delta_clip": -0.06937244534492493,
+      "delta_siglip": -0.009683474898338318
+    },
+    {
+      "image_id": "flickr30k_test_013253",
+      "image_relpath": "images/flickr30k/flickr30k_test_013253.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_013253.jpg",
+      "caption": "One brown-and-white dog splashes water with front paw raised, submerged in murky water, wearing collar, foreground, background: no distinct anchor visible, lighting: overcast.",
+      "clip_score": 0.2761507332324981,
+      "siglip_score": 0.1664317846298217,
+      "delta_clip": -0.0691265761852265,
+      "delta_siglip": -0.02669781446456912
+    },
+    {
+      "image_id": "flickr30k_test_013253",
+      "image_relpath": "images/flickr30k/flickr30k_test_013253.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_013253.jpg",
+      "caption": "One brown-and-white dog splashes water with front paw raised, submerged in murky water, wearing collar, foreground, background: no distinct anchor visible, lighting: overcast.",
+      "clip_score": 0.2761507332324981,
+      "siglip_score": 0.1664317846298217,
+      "delta_clip": -0.0673902034759522,
+      "delta_siglip": -0.0059274733066559115
+    },
+    {
+      "image_id": "flickr30k_test_030505",
+      "image_relpath": "images/flickr30k/flickr30k_test_030505.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_030505.jpg",
+      "caption": "About 50 people in foreground wearing black hats and jackets holding colorful pom-poms on street behind buildings; lighting: bright daylight.",
+      "clip_score": 0.2663183510303497,
+      "siglip_score": 0.1610496342182159,
+      "delta_clip": -0.06728613376617432,
+      "delta_siglip": -0.056508392095565824
+    },
+    {
+      "image_id": "flickr30k_test_007385",
+      "image_relpath": "images/flickr30k/flickr30k_test_007385.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_007385.jpg",
+      "caption": "One dancer in foreground, mid-leap with raised leg, wearing blue jumpsuit with green/purple patterns, holding green baton; background: \"Kroger\" store; lighting: bright daylight.",
+      "clip_score": 0.3016081154346466,
+      "siglip_score": 0.1111321598291397,
+      "delta_clip": -0.0672487318515777,
+      "delta_siglip": -0.06379626691341402
+    }
+  ]
+}

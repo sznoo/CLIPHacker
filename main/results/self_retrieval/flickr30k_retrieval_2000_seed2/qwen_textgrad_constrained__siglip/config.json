@@ -1,0 +1,18 @@
+{
+  "split_csv": "data/splits/flickr30k_retrieval_2000_seed2.csv",
+  "image_root": "data",
+  "prediction_csv": "results/predictions/qwen_textgrad_constrained__flickr30k_retrieval_2000_seed2.csv",
+  "output_dir": "results/self_retrieval/flickr30k_retrieval_2000_seed2/qwen_textgrad_constrained__siglip",
+  "scorer": "siglip",
+  "device": "cuda:0",
+  "image_batch_size": 32,
+  "text_batch_size": 64,
+  "cache_dir": "results/self_retrieval/cache",
+  "overwrite_cache": false,
+  "no_check_images": false,
+  "include_unselected": false,
+  "baseline_prompt_id": "baseline",
+  "save_similarity": false,
+  "n_gallery": 2000,
+  "split_id": "flickr30k_retrieval_2000_seed2"
+}

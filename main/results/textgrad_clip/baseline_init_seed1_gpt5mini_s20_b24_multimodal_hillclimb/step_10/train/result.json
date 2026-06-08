@@ -1,0 +1,142 @@
+{
+  "prompt": "Produce exactly one concise caption (one sentence) that states only visually verifiable facts. Include 2–6 discrete visual facts drawn from this checklist in the given priority order when present: 1) legible text: transcribe exact words; 2) counts and object types (e.g., \"2 people\", \"one bicycle\"); 3) key color/material/texture for those objects (e.g., \"orange backpack\", \"wooden façade\"); 4) pose/action/orientation (e.g., \"person seen from behind walking away; holding two poles\"); 5) simple spatial layout (foreground / midground / background placement); 6) lighting/viewpoint/occlusion cues (e.g., \"bright sunlight casting long shadows\", \"elevated vantage; tree partially obscures façade\"). Use canonical object names and exact counts, standard direction words (left/right/foreground/background), and numerals or short words for numbers. Do not infer roles, emotions, intentions, or use metaphors, slogans, or marketing language (avoid \"farmer\", \"happy\", \"adventure\", etc.). If text is not clearly legible, omit it rather than guess. Keep the caption factual, compact, and limited to one sentence containing 2–6 concrete facts—no lists, tags, extra sentences, or commentary. Example (good): \"Sign reads 'Outdoor World'; two adults walk toward the store entrance; timber façade and concrete forecourt; overcast sky.\" Counterexample (bad): \"A happy farmer enjoys a sunny day in the countryside.\"",
+  "prompt_id": "textgrad_1d8c701270",
+  "split_csv": "data/splits/flickr30k_main_seed1_train.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_10/train/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_10/train/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_10/train/scores.csv",
+  "data_root": "data",
+  "summary": {
+    "n": 24,
+    "mean_clip": 0.32509504382809,
+    "mean_siglip": 0.20803199956814442,
+    "mean_caption_len": 39.666666666666664,
+    "generic_rate": 0.125,
+    "mean_delta_clip": -0.0012264357258876095,
+    "mean_delta_siglip": 0.013198530611892528,
+    "clip_win_rate": 0.5833333333333334,
+    "siglip_win_rate": 0.7083333333333334
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_018651",
+      "image_relpath": "images/flickr30k/flickr30k_test_018651.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_018651.jpg",
+      "caption": "One man wearing a straw hat and jacket stands beside a bicycle with a red seat; two woven baskets hold oranges in the foreground; a brick wall and wooden door are visible in the background; bright sunlight casts shadows.",
+      "clip_score": 0.3317649364471435,
+      "siglip_score": 0.1939855515956878,
+      "delta_clip": -0.07045873999595648,
+      "delta_siglip": -0.002558127045631381
+    },
+    {
+      "image_id": "flickr30k_test_030218",
+      "image_relpath": "images/flickr30k/flickr30k_test_030218.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_030218.jpg",
+      "caption": "Man with long white hair plays a wooden flute while standing on a sidewalk; black folding stool and black case are on the ground nearby; pedestrians are visible in the background; building has a light-colored wall and dark base; pavement is gray with white rectangular tiles.",
+      "clip_score": 0.3095046877861023,
+      "siglip_score": 0.255167007446289,
+      "delta_clip": -0.04459071159362793,
+      "delta_siglip": 0.03256088495254511
+    },
+    {
+      "image_id": "flickr30k_test_016046",
+      "image_relpath": "images/flickr30k/flickr30k_test_016046.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_016046.jpg",
+      "caption": "Two people stand at a wooden table with a yellow plastic basin and a bottle of orange liquid; several people sit on chairs to the right; trees and a brick wall are in the background; bright sunlight casts shadows.",
+      "clip_score": 0.2950689196586609,
+      "siglip_score": 0.1885405778884887,
+      "delta_clip": -0.04242205619812012,
+      "delta_siglip": 0.029547035694122287
+    },
+    {
+      "image_id": "flickr30k_test_029272",
+      "image_relpath": "images/flickr30k/flickr30k_test_029272.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_029272.jpg",
+      "caption": "A man with dreadlocks, wearing a black shirt and gray sweatpants, jumps mid-air on a stage; a young boy in a blue shirt stands in the foreground to his left; several spectators are seated or standing in the midground; green trees are visible in the background under bright daylight.",
+      "clip_score": 0.3019575476646423,
+      "siglip_score": 0.2219322323799133,
+      "delta_clip": -0.03696471452713013,
+      "delta_siglip": 0.037440896034240695
+    },
+    {
+      "image_id": "flickr30k_test_013831",
+      "image_relpath": "images/flickr30k/flickr30k_test_013831.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_013831.jpg",
+      "caption": "A black-and-white dog leaps over a red and white obstacle in a grassy field; a person in a blue vest stands in the background; another dog is visible behind the first; trees line the horizon under bright daylight.",
+      "clip_score": 0.3213773965835571,
+      "siglip_score": 0.1761511862277984,
+      "delta_clip": -0.0351689755916596,
+      "delta_siglip": 0.0426036119461059
+    },
+    {
+      "image_id": "flickr30k_test_021782",
+      "image_relpath": "images/flickr30k/flickr30k_test_021782.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_021782.jpg",
+      "caption": "Sign reads '(212)625-9212'; one man leans on a yellow sign covered in stickers; another man walks past in the background; concrete sidewalk and building facade visible; bright daylight.",
+      "clip_score": 0.3060295879840851,
+      "siglip_score": 0.1514227092266082,
+      "delta_clip": -0.03341850638389582,
+      "delta_siglip": -0.04960253834724432
+    },
+    {
+      "image_id": "flickr30k_test_030685",
+      "image_relpath": "images/flickr30k/flickr30k_test_030685.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_030685.jpg",
+      "caption": "Two people stand in a hallway; one holds a red cup, the other gestures with an open hand; white walls display stickers including \"Squidoo\" and \"Flock\"; wooden floor in foreground; recessed lighting visible.",
+      "clip_score": 0.3113686144351959,
+      "siglip_score": 0.2086710333824157,
+      "delta_clip": -0.028038829565048162,
+      "delta_siglip": -0.024857461452484214
+    },
+    {
+      "image_id": "flickr30k_test_007565",
+      "image_relpath": "images/flickr30k/flickr30k_test_007565.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_007565.jpg",
+      "caption": "Baby lies on wooden floor, reaching toward plastic water bottle; sunlight casts shadows across the floor; baby wears black short-sleeved outfit.",
+      "clip_score": 0.3205098509788513,
+      "siglip_score": 0.2930935025215149,
+      "delta_clip": -0.02334511280059809,
+      "delta_siglip": 0.02464735507965088
+    },
+    {
+      "image_id": "flickr30k_test_025508",
+      "image_relpath": "images/flickr30k/flickr30k_test_025508.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_025508.jpg",
+      "caption": "One person performs an aerial flip above a sand dune; the sky is clear blue; the person wears orange shorts; the dune slopes upward from the foreground; sunlight illuminates the scene from above.",
+      "clip_score": 0.3447626829147339,
+      "siglip_score": 0.2071888446807861,
+      "delta_clip": -0.02091622352600092,
+      "delta_siglip": 0.012705862522125216
+    },
+    {
+      "image_id": "flickr30k_test_000704",
+      "image_relpath": "images/flickr30k/flickr30k_test_000704.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_000704.jpg",
+      "caption": "Two men in a red-walled room; one holds a microphone and wears a white shirt, the other sits holding drumsticks; a television displays text including \"The best thing being a...\" and \"is the prece...\"; a brown bag rests on a surface in the foreground.",
+      "clip_score": 0.2575825154781341,
+      "siglip_score": 0.1786845475435257,
+      "delta_clip": -0.01929405331611639,
+      "delta_siglip": 0.018671274185180692
+    },
+    {
+      "image_id": "flickr30k_test_019300",
+      "image_relpath": "images/flickr30k/flickr30k_test_019300.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_019300.jpg",
+      "caption": "One person climbs a wooden roof frame of a partially constructed building; the structure has exposed timber framing and a grassy field in the background under a clear blue sky.",
+      "clip_score": 0.3327612578868866,
+      "siglip_score": 0.2152541279792785,
+      "delta_clip": 0.0011993348598480225,
+      "delta_siglip": 0.1043240502476692
+    },
+    {
+      "image_id": "flickr30k_test_030359",
+      "image_relpath": "images/flickr30k/flickr30k_test_030359.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_030359.jpg",
+      "caption": "Sign reads \"THAT CALLS FOR A\"; goalkeeper in red jersey dives left; three players in yellow jerseys and one in white jersey jump for the ball; action occurs in midground with spectators in background.",
+      "clip_score": 0.2940182089805603,
+      "siglip_score": 0.1414361745119094,
+      "delta_clip": 0.0017847418785095215,
+      "delta_siglip": -0.012377157807350186
+    }
+  ]
+}

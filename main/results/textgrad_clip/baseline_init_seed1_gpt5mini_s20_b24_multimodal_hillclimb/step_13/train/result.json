@@ -1,0 +1,142 @@
+{
+  "prompt": "Produce exactly one concise caption (one sentence) that states only visually verifiable facts. Include 2–6 discrete visual facts drawn from this checklist in the given priority order when present: 1) legible text: transcribe exact words; 2) counts and object types (e.g., \"2 people\", \"one bicycle\"); 3) key color/material/texture for those objects (e.g., \"orange backpack\", \"wooden façade\"); 4) pose/action/orientation (e.g., \"person seen from behind walking away; holding two poles\"); 5) simple spatial layout (foreground / midground / background placement); 6) lighting/viewpoint/occlusion cues (e.g., \"bright sunlight casting long shadows\", \"elevated vantage; tree partially obscures façade\"). Use canonical object names and exact counts, standard direction words (left/right/foreground/background), and numerals or short words for numbers. Do not infer roles, emotions, intentions, or use metaphors, slogans, or marketing language (avoid \"farmer\", \"happy\", \"adventure\", etc.). If text is not clearly legible, omit it rather than guess. Keep the caption factual, compact, and limited to one sentence containing 2–6 concrete facts—no lists, tags, extra sentences, or commentary. Example (good): \"Sign reads 'Outdoor World'; two adults walk toward the store entrance; timber façade and concrete forecourt; overcast sky.\" Counterexample (bad): \"A happy farmer enjoys a sunny day in the countryside.\"",
+  "prompt_id": "textgrad_1d8c701270",
+  "split_csv": "data/splits/flickr30k_main_seed1_train.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_13/train/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_13/train/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_13/train/scores.csv",
+  "data_root": "data",
+  "summary": {
+    "n": 24,
+    "mean_clip": 0.3327077453335126,
+    "mean_siglip": 0.2031007558107376,
+    "mean_caption_len": 37.791666666666664,
+    "generic_rate": 0.125,
+    "mean_delta_clip": 0.005875571941335989,
+    "mean_delta_siglip": 0.005045096700390185,
+    "clip_win_rate": 0.625,
+    "siglip_win_rate": 0.625
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_029824",
+      "image_relpath": "images/flickr30k/flickr30k_test_029824.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_029824.jpg",
+      "caption": "Sign reads \"Bienvenue Welcome\"; one person stands behind a black desk with \"London 2012\" and Olympic rings; red backdrop with white line drawings; pink informational cards on desk; person wears a lanyard with ID badge.",
+      "clip_score": 0.3239861130714416,
+      "siglip_score": 0.2457722127437591,
+      "delta_clip": -0.06766918301582342,
+      "delta_siglip": -0.0002342462539673129
+    },
+    {
+      "image_id": "flickr30k_test_023048",
+      "image_relpath": "images/flickr30k/flickr30k_test_023048.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_023048.jpg",
+      "caption": "One person in an orange jacket stands beside a mannequin wrapped in plastic; wooden chairs stack in the background; tiled floor in foreground; fluorescent lighting overhead.",
+      "clip_score": 0.32110595703125,
+      "siglip_score": 0.2097477465867996,
+      "delta_clip": -0.06619161367416382,
+      "delta_siglip": -0.08213929831981662
+    },
+    {
+      "image_id": "flickr30k_test_030685",
+      "image_relpath": "images/flickr30k/flickr30k_test_030685.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_030685.jpg",
+      "caption": "Two people stand in a hallway; one holds a red cup, the other gestures with an open hand; white walls display stickers including \"Squidoo\" and \"Flock\"; wooden floor in foreground; recessed lighting visible.",
+      "clip_score": 0.3113686442375183,
+      "siglip_score": 0.2086710035800933,
+      "delta_clip": -0.028038799762725775,
+      "delta_siglip": -0.024857491254806602
+    },
+    {
+      "image_id": "flickr30k_test_001131",
+      "image_relpath": "images/flickr30k/flickr30k_test_001131.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_001131.jpg",
+      "caption": "One man sits behind a large metal tray holding numerous fish; the tray rests on a wooden table in the foreground; a metal scale and yellow bucket are visible on a shelf to the left; a wire-mesh enclosure is in the background to the right.",
+      "clip_score": 0.3326373100280761,
+      "siglip_score": 0.1776629090309143,
+      "delta_clip": -0.02169463038444519,
+      "delta_siglip": 0.0014638304710388184
+    },
+    {
+      "image_id": "flickr30k_test_005364",
+      "image_relpath": "images/flickr30k/flickr30k_test_005364.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_005364.jpg",
+      "caption": "One person seen from behind, wearing a dark robe, kneels before a silver incense burner in the foreground; behind them, a seated Buddha statue is framed by a golden arch within a wooden structure; purple flowers in vases are visible on either side of the statue; the scene is viewed from a low angle with",
+      "clip_score": 0.3296455144882202,
+      "siglip_score": 0.2097082734107971,
+      "delta_clip": -0.013173341751098577,
+      "delta_siglip": 0.0080625861883164
+    },
+    {
+      "image_id": "flickr30k_test_021750",
+      "image_relpath": "images/flickr30k/flickr30k_test_021750.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_021750.jpg",
+      "caption": "Two women embrace in the foreground; one holds white takeout containers and a beige folder, the other carries a red plastic bag; background contains blurred vehicles and construction equipment.",
+      "clip_score": 0.3120957016944885,
+      "siglip_score": 0.2361432909965515,
+      "delta_clip": -0.01184022426605219,
+      "delta_siglip": 0.06926806271076202
+    },
+    {
+      "image_id": "flickr30k_test_023643",
+      "image_relpath": "images/flickr30k/flickr30k_test_023643.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_023643.jpg",
+      "caption": "A young girl with curly hair and a red-and-white patterned top sits in the foreground under a large black umbrella with \"Capehart\" printed on it; behind her, a wooden easel displays two black-and-white caricatures; a blue backpack rests on the ground to her left; a person in a white",
+      "clip_score": 0.3181234002113342,
+      "siglip_score": 0.2028076350688934,
+      "delta_clip": -0.008788645267486628,
+      "delta_siglip": -0.07311734557151797
+    },
+    {
+      "image_id": "flickr30k_test_015378",
+      "image_relpath": "images/flickr30k/flickr30k_test_015378.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_015378.jpg",
+      "caption": "Two people stand near a cardboard box and a black suitcase; one wears a red shirt and black hat, the other holds a plastic bag; concrete wall in background; bright sunlight casts shadows.",
+      "clip_score": 0.3006374537944793,
+      "siglip_score": 0.2214977443218231,
+      "delta_clip": -0.0038085281848908026,
+      "delta_siglip": -0.014961302280425998
+    },
+    {
+      "image_id": "flickr30k_test_012889",
+      "image_relpath": "images/flickr30k/flickr30k_test_012889.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_012889.jpg",
+      "caption": "One person in a white helmet and white shirt performs a wheelie on a bicycle with a black frame; the person is airborne above a river with buildings in the background; another person on a bicycle is visible in the background to the right.",
+      "clip_score": 0.2971860766410827,
+      "siglip_score": 0.1684945821762085,
+      "delta_clip": -0.002084732055664118,
+      "delta_siglip": 0.0058389902114869
+    },
+    {
+      "image_id": "flickr30k_test_024011",
+      "image_relpath": "images/flickr30k/flickr30k_test_024011.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_024011.jpg",
+      "caption": "Sign reads \"RADIO CITY\"; at least twelve dancers in matching costumes stand in a line across the street; one person dressed as Santa Claus stands near the center; a yellow taxi is visible in the background right; building facade is light-colored stone.",
+      "clip_score": 0.3821727335453033,
+      "siglip_score": 0.2037675976753235,
+      "delta_clip": 0.0007183253765105646,
+      "delta_siglip": 0.03116558492183688
+    },
+    {
+      "image_id": "flickr30k_test_028178",
+      "image_relpath": "images/flickr30k/flickr30k_test_028178.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_028178.jpg",
+      "caption": "One man with glasses and a beard plays a brass trumpet; he wears a dark suit with a red shirt collar; behind him is a green tree decorated with string lights and a sheer ribbon; the scene is illuminated by artificial light at night.",
+      "clip_score": 0.3908699750900268,
+      "siglip_score": 0.2311430424451828,
+      "delta_clip": 0.00314491987228388,
+      "delta_siglip": 0.0064667016267777044
+    },
+    {
+      "image_id": "flickr30k_test_016234",
+      "image_relpath": "images/flickr30k/flickr30k_test_016234.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_016234.jpg",
+      "caption": "One person holds a puppet with blue and white clothing; two children in striped and light-colored shirts look upward; dark blue draped fabric forms the background; bright artificial lights illuminate the scene from above.",
+      "clip_score": 0.2609196603298187,
+      "siglip_score": 0.1713248491287231,
+      "delta_clip": 0.004061311483383234,
+      "delta_siglip": -0.017756491899490412
+    }
+  ]
+}

@@ -1,0 +1,150 @@
+{
+  "step": 14,
+  "old_prompt": "Produce exactly one concise natural‑language caption (a single sentence) that vividly and precisely describes the main subject(s), visible actions and interactions, and the setting; keep the caption concrete and image‑centered and avoid speculation or subjective judgments. State whether each person or object is stationary or moving; when describing motion give horizontal direction first then vertical (for example, \"walking from left to right,\" \"moving toward the camera while descending\"), specify the visible phase of motion when apparent (starting/ascending/peaking/descending/landing) and whether motions are simultaneous or sequential, and describe each moving subject’s trajectory relative to the main subject (passing to his right, approaching from behind, moving alongside) and relative to the camera. For interactions with objects or structures state exactly how the subject is using them (holding/gripping/resting on/pulling/supporting/bracing/leaning on), include which hand (left/right) and side, and indicate whether the hand is in contact, gripping, or merely near or in motion versus resting. Describe body posture using concrete camera‑relative terms (standing, weight shifted onto left/right leg, slightly leaning forward/back when clearly visible, seated, reclining, crouching, mid‑jump, arms outstretched, knees bent) and specify orientation to the camera (facing the camera, in profile, back to the camera); prefer neutral, observable stance descriptors rather than implied effort. Report facial expressions or visible affect only when clearly evident using observable detail (open‑mouthed, smiling with teeth visible, furrowed brow) and identify gaze targets (eyes looking down at the object in his hands, gaze directed at the camera). Clarify precise spatial relationships, counts and arrangement of people or vehicles (two people side by side, a row of three boats), proximity and scale (a few feet/meters apart, clustered closely, towering behind), and use \"in front of,\" \"over,\" or \"directly above/overhead\" instead of ambiguous \"above.\" Describe lighting, shadows, and visible surface textures with observable cues and approximate shadow direction or length (bright direct sunlight casting long shadows toward the lower left, diffuse overcast, wet pavement, reflections, motion blur). Output exactly one single sentence.",
+  "candidate_prompt": "Produce exactly one concise natural‑language caption (a single sentence) that vividly and precisely describes the main subject(s), visible actions and interactions, and the setting; remain concrete, image‑centered and avoid speculation or subjective judgments. For every person or object state whether it is stationary or moving; when describing motion give horizontal direction first then vertical relative to the image frame (for example, \"from left to right,\" \"toward the camera while descending\"), name the visible phase of motion when apparent (starting/ascending/peaking/descending/landing), indicate whether motions are simultaneous or sequential, and describe each moving subject’s trajectory both relative to the main subject (passing to his right, approaching from behind, moving alongside) and relative to the camera (toward/away from the camera, to the left/right edge of the frame). Specify each person’s head and gaze direction precisely (for example, \"looking straight ahead,\" \"eyes down at the phone,\" \"gaze directed up and to the left,\" or \"looking toward the car\") to clarify orientation. For interactions with objects or structures state exactly how the subject is using them (holding/gripping/resting/pulling/supporting/leaning on), which hand and side (left/right), and whether the hand is in contact, gripping, merely near, or in motion versus resting. Describe body posture with concrete camera‑relative terms (standing, weight shifted onto left/right leg, slightly leaning forward/back, seated, reclining, crouching, mid‑jump, arms outstretched, knees bent) and specify orientation to the camera (facing the camera, in profile, back to the camera); prefer neutral observable stance descriptors. Clarify precise spatial relationships, counts, arrangement, proximity and scale using camera‑relative language and clear phrases (foreground/midground/background; left/middle/right of frame; across the foreground of; directly in front of/behind; directly overhead; a few feet/meters apart; clustered closely; in a line or scattered). Describe lighting, shadows and visible surface textures with observable cues and an approximate shadow direction or length (for example, \"bright direct sunlight casting long shadows toward the lower left,\" \"diffuse overcast,\" \"wet pavement reflecting light\"). Report facial expressions or visible affect only when clearly evident using observable detail (open‑mouthed, smiling with teeth visible, furrowed brow). Keep the caption concise, factual and single‑sentence. Output exactly one single sentence.",
+  "new_prompt": "Produce exactly one concise natural‑language caption (a single sentence) that vividly and precisely describes the main subject(s), visible actions and interactions, and the setting; remain concrete, image‑centered and avoid speculation or subjective judgments. For every person or object state whether it is stationary or moving; when describing motion give horizontal direction first then vertical relative to the image frame (for example, \"from left to right,\" \"toward the camera while descending\"), name the visible phase of motion when apparent (starting/ascending/peaking/descending/landing), indicate whether motions are simultaneous or sequential, and describe each moving subject’s trajectory both relative to the main subject (passing to his right, approaching from behind, moving alongside) and relative to the camera (toward/away from the camera, to the left/right edge of the frame). Specify each person’s head and gaze direction precisely (for example, \"looking straight ahead,\" \"eyes down at the phone,\" \"gaze directed up and to the left,\" or \"looking toward the car\") to clarify orientation. For interactions with objects or structures state exactly how the subject is using them (holding/gripping/resting/pulling/supporting/leaning on), which hand and side (left/right), and whether the hand is in contact, gripping, merely near, or in motion versus resting. Describe body posture with concrete camera‑relative terms (standing, weight shifted onto left/right leg, slightly leaning forward/back, seated, reclining, crouching, mid‑jump, arms outstretched, knees bent) and specify orientation to the camera (facing the camera, in profile, back to the camera); prefer neutral observable stance descriptors. Clarify precise spatial relationships, counts, arrangement, proximity and scale using camera‑relative language and clear phrases (foreground/midground/background; left/middle/right of frame; across the foreground of; directly in front of/behind; directly overhead; a few feet/meters apart; clustered closely; in a line or scattered). Describe lighting, shadows and visible surface textures with observable cues and an approximate shadow direction or length (for example, \"bright direct sunlight casting long shadows toward the lower left,\" \"diffuse overcast,\" \"wet pavement reflecting light\"). Report facial expressions or visible affect only when clearly evident using observable detail (open‑mouthed, smiling with teeth visible, furrowed brow). Keep the caption concise, factual and single‑sentence. Output exactly one single sentence.",
+  "rejected_by_val_gate": false,
+  "gate": {
+    "accepted": true,
+    "current_score": 1.2099742889397358e-05,
+    "candidate_score": 0.007538184523582462,
+    "tolerance": 0.0,
+    "current_summary": {
+      "n": 24,
+      "mean_clip": 0.3290619192024072,
+      "mean_siglip": 0.19517272772888336,
+      "mean_caption_len": 53.625,
+      "generic_rate": 0.16666666666666666,
+      "mean_delta_clip": 1.2099742889397358e-05,
+      "mean_delta_siglip": -0.00422125744322936,
+      "clip_win_rate": 0.4375,
+      "siglip_win_rate": 0.3958333333333333
+    },
+    "candidate_summary": {
+      "n": 24,
+      "mean_clip": 0.33658800398310024,
+      "mean_siglip": 0.19930765591561792,
+      "mean_caption_len": 53.458333333333336,
+      "generic_rate": 0.08333333333333333,
+      "mean_delta_clip": 0.007538184523582462,
+      "mean_delta_siglip": -8.632925649483998e-05,
+      "clip_win_rate": 0.6458333333333334,
+      "siglip_win_rate": 0.5
+    },
+    "current_score_csv": "results/behavior_analysis/qwen_residual_full_seed1_s20_b24/step_14/val_gate_current/scores.csv",
+    "candidate_score_csv": "results/behavior_analysis/qwen_residual_full_seed1_s20_b24/step_14/val_gate_candidate/scores.csv",
+    "current_result_json": "results/behavior_analysis/qwen_residual_full_seed1_s20_b24/step_14/val_gate_current/result.json",
+    "candidate_result_json": "results/behavior_analysis/qwen_residual_full_seed1_s20_b24/step_14/val_gate_candidate/result.json"
+  },
+  "residual_mode": "qwen",
+  "residual_records": [
+    {
+      "image_id": "flickr30k_test_024978",
+      "image_relpath": "images/flickr30k/flickr30k_test_024978.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_024978.jpg",
+      "caption": "A man in profile, seated on a folding chair with his weight resting on his right leg and left arm braced on the chair’s armrest, gazes forward while a stationary blue car is parked directly in front of him under diffuse, shadowed lighting.",
+      "clip_score": 0.2806058526039123,
+      "siglip_score": 0.1726150065660476,
+      "delta_clip": -0.05351945757865911,
+      "delta_siglip": -0.07243587076663968,
+      "mode": "qwen",
+      "raw_residual_text": "- Specify the direction of the man’s gaze (e.g., “looking straight ahead” or “gazing toward the car”) to clarify his orientation relative to the scene.\n- Indicate the lighting quality more precisely (e.g., “dappled light filtering through narrow alley” or “dim, ambient glow”)",
+      "residuals": [
+        "Specify the direction of the man’s gaze (e.g., “looking straight ahead” or “gazing toward the car”) to clarify his orientation relative to the scene.",
+        "Indicate the lighting quality more precisely (e.g., “dappled light filtering through narrow alley” or “dim, ambient glow”)"
+      ]
+    },
+    {
+      "image_id": "flickr30k_test_014180",
+      "image_relpath": "images/flickr30k/flickr30k_test_014180.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_014180.jpg",
+      "caption": "Under bright direct sunlight casting long shadows toward the lower left, a child in a blue helmet rides a bicycle from left to right in front of a large white domed building, while several other people on bicycles and tricycles move in the same direction across the paved area, with a few pedestrians standing or walking near a",
+      "clip_score": 0.2712612152099609,
+      "siglip_score": 0.2019966840744018,
+      "delta_clip": -0.05096942186355591,
+      "delta_siglip": 0.024933815002441406,
+      "mode": "qwen",
+      "raw_residual_text": "- Specify the direction of movement more precisely (e.g., “from left to right” should be confirmed or adjusted based on visual flow).\n- Clarify the spatial relationship between subjects and background elements to avoid ambiguity (e.g., “in front of” should be replaced with directional terms like “across the foreground of",
+      "residuals": [
+        "Specify the direction of movement more precisely (e.g., “from left to right” should be confirmed or adjusted based on visual flow).",
+        "Clarify the spatial relationship between subjects and background elements to avoid ambiguity (e.g., “in front of” should be replaced with directional terms like “across the foreground of"
+      ]
+    },
+    {
+      "image_id": "flickr30k_test_019904",
+      "image_relpath": "images/flickr30k/flickr30k_test_019904.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_019904.jpg",
+      "caption": "A man in profile, walking from left to right on a metal bridge with a red railing, passes in front of a yellow brick building with two red \"Le Mignon\" restaurant signs and black lanterns mounted on the wall, his right hand gripping the railing while his left hand is near his side, his body slightly",
+      "clip_score": 0.2840808629989624,
+      "siglip_score": 0.2608902752399444,
+      "delta_clip": -0.04724091291427612,
+      "delta_siglip": -0.02363437414169317,
+      "mode": "qwen",
+      "raw_residual_text": "- Specify the direction of movement more clearly (e.g., \"walking toward the right\") to avoid ambiguity.\n- Clarify the posture or motion of the body (e.g., \"leaning slightly forward\") to better convey dynamic action.",
+      "residuals": [
+        "Specify the direction of movement more clearly (e.g., \"walking toward the right\") to avoid ambiguity.",
+        "Clarify the posture or motion of the body (e.g., \"leaning slightly forward\") to better convey dynamic action."
+      ]
+    },
+    {
+      "image_id": "flickr30k_test_027960",
+      "image_relpath": "images/flickr30k/flickr30k_test_027960.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_027960.jpg",
+      "caption": "Under bright direct sunlight casting long shadows toward the lower left, four young male players in athletic attire are moving forward across a dry, dusty field, with the player in the foreground wearing a white shirt and dark pants running slightly ahead while holding a green ball in his right hand, flanked by teammates in green and white jerseys",
+      "clip_score": 0.271406352519989,
+      "siglip_score": 0.1574467718601226,
+      "delta_clip": -0.044457316398620605,
+      "delta_siglip": 0.001654848456382696,
+      "mode": "qwen",
+      "raw_residual_text": "- Specify the direction of movement more precisely (e.g., “running toward the camera” or “advancing toward the right side of the frame”) to clarify spatial orientation.\n- Clarify whether the players are in a coordinated formation or individual motion to better convey group dynamics.",
+      "residuals": [
+        "Specify the direction of movement more precisely (e.g., “running toward the camera” or “advancing toward the right side of the frame”) to clarify spatial orientation.",
+        "Clarify whether the players are in a coordinated formation or individual motion to better convey group dynamics."
+      ]
+    },
+    {
+      "image_id": "flickr30k_test_019437",
+      "image_relpath": "images/flickr30k/flickr30k_test_019437.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_019437.jpg",
+      "caption": "A woman in a dark dress walks from right to left in front of a closed metal roll-up door with \"NO PARKING ANY TIME\" painted in yellow, her body in profile and her right hand holding a small black bag as she moves past a green trash can and warning signs under bright direct sunlight casting long shadows toward",
+      "clip_score": 0.2894093096256256,
+      "siglip_score": 0.2122087776660919,
+      "delta_clip": -0.04099792242050171,
+      "delta_siglip": 0.0627810955047608,
+      "mode": "qwen",
+      "raw_residual_text": "- Specify the direction of movement more precisely (e.g., “walking toward the left edge of the frame”) to avoid ambiguity.\n- Clarify the lighting conditions (e.g., “under harsh sunlight”) to better convey the visual atmosphere without over-describing specific elements.",
+      "residuals": [
+        "Specify the direction of movement more precisely (e.g., “walking toward the left edge of the frame”) to avoid ambiguity.",
+        "Clarify the lighting conditions (e.g., “under harsh sunlight”) to better convey the visual atmosphere without over-describing specific elements."
+      ]
+    }
+  ],
+  "update_text": "Produce exactly one concise natural‑language caption (a single sentence) that vividly and precisely describes the main subject(s), visible actions and interactions, and the setting; remain concrete, image‑centered and avoid speculation or subjective judgments. For every person or object state whether it is stationary or moving; when describing motion give horizontal direction first then vertical relative to the image frame (for example, \"from left to right,\" \"toward the camera while descending\"), name the visible phase of motion when apparent (starting/ascending/peaking/descending/landing), indicate whether motions are simultaneous or sequential, and describe each moving subject’s trajectory both relative to the main subject (passing to his right, approaching from behind, moving alongside) and relative to the camera (toward/away from the camera, to the left/right edge of the frame). Specify each person’s head and gaze direction precisely (for example, \"looking straight ahead,\" \"eyes down at the phone,\" \"gaze directed up and to the left,\" or \"looking toward the car\") to clarify orientation. For interactions with objects or structures state exactly how the subject is using them (holding/gripping/resting/pulling/supporting/leaning on), which hand and side (left/right), and whether the hand is in contact, gripping, merely near, or in motion versus resting. Describe body posture with concrete camera‑relative terms (standing, weight shifted onto left/right leg, slightly leaning forward/back, seated, reclining, crouching, mid‑jump, arms outstretched, knees bent) and specify orientation to the camera (facing the camera, in profile, back to the camera); prefer neutral observable stance descriptors. Clarify precise spatial relationships, counts, arrangement, proximity and scale using camera‑relative language and clear phrases (foreground/midground/background; left/middle/right of frame; across the foreground of; directly in front of/behind; directly overhead; a few feet/meters apart; clustered closely; in a line or scattered). Describe lighting, shadows and visible surface textures with observable cues and an approximate shadow direction or length (for example, \"bright direct sunlight casting long shadows toward the lower left,\" \"diffuse overcast,\" \"wet pavement reflecting light\"). Report facial expressions or visible affect only when clearly evident using observable detail (open‑mouthed, smiling with teeth visible, furrowed brow). Keep the caption concise, factual and single‑sentence. Output exactly one single sentence.",
+  "train_summary": {
+    "n": 24,
+    "mean_clip": 0.3136607197423776,
+    "mean_siglip": 0.19775939236084614,
+    "mean_caption_len": 53.5,
+    "generic_rate": 0.25,
+    "mean_delta_clip": -0.005670607710878066,
+    "mean_delta_siglip": -0.003625286743044852,
+    "clip_win_rate": 0.375,
+    "siglip_win_rate": 0.5
+  },
+  "val_summary": {
+    "n": 150,
+    "mean_clip": 0.32846732993920646,
+    "mean_siglip": 0.1989993713299433,
+    "mean_caption_len": 52.013333333333335,
+    "generic_rate": 0.09333333333333334,
+    "mean_delta_clip": 0.0039018816252549497,
+    "mean_delta_siglip": 0.00015882564087708688,
+    "clip_win_rate": 0.5533333333333333,
+    "siglip_win_rate": 0.4866666666666667
+  },
+  "train_selection_score": -0.005670607710878066,
+  "val_selection_score": 0.0039018816252549497,
+  "best_val_before_step": 0.003726069629192352,
+  "improved": true,
+  "step_seconds": 1034.9593586921692
+}

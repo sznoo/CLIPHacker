@@ -1,0 +1,142 @@
+{
+  "prompt": "Produce exactly one concise caption (one sentence) containing 2–6 visually verifiable facts. Do not output lists, tags, multiple sentences, JSON, or commentary.\n\nRules (apply in order of priority when present):\n1) Text: If any contiguous substring of printed text is clearly legible in the image, transcribe that exact substring in quotes; if not legible, omit all text. Do not guess characters or punctuation.\n2) Counts & object types: Use the most specific visible noun (prefer specific canonical names, e.g., “pedicab”/“tricycle”/“vendor cart”, “sculpture”, “storefront glass door”, “neon sign”, “mural”, “toy motorcycle”, “backpack”, “bicycle”). Use exact numerals when an exact count is clearly visible; otherwise use “at least one” or a spatial descriptor.\n3) Color/material/decals: Place color/material/decals directly before the noun (e.g., “yellow canopy pedicab”, “red toy motorcycle with flame decal”).\n4) Pose/action: For people, include a short, visible verb phrase when a pose or action is clear (e.g., “hands on handlebars”, “bending over pile”, “leaning on cart”).\n5) Spatial grounding: Attach a short spatial tag inline to each fact (foreground/midground/background or left/center/right), e.g., “foreground: child on blue bike”.\n6) Lighting/viewpoint/occlusion: Add only if clearly visible (e.g., “bright sunlight casting long shadows”, “elevated vantage; tree partially obscures façade”).\n\nStyle constraints:\n- Keep one sentence, compact and information‑dense (prefer ~10–25 words; aim for 2–5 facts; allow up to 6 only if each adds unique, nonredundant visual detail).\n- Follow the checklist priority when ordering facts: (text) → (counts+object type) → (color/material) → (pose/action) → (spatial) → (lighting/viewpoint).\n- Use canonical nouns, numerals for counts, and place color before the noun.\n- Do not infer roles, emotions, intentions, or use metaphors, slogans, or marketing language (avoid words like “farmer”, “happy”, “customer”, “adventure”).\n- Replace vague adjectives (e.g., “large”, “nice”, “busy”) with concrete visual descriptors (e.g., “curved white façade with ridged roof panels”).\n\nExamples (follow these patterns exactly):\n- \"Sign reads 'SUBWAY OPEN'; foreground: 1 person bending over backpacks; midground: woman in green shirt standing by storefront.\"\n- \"Foreground: child on blue ride-on toy motorcycle with flame decal; background: chain-link fence and painted mural.\"\n- \"Foreground: yellow canopy pedicab; midground: two cyclists on bicycles; background: curved white façade with ridged panels; bright sunlight.\"\n\nNow produce one caption that follows these rules.",
+  "prompt_id": "textgrad_a8471e05a8",
+  "split_csv": "data/splits/flickr30k_main_seed1_val.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_11/val/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_11/val/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_11/val/scores.csv",
+  "data_root": "data",
+  "summary": {
+    "n": 150,
+    "mean_clip": 0.3025068253278732,
+    "mean_siglip": 0.19109230955441792,
+    "mean_caption_len": 20.766666666666666,
+    "generic_rate": 0.0,
+    "mean_delta_clip": -0.022058622986078268,
+    "mean_delta_siglip": -0.007748236134648323,
+    "clip_win_rate": 0.2733333333333333,
+    "siglip_win_rate": 0.4
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_007385",
+      "image_relpath": "images/flickr30k/flickr30k_test_007385.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_007385.jpg",
+      "caption": "Foreground: person in blue and multicolored patterned suit tossing green frisbee; midground: group in matching suits performing synchronized dance; background: storefront with \"Kroger\" sign; bright sunlight casting long shadows.",
+      "clip_score": 0.2550352811813354,
+      "siglip_score": 0.1689514964818954,
+      "delta_clip": -0.11382156610488892,
+      "delta_siglip": -0.00597693026065832
+    },
+    {
+      "image_id": "flickr30k_test_026513",
+      "image_relpath": "images/flickr30k/flickr30k_test_026513.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_026513.jpg",
+      "caption": "Foreground: person in blue jacket holding umbrella; midground: crew operating camera on tripod; background: potted plants and building wall.",
+      "clip_score": 0.291905790567398,
+      "siglip_score": 0.2356650829315185,
+      "delta_clip": -0.11076822876930237,
+      "delta_siglip": -0.02435359358787542
+    },
+    {
+      "image_id": "flickr30k_test_005250",
+      "image_relpath": "images/flickr30k/flickr30k_test_005250.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_005250.jpg",
+      "caption": "Foreground: woman in black dress holding red poinsettias; midground: person in blue jacket walking; background: staircase with gold railing.",
+      "clip_score": 0.2557572722434997,
+      "siglip_score": 0.1416298449039459,
+      "delta_clip": -0.10562705993652349,
+      "delta_siglip": -0.06761035323143
+    },
+    {
+      "image_id": "flickr30k_test_026753",
+      "image_relpath": "images/flickr30k/flickr30k_test_026753.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_026753.jpg",
+      "caption": "Foreground: person in black t-shirt with visible text \"LOVE\" grinding on metal rail; background: at least one person in blue shirt standing.",
+      "clip_score": 0.2319465577602386,
+      "siglip_score": 0.1405141651630401,
+      "delta_clip": -0.09964469075202942,
+      "delta_siglip": -0.017026841640472384
+    },
+    {
+      "image_id": "flickr30k_test_026753",
+      "image_relpath": "images/flickr30k/flickr30k_test_026753.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_026753.jpg",
+      "caption": "Foreground: person in black t-shirt with visible text \"LOVE\" grinding on metal rail; background: at least one person in blue shirt standing.",
+      "clip_score": 0.2319465577602386,
+      "siglip_score": 0.1405141651630401,
+      "delta_clip": -0.0918494164943695,
+      "delta_siglip": -0.0804258733987808
+    },
+    {
+      "image_id": "flickr30k_test_027271",
+      "image_relpath": "images/flickr30k/flickr30k_test_027271.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_027271.jpg",
+      "caption": "Foreground: person wearing blue t-shirt with white smiley decal, holding white electric guitar; background: black banner with \"MUSICMAN\" text.",
+      "clip_score": 0.2370691299438476,
+      "siglip_score": 0.1565385907888412,
+      "delta_clip": -0.09164232015609741,
+      "delta_siglip": -0.038515329360961914
+    },
+    {
+      "image_id": "flickr30k_test_003587",
+      "image_relpath": "images/flickr30k/flickr30k_test_003587.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_003587.jpg",
+      "caption": "Foreground: man wearing black cap with '3' and 'NASCAR' text, black jacket with 'Coca-Cola' and 'Snap-on' logos; looking down.",
+      "clip_score": 0.2762765884399414,
+      "siglip_score": 0.2547504305839538,
+      "delta_clip": -0.08901035785675049,
+      "delta_siglip": -0.009553641080856379
+    },
+    {
+      "image_id": "flickr30k_test_000051",
+      "image_relpath": "images/flickr30k/flickr30k_test_000051.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_000051.jpg",
+      "caption": "Back of white uniform reads \"J.K. LEE\"; foreground: man in white uniform kneeling and holding wooden sticks; background: woman in white uniform raising hands; red and blue matting visible.",
+      "clip_score": 0.2799693942070007,
+      "siglip_score": 0.1948438882827758,
+      "delta_clip": -0.0886422991752625,
+      "delta_siglip": 0.008670344948768588
+    },
+    {
+      "image_id": "flickr30k_test_020473",
+      "image_relpath": "images/flickr30k/flickr30k_test_020473.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_020473.jpg",
+      "caption": "Foreground: woman in black leather jacket holding phone; midground: blurred pedestrians near stone steps; background: building with blue window frames.",
+      "clip_score": 0.282307505607605,
+      "siglip_score": 0.1793238222599029,
+      "delta_clip": -0.08438313007354731,
+      "delta_siglip": -0.047753304243087796
+    },
+    {
+      "image_id": "flickr30k_test_015890",
+      "image_relpath": "images/flickr30k/flickr30k_test_015890.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_015890.jpg",
+      "caption": "Foreground: person in white t-shirt with red text riding black BMX bike midair; background: curved concrete skatepark and green trees.",
+      "clip_score": 0.2567934989929199,
+      "siglip_score": 0.1471103876829147,
+      "delta_clip": -0.08349499106407166,
+      "delta_siglip": -0.027500048279762296
+    },
+    {
+      "image_id": "flickr30k_test_020473",
+      "image_relpath": "images/flickr30k/flickr30k_test_020473.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_020473.jpg",
+      "caption": "Foreground: woman in black leather jacket holding phone; midground: blurred pedestrians near stone steps; background: building with blue window frames.",
+      "clip_score": 0.282307505607605,
+      "siglip_score": 0.1793238222599029,
+      "delta_clip": -0.0815944075584411,
+      "delta_siglip": -0.0216896533966065
+    },
+    {
+      "image_id": "flickr30k_test_029485",
+      "image_relpath": "images/flickr30k/flickr30k_test_029485.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_029485.jpg",
+      "caption": "Foreground: girl in red \"TRIPLE THREAT SPORTS\" shirt waving; midground: two other girls in red shirts; background: grassy field and building.",
+      "clip_score": 0.2892600893974304,
+      "siglip_score": 0.2205893695354461,
+      "delta_clip": -0.08156433701515198,
+      "delta_siglip": -0.04207119345664978
+    }
+  ]
+}

@@ -1,0 +1,102 @@
+{
+  "step": 0,
+  "old_prompt": "Write a caption for this image.",
+  "candidate_prompt": "Write exactly one natural, fluent caption (a single sentence) that describes only what is clearly visible in the image. Be specific: name the main visible people, animals, and objects, include salient attributes (colors, clothing, poses, positions) and the immediate setting, and describe the visible action using an active verb. Avoid vague summaries, generic terms like \"a scene\" or \"people,\" and do not infer unseen facts, motives, or locations. Do not output tags, lists, or any extra commentary—only the one descriptive sentence.",
+  "new_prompt": "Write exactly one natural, fluent caption (a single sentence) that describes only what is clearly visible in the image. Be specific: name the main visible people, animals, and objects, include salient attributes (colors, clothing, poses, positions) and the immediate setting, and describe the visible action using an active verb. Avoid vague summaries, generic terms like \"a scene\" or \"people,\" and do not infer unseen facts, motives, or locations. Do not output tags, lists, or any extra commentary—only the one descriptive sentence.",
+  "rejected_by_val_gate": false,
+  "gate": {
+    "accepted": true,
+    "current_score": -0.01615970954298976,
+    "candidate_score": 0.00900338962674141,
+    "tolerance": 0.0,
+    "current_summary": {
+      "n": 4,
+      "mean_clip": 0.30860286206007004,
+      "mean_siglip": 0.18576530367136,
+      "mean_caption_len": 37.5,
+      "generic_rate": 0.0,
+      "mean_delta_clip": -0.01615970954298976,
+      "mean_delta_siglip": -0.020335383713245402,
+      "clip_win_rate": 0.25,
+      "siglip_win_rate": 0.375
+    },
+    "candidate_summary": {
+      "n": 4,
+      "mean_clip": 0.3337659612298012,
+      "mean_siglip": 0.208488754928112,
+      "mean_caption_len": 49.5,
+      "generic_rate": 0.25,
+      "mean_delta_clip": 0.00900338962674141,
+      "mean_delta_siglip": 0.002388067543506605,
+      "clip_win_rate": 0.625,
+      "siglip_win_rate": 0.5
+    },
+    "current_score_csv": "results/behavior_analysis/mock_smoke_seed1_s2_b4/step_00/val_gate_current/scores.csv",
+    "candidate_score_csv": "results/behavior_analysis/mock_smoke_seed1_s2_b4/step_00/val_gate_candidate/scores.csv",
+    "current_result_json": "results/behavior_analysis/mock_smoke_seed1_s2_b4/step_00/val_gate_current/result.json",
+    "candidate_result_json": "results/behavior_analysis/mock_smoke_seed1_s2_b4/step_00/val_gate_candidate/result.json"
+  },
+  "residual_mode": "mock",
+  "residual_records": [
+    {
+      "image_id": "flickr30k_test_024370",
+      "image_relpath": "images/flickr30k/flickr30k_test_024370.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_024370.jpg",
+      "caption": "A sunny day in a European city, with a grand, tree-lined street flanked by classic architecture and pedestrians strolling along the sidewalks.",
+      "clip_score": 0.2645592391490936,
+      "siglip_score": 0.1000408008694648,
+      "delta_clip": -2.9802322443206464e-08,
+      "delta_siglip": -1.4901161199398771e-07,
+      "mode": "mock",
+      "raw_residual_text": "- Describe what is visibly happening instead of giving only a broad scene summary.\n- Name the important visible subjects and objects rather than using generic wording.",
+      "residuals": [
+        "Describe what is visibly happening instead of giving only a broad scene summary.",
+        "Name the important visible subjects and objects rather than using generic wording."
+      ]
+    },
+    {
+      "image_id": "flickr30k_test_007169",
+      "image_relpath": "images/flickr30k/flickr30k_test_007169.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_007169.jpg",
+      "caption": "Through the bars of a railing, a candid street scene unfolds: a young girl with a colorful backpack walks past, while a woman in a hat carries a large red bag. In the background, another person sits on a stone ledge, engrossed in reading a newspaper. The setting appears to be a grand, historic",
+      "clip_score": 0.2910429537296295,
+      "siglip_score": 0.230497807264328,
+      "delta_clip": -2.9802322387695312e-08,
+      "delta_siglip": 5.96046448031462e-08,
+      "mode": "mock",
+      "raw_residual_text": "- Make the caption more specific about the visible subjects, objects, and setting.\n- Describe what is visibly happening instead of giving only a broad scene summary.",
+      "residuals": [
+        "Make the caption more specific about the visible subjects, objects, and setting.",
+        "Describe what is visibly happening instead of giving only a broad scene summary."
+      ]
+    }
+  ],
+  "update_text": "Write exactly one natural, fluent caption (a single sentence) that describes only what is clearly visible in the image. Be specific: name the main visible people, animals, and objects, include salient attributes (colors, clothing, poses, positions) and the immediate setting, and describe the visible action using an active verb. Avoid vague summaries, generic terms like \"a scene\" or \"people,\" and do not infer unseen facts, motives, or locations. Do not output tags, lists, or any extra commentary—only the one descriptive sentence.",
+  "train_summary": {
+    "n": 4,
+    "mean_clip": 0.30948732793331146,
+    "mean_siglip": 0.18767375685274598,
+    "mean_caption_len": 35.5,
+    "generic_rate": 0.0,
+    "mean_delta_clip": 7.45058058304604e-09,
+    "mean_delta_siglip": -2.6077032096172292e-08,
+    "clip_win_rate": 0.25,
+    "siglip_win_rate": 0.5
+  },
+  "val_summary": {
+    "n": 150,
+    "mean_clip": 0.338239502509435,
+    "mean_siglip": 0.2032870996991793,
+    "mean_caption_len": 39.486666666666665,
+    "generic_rate": 0.07333333333333333,
+    "mean_delta_clip": 0.013674054195483525,
+    "mean_delta_siglip": 0.004446554010113076,
+    "clip_win_rate": 0.6666666666666666,
+    "siglip_win_rate": 0.56
+  },
+  "train_selection_score": 7.45058058304604e-09,
+  "val_selection_score": 0.013674054195483525,
+  "best_val_before_step": 0.0,
+  "improved": true,
+  "step_seconds": 642.0395383834839
+}

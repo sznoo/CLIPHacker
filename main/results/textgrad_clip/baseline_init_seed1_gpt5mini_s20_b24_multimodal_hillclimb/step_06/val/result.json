@@ -1,0 +1,142 @@
+{
+  "prompt": "Produce exactly one concise caption (one sentence) stating only visually verifiable facts. The caption must contain 2–6 discrete facts chosen strictly in this priority order when present: \n1) Legible text — if any text is clearly readable, transcribe it verbatim in quotes as the first fact; if text is not clearly legible, do not mention any text. \n2) Exact counts and canonical object types using numerals (e.g., \"2 people\", \"1 bicycle\"). \n3) Color/material/texture/localized markings with placement modifiers (e.g., \"tan patch on mid-back\", \"bench with peeling green paint and rust spots\"). \n4) Precise pose/action/orientation using short phrases (e.g., \"mid-air, arms outstretched\", \"head lowered, tongue visible\", \"bending over sorting bags\", \"seen from behind\"). \n5) Simple spatial layout using foreground/midground/background or left/right/center. \n6) Lighting/viewpoint/occlusion only if clearly visible (e.g., \"bright sunlight casting sharp shadows\", \"strong reflection on wet sand\", \"elevated vantage; tree partially obscures façade\"). \n\nUse numerals for counts, canonical nouns (person, dog, bench, sign, vehicle, goat, satellite dish, etc.), enclose any transcribed text in quotes, and separate facts compactly with commas or semicolons. Do not infer roles, age, emotions, intentions, or any non-visible context; do not guess unreadable text; avoid metaphors, slogans, or marketing language. Produce exactly one sentence, no lists, tags, JSON, multiple candidates, or extra commentary. Before emitting, ensure each stated fact is directly visible; omit anything you cannot visually confirm.",
+  "prompt_id": "textgrad_7463793818",
+  "split_csv": "data/splits/flickr30k_main_seed1_val.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_06/val/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_06/val/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_06/val/scores.csv",
+  "data_root": "data",
+  "summary": {
+    "n": 150,
+    "mean_clip": 0.3131023343404134,
+    "mean_siglip": 0.18803089117010435,
+    "mean_caption_len": 33.92666666666667,
+    "generic_rate": 0.08,
+    "mean_delta_clip": -0.011463113973538082,
+    "mean_delta_siglip": -0.010809654518961903,
+    "clip_win_rate": 0.36,
+    "siglip_win_rate": 0.38
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_007385",
+      "image_relpath": "images/flickr30k/flickr30k_test_007385.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_007385.jpg",
+      "caption": "\"1 person in foreground mid-air with right leg raised, 1 person to right also mid-air with arms raised, 1 person in background mid-air, 1 person in background with arms down, 1 person in background with arms raised, 1 person in background with arms down, 1 person in background",
+      "clip_score": 0.2417649328708648,
+      "siglip_score": 0.0773129165172576,
+      "delta_clip": -0.1270919144153595,
+      "delta_siglip": -0.09761551022529612
+    },
+    {
+      "image_id": "flickr30k_test_027582",
+      "image_relpath": "images/flickr30k/flickr30k_test_027582.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_027582.jpg",
+      "caption": "1 person in red tank top and black shorts running across white-striped crosswalk; 1 person in red shirt and black shorts running behind; 1 traffic light showing green; 1 yellow pedestrian signal sign; 1 tree with green leaves in background; 1 building with windows in far background.",
+      "clip_score": 0.2569977939128876,
+      "siglip_score": 0.1534636914730072,
+      "delta_clip": -0.0983341634273529,
+      "delta_siglip": -0.027544587850570595
+    },
+    {
+      "image_id": "flickr30k_test_028508",
+      "image_relpath": "images/flickr30k/flickr30k_test_028508.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_028508.jpg",
+      "caption": "1 person holds a baby; 1 person wears a red shirt; 1 person wears a light purple shirt; 1 person wears a teal shirt; 1 person wears a dark blue shirt; 1 person wears a beige vest; 1 person wears glasses; 1 person has dark hair; 1 person",
+      "clip_score": 0.2391324639320373,
+      "siglip_score": 0.1500822901725769,
+      "delta_clip": -0.09531760215759283,
+      "delta_siglip": -0.057458028197288485
+    },
+    {
+      "image_id": "flickr30k_test_006537",
+      "image_relpath": "images/flickr30k/flickr30k_test_006537.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_006537.jpg",
+      "caption": "\"KILBURN\" sign visible; 2 people in high-visibility vests; one person seen from behind walking; train on right; platform with wet surface; overhead lights illuminated.",
+      "clip_score": 0.3066679835319519,
+      "siglip_score": 0.2529389262199402,
+      "delta_clip": -0.08481287956237787,
+      "delta_siglip": 0.03523567318916329
+    },
+    {
+      "image_id": "flickr30k_test_012572",
+      "image_relpath": "images/flickr30k/flickr30k_test_012572.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_012572.jpg",
+      "caption": "\"Domino's Pizza\" sign visible; 1 person wearing purple knitted hat; person holding dark jacket; person looking left; person in foreground, sign in midground.",
+      "clip_score": 0.3107950389385223,
+      "siglip_score": 0.2474975436925888,
+      "delta_clip": -0.0789968371391297,
+      "delta_siglip": -0.04514728486537928
+    },
+    {
+      "image_id": "flickr30k_test_028445",
+      "image_relpath": "images/flickr30k/flickr30k_test_028445.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_028445.jpg",
+      "caption": "1 person; 1 bicycle; 1 red pickup truck with \"XTR\" visible on rear; blue mesh laundry hamper on bicycle; man holding handlebars, facing forward, mid-stride on paved path; background includes beige building and green foliage.",
+      "clip_score": 0.2889621555805206,
+      "siglip_score": 0.1924268305301666,
+      "delta_clip": -0.07841137051582342,
+      "delta_siglip": -0.024609744548797607
+    },
+    {
+      "image_id": "flickr30k_test_028508",
+      "image_relpath": "images/flickr30k/flickr30k_test_028508.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_028508.jpg",
+      "caption": "1 person holds a baby; 1 person wears a red shirt; 1 person wears a light purple shirt; 1 person wears a teal shirt; 1 person wears a dark blue shirt; 1 person wears a beige vest; 1 person wears glasses; 1 person has dark hair; 1 person",
+      "clip_score": 0.2391324639320373,
+      "siglip_score": 0.1500822901725769,
+      "delta_clip": -0.07720467448234558,
+      "delta_siglip": -0.0615813285112381
+    },
+    {
+      "image_id": "flickr30k_test_005806",
+      "image_relpath": "images/flickr30k/flickr30k_test_005806.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_005806.jpg",
+      "caption": "1 person, bending over; 1 open black suitcase in foreground; 1 red bag, 1 yellow bag, 1 white plastic bin, 1 brown woven basket, 1 clear plastic water bottle visible in midground; background contains stacked plastic storage bins and folded clothes.",
+      "clip_score": 0.2978993654251098,
+      "siglip_score": 0.19277423620224,
+      "delta_clip": -0.0762946605682373,
+      "delta_siglip": -0.018149822950363104
+    },
+    {
+      "image_id": "flickr30k_test_005250",
+      "image_relpath": "images/flickr30k/flickr30k_test_005250.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_005250.jpg",
+      "caption": "\"100 TO 117\" visible on wall; 2 people holding bouquets; 1 person in black dress smiling; 1 person in veil seen from behind; 1 person in dark suit partially visible; 1 staircase with wooden railing in background.",
+      "clip_score": 0.2853166759014129,
+      "siglip_score": 0.1791426688432693,
+      "delta_clip": -0.07606765627861029,
+      "delta_siglip": -0.0300975292921066
+    },
+    {
+      "image_id": "flickr30k_test_008802",
+      "image_relpath": "images/flickr30k/flickr30k_test_008802.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_008802.jpg",
+      "caption": "1 dog, white and black with tan markings on head and legs, running with a white frisbee in mouth, frisbee has blue paw print; foreground, bright sunlight casting sharp shadows",
+      "clip_score": 0.2964510917663574,
+      "siglip_score": 0.1842459142208099,
+      "delta_clip": -0.07236289978027338,
+      "delta_siglip": -0.009332507848739596
+    },
+    {
+      "image_id": "flickr30k_test_025248",
+      "image_relpath": "images/flickr30k/flickr30k_test_025248.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_025248.jpg",
+      "caption": "1 person, seen from behind, climbing a chain-link fence; 1 yellow car, 1 silver car, 1 house with gray shingles in background; green foliage in foreground and midground.",
+      "clip_score": 0.2743462324142456,
+      "siglip_score": 0.219555377960205,
+      "delta_clip": -0.07183310389518738,
+      "delta_siglip": -0.04762005805969241
+    },
+    {
+      "image_id": "flickr30k_test_028445",
+      "image_relpath": "images/flickr30k/flickr30k_test_028445.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_028445.jpg",
+      "caption": "1 person; 1 bicycle; 1 red pickup truck with \"XTR\" visible on rear; blue mesh laundry hamper on bicycle; man holding handlebars, facing forward, mid-stride on paved path; background includes beige building and green foliage.",
+      "clip_score": 0.2889621555805206,
+      "siglip_score": 0.1924268305301666,
+      "delta_clip": -0.07070174813270574,
+      "delta_siglip": -0.02892148494720459
+    }
+  ]
+}

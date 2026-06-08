@@ -1,0 +1,142 @@
+{
+  "prompt": "Produce exactly one concise caption (one sentence) that states only visually verifiable facts. Include 2–6 discrete visual facts drawn from this checklist in the given priority order when present: 1) legible text: transcribe exact words; 2) counts and object types (e.g., \"2 people\", \"one bicycle\"); 3) key color/material/texture for those objects (e.g., \"orange backpack\", \"wooden façade\"); 4) pose/action/orientation (e.g., \"person seen from behind walking away; holding two poles\"); 5) simple spatial layout (foreground / midground / background placement); 6) lighting/viewpoint/occlusion cues (e.g., \"bright sunlight casting long shadows\", \"elevated vantage; tree partially obscures façade\"). Use canonical object names and exact counts, standard direction words (left/right/foreground/background), and numerals or short words for numbers. Do not infer roles, emotions, intentions, or use metaphors, slogans, or marketing language (avoid \"farmer\", \"happy\", \"adventure\", etc.). If text is not clearly legible, omit it rather than guess. Keep the caption factual, compact, and limited to one sentence containing 2–6 concrete facts—no lists, tags, extra sentences, or commentary. Example (good): \"Sign reads 'Outdoor World'; two adults walk toward the store entrance; timber façade and concrete forecourt; overcast sky.\" Counterexample (bad): \"A happy farmer enjoys a sunny day in the countryside.\"",
+  "prompt_id": "textgrad_1d8c701270",
+  "split_csv": "data/splits/flickr30k_main_seed1_train.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_17/train/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_17/train/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_17/train/scores.csv",
+  "data_root": "data",
+  "summary": {
+    "n": 24,
+    "mean_clip": 0.33092628543575603,
+    "mean_siglip": 0.19413501955568788,
+    "mean_caption_len": 41.75,
+    "generic_rate": 0.041666666666666664,
+    "mean_delta_clip": -0.0011302828788757324,
+    "mean_delta_siglip": 0.010177016258239748,
+    "clip_win_rate": 0.4583333333333333,
+    "siglip_win_rate": 0.7083333333333334
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_016046",
+      "image_relpath": "images/flickr30k/flickr30k_test_016046.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_016046.jpg",
+      "caption": "Two people stand at a wooden table with a yellow plastic basin and a bottle of orange liquid; several people sit on chairs to the right; trees and a brick wall are in the background; bright sunlight casts shadows.",
+      "clip_score": 0.2950689196586609,
+      "siglip_score": 0.1885405778884887,
+      "delta_clip": -0.04242205619812012,
+      "delta_siglip": 0.029547035694122287
+    },
+    {
+      "image_id": "flickr30k_test_013576",
+      "image_relpath": "images/flickr30k/flickr30k_test_013576.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_013576.jpg",
+      "caption": "Boy rides a red toy motorcycle; jersey with \"Mets\" text; chain-link fence and painted wall in background; bright daylight.",
+      "clip_score": 0.3685386776924133,
+      "siglip_score": 0.211759552359581,
+      "delta_clip": -0.04021930694580084,
+      "delta_siglip": -0.060682669281959534
+    },
+    {
+      "image_id": "flickr30k_test_003961",
+      "image_relpath": "images/flickr30k/flickr30k_test_003961.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_003961.jpg",
+      "caption": "A woman holds a red bag with \"American Girl Place\" text; she stands behind a white tablecloth-covered table; an American flag hangs above; foliage is in the foreground; glass window reflects interior and exterior elements.",
+      "clip_score": 0.3100873827934265,
+      "siglip_score": 0.2482828199863433,
+      "delta_clip": -0.0393612384796142,
+      "delta_siglip": -0.0223625600337983
+    },
+    {
+      "image_id": "flickr30k_test_029272",
+      "image_relpath": "images/flickr30k/flickr30k_test_029272.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_029272.jpg",
+      "caption": "A man with dreadlocks, wearing a black shirt and gray sweatpants, jumps mid-air on a stage; a young boy in a blue shirt stands in the foreground to his left; several spectators are seated or standing in the midground; green trees are visible in the background under bright daylight.",
+      "clip_score": 0.3019575476646423,
+      "siglip_score": 0.2219322323799133,
+      "delta_clip": -0.03696471452713013,
+      "delta_siglip": 0.037440896034240695
+    },
+    {
+      "image_id": "flickr30k_test_015474",
+      "image_relpath": "images/flickr30k/flickr30k_test_015474.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_015474.jpg",
+      "caption": "Sign reads 'DUNG ANH MAI PHAT CO'; three people in boats on murky water; one person wears red pants; wooden stilt structures line the riverbank; elevated viewpoint.",
+      "clip_score": 0.2975950837135315,
+      "siglip_score": 0.144614040851593,
+      "delta_clip": -0.031188338994979803,
+      "delta_siglip": -0.02614656090736392
+    },
+    {
+      "image_id": "flickr30k_test_003075",
+      "image_relpath": "images/flickr30k/flickr30k_test_003075.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_003075.jpg",
+      "caption": "Two children stand in shallow water; one wears a blue raincoat with a red belt, the other wears a white shirt and khaki pants with sunglasses on their head; a beige van is parked in the background; a person in a blue shirt is partially visible to the right.",
+      "clip_score": 0.3476170897483825,
+      "siglip_score": 0.200851708650589,
+      "delta_clip": -0.022937715053558405,
+      "delta_siglip": -0.018698260188102722
+    },
+    {
+      "image_id": "flickr30k_test_023641",
+      "image_relpath": "images/flickr30k/flickr30k_test_023641.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_023641.jpg",
+      "caption": "A woman in a pink and white striped shirt walks toward the camera on a wet cobblestone path; several people sit on benches under leafy trees in the midground; a dark metal lamppost stands on the left; buildings with light-colored walls are visible in the background.",
+      "clip_score": 0.3169930577278137,
+      "siglip_score": 0.1903418898582458,
+      "delta_clip": -0.02124994993209839,
+      "delta_siglip": 0.010703757405281095
+    },
+    {
+      "image_id": "flickr30k_test_025508",
+      "image_relpath": "images/flickr30k/flickr30k_test_025508.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_025508.jpg",
+      "caption": "One person performs an aerial flip above a sand dune; the sky is clear blue; the person wears orange shorts; the dune slopes upward from the foreground; sunlight illuminates the scene from above.",
+      "clip_score": 0.3447626829147339,
+      "siglip_score": 0.2071888446807861,
+      "delta_clip": -0.02091622352600092,
+      "delta_siglip": 0.012705862522125216
+    },
+    {
+      "image_id": "flickr30k_test_014594",
+      "image_relpath": "images/flickr30k/flickr30k_test_014594.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_014594.jpg",
+      "caption": "One jockey on a brown horse jumps over a wooden fence; the horse has a white marking on its forehead; the jockey wears a yellow helmet and green-and-black jacket; the scene is set in a grassy field with trees in the background.",
+      "clip_score": 0.3161676526069641,
+      "siglip_score": 0.1952752918004989,
+      "delta_clip": -0.02088451385498047,
+      "delta_siglip": 0.0012416988611221036
+    },
+    {
+      "image_id": "flickr30k_test_012029",
+      "image_relpath": "images/flickr30k/flickr30k_test_012029.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_012029.jpg",
+      "caption": "A floating shrine with a white domed roof and red doors is surrounded by people on a wooden platform; behind it, a stone embankment rises to a temple complex with white domed structures; several small boats are moored nearby; the scene is viewed from across the water under diffuse daylight.",
+      "clip_score": 0.3305006623268127,
+      "siglip_score": 0.184305801987648,
+      "delta_clip": -0.020684123039245605,
+      "delta_siglip": 0.0426909476518631
+    },
+    {
+      "image_id": "flickr30k_test_005364",
+      "image_relpath": "images/flickr30k/flickr30k_test_005364.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_005364.jpg",
+      "caption": "One person seen from behind, wearing a dark robe, kneels before a silver incense burner in the foreground; behind them, a seated Buddha statue is framed by a golden arch within a wooden structure; purple flowers in vases are visible on either side of the statue; the scene is viewed from a low angle with",
+      "clip_score": 0.3296455144882202,
+      "siglip_score": 0.2097082734107971,
+      "delta_clip": -0.013173341751098577,
+      "delta_siglip": 0.0080625861883164
+    },
+    {
+      "image_id": "flickr30k_test_005582",
+      "image_relpath": "images/flickr30k/flickr30k_test_005582.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_005582.jpg",
+      "caption": "One dog leaps toward a car window while another dog walks on the ground nearby; the car is light gray with black trim; the leaping dog is white with black spots; the walking dog is brown; the scene is outdoors in daylight.",
+      "clip_score": 0.3512744903564453,
+      "siglip_score": 0.193865567445755,
+      "delta_clip": -0.0030137598514556885,
+      "delta_siglip": 0.0175313800573349
+    }
+  ]
+}

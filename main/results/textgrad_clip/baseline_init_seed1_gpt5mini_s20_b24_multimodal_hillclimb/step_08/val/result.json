@@ -1,0 +1,142 @@
+{
+  "prompt": "Produce exactly one concise caption: a single sentence containing 2–6 discrete, comma- or semicolon-separated visual facts. Each fact must be directly and visually verifiable — do not infer roles, emotions, intentions, or scene purpose.\n\nPriority and required ordering for facts (include each when clearly visible, in this order):\n1) Legible text: if any sign/logo text is clearly readable, transcribe the exact words as the first fact. If not clearly legible, omit text.  \n2) Counts + canonical object names: begin with digit(s) + canonical noun(s) for prominent objects (e.g., \"2 people\", \"1 bicycle\"); place these high-value tokens early in the sentence.  \n3) One strong visible attribute per counted object: include at most one clear color/material/texture (e.g., \"red seat\", \"wooden bench\") immediately after that object.  \n4) Pose/action/tool: include a concise verb phrase if an action or tool is visually evident (e.g., \"carving with a knife\", \"holding a framed picture\").  \n5) Spatial placement/attachment: state simple layout or mounting using concise words (foreground/midground/background/left/right/on/strapped to).  \n6) Lighting/viewpoint/occlusion (optional): include only if clearly visible (e.g., \"bright sunlight casting long shadows\", \"elevated vantage; tree partially obscures façade\").\n\nHard constraints and style rules:\n- MUST produce exactly one sentence and exactly one caption (no lists, tags, JSON, multiple candidates, or multi-line output).  \n- MUST include 2–6 discrete facts only. Do not add extra commentary or parenthetical notes.  \n- Use digits for numbers and canonical, specific nouns where visible.  \n- Use at most one strong attribute per counted object.  \n- Prefer specific subtypes when clear morphological cues exist (pedals/chain → \"bicycle\"; exhaust/engine → \"motorbike/scooter\"); if subtype cues are absent, use a safe generic term (e.g., \"two-wheeled vehicle\").  \n- Do not hedge or guess: avoid words like \"appears\", \"likely\", \"probably\". If a detail is not unambiguously visible, omit it rather than guess.  \n- Do not infer roles or emotions (for example, avoid \"farmer\", \"customer\", \"happy\", \"angry\").  \n- Begin the sentence with the most discriminative fact (typically numeral + object + attribute).  \n- Keep language compact and factual; target concise phrasing so each fact is short and specific.\n\nExamples of acceptable structure:\n- \"Sign reads 'Outdoor World'; 2 adults walk toward the store entrance; timber façade; overcast sky.\"  \nAvoid generic or inferential captions (e.g., no \"a group of people,\" \"several items,\" \"happy farmer,\" or scene-role inferences).",
+  "prompt_id": "textgrad_82e1986a4a",
+  "split_csv": "data/splits/flickr30k_main_seed1_val.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_08/val/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_08/val/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_08/val/scores.csv",
+  "data_root": "data",
+  "summary": {
+    "n": 150,
+    "mean_clip": 0.29577627778053284,
+    "mean_siglip": 0.18486530939737952,
+    "mean_caption_len": 24.093333333333334,
+    "generic_rate": 0.006666666666666667,
+    "mean_delta_clip": -0.028789170533418663,
+    "mean_delta_siglip": -0.013975236291686694,
+    "clip_win_rate": 0.2,
+    "siglip_win_rate": 0.37333333333333335
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_007385",
+      "image_relpath": "images/flickr30k/flickr30k_test_007385.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_007385.jpg",
+      "caption": "Sign reads 'Rudolph's'; 1 person in blue pants and multicolored jacket; 1 person mid-leap with raised leg; 1 frisbee airborne; bright sunlight casting long shadows.",
+      "clip_score": 0.1869950890541076,
+      "siglip_score": 0.1106014549732208,
+      "delta_clip": -0.1818617582321167,
+      "delta_siglip": -0.06432697176933291
+    },
+    {
+      "image_id": "flickr30k_test_011250",
+      "image_relpath": "images/flickr30k/flickr30k_test_011250.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_011250.jpg",
+      "caption": "Sign reads \"DANGER\"; 2 people, one in brown shirt with \"LAKE PLACID\" text, one in red striped shirt; holding hands; foreground grass; bright sunlight.",
+      "clip_score": 0.2322186678647995,
+      "siglip_score": 0.1252807676792144,
+      "delta_clip": -0.1803751140832901,
+      "delta_siglip": -0.09523485600948339
+    },
+    {
+      "image_id": "flickr30k_test_011250",
+      "image_relpath": "images/flickr30k/flickr30k_test_011250.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_011250.jpg",
+      "caption": "Sign reads \"DANGER\"; 2 people, one in brown shirt with \"LAKE PLACID\" text, one in red striped shirt; holding hands; foreground grass; bright sunlight.",
+      "clip_score": 0.2322186678647995,
+      "siglip_score": 0.1252807676792144,
+      "delta_clip": -0.1404041200876236,
+      "delta_siglip": -0.123060017824173
+    },
+    {
+      "image_id": "flickr30k_test_007385",
+      "image_relpath": "images/flickr30k/flickr30k_test_007385.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_007385.jpg",
+      "caption": "Sign reads 'Rudolph's'; 1 person in blue pants and multicolored jacket; 1 person mid-leap with raised leg; 1 frisbee airborne; bright sunlight casting long shadows.",
+      "clip_score": 0.1869950890541076,
+      "siglip_score": 0.1106014549732208,
+      "delta_clip": -0.12349462509155279,
+      "delta_siglip": -0.016818955540657016
+    },
+    {
+      "image_id": "flickr30k_test_013546",
+      "image_relpath": "images/flickr30k/flickr30k_test_013546.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_013546.jpg",
+      "caption": "1 child stands on yellow platform; hand grips black handlebar in foreground; metal railings surround platform; blurred green trees in background.",
+      "clip_score": 0.2563473880290985,
+      "siglip_score": 0.1650270819664001,
+      "delta_clip": -0.12072080373764038,
+      "delta_siglip": -0.044402271509170504
+    },
+    {
+      "image_id": "flickr30k_test_016590",
+      "image_relpath": "images/flickr30k/flickr30k_test_016590.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_016590.jpg",
+      "caption": "1 person, 1 umbrella, 1 backpack, 1 water bottle, 1 wooden tray; umbrella striped blue and white; backpack dark green; water bottle clear plastic; tray on stone steps; midground near stone railing.",
+      "clip_score": 0.2457854747772216,
+      "siglip_score": 0.1257888823747635,
+      "delta_clip": -0.11879986524581912,
+      "delta_siglip": -0.1004098951816558
+    },
+    {
+      "image_id": "flickr30k_test_008802",
+      "image_relpath": "images/flickr30k/flickr30k_test_008802.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_008802.jpg",
+      "caption": "1 frisbee with blue paw print; 1 dog with black, white, and tan fur; running on grass; foreground; bright sunlight casting long shadows.",
+      "clip_score": 0.2580518722534179,
+      "siglip_score": 0.169089064002037,
+      "delta_clip": -0.11076211929321289,
+      "delta_siglip": -0.024489358067512512
+    },
+    {
+      "image_id": "flickr30k_test_016590",
+      "image_relpath": "images/flickr30k/flickr30k_test_016590.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_016590.jpg",
+      "caption": "1 person, 1 umbrella, 1 backpack, 1 water bottle, 1 wooden tray; umbrella striped blue and white; backpack dark green; water bottle clear plastic; tray on stone steps; midground near stone railing.",
+      "clip_score": 0.2457854747772216,
+      "siglip_score": 0.1257888823747635,
+      "delta_clip": -0.10687002539634713,
+      "delta_siglip": -0.1031240820884704
+    },
+    {
+      "image_id": "flickr30k_test_014144",
+      "image_relpath": "images/flickr30k/flickr30k_test_014144.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_014144.jpg",
+      "caption": "1 person, wearing dark clothing; grinding metal with a handheld tool; sparks flying; midground; fluorescent lighting.",
+      "clip_score": 0.2575185298919678,
+      "siglip_score": 0.1652553528547287,
+      "delta_clip": -0.1040849089622497,
+      "delta_siglip": -0.0655737966299057
+    },
+    {
+      "image_id": "flickr30k_test_009512",
+      "image_relpath": "images/flickr30k/flickr30k_test_009512.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_009512.jpg",
+      "caption": "Sign reads 'AVIREX'; 5 women wear red and black outfits; one holds a phone; standing in foreground; bright daylight.",
+      "clip_score": 0.2774779796600342,
+      "siglip_score": 0.1510047614574432,
+      "delta_clip": -0.10171377658843994,
+      "delta_siglip": -0.0373859107494354
+    },
+    {
+      "image_id": "flickr30k_test_028445",
+      "image_relpath": "images/flickr30k/flickr30k_test_028445.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_028445.jpg",
+      "caption": "1 bicycle with black handlebars; 1 man holding a blue mesh laundry hamper; red pickup truck with \"XTR\" visible on rear; midground on paved surface; bright sunlight.",
+      "clip_score": 0.2701467275619507,
+      "siglip_score": 0.2044452875852584,
+      "delta_clip": -0.09722679853439331,
+      "delta_siglip": -0.012591287493705805
+    },
+    {
+      "image_id": "flickr30k_test_029485",
+      "image_relpath": "images/flickr30k/flickr30k_test_029485.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_029485.jpg",
+      "caption": "Triple Threat Sports; 1 person, red shirt; waving; foreground; bright sunlight.",
+      "clip_score": 0.2776272892951965,
+      "siglip_score": 0.1998984664678573,
+      "delta_clip": -0.09319713711738592,
+      "delta_siglip": -0.06276209652423859
+    }
+  ]
+}

@@ -1,0 +1,142 @@
+{
+  "prompt": "Produce exactly one concise caption (one sentence) that states only visually verifiable facts. Include 2–6 discrete visual facts drawn from this checklist in the given priority order when present: 1) legible text: transcribe exact words; 2) counts and object types (e.g., \"2 people\", \"one bicycle\"); 3) key color/material/texture for those objects (e.g., \"orange backpack\", \"wooden façade\"); 4) pose/action/orientation (e.g., \"person seen from behind walking away; holding two poles\"); 5) simple spatial layout (foreground / midground / background placement); 6) lighting/viewpoint/occlusion cues (e.g., \"bright sunlight casting long shadows\", \"elevated vantage; tree partially obscures façade\"). Use canonical object names and exact counts, standard direction words (left/right/foreground/background), and numerals or short words for numbers. Do not infer roles, emotions, intentions, or use metaphors, slogans, or marketing language (avoid \"farmer\", \"happy\", \"adventure\", etc.). If text is not clearly legible, omit it rather than guess. Keep the caption factual, compact, and limited to one sentence containing 2–6 concrete facts—no lists, tags, extra sentences, or commentary. Example (good): \"Sign reads 'Outdoor World'; two adults walk toward the store entrance; timber façade and concrete forecourt; overcast sky.\" Counterexample (bad): \"A happy farmer enjoys a sunny day in the countryside.\"",
+  "prompt_id": "textgrad_1d8c701270",
+  "split_csv": "data/splits/flickr30k_main_seed1_train.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_15/train/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_15/train/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_15/train/scores.csv",
+  "data_root": "data",
+  "summary": {
+    "n": 24,
+    "mean_clip": 0.3244099902609984,
+    "mean_siglip": 0.19653018377721307,
+    "mean_caption_len": 40.166666666666664,
+    "generic_rate": 0.125,
+    "mean_delta_clip": 0.005963562677303941,
+    "mean_delta_siglip": 0.01632358475277822,
+    "clip_win_rate": 0.5833333333333334,
+    "siglip_win_rate": 0.7083333333333334
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_029824",
+      "image_relpath": "images/flickr30k/flickr30k_test_029824.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_029824.jpg",
+      "caption": "Sign reads \"Bienvenue Welcome\"; one person stands behind a black desk with \"London 2012\" and Olympic rings; red backdrop with white line drawings; pink informational cards on desk; person wears a lanyard with ID badge.",
+      "clip_score": 0.3239861130714416,
+      "siglip_score": 0.2457722127437591,
+      "delta_clip": -0.06766918301582342,
+      "delta_siglip": -0.0002342462539673129
+    },
+    {
+      "image_id": "flickr30k_test_008358",
+      "image_relpath": "images/flickr30k/flickr30k_test_008358.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_008358.jpg",
+      "caption": "One person in a red jersey with the number 1, black shorts, and red socks is diving horizontally across a grassy field; green foliage is in the background.",
+      "clip_score": 0.2984676957130432,
+      "siglip_score": 0.170500099658966,
+      "delta_clip": -0.059645652770996094,
+      "delta_siglip": -0.031011730432510404
+    },
+    {
+      "image_id": "flickr30k_test_022494",
+      "image_relpath": "images/flickr30k/flickr30k_test_022494.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_022494.jpg",
+      "caption": "One person stands in the midground holding orange ladders; white cloth covers an object nearby; wooden planks form a walkway in the foreground; brick and white-painted walls are visible in the background.",
+      "clip_score": 0.3026489019393921,
+      "siglip_score": 0.2457698434591293,
+      "delta_clip": -0.05846920609474182,
+      "delta_siglip": 0.0300649702548981
+    },
+    {
+      "image_id": "flickr30k_test_027523",
+      "image_relpath": "images/flickr30k/flickr30k_test_027523.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_027523.jpg",
+      "caption": "One person wearing a blue cap and plaid shirt sits on a wooden bench, carving a wooden figurine; a completed wooden head sculpture and a framed picture rest on a table in front; a striped bag hangs on the bench to the right; sunlight casts shadows across the scene.",
+      "clip_score": 0.2945517301559448,
+      "siglip_score": 0.2313033789396286,
+      "delta_clip": -0.04718583822250366,
+      "delta_siglip": 0.027823194861412104
+    },
+    {
+      "image_id": "flickr30k_test_013247",
+      "image_relpath": "images/flickr30k/flickr30k_test_013247.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_013247.jpg",
+      "caption": "Sign reads 'Outdoor World' and 'Bass Pro Shops'; four people walk on the concrete forecourt; wooden façade with rusted metal roof; overcast sky.",
+      "clip_score": 0.3059132397174835,
+      "siglip_score": 0.193254217505455,
+      "delta_clip": -0.03345635533332819,
+      "delta_siglip": 0.04206368327140808
+    },
+    {
+      "image_id": "flickr30k_test_018116",
+      "image_relpath": "images/flickr30k/flickr30k_test_018116.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_018116.jpg",
+      "caption": "One person with gray hair sits on the floor, working with small tools on a golden object; scattered golden pieces and metal tools lie on newspaper in the foreground; a round wooden object is positioned midground; the scene is viewed from an elevated angle.",
+      "clip_score": 0.2986328303813934,
+      "siglip_score": 0.167560413479805,
+      "delta_clip": -0.029410719871520996,
+      "delta_siglip": 0.013715967535972595
+    },
+    {
+      "image_id": "flickr30k_test_025508",
+      "image_relpath": "images/flickr30k/flickr30k_test_025508.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_025508.jpg",
+      "caption": "One person performs an aerial flip above a sand dune; the sky is clear blue; the person wears orange shorts; the dune slopes upward from the foreground; sunlight illuminates the scene from above.",
+      "clip_score": 0.3447626829147339,
+      "siglip_score": 0.2071888446807861,
+      "delta_clip": -0.02091622352600092,
+      "delta_siglip": 0.012705862522125216
+    },
+    {
+      "image_id": "flickr30k_test_000704",
+      "image_relpath": "images/flickr30k/flickr30k_test_000704.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_000704.jpg",
+      "caption": "Two men in a red-walled room; one holds a microphone and wears a white shirt, the other sits holding drumsticks; a television displays text including \"The best thing being a...\" and \"is the prece...\"; a brown bag rests on a surface in the foreground.",
+      "clip_score": 0.2575825154781341,
+      "siglip_score": 0.1786845475435257,
+      "delta_clip": -0.01929405331611639,
+      "delta_siglip": 0.018671274185180692
+    },
+    {
+      "image_id": "flickr30k_test_027960",
+      "image_relpath": "images/flickr30k/flickr30k_test_027960.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_027960.jpg",
+      "caption": "Five boys in athletic attire run across a dirt field; one wears a white shirt with visible green trim, another wears a black shirt with the number 58, and a third wears a white shirt with blue pants; cars are parked in the background behind a low wall; bright sunlight casts long shadows.",
+      "clip_score": 0.2998856902122497,
+      "siglip_score": 0.1582956165075302,
+      "delta_clip": -0.01597797870635992,
+      "delta_siglip": 0.002503693103790311
+    },
+    {
+      "image_id": "flickr30k_test_023643",
+      "image_relpath": "images/flickr30k/flickr30k_test_023643.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_023643.jpg",
+      "caption": "A young girl with curly hair and a red-and-white patterned top sits in the foreground under a large black umbrella with \"Capehart\" printed on it; behind her, a wooden easel displays two black-and-white caricatures; a blue backpack rests on the ground to her left; a person in a white",
+      "clip_score": 0.3181234002113342,
+      "siglip_score": 0.2028076350688934,
+      "delta_clip": -0.008788645267486628,
+      "delta_siglip": -0.07311734557151797
+    },
+    {
+      "image_id": "flickr30k_test_019253",
+      "image_relpath": "images/flickr30k/flickr30k_test_019253.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_019253.jpg",
+      "caption": "A person with curly hair wears a yellow knitted scarf and a black jacket with a purple collar; they are looking down and positioned in the foreground, with a poster featuring partial text \"TOES Y UCTS\" visible in the background.",
+      "clip_score": 0.375166118144989,
+      "siglip_score": 0.2432215213775634,
+      "delta_clip": 0.0029654502868652344,
+      "delta_siglip": -0.03155654668807992
+    },
+    {
+      "image_id": "flickr30k_test_011327",
+      "image_relpath": "images/flickr30k/flickr30k_test_011327.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_011327.jpg",
+      "caption": "One elephant with a spotted trunk and red-and-blue decorative cloth stands in the foreground on a brick-paved surface, while other elephants and people are visible in the background under bright sunlight.",
+      "clip_score": 0.3241108655929565,
+      "siglip_score": 0.1840885877609253,
+      "delta_clip": 0.011033058166503906,
+      "delta_siglip": 0.022118061780929593
+    }
+  ]
+}

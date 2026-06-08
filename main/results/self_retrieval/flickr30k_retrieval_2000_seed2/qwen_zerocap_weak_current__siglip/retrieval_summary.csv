@@ -1,0 +1,2 @@
+method_id,prompt_id,run_id,prompt_name,prompt_text,model,n,r@1,r@5,r@10,mrr,median_rank,mean_rank,mean_positive_score,mean_hardest_negative_score,mean_margin
+qwen_zerocap_weak_current,qwen_zerocap,qwen_zerocap_weak_current__flickr30k_retrieval_2000_seed2,Qwen ZeroCap Weak Current,"Write a short, natural caption for this image.",Qwen/Qwen3-VL-8B-Instruct,2000,0.9355,0.9905,0.9945,0.961302796205257,1.0,1.616,0.1929654080348555,0.12393630409799516,0.06902910393686033

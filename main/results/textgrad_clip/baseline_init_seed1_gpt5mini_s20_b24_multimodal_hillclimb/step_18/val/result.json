@@ -1,0 +1,142 @@
+{
+  "prompt": "Produce exactly one concise caption (one sentence) that states only visually verifiable facts. The caption must contain 2–6 discrete facts, presented in strict left-to-right priority order from this checklist when those facts are present: \n1) Legible text: exact transcription enclosed in quotes — if present, the transcription must be the very first clause. Do not guess illegible text; omit transcription if not clearly readable. \n2) Counts and canonical object types using numerals (e.g., \"1 person\", \"2 bicycles\"). Use canonical names (person, dog, car, bicycle, bench, table, sign, bag, chair, window, etc.). \n3) Color / material / pattern / texture attributes for the counted objects when clearly visible (e.g., \"red jacket\", \"wooden bench\", \"plaid shirt\"). At least one visible attribute should be included for one of the listed objects when available. \n4) Pose / action / orientation using an active verb and direction (e.g., \"walking to the right\", \"sits on bench carving with a chisel\", \"diving left, arms extended\"). Name tools or hand actions when they are visible. \n5) Simple spatial layout using foreground / midground / background or short relations (e.g., \"in foreground\", \"behind\", \"near outstretched hands\"). \n6) Lighting / viewpoint / occlusion cues if evident (e.g., \"bright sunlight casting long shadows\", \"elevated vantage\", \"partial occlusion by tree\", \"reflection in water\").\n\nFormatting and validation rules (must hold before output):\n- Exactly one sentence, no extra sentences or lines. Separate facts with commas or semicolons; keep clauses short and discrete.\n- 2–6 facts total (count facts by clauses). If fewer than 2 clearly verifiable facts exist, output the two most verifiable facts only (do not invent facts).\n- If transcription is included, it must appear first and be in quotes. Use numerals for counts (1, 2, 3).\n- Use canonical object names and concrete attribute words (colors, materials, tools). Prefer active verbs for actions.\n- Do not infer roles, emotions, intentions, or use uncertain qualifiers. Forbid role/emotion/intent words and uncertainty tokens (examples of forbidden tokens: \"goalkeeper\", \"chef\", \"happy\", \"working\", \"likely\", \"probably\", \"appears to be\", \"seems\", metaphors, or marketing language). Omit any fact you cannot verify visually.\n- Soft length target: prefer ≤30 words to keep the caption dense and focused.\n\nGood examples (follow these patterns):\n\"Sign reads 'Outdoor World'; 2 adults walk toward the entrance; timber façade in background.\"\n\"1 person holds a red umbrella; wooden bench in foreground; wet pavement reflecting streetlights.\"\n\"Sign reads 'Open 24/7'; 3 bicycles parked in front; metal rack at left; overcast sky.\"\n\nBad examples (do not follow):\n\"A happy farmer enjoys a sunny day in the countryside.\"\n\"People are probably selling things at a market.\"\n\"A goalkeeper dives to stop the ball, showing determination.\"\n\nProduce only the single caption sentence that satisfies the above rules.",
+  "prompt_id": "textgrad_7bfa9bfb9e",
+  "split_csv": "data/splits/flickr30k_main_seed1_val.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_18/val/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_18/val/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_18/val/scores.csv",
+  "data_root": "data",
+  "summary": {
+    "n": 150,
+    "mean_clip": 0.2962216490507126,
+    "mean_siglip": 0.1832637956738472,
+    "mean_caption_len": 22.9,
+    "generic_rate": 0.006666666666666667,
+    "mean_delta_clip": -0.028343799263238906,
+    "mean_delta_siglip": -0.015576750015219052,
+    "clip_win_rate": 0.21333333333333335,
+    "siglip_win_rate": 0.32666666666666666
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_028445",
+      "image_relpath": "images/flickr30k/flickr30k_test_028445.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_028445.jpg",
+      "caption": "1 person rides a bicycle; blue mesh laundry hamper on handlebars; red pickup truck parked nearby; building with windows in background; bright sunlight casting shadows.",
+      "clip_score": 0.2455535531044006,
+      "siglip_score": 0.1996782422065735,
+      "delta_clip": -0.12181997299194339,
+      "delta_siglip": -0.01735833287239072
+    },
+    {
+      "image_id": "flickr30k_test_011250",
+      "image_relpath": "images/flickr30k/flickr30k_test_011250.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_011250.jpg",
+      "caption": "\"1 person holds hands with another; yellow caution tape stretches across grass; airplane visible in background; bright sunlight.\"",
+      "clip_score": 0.2909740805625915,
+      "siglip_score": 0.2206298857927322,
+      "delta_clip": -0.1216197013854981,
+      "delta_siglip": 0.00011426210403442383
+    },
+    {
+      "image_id": "flickr30k_test_006161",
+      "image_relpath": "images/flickr30k/flickr30k_test_006161.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_006161.jpg",
+      "caption": "1 person sweeps sidewalk with broom; crowd lines street; building with barred window in background; overcast lighting.",
+      "clip_score": 0.2167986780405044,
+      "siglip_score": 0.2050005346536636,
+      "delta_clip": -0.12118323147296911,
+      "delta_siglip": -0.03933922946453089
+    },
+    {
+      "image_id": "flickr30k_test_008802",
+      "image_relpath": "images/flickr30k/flickr30k_test_008802.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_008802.jpg",
+      "caption": "1 dog runs across grass holding a white frisbee with blue paw print; chain-link fence in background; bright sunlight casting long shadows.",
+      "clip_score": 0.2487721145153045,
+      "siglip_score": 0.158499538898468,
+      "delta_clip": -0.1200418770313263,
+      "delta_siglip": -0.035078883171081515
+    },
+    {
+      "image_id": "flickr30k_test_003587",
+      "image_relpath": "images/flickr30k/flickr30k_test_003587.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_003587.jpg",
+      "caption": "\"1 person wears a black jacket with 'Plus' and 'Coca-Cola' logos; cap has '3' and 'ALBAN' text; looking down and to the right; blurred background.\"",
+      "clip_score": 0.2472619116306305,
+      "siglip_score": 0.1929907500743866,
+      "delta_clip": -0.1180250346660614,
+      "delta_siglip": -0.07131332159042358
+    },
+    {
+      "image_id": "flickr30k_test_028445",
+      "image_relpath": "images/flickr30k/flickr30k_test_028445.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_028445.jpg",
+      "caption": "1 person rides a bicycle; blue mesh laundry hamper on handlebars; red pickup truck parked nearby; building with windows in background; bright sunlight casting shadows.",
+      "clip_score": 0.2455535531044006,
+      "siglip_score": 0.1996782422065735,
+      "delta_clip": -0.11411035060882571,
+      "delta_siglip": -0.021670073270797702
+    },
+    {
+      "image_id": "flickr30k_test_006161",
+      "image_relpath": "images/flickr30k/flickr30k_test_006161.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_006161.jpg",
+      "caption": "1 person sweeps sidewalk with broom; crowd lines street; building with barred window in background; overcast lighting.",
+      "clip_score": 0.2167986780405044,
+      "siglip_score": 0.2050005346536636,
+      "delta_clip": -0.10447491705417639,
+      "delta_siglip": 0.004487693309783908
+    },
+    {
+      "image_id": "flickr30k_test_023317",
+      "image_relpath": "images/flickr30k/flickr30k_test_023317.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_023317.jpg",
+      "caption": "\"Sign reads 'GUEST SERVICES'; 1 person in pink jacket stands; 1 person in blue vest sits at counter; red barrel in foreground.\"",
+      "clip_score": 0.2892333269119262,
+      "siglip_score": 0.1910456120967865,
+      "delta_clip": -0.10191458463668829,
+      "delta_siglip": -0.027342945337295504
+    },
+    {
+      "image_id": "flickr30k_test_022056",
+      "image_relpath": "images/flickr30k/flickr30k_test_022056.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_022056.jpg",
+      "caption": "1 person in green shirt stands with hands on head; 1 person in white shirt sits in foreground; 1 yellow bag hangs on shoulder; bookshelf visible in background.",
+      "clip_score": 0.2515434920787811,
+      "siglip_score": 0.135798841714859,
+      "delta_clip": -0.10039657354354864,
+      "delta_siglip": -0.10002253949642179
+    },
+    {
+      "image_id": "flickr30k_test_016590",
+      "image_relpath": "images/flickr30k/flickr30k_test_016590.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_016590.jpg",
+      "caption": "1 person holds a blue-and-white striped umbrella; 2 people stand near a metal fence; stone steps ascend to the right; blue windows visible in background.",
+      "clip_score": 0.2648626863956451,
+      "siglip_score": 0.1563818752765655,
+      "delta_clip": -0.09972265362739563,
+      "delta_siglip": -0.06981690227985379
+    },
+    {
+      "image_id": "flickr30k_test_026753",
+      "image_relpath": "images/flickr30k/flickr30k_test_026753.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_026753.jpg",
+      "caption": "\"1 person rides inline skates on metal rail; 3 people stand in background; green grass underfoot; bright sunlight casting shadows.\"",
+      "clip_score": 0.2370149493217468,
+      "siglip_score": 0.1729227602481842,
+      "delta_clip": -0.09457629919052121,
+      "delta_siglip": 0.015381753444671714
+    },
+    {
+      "image_id": "flickr30k_test_010551",
+      "image_relpath": "images/flickr30k/flickr30k_test_010551.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_010551.jpg",
+      "caption": "1 person in light blue shirt and dark pants; right hand raised in gesture; standing near large potted plant; bright sunlight casting shadows.",
+      "clip_score": 0.2235690504312515,
+      "siglip_score": 0.169084370136261,
+      "delta_clip": -0.0943400710821152,
+      "delta_siglip": -0.0633869469165802
+    }
+  ]
+}

@@ -1,0 +1,142 @@
+{
+  "prompt": "Produce exactly one concise image caption (a single sentence, one line, preferably 15–35 words). Use only visually verifiable facts and avoid inference or speculation. For the caption include these visible elements (if present): 1) subject with brief appearance cues (approximate age if obvious, hair/clothing color or pattern), 2) explicit action or pose and a positional relation (foreground/background, left/right, on/at/in), 3) concrete objects/accessories with colors, materials, textures (e.g., metal, wood, diamond‑plate, hoses, case, amplifier), and 4) one scene or lighting cue and any notable occlusion or reflection. Mention numeric counts only when objects/people are clearly separable. Do not label professions, emotions, intentions, or use hedging words (probably, appears, seems, likely); prefer precise object labels over generic terms. Order words so the most discriminative tokens come first (object → color/material → pose → accessory → scene/occlusion). Output nothing but the single-sentence caption.",
+  "prompt_id": "textgrad_bce717bb31",
+  "split_csv": "data/splits/flickr30k_main_seed1_val.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_01/val/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_01/val/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_01/val/scores.csv",
+  "data_root": "data",
+  "summary": {
+    "n": 150,
+    "mean_clip": 0.3219355893135071,
+    "mean_siglip": 0.19435127824544907,
+    "mean_caption_len": 26.313333333333333,
+    "generic_rate": 0.03333333333333333,
+    "mean_delta_clip": -0.0026298590004444154,
+    "mean_delta_siglip": -0.004489267443617188,
+    "clip_win_rate": 0.4766666666666667,
+    "siglip_win_rate": 0.4
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_016590",
+      "image_relpath": "images/flickr30k/flickr30k_test_016590.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_016590.jpg",
+      "caption": "A young boy in a white shirt and blue shorts stands beside a woman in a colorful woven skirt, both near a blue-and-white striped umbrella on a stone-paved walkway.",
+      "clip_score": 0.2669187784194946,
+      "siglip_score": 0.1522002667188644,
+      "delta_clip": -0.09766656160354614,
+      "delta_siglip": -0.07399851083755488
+    },
+    {
+      "image_id": "flickr30k_test_017956",
+      "image_relpath": "images/flickr30k/flickr30k_test_017956.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_017956.jpg",
+      "caption": "Man in blue shirt stands right foreground, holding pink flag, while crowd with cameras gathers before red-walled building under clear sky.",
+      "clip_score": 0.2432705909013748,
+      "siglip_score": 0.1355821788311004,
+      "delta_clip": -0.09043477475643161,
+      "delta_siglip": -0.05101257562637329
+    },
+    {
+      "image_id": "flickr30k_test_016590",
+      "image_relpath": "images/flickr30k/flickr30k_test_016590.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_016590.jpg",
+      "caption": "A young boy in a white shirt and blue shorts stands beside a woman in a colorful woven skirt, both near a blue-and-white striped umbrella on a stone-paved walkway.",
+      "clip_score": 0.2669187784194946,
+      "siglip_score": 0.1522002667188644,
+      "delta_clip": -0.08573672175407415,
+      "delta_siglip": -0.07671269774436948
+    },
+    {
+      "image_id": "flickr30k_test_023900",
+      "image_relpath": "images/flickr30k/flickr30k_test_023900.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_023900.jpg",
+      "caption": "Young man with dark hair and striped shirt points at skewers in foreground, standing before illuminated sign with red lettering, under bright overhead light.",
+      "clip_score": 0.2761099338531494,
+      "siglip_score": 0.1757481098175048,
+      "delta_clip": -0.08569669723510737,
+      "delta_siglip": -0.11506751179695138
+    },
+    {
+      "image_id": "flickr30k_test_017956",
+      "image_relpath": "images/flickr30k/flickr30k_test_017956.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_017956.jpg",
+      "caption": "Man in blue shirt stands right foreground, holding pink flag, while crowd with cameras gathers before red-walled building under clear sky.",
+      "clip_score": 0.2432705909013748,
+      "siglip_score": 0.1355821788311004,
+      "delta_clip": -0.07494418323040011,
+      "delta_siglip": -0.0392361581325531
+    },
+    {
+      "image_id": "flickr30k_test_006537",
+      "image_relpath": "images/flickr30k/flickr30k_test_006537.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_006537.jpg",
+      "caption": "Man in orange vest and blue jeans walks on wet platform near \"Kilburn\" sign, holding clipboard, with yellow train on right under overcast sky.",
+      "clip_score": 0.3183571994304657,
+      "siglip_score": 0.2101021856069564,
+      "delta_clip": -0.07312366366386408,
+      "delta_siglip": -0.007601067423820496
+    },
+    {
+      "image_id": "flickr30k_test_011250",
+      "image_relpath": "images/flickr30k/flickr30k_test_011250.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_011250.jpg",
+      "caption": "Two young boys, one in brown shirt and patterned shorts, hold hands near yellow caution tape on grassy field under clear blue sky.",
+      "clip_score": 0.3409436643123626,
+      "siglip_score": 0.2303143292665481,
+      "delta_clip": -0.07165011763572698,
+      "delta_siglip": 0.009798705577850314
+    },
+    {
+      "image_id": "flickr30k_test_006161",
+      "image_relpath": "images/flickr30k/flickr30k_test_006161.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_006161.jpg",
+      "caption": "A woman in a straw hat and green vest sweeps pavement in foreground, holding broom and gray trash bag, beside queue of people under overcast sky.",
+      "clip_score": 0.2668585479259491,
+      "siglip_score": 0.2347121834754943,
+      "delta_clip": -0.07112336158752441,
+      "delta_siglip": -0.009627580642700195
+    },
+    {
+      "image_id": "flickr30k_test_000585",
+      "image_relpath": "images/flickr30k/flickr30k_test_000585.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_000585.jpg",
+      "caption": "Red crane with black boom extends upward, workers in yellow vests stand near wooden benches under bright daylight, partially obscured by tree branches.",
+      "clip_score": 0.2684753537178039,
+      "siglip_score": 0.1586635410785675,
+      "delta_clip": -0.06852641701698309,
+      "delta_siglip": -0.04927131533622739
+    },
+    {
+      "image_id": "flickr30k_test_007385",
+      "image_relpath": "images/flickr30k/flickr30k_test_007385.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_007385.jpg",
+      "caption": "A young man in a blue and multicolored patterned outfit throws green frisbees while dancing in front of a store under clear blue skies.",
+      "clip_score": 0.3018494546413421,
+      "siglip_score": 0.1623807549476623,
+      "delta_clip": -0.0670073926448822,
+      "delta_siglip": -0.012547671794891413
+    },
+    {
+      "image_id": "flickr30k_test_014144",
+      "image_relpath": "images/flickr30k/flickr30k_test_014144.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_014144.jpg",
+      "caption": "Man in dark blue jacket and black pants grinds metal with angle grinder, sparks flying, against row of gray lockers in brightly lit hallway.",
+      "clip_score": 0.2949308454990387,
+      "siglip_score": 0.2091050148010254,
+      "delta_clip": -0.06667259335517878,
+      "delta_siglip": -0.02172413468360901
+    },
+    {
+      "image_id": "flickr30k_test_019953",
+      "image_relpath": "images/flickr30k/flickr30k_test_019953.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_019953.jpg",
+      "caption": "Silver sedan parked beside red car with cardboard cover, woman in patterned dress walks on sidewalk near orange trash can under daylight.",
+      "clip_score": 0.2479840368032455,
+      "siglip_score": 0.1789696514606475,
+      "delta_clip": -0.0640594214200974,
+      "delta_siglip": 0.005903810262679998
+    }
+  ]
+}

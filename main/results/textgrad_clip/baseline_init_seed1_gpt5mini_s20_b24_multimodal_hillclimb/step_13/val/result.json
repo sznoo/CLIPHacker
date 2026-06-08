@@ -1,0 +1,142 @@
+{
+  "prompt": "Generate exactly one concise, single‑sentence caption containing 2–6 discrete, visually verifiable facts. Follow this strict, binding priority and selection algorithm when composing the caption:\n\n1) Priority order (mandatory):  \n   a. Transcribe any clearly legible text exactly, and state its visible location (e.g., \"on the table front\", \"backdrop, upper-left\"). If text is not clearly legible, omit it—do not guess.  \n   b. Counts and canonical object types (use numerals, e.g., \"2 people\", \"1 bicycle\").  \n   c. Color/material/texture modifiers for those counted or salient objects (e.g., \"navy polo\", \"transparent plastic\", \"gilded statue\"). Attach these to the object fact when possible.  \n   d. Pose/action/orientation (short phrases: \"seen from behind\", \"right person holding red cup\", \"person walking left\").  \n   e. Spatial placement (foreground/midground/background, left/right, \"on the table front\").  \n   f. Lighting/viewpoint/occlusion if it affects visibility (e.g., \"low-angle view\", \"large urn in foreground partially blocking statue\", \"bright sunlight casting long shadows\").\n\n2) Selection and trimming rule (mandatory):  \n   - Compose candidate facts in the order above. Include at most 6 facts. If more than 6 candidate facts are available, drop the lowest-priority facts first (f → e → d → c → b → a).  \n   - Tie-breaker among same-priority facts: prefer the most discriminative tokens (named logos/words, unusual object types, precise color/material words).  \n   - Grouping rule: a count+object and its color/material count as one fact if presented together (e.g., \"2 people in navy polos\" = one fact). Separate pose/orientation or distinct spatial placement count as separate facts.\n\n3) Format and wording rules (mandatory):  \n   - Produce a single sentence only; no lists, tags, JSON, multi-line output, or extra commentary.  \n   - Separate facts with semicolons or commas, keep phrasing terse. Enclose any transcribed text in single quotes (e.g., Sign reads 'London 2012'). Use numerals for counts. Use canonical object names (use \"person\" unless a role/gender word is explicitly visible as text).  \n   - Do NOT infer roles, emotions, intentions, or use hedging words. Forbidden/avoid examples: \"appears\", \"seems\", \"likely\", \"probably\", \"looks like\", \"happy\", \"smiling\", \"vendor\", \"customer\", \"worker\", \"fan\", or other role/emotion words unless explicitly legible on the image. Use neutral visual descriptors only.\n\n4) What counts as one fact (clarifying):  \n   - Each exact transcribed text string with location = 1 fact.  \n   - Each count + object type (with optional attached color/material) = 1 fact.  \n   - Each distinct pose/action/orientation = 1 fact.  \n   - Each distinct spatial placement or lighting/viewpoint/occlusion cue = 1 fact.\n\n5) Keep captions concrete and localizing: always prefer explicit localizers (\"on the table front\", \"backdrop\", \"foreground\", \"left person\") and precise color/material words (\"navy\", \"transparent\", \"gilded\", \"wooden\") over vague terms.\n\n6) Examples (one good, one bad for clarity):  \n   Good: \"Sign reads 'Outdoor World'; 2 adults walk toward the store entrance; timber façade and concrete forecourt; overcast sky.\"  \n   Bad: \"A happy farmer enjoys a sunny day in the countryside.\"\n\nProduce exactly one caption that obeys the rules above.",
+  "prompt_id": "textgrad_6825382014",
+  "split_csv": "data/splits/flickr30k_main_seed1_val.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_13/val/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_13/val/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_13/val/scores.csv",
+  "data_root": "data",
+  "summary": {
+    "n": 150,
+    "mean_clip": 0.30413252343734104,
+    "mean_siglip": 0.18555445745587348,
+    "mean_caption_len": 30.213333333333335,
+    "generic_rate": 0.0,
+    "mean_delta_clip": -0.020432924876610446,
+    "mean_delta_siglip": -0.013286088233192758,
+    "clip_win_rate": 0.3,
+    "siglip_win_rate": 0.3566666666666667
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_011250",
+      "image_relpath": "images/flickr30k/flickr30k_test_011250.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_011250.jpg",
+      "caption": "Two people; right person holding left person’s hand; yellow caution tape in midground; clear blue sky with scattered clouds; bright sunlight casting long shadows.",
+      "clip_score": 0.2224619388580322,
+      "siglip_score": 0.1755608022212982,
+      "delta_clip": -0.1901318430900574,
+      "delta_siglip": -0.0449548214673996
+    },
+    {
+      "image_id": "flickr30k_test_011250",
+      "image_relpath": "images/flickr30k/flickr30k_test_011250.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_011250.jpg",
+      "caption": "Two people; right person holding left person’s hand; yellow caution tape in midground; clear blue sky with scattered clouds; bright sunlight casting long shadows.",
+      "clip_score": 0.2224619388580322,
+      "siglip_score": 0.1755608022212982,
+      "delta_clip": -0.1501608490943909,
+      "delta_siglip": -0.0727799832820892
+    },
+    {
+      "image_id": "flickr30k_test_028445",
+      "image_relpath": "images/flickr30k/flickr30k_test_028445.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_028445.jpg",
+      "caption": "1 person rides a bicycle in foreground; blue mesh laundry hamper on bike; red pickup truck with 'XTR' text on rear fender; bright sunlight casting long shadows.",
+      "clip_score": 0.242489606142044,
+      "siglip_score": 0.1802095025777816,
+      "delta_clip": -0.12488391995429998,
+      "delta_siglip": -0.03682707250118261
+    },
+    {
+      "image_id": "flickr30k_test_005806",
+      "image_relpath": "images/flickr30k/flickr30k_test_005806.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_005806.jpg",
+      "caption": "1 person in beige long-sleeve shirt; bending over open black suitcase; foreground; low-angle view; transparent plastic water bottle visible nearby.",
+      "clip_score": 0.2538387179374695,
+      "siglip_score": 0.1575394719839096,
+      "delta_clip": -0.12035530805587763,
+      "delta_siglip": -0.05338458716869349
+    },
+    {
+      "image_id": "flickr30k_test_028445",
+      "image_relpath": "images/flickr30k/flickr30k_test_028445.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_028445.jpg",
+      "caption": "1 person rides a bicycle in foreground; blue mesh laundry hamper on bike; red pickup truck with 'XTR' text on rear fender; bright sunlight casting long shadows.",
+      "clip_score": 0.242489606142044,
+      "siglip_score": 0.1802095025777816,
+      "delta_clip": -0.1171742975711823,
+      "delta_siglip": -0.041138812899589594
+    },
+    {
+      "image_id": "flickr30k_test_008802",
+      "image_relpath": "images/flickr30k/flickr30k_test_008802.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_008802.jpg",
+      "caption": "1 dog runs across grass foreground holding white frisbee with blue paw print; chain-link fence in background; bright sunlight casting long shadows.",
+      "clip_score": 0.2524681687355041,
+      "siglip_score": 0.1611866950988769,
+      "delta_clip": -0.11634582281112671,
+      "delta_siglip": -0.03239172697067261
+    },
+    {
+      "image_id": "flickr30k_test_007385",
+      "image_relpath": "images/flickr30k/flickr30k_test_007385.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_007385.jpg",
+      "caption": "Sign reads 'Rudolph's' on the storefront backdrop; 1 person in blue and multicolored patterned suit leaps with arm raised; 1 person in similar suit holds green baton mid-air; bright sunlight casts long shadows on asphalt foreground; 2 people in blue suits visible midground left;",
+      "clip_score": 0.2606061995029449,
+      "siglip_score": 0.1312399208545684,
+      "delta_clip": -0.10825064778327942,
+      "delta_siglip": -0.04368850588798531
+    },
+    {
+      "image_id": "flickr30k_test_013546",
+      "image_relpath": "images/flickr30k/flickr30k_test_013546.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_013546.jpg",
+      "caption": "1 person in black jacket stands on yellow platform; hand grips black handle in foreground; blurred green trees in background; motion blur across scene.",
+      "clip_score": 0.2740236520767212,
+      "siglip_score": 0.1773767173290252,
+      "delta_clip": -0.1030445396900177,
+      "delta_siglip": -0.03205263614654538
+    },
+    {
+      "image_id": "flickr30k_test_030505",
+      "image_relpath": "images/flickr30k/flickr30k_test_030505.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_030505.jpg",
+      "caption": "Crowd of people in midground; 1 American flag visible upper-left; 1 sign reads 'BUTTERFLY' on building facade; 1 person seen from behind in foreground; bright sunlight casting long shadows; 1 black lamppost with two lights in midground.",
+      "clip_score": 0.2407324314117431,
+      "siglip_score": 0.0705438405275344,
+      "delta_clip": -0.0949583649635315,
+      "delta_siglip": -0.1001892685890198
+    },
+    {
+      "image_id": "flickr30k_test_030505",
+      "image_relpath": "images/flickr30k/flickr30k_test_030505.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_030505.jpg",
+      "caption": "Crowd of people in midground; 1 American flag visible upper-left; 1 sign reads 'BUTTERFLY' on building facade; 1 person seen from behind in foreground; bright sunlight casting long shadows; 1 black lamppost with two lights in midground.",
+      "clip_score": 0.2407324314117431,
+      "siglip_score": 0.0705438405275344,
+      "delta_clip": -0.09287205338478088,
+      "delta_siglip": -0.1470141857862473
+    },
+    {
+      "image_id": "flickr30k_test_005250",
+      "image_relpath": "images/flickr30k/flickr30k_test_005250.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_005250.jpg",
+      "caption": "Text reads '100 TO 117' on the wall backdrop; 1 person in black dress holds red flowers; 1 person in black coat holds purple flowers; person seen from behind wearing veil; background shows staircase with wooden railing; people walking in midground.",
+      "clip_score": 0.2747482657432556,
+      "siglip_score": 0.1225601732730865,
+      "delta_clip": -0.08663606643676758,
+      "delta_siglip": -0.08668002486228939
+    },
+    {
+      "image_id": "flickr30k_test_005806",
+      "image_relpath": "images/flickr30k/flickr30k_test_005806.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_005806.jpg",
+      "caption": "1 person in beige long-sleeve shirt; bending over open black suitcase; foreground; low-angle view; transparent plastic water bottle visible nearby.",
+      "clip_score": 0.2538387179374695,
+      "siglip_score": 0.1575394719839096,
+      "delta_clip": -0.0837287008762359,
+      "delta_siglip": -0.027174994349479592
+    }
+  ]
+}

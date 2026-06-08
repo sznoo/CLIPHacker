@@ -1,0 +1,142 @@
+{
+  "prompt": "Produce exactly one concise caption: a single sentence containing 2–6 discrete, visually verifiable facts. Facts must follow this mandatory priority and syntactic order when present (place each present fact in this order, separated by commas): \n1) legible text/logos/numbers/dates — transcribe exact visible characters in double quotes and place this clause first (e.g., Sign reads \"London 2012\"); if text is not clearly legible, omit it; \n2) count + canonical object type using numerals (e.g., 2 people, 1 bicycle); \n3) distinctive color/material/texture for those objects (e.g., red shopping bag, timber façade); \n4) pose/action/orientation (e.g., walking toward entrance, facing left, head down); \n5) simple spatial placement (foreground/midground/background) for at least one key object or person; \n6) lighting/viewpoint/occlusion/reflection cues (e.g., bright sunlight casting long shadows, seen through glass with reflection). \n\nRules and style:\n- A \"fact\" is a single, discrete visual assertion drawn from the list above. Include between 2 and 6 facts and stop after 6 facts. \n- Use canonical nouns (dog, bicycle, store sign, table), numerals for numbers (use \"2\" not \"two\"), and standard direction/placement words (left/right/foreground/background). \n- Separate facts with commas in one sentence, and place any quoted text first. \n- Do not infer roles, emotions, intentions, or nonvisual attributes (ban words like \"happy\", \"volunteer\", \"customer\"); do not use hedges (\"appears\", \"seems\") or guess unreadable text. \n- Do not use vague single-word generics without a qualifier (avoid \"sign\" or \"object\" alone—prefer \"store sign\", \"red bag\"). \n- If a count cannot be determined confidently, prefer safe positional phrasing (\"foreground person\", \"a pair near the entrance\") rather than an incorrect numeral. If color is ambiguous, use neutral wording (\"dark jacket\", \"light-colored shirt\") or omit. \n- If more than 6 candidate facts are visible, drop facts in this priority: extra adjectives > secondary spatial descriptors > extra lighting/viewpoint words. \n- If any legible alphanumeric characters are visible, include them first; otherwise include at least one high-priority discriminative attribute (distinctive color, readable number/date, or clear pose) before lower-priority facts.\n\nPositive examples (follow these templates):\n- \"Sign reads \"Outdoor World\", 2 adults walk near the store entrance, timber façade and concrete forecourt, overcast sky.\"\n- \"Poster reads \"21000\", 2 people seated on train bench, left person in dark blazer, right person in yellow hoodie, greenish interior lighting.\"\n- \"Red shopping bag with \"American Girl Place\", woman standing behind white tablecloth, American flag above, window reflection in foreground.\"\n\nNegative examples (prohibited patterns):\n- \"A happy farmer enjoys a sunny day in the countryside.\" (inference/emotion, no discrete visual facts) \n- \"There are some people and stuff, looks like an event.\" (vague, noncanonical nouns, hedging)\n\nOutput only the one-sentence caption, nothing else.",
+  "prompt_id": "textgrad_5e9808b9f0",
+  "split_csv": "data/splits/flickr30k_main_seed1_val.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_19/val/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_19/val/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_19/val/scores.csv",
+  "data_root": "data",
+  "summary": {
+    "n": 150,
+    "mean_clip": 0.29114320188760756,
+    "mean_siglip": 0.18030127350240946,
+    "mean_caption_len": 23.62,
+    "generic_rate": 0.0,
+    "mean_delta_clip": -0.03342224642634392,
+    "mean_delta_siglip": -0.018539272186656793,
+    "clip_win_rate": 0.17333333333333334,
+    "siglip_win_rate": 0.31
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_017956",
+      "image_relpath": "images/flickr30k/flickr30k_test_017956.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_017956.jpg",
+      "caption": "\"Sign reads \"Outdoor World\", 2 people walk near the store entrance, timber façade and concrete forecourt, overcast sky.\"",
+      "clip_score": 0.1771407723426818,
+      "siglip_score": -0.0095068011432886,
+      "delta_clip": -0.1565645933151246,
+      "delta_siglip": -0.1961015556007623
+    },
+    {
+      "image_id": "flickr30k_test_005250",
+      "image_relpath": "images/flickr30k/flickr30k_test_005250.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_005250.jpg",
+      "caption": "\"Sign reads \"100 TO 117\", 2 people, one holding red flowers, one holding purple flowers, both standing midground, indoor ambient lighting.\"",
+      "clip_score": 0.2177390158176422,
+      "siglip_score": 0.1463057100772857,
+      "delta_clip": -0.14364531636238098,
+      "delta_siglip": -0.06293448805809018
+    },
+    {
+      "image_id": "flickr30k_test_011250",
+      "image_relpath": "images/flickr30k/flickr30k_test_011250.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_011250.jpg",
+      "caption": "\"Shirt reads \"LAKE PLACID\", 2 children stand in grassy field, older child in brown shirt and patterned shorts, younger child in red striped shirt and blue jeans, holding hands, bright sunlight casting long shadows, yellow caution tape in midground.\"",
+      "clip_score": 0.2701748013496399,
+      "siglip_score": 0.1849957704544067,
+      "delta_clip": -0.1424189805984497,
+      "delta_siglip": -0.03551985323429108
+    },
+    {
+      "image_id": "flickr30k_test_017956",
+      "image_relpath": "images/flickr30k/flickr30k_test_017956.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_017956.jpg",
+      "caption": "\"Sign reads \"Outdoor World\", 2 people walk near the store entrance, timber façade and concrete forecourt, overcast sky.\"",
+      "clip_score": 0.1771407723426818,
+      "siglip_score": -0.0095068011432886,
+      "delta_clip": -0.1410740017890931,
+      "delta_siglip": -0.18432513810694212
+    },
+    {
+      "image_id": "flickr30k_test_016835",
+      "image_relpath": "images/flickr30k/flickr30k_test_016835.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_016835.jpg",
+      "caption": "Sign reads \"Front St E\", 1 person in black hat and white shirt stands in foreground, red socks and black shoes, facing forward, bright daylight.",
+      "clip_score": 0.254355251789093,
+      "siglip_score": 0.1483643949031829,
+      "delta_clip": -0.1286802887916565,
+      "delta_siglip": -0.09252861142158511
+    },
+    {
+      "image_id": "flickr30k_test_016538",
+      "image_relpath": "images/flickr30k/flickr30k_test_016538.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_016538.jpg",
+      "caption": "Sign reads \"Ed's Body Shop\", 1 person on horse, brown horse running, black calf running, midground action, bright sunlight casting long shadows.",
+      "clip_score": 0.2196644246578216,
+      "siglip_score": 0.1432861089706421,
+      "delta_clip": -0.1263224184513092,
+      "delta_siglip": 0.0025477707386016846
+    },
+    {
+      "image_id": "flickr30k_test_003587",
+      "image_relpath": "images/flickr30k/flickr30k_test_003587.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_003587.jpg",
+      "caption": "\"Jacket displays \"Plus\", \"Coca-Cola\", \"ARCA\", \"Snap-on\", and \"3\" logo, 1 person in dark jacket with light-colored shirt, head slightly tilted downward, foreground, bright lighting.\"",
+      "clip_score": 0.2538041472434997,
+      "siglip_score": 0.1870905458927154,
+      "delta_clip": -0.1114827990531922,
+      "delta_siglip": -0.07721352577209478
+    },
+    {
+      "image_id": "flickr30k_test_029485",
+      "image_relpath": "images/flickr30k/flickr30k_test_029485.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_029485.jpg",
+      "caption": "\"Shirt reads \"TRIPLE THREAT SPORTS\", 3 people, red shirt, waving, foreground, bright sunlight casting long shadows.\"",
+      "clip_score": 0.2652908563613891,
+      "siglip_score": 0.180115133523941,
+      "delta_clip": -0.10553357005119329,
+      "delta_siglip": -0.08254542946815488
+    },
+    {
+      "image_id": "flickr30k_test_000187",
+      "image_relpath": "images/flickr30k/flickr30k_test_000187.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_000187.jpg",
+      "caption": "\"2 people, foreground person in light blue swim trunks with brown pattern, arm extended sideways, background person in blue swim trunks bending over, ocean water visible behind.\"",
+      "clip_score": 0.2353621125221252,
+      "siglip_score": 0.1815901696681976,
+      "delta_clip": -0.10496294498443609,
+      "delta_siglip": -0.03821045160293579
+    },
+    {
+      "image_id": "flickr30k_test_017698",
+      "image_relpath": "images/flickr30k/flickr30k_test_017698.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_017698.jpg",
+      "caption": "\"7 people in military uniforms stand in midground, 1 person in dark jacket holds a white paper, light-colored building with window in background, bright sunlight casting long shadows.\"",
+      "clip_score": 0.2487527132034301,
+      "siglip_score": 0.1617286205291748,
+      "delta_clip": -0.10273355245590218,
+      "delta_siglip": -0.09831124544143677
+    },
+    {
+      "image_id": "flickr30k_test_011250",
+      "image_relpath": "images/flickr30k/flickr30k_test_011250.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_011250.jpg",
+      "caption": "\"Shirt reads \"LAKE PLACID\", 2 children stand in grassy field, older child in brown shirt and patterned shorts, younger child in red striped shirt and blue jeans, holding hands, bright sunlight casting long shadows, yellow caution tape in midground.\"",
+      "clip_score": 0.2701748013496399,
+      "siglip_score": 0.1849957704544067,
+      "delta_clip": -0.1024479866027832,
+      "delta_siglip": -0.06334501504898069
+    },
+    {
+      "image_id": "flickr30k_test_016538",
+      "image_relpath": "images/flickr30k/flickr30k_test_016538.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_016538.jpg",
+      "caption": "Sign reads \"Ed's Body Shop\", 1 person on horse, brown horse running, black calf running, midground action, bright sunlight casting long shadows.",
+      "clip_score": 0.2196644246578216,
+      "siglip_score": 0.1432861089706421,
+      "delta_clip": -0.10180804133415228,
+      "delta_siglip": -0.0010851919651031217
+    }
+  ]
+}

@@ -1,0 +1,142 @@
+{
+  "prompt": "Produce exactly one concise, natural single‑sentence caption (output only that one sentence, no tags, lists, or extra text). Follow this template and order: subject (use a generic class such as \"person\", \"dog\", \"child\", \"man\", \"woman\" unless a fine‑grained label is unmistakable) with any visible count; then 2–4 clearly visible attributes (colors, distinctive markings/patterns, clothing items, or props); then pose/orientation plus a precise, observable action (e.g., \"standing, facing camera, holding two poles\"); then one immediate scene/foreground object; then one background or lighting/photographic cue (e.g., \"sunlit snow, long shadows, reflection, motion blur, low angle\"). Only state attributes that are clearly visible — do not guess or infer motives, events, names, ages, or unseen details; describe facial expressions only if visibly evident (e.g., \"broad smile\"). Keep the caption information‑dense and natural, avoid vague editorializing (e.g., \"bustling urban setting\") and uncertain labels, and aim for about 12–30 words.",
+  "prompt_id": "textgrad_9c40996162",
+  "split_csv": "data/splits/flickr30k_main_seed1_val.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_04/val/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_04/val/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_04/val/scores.csv",
+  "data_root": "data",
+  "summary": {
+    "n": 150,
+    "mean_clip": 0.3162439835071564,
+    "mean_siglip": 0.19356373146176334,
+    "mean_caption_len": 24.86,
+    "generic_rate": 0.04,
+    "mean_delta_clip": -0.00832146480679512,
+    "mean_delta_siglip": -0.005276814227302876,
+    "clip_win_rate": 0.38,
+    "siglip_win_rate": 0.44333333333333336
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_006548",
+      "image_relpath": "images/flickr30k/flickr30k_test_006548.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_006548.jpg",
+      "caption": "Workers in orange vests and hard hats stand near scaffolding beside a bench under artificial lighting with motion blur.",
+      "clip_score": 0.2488144040107727,
+      "siglip_score": 0.1160676404833793,
+      "delta_clip": -0.10160091519355768,
+      "delta_siglip": -0.0656072720885277
+    },
+    {
+      "image_id": "flickr30k_test_006548",
+      "image_relpath": "images/flickr30k/flickr30k_test_006548.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_006548.jpg",
+      "caption": "Workers in orange vests and hard hats stand near scaffolding beside a bench under artificial lighting with motion blur.",
+      "clip_score": 0.2488144040107727,
+      "siglip_score": 0.1160676404833793,
+      "delta_clip": -0.09903275966644287,
+      "delta_siglip": -0.1013108119368553
+    },
+    {
+      "image_id": "flickr30k_test_011250",
+      "image_relpath": "images/flickr30k/flickr30k_test_011250.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_011250.jpg",
+      "caption": "Two children, one in brown shirt and camouflage shorts, the other in red striped shirt and jeans, standing side by side holding hands, grassy field with yellow caution tape, clear blue sky with scattered clouds.",
+      "clip_score": 0.3148441016674042,
+      "siglip_score": 0.2295206189155578,
+      "delta_clip": -0.09774968028068542,
+      "delta_siglip": 0.009004995226860019
+    },
+    {
+      "image_id": "flickr30k_test_014144",
+      "image_relpath": "images/flickr30k/flickr30k_test_014144.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_014144.jpg",
+      "caption": "Man in dark blue jacket and safety glasses, bent over, grinding metal with angle grinder, bright sparks flying, fluorescent lights overhead.",
+      "clip_score": 0.2647632658481598,
+      "siglip_score": 0.1366951614618301,
+      "delta_clip": -0.09684017300605768,
+      "delta_siglip": -0.09413398802280429
+    },
+    {
+      "image_id": "flickr30k_test_019953",
+      "image_relpath": "images/flickr30k/flickr30k_test_019953.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_019953.jpg",
+      "caption": "Woman with gray hair, wearing patterned dress and carrying bag, walking on sidewalk beside parked cars under overcast sky.",
+      "clip_score": 0.2184561640024185,
+      "siglip_score": 0.0452553108334541,
+      "delta_clip": -0.0935872942209244,
+      "delta_siglip": -0.1278105303645134
+    },
+    {
+      "image_id": "flickr30k_test_023900",
+      "image_relpath": "images/flickr30k/flickr30k_test_023900.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_023900.jpg",
+      "caption": "A man with dark hair and a striped shirt, smiling broadly, holds a stick near a glowing food stall sign reading \"UTIAH\" under bright fluorescent lights.",
+      "clip_score": 0.2703889608383178,
+      "siglip_score": 0.2084382772445678,
+      "delta_clip": -0.09141767024993896,
+      "delta_siglip": -0.08237734436988839
+    },
+    {
+      "image_id": "flickr30k_test_003587",
+      "image_relpath": "images/flickr30k/flickr30k_test_003587.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_003587.jpg",
+      "caption": "Man wearing black cap with number 3, black jacket with sponsor logos, glasses, looking down while seated, blurred crowd behind.",
+      "clip_score": 0.277218610048294,
+      "siglip_score": 0.2589293718338012,
+      "delta_clip": -0.08806833624839788,
+      "delta_siglip": -0.005374699831008967
+    },
+    {
+      "image_id": "flickr30k_test_022222",
+      "image_relpath": "images/flickr30k/flickr30k_test_022222.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_022222.jpg",
+      "caption": "Man in white shirt and dark pants, standing, holding food, beside green tarp-covered cart with broom, motion blur from passing van.",
+      "clip_score": 0.3052112162113189,
+      "siglip_score": 0.1997536420822143,
+      "delta_clip": -0.07855167984962469,
+      "delta_siglip": -0.04040223360061651
+    },
+    {
+      "image_id": "flickr30k_test_000585",
+      "image_relpath": "images/flickr30k/flickr30k_test_000585.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_000585.jpg",
+      "caption": "Several construction workers in yellow vests and hard hats stand near a red crane, working beside a modern building under bright daylight.",
+      "clip_score": 0.2605995833873749,
+      "siglip_score": 0.1379948258399963,
+      "delta_clip": -0.07640218734741211,
+      "delta_siglip": -0.06994003057479858
+    },
+    {
+      "image_id": "flickr30k_test_016590",
+      "image_relpath": "images/flickr30k/flickr30k_test_016590.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_016590.jpg",
+      "caption": "Woman with colorful woven skirt and patterned shawl, standing, holding umbrella, beside stone railing, under bright daylight.",
+      "clip_score": 0.290686696767807,
+      "siglip_score": 0.1370102912187576,
+      "delta_clip": -0.07389864325523371,
+      "delta_siglip": -0.08918848633766169
+    },
+    {
+      "image_id": "flickr30k_test_008467",
+      "image_relpath": "images/flickr30k/flickr30k_test_008467.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_008467.jpg",
+      "caption": "Child with dark hair, blue striped shirt, red bracelet, smiling broadly, looking down at hands, standing near floral couch, soft indoor lighting.",
+      "clip_score": 0.2498736381530761,
+      "siglip_score": 0.2158687114715576,
+      "delta_clip": -0.0719837546348572,
+      "delta_siglip": 0.00017151236534118652
+    },
+    {
+      "image_id": "flickr30k_test_007385",
+      "image_relpath": "images/flickr30k/flickr30k_test_007385.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_007385.jpg",
+      "caption": "Dancers in blue and multicolored patterned outfits, mid-air kicks, tossing green and white batons, against a bright sky with storefronts and long shadows.",
+      "clip_score": 0.2975477576255798,
+      "siglip_score": 0.1980825364589691,
+      "delta_clip": -0.07130908966064453,
+      "delta_siglip": 0.023154109716415378
+    }
+  ]
+}

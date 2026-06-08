@@ -1,0 +1,142 @@
+{
+  "prompt": "Produce exactly one concise, factual caption for this image: output a single sentence of 10–30 words and nothing else. MUST describe only visible details—do not infer context, geography, emotions, or events.\n\nMUST include, when clearly visible:\n- primary subject and visible count first (e.g., \"two people\", \"one bicycle\"); if the count is uncertain, DO NOT state a number.\n- a specific action or pose using concrete verbs (e.g., \"pushing the bike\", \"rear wheel tilted upward\").\n- 2–3 distinctive visible attributes (colors, materials, parts, accessories; e.g., \"red rim\", \"striped shirt\", \"tattoo on left arm\").\n- a spatial anchor or location in the frame (foreground/midground/background or left/center/right and any nearby anchor like \"by the crosswalk\" or \"under an arched bridge\").\n- camera viewpoint and lighting when obvious (e.g., \"low-angle\", \"backlit\", \"long shadows\", \"spotlight\").\n\nDO NOT use:\n- speculative or inferred labels (e.g., country/era/event), feelings or interpretations (\"joyful\", \"captivates\"), vague quantifiers (\"many\", \"a few\"), superlatives (\"grand\"), or hedging words (\"probably\", \"appears to be\").\n\nPrefer concise factual clauses and limit adjectives (max 1–2 per noun). Suggested sentence order to follow if possible: [primary subject + count] + [action/pose] + [2–3 attributes/colors] + [location/anchor] + [camera angle/lighting].\n\nExamples:\nBad: \"A beautiful scene of friends enjoying a grand city street.\"\nGood: \"Three people crossing a zebra crosswalk, one pushing a red bicycle in the foreground, low-angle with strong midday shadows.\"",
+  "prompt_id": "textgrad_9cea0e6a8b",
+  "split_csv": "data/splits/flickr30k_main_seed1_val.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_00/val/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_00/val/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_00/val/scores.csv",
+  "data_root": "data",
+  "summary": {
+    "n": 150,
+    "mean_clip": 0.31617960462967554,
+    "mean_siglip": 0.1919675915191571,
+    "mean_caption_len": 23.08,
+    "generic_rate": 0.0,
+    "mean_delta_clip": -0.008385843684275947,
+    "mean_delta_siglip": -0.006872954169909161,
+    "clip_win_rate": 0.41,
+    "siglip_win_rate": 0.4266666666666667
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_007385",
+      "image_relpath": "images/flickr30k/flickr30k_test_007385.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_007385.jpg",
+      "caption": "One person in blue and multicolored patterned outfit throws green frisbees in midair, foreground under clear sky with long shadows.",
+      "clip_score": 0.2203516960144043,
+      "siglip_score": 0.1220345795154571,
+      "delta_clip": -0.14850515127182,
+      "delta_siglip": -0.05289384722709661
+    },
+    {
+      "image_id": "flickr30k_test_005250",
+      "image_relpath": "images/flickr30k/flickr30k_test_005250.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_005250.jpg",
+      "caption": "One woman in black dress holds red poinsettias bouquet, smiling, midground near staircase with gold railings, under ambient indoor lighting.",
+      "clip_score": 0.2584109902381897,
+      "siglip_score": 0.143233060836792,
+      "delta_clip": -0.1029733419418335,
+      "delta_siglip": -0.0660071372985839
+    },
+    {
+      "image_id": "flickr30k_test_021601",
+      "image_relpath": "images/flickr30k/flickr30k_test_021601.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_021601.jpg",
+      "caption": "One person walks with a cane, wearing a beige coat and green cap, in the foreground under bright daylight.",
+      "clip_score": 0.2480417639017105,
+      "siglip_score": 0.1222425550222396,
+      "delta_clip": -0.0953927189111709,
+      "delta_siglip": -0.10570476949214941
+    },
+    {
+      "image_id": "flickr30k_test_007385",
+      "image_relpath": "images/flickr30k/flickr30k_test_007385.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_007385.jpg",
+      "caption": "One person in blue and multicolored patterned outfit throws green frisbees in midair, foreground under clear sky with long shadows.",
+      "clip_score": 0.2203516960144043,
+      "siglip_score": 0.1220345795154571,
+      "delta_clip": -0.0901380181312561,
+      "delta_siglip": -0.005385830998420715
+    },
+    {
+      "image_id": "flickr30k_test_011250",
+      "image_relpath": "images/flickr30k/flickr30k_test_011250.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_011250.jpg",
+      "caption": "Two children standing in grassy field, one holding another’s hand, wearing brown shirt and camouflage shorts, near yellow caution tape in midground under bright daylight.",
+      "clip_score": 0.3308906555175781,
+      "siglip_score": 0.2173843681812286,
+      "delta_clip": -0.08170312643051147,
+      "delta_siglip": -0.0031312555074691772
+    },
+    {
+      "image_id": "flickr30k_test_003587",
+      "image_relpath": "images/flickr30k/flickr30k_test_003587.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_003587.jpg",
+      "caption": "One man wearing a black cap and jacket with red and white logos, looking down and to the right in the foreground under even lighting.",
+      "clip_score": 0.2848103642463684,
+      "siglip_score": 0.1922122240066528,
+      "delta_clip": -0.08047658205032349,
+      "delta_siglip": -0.07209184765815738
+    },
+    {
+      "image_id": "flickr30k_test_018933",
+      "image_relpath": "images/flickr30k/flickr30k_test_018933.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_018933.jpg",
+      "caption": "One person sits on a metal stool at a round table, holding a phone, wearing a blue shirt and black shorts, in midground under ambient lighting.",
+      "clip_score": 0.2450408935546875,
+      "siglip_score": 0.2216908782720565,
+      "delta_clip": -0.07661306858062739,
+      "delta_siglip": 0.028618410229682895
+    },
+    {
+      "image_id": "flickr30k_test_008362",
+      "image_relpath": "images/flickr30k/flickr30k_test_008362.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_008362.jpg",
+      "caption": "One woman standing in midground wearing floral dress and sandals, near wooden fence and van, under bright daylight.",
+      "clip_score": 0.2432126998901367,
+      "siglip_score": 0.1464151740074157,
+      "delta_clip": -0.07245659828186032,
+      "delta_siglip": -0.0675033181905747
+    },
+    {
+      "image_id": "flickr30k_test_023900",
+      "image_relpath": "images/flickr30k/flickr30k_test_023900.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_023900.jpg",
+      "caption": "One person holding skewers near a food stall with red lettering, wearing a dark striped shirt, in foreground under bright overhead lighting.",
+      "clip_score": 0.2893807590007782,
+      "siglip_score": 0.2140488028526306,
+      "delta_clip": -0.07242587208747858,
+      "delta_siglip": -0.07676681876182559
+    },
+    {
+      "image_id": "flickr30k_test_006537",
+      "image_relpath": "images/flickr30k/flickr30k_test_006537.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_006537.jpg",
+      "caption": "One person walks away from camera wearing orange high-visibility vest and blue jeans, near \"KILBURN\" station sign in foreground.",
+      "clip_score": 0.3205930590629577,
+      "siglip_score": 0.1974350810050964,
+      "delta_clip": -0.07088780403137207,
+      "delta_siglip": -0.020268172025680486
+    },
+    {
+      "image_id": "flickr30k_test_008305",
+      "image_relpath": "images/flickr30k/flickr30k_test_008305.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_008305.jpg",
+      "caption": "One person sitting on pavement holding white bag with blue text, near tree trunk in foreground, under natural daylight.",
+      "clip_score": 0.2289263308048248,
+      "siglip_score": 0.0614220313727855,
+      "delta_clip": -0.0706068575382233,
+      "delta_siglip": -0.09354618564248089
+    },
+    {
+      "image_id": "flickr30k_test_021601",
+      "image_relpath": "images/flickr30k/flickr30k_test_021601.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_021601.jpg",
+      "caption": "One person walks with a cane, wearing a beige coat and green cap, in the foreground under bright daylight.",
+      "clip_score": 0.2480417639017105,
+      "siglip_score": 0.1222425550222396,
+      "delta_clip": -0.0704900473356247,
+      "delta_siglip": -0.01227931678295141
+    }
+  ]
+}

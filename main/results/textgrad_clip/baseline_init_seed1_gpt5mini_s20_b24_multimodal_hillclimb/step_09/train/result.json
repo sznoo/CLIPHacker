@@ -1,0 +1,142 @@
+{
+  "prompt": "Produce exactly one concise caption (one sentence) that states only visually verifiable facts. Include 2–6 discrete visual facts drawn from this checklist in the given priority order when present: 1) legible text: transcribe exact words; 2) counts and object types (e.g., \"2 people\", \"one bicycle\"); 3) key color/material/texture for those objects (e.g., \"orange backpack\", \"wooden façade\"); 4) pose/action/orientation (e.g., \"person seen from behind walking away; holding two poles\"); 5) simple spatial layout (foreground / midground / background placement); 6) lighting/viewpoint/occlusion cues (e.g., \"bright sunlight casting long shadows\", \"elevated vantage; tree partially obscures façade\"). Use canonical object names and exact counts, standard direction words (left/right/foreground/background), and numerals or short words for numbers. Do not infer roles, emotions, intentions, or use metaphors, slogans, or marketing language (avoid \"farmer\", \"happy\", \"adventure\", etc.). If text is not clearly legible, omit it rather than guess. Keep the caption factual, compact, and limited to one sentence containing 2–6 concrete facts—no lists, tags, extra sentences, or commentary. Example (good): \"Sign reads 'Outdoor World'; two adults walk toward the store entrance; timber façade and concrete forecourt; overcast sky.\" Counterexample (bad): \"A happy farmer enjoys a sunny day in the countryside.\"",
+  "prompt_id": "textgrad_1d8c701270",
+  "split_csv": "data/splits/flickr30k_main_seed1_train.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_09/train/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_09/train/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_09/train/scores.csv",
+  "data_root": "data",
+  "summary": {
+    "n": 24,
+    "mean_clip": 0.3222685133417447,
+    "mean_siglip": 0.19350387218097845,
+    "mean_caption_len": 37.875,
+    "generic_rate": 0.041666666666666664,
+    "mean_delta_clip": -0.004910024503866832,
+    "mean_delta_siglip": 0.006807002238929271,
+    "clip_win_rate": 0.4166666666666667,
+    "siglip_win_rate": 0.625
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_029824",
+      "image_relpath": "images/flickr30k/flickr30k_test_029824.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_029824.jpg",
+      "caption": "Sign reads \"Bienvenue Welcome\"; one person stands behind a black desk with \"London 2012\" and Olympic rings; red backdrop with white line drawings; pink informational cards on desk; person wears a lanyard with ID badge.",
+      "clip_score": 0.3239861726760864,
+      "siglip_score": 0.2457722872495651,
+      "delta_clip": -0.06766912341117859,
+      "delta_siglip": -0.00023417174816131592
+    },
+    {
+      "image_id": "flickr30k_test_022494",
+      "image_relpath": "images/flickr30k/flickr30k_test_022494.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_022494.jpg",
+      "caption": "One person stands in the midground holding orange ladders; white cloth covers an object nearby; wooden planks form a walkway in the foreground; brick and white-painted walls are visible in the background.",
+      "clip_score": 0.3026489019393921,
+      "siglip_score": 0.2457698434591293,
+      "delta_clip": -0.05846920609474182,
+      "delta_siglip": 0.0300649702548981
+    },
+    {
+      "image_id": "flickr30k_test_021046",
+      "image_relpath": "images/flickr30k/flickr30k_test_021046.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_021046.jpg",
+      "caption": "Two people sit side by side; one holds a paper with \"21000\" visible, the other holds a cylindrical object; both are in foreground; lighting casts greenish tint.",
+      "clip_score": 0.2771599292755127,
+      "siglip_score": 0.123906061053276,
+      "delta_clip": -0.04531151056289673,
+      "delta_siglip": -0.0813551396131516
+    },
+    {
+      "image_id": "flickr30k_test_021782",
+      "image_relpath": "images/flickr30k/flickr30k_test_021782.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_021782.jpg",
+      "caption": "Sign reads '(212)625-9212'; one man leans on a yellow sign covered in stickers; another man walks past in the background; concrete sidewalk and building facade visible; bright daylight.",
+      "clip_score": 0.3060295879840851,
+      "siglip_score": 0.1514227092266082,
+      "delta_clip": -0.03341850638389582,
+      "delta_siglip": -0.04960253834724432
+    },
+    {
+      "image_id": "flickr30k_test_010401",
+      "image_relpath": "images/flickr30k/flickr30k_test_010401.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_010401.jpg",
+      "caption": "One person in a blue sweater with white collar and cuffs jumps toward a pile of brown leaves in the foreground; a silver vehicle is visible in the background; green grass and scattered leaves surround the scene.",
+      "clip_score": 0.3124134838581085,
+      "siglip_score": 0.1969839483499527,
+      "delta_clip": -0.02335777878761286,
+      "delta_siglip": 0.01480840146541601
+    },
+    {
+      "image_id": "flickr30k_test_007565",
+      "image_relpath": "images/flickr30k/flickr30k_test_007565.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_007565.jpg",
+      "caption": "Baby lies on wooden floor, reaching toward plastic water bottle; sunlight casts shadows across the floor; baby wears black short-sleeved outfit.",
+      "clip_score": 0.3205098509788513,
+      "siglip_score": 0.2930935025215149,
+      "delta_clip": -0.02334511280059809,
+      "delta_siglip": 0.02464735507965088
+    },
+    {
+      "image_id": "flickr30k_test_014594",
+      "image_relpath": "images/flickr30k/flickr30k_test_014594.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_014594.jpg",
+      "caption": "One jockey on a brown horse jumps over a wooden fence; the horse has a white marking on its forehead; the jockey wears a yellow helmet and green-and-black jacket; the scene is set in a grassy field with trees in the background.",
+      "clip_score": 0.3161676526069641,
+      "siglip_score": 0.1952752918004989,
+      "delta_clip": -0.02088451385498047,
+      "delta_siglip": 0.0012416988611221036
+    },
+    {
+      "image_id": "flickr30k_test_009311",
+      "image_relpath": "images/flickr30k/flickr30k_test_009311.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_009311.jpg",
+      "caption": "One child with blonde hair, wearing a light-colored shirt, leans forward near a water fountain; water streams in the foreground, partially obscuring the child; background shows blurred green foliage.",
+      "clip_score": 0.3133480548858642,
+      "siglip_score": 0.1898166537284851,
+      "delta_clip": -0.01721355319023138,
+      "delta_siglip": 0.02213834226131442
+    },
+    {
+      "image_id": "flickr30k_test_027386",
+      "image_relpath": "images/flickr30k/flickr30k_test_027386.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_027386.jpg",
+      "caption": "Seven hikers with backpacks walk single file along a dirt path on a grassy slope; mountains with snow caps are visible in the background; the sky is overcast.",
+      "clip_score": 0.3311197757720947,
+      "siglip_score": 0.195994883775711,
+      "delta_clip": -0.016976594924926758,
+      "delta_siglip": -0.007474362850189209
+    },
+    {
+      "image_id": "flickr30k_test_006091",
+      "image_relpath": "images/flickr30k/flickr30k_test_006091.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_006091.jpg",
+      "caption": "A child wearing a blue cap and red sunglasses sits on a kitchen counter with bare feet, holding a metallic pull-down faucet that is dispensing water; behind them, wooden cabinets with glassware and white bowls are visible in the background.",
+      "clip_score": 0.3692543506622314,
+      "siglip_score": 0.2497670501470565,
+      "delta_clip": -0.015718042850494385,
+      "delta_siglip": 0.006585896015167209
+    },
+    {
+      "image_id": "flickr30k_test_000069",
+      "image_relpath": "images/flickr30k/flickr30k_test_000069.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_000069.jpg",
+      "caption": "One man in a dark suit stands beside a large red inflatable object; metal barricades are in the foreground; a building with windows is in the background; a lit street lamp is on the right; artificial lighting illuminates the scene.",
+      "clip_score": 0.3161395192146301,
+      "siglip_score": 0.1458128690719604,
+      "delta_clip": -0.012620270252227783,
+      "delta_siglip": -0.03356634080410001
+    },
+    {
+      "image_id": "flickr30k_test_015378",
+      "image_relpath": "images/flickr30k/flickr30k_test_015378.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_015378.jpg",
+      "caption": "Two people stand near a cardboard box and a black suitcase; one wears a red shirt and black hat, the other holds a plastic bag; concrete wall in background; bright sunlight casts shadows.",
+      "clip_score": 0.3006374537944793,
+      "siglip_score": 0.2214977443218231,
+      "delta_clip": -0.0038085281848908026,
+      "delta_siglip": -0.014961302280425998
+    }
+  ]
+}

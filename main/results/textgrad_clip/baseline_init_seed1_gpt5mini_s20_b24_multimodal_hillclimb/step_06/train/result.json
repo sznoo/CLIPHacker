@@ -1,0 +1,142 @@
+{
+  "prompt": "Produce exactly one concise caption (one sentence) that states only visually verifiable facts. Include 2–6 discrete visual facts drawn from this checklist in the given priority order when present: 1) legible text: transcribe exact words; 2) counts and object types (e.g., \"2 people\", \"one bicycle\"); 3) key color/material/texture for those objects (e.g., \"orange backpack\", \"wooden façade\"); 4) pose/action/orientation (e.g., \"person seen from behind walking away; holding two poles\"); 5) simple spatial layout (foreground / midground / background placement); 6) lighting/viewpoint/occlusion cues (e.g., \"bright sunlight casting long shadows\", \"elevated vantage; tree partially obscures façade\"). Use canonical object names and exact counts, standard direction words (left/right/foreground/background), and numerals or short words for numbers. Do not infer roles, emotions, intentions, or use metaphors, slogans, or marketing language (avoid \"farmer\", \"happy\", \"adventure\", etc.). If text is not clearly legible, omit it rather than guess. Keep the caption factual, compact, and limited to one sentence containing 2–6 concrete facts—no lists, tags, extra sentences, or commentary. Example (good): \"Sign reads 'Outdoor World'; two adults walk toward the store entrance; timber façade and concrete forecourt; overcast sky.\" Counterexample (bad): \"A happy farmer enjoys a sunny day in the countryside.\"",
+  "prompt_id": "textgrad_1d8c701270",
+  "split_csv": "data/splits/flickr30k_main_seed1_train.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_06/train/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_06/train/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_06/train/scores.csv",
+  "data_root": "data",
+  "summary": {
+    "n": 24,
+    "mean_clip": 0.3254477108518283,
+    "mean_siglip": 0.19596787790457404,
+    "mean_caption_len": 37.666666666666664,
+    "generic_rate": 0.041666666666666664,
+    "mean_delta_clip": 0.010831322520971296,
+    "mean_delta_siglip": -0.001319144542018566,
+    "clip_win_rate": 0.5833333333333334,
+    "siglip_win_rate": 0.4583333333333333
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_015736",
+      "image_relpath": "images/flickr30k/flickr30k_test_015736.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_015736.jpg",
+      "caption": "A white and brown dog with a red collar walks through shallow water; its legs are partially submerged, and its reflection is visible in the water; the dog is oriented toward the left side of the frame.",
+      "clip_score": 0.3111463785171509,
+      "siglip_score": 0.1898394376039505,
+      "delta_clip": -0.03659921884536743,
+      "delta_siglip": -0.019930943846702492
+    },
+    {
+      "image_id": "flickr30k_test_024189",
+      "image_relpath": "images/flickr30k/flickr30k_test_024189.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_024189.jpg",
+      "caption": "Sign reads \"SUBWAY OPEN\"; two people near storefront; one person bends over a pile of bags; tree trunk in foreground; bright sunlight casting shadows.",
+      "clip_score": 0.2925479412078857,
+      "siglip_score": 0.2109207212924957,
+      "delta_clip": -0.034066408872604426,
+      "delta_siglip": -0.026495262980461093
+    },
+    {
+      "image_id": "flickr30k_test_012278",
+      "image_relpath": "images/flickr30k/flickr30k_test_012278.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_012278.jpg",
+      "caption": "Three people sit on a rooftop terrace with a black-and-white goat nearby; a red cloth covers a bench in the background; satellite dishes are mounted on the wall; the scene is viewed from an elevated vantage.",
+      "clip_score": 0.2728696465492248,
+      "siglip_score": 0.1586209833621978,
+      "delta_clip": -0.025066941976547297,
+      "delta_siglip": -0.0483267605304718
+    },
+    {
+      "image_id": "flickr30k_test_010401",
+      "image_relpath": "images/flickr30k/flickr30k_test_010401.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_010401.jpg",
+      "caption": "One person in a blue sweater with white collar and cuffs jumps toward a pile of brown leaves in the foreground; a silver vehicle is visible in the background; green grass and scattered leaves surround the scene.",
+      "clip_score": 0.3124134838581085,
+      "siglip_score": 0.1969839483499527,
+      "delta_clip": -0.02335777878761286,
+      "delta_siglip": 0.01480840146541601
+    },
+    {
+      "image_id": "flickr30k_test_025027",
+      "image_relpath": "images/flickr30k/flickr30k_test_025027.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_025027.jpg",
+      "caption": "Three people sit on a green metal bench; one wears a blue headscarf and orange patterned top, another wears a purple headscarf and yellow top, and the third wears a teal headscarf; all are seen from behind; background shows partial vehicles and structures.",
+      "clip_score": 0.3129965960979461,
+      "siglip_score": 0.2241441309452057,
+      "delta_clip": -0.016365855932235773,
+      "delta_siglip": 0.009921997785568293
+    },
+    {
+      "image_id": "flickr30k_test_005364",
+      "image_relpath": "images/flickr30k/flickr30k_test_005364.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_005364.jpg",
+      "caption": "One person seen from behind, wearing a dark robe, kneels before a silver incense burner in the foreground; behind them, a seated Buddha statue is framed by a golden arch within a wooden structure; purple flowers in vases are visible on either side of the statue; the scene is viewed from a low angle with",
+      "clip_score": 0.3296455144882202,
+      "siglip_score": 0.2097082734107971,
+      "delta_clip": -0.013173341751098577,
+      "delta_siglip": 0.0080625861883164
+    },
+    {
+      "image_id": "flickr30k_test_021750",
+      "image_relpath": "images/flickr30k/flickr30k_test_021750.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_021750.jpg",
+      "caption": "Two women embrace in the foreground; one holds white takeout containers and a beige folder, the other carries a red plastic bag; background contains blurred vehicles and construction equipment.",
+      "clip_score": 0.3120957016944885,
+      "siglip_score": 0.2361432909965515,
+      "delta_clip": -0.01184022426605219,
+      "delta_siglip": 0.06926806271076202
+    },
+    {
+      "image_id": "flickr30k_test_007496",
+      "image_relpath": "images/flickr30k/flickr30k_test_007496.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_007496.jpg",
+      "caption": "Two men stand between two vintage cars; one holds an accordion, the other a smaller instrument; the right car has a visible license plate reading \"6ZE 638\"; brick building with white-trimmed windows in the background; bright sunlight casts distinct shadows.",
+      "clip_score": 0.3039939999580383,
+      "siglip_score": 0.213215172290802,
+      "delta_clip": -0.008707702159881647,
+      "delta_siglip": 0.006377547979354914
+    },
+    {
+      "image_id": "flickr30k_test_019904",
+      "image_relpath": "images/flickr30k/flickr30k_test_019904.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_019904.jpg",
+      "caption": "A man in a beige jacket walks on a metal railing; two red signs read \"LE MIGNON\" and \"FRANK SPECIALITIES RESTAURANT\"; the building has a yellow brick façade with black lanterns; the viewpoint is from above the railing.",
+      "clip_score": 0.323911041021347,
+      "siglip_score": 0.2435669749975204,
+      "delta_clip": -0.007410734891891535,
+      "delta_siglip": -0.04095767438411718
+    },
+    {
+      "image_id": "flickr30k_test_015378",
+      "image_relpath": "images/flickr30k/flickr30k_test_015378.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_015378.jpg",
+      "caption": "Two people stand near a cardboard box and a black suitcase; one wears a red shirt and black hat, the other holds a plastic bag; concrete wall in background; bright sunlight casts shadows.",
+      "clip_score": 0.3006374537944793,
+      "siglip_score": 0.2214977443218231,
+      "delta_clip": -0.0038085281848908026,
+      "delta_siglip": -0.014961302280425998
+    },
+    {
+      "image_id": "flickr30k_test_028917",
+      "image_relpath": "images/flickr30k/flickr30k_test_028917.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_028917.jpg",
+      "caption": "Player in white jersey with number 5 dribbles a basketball while being guarded by a player in black jersey with number 0; both are in midground on a wooden court with a referee and spectators in the background.",
+      "clip_score": 0.2557069659233093,
+      "siglip_score": 0.1571539342403412,
+      "delta_clip": 0.0018510818481445312,
+      "delta_siglip": -0.04732593894004822
+    },
+    {
+      "image_id": "flickr30k_test_030774",
+      "image_relpath": "images/flickr30k/flickr30k_test_030774.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_030774.jpg",
+      "caption": "One child swims underwater with arms extended forward; bubbles surround the child; the child has light brown hair; the child wears blue patterned swim trunks; the child is in the midground.",
+      "clip_score": 0.335922509431839,
+      "siglip_score": 0.1710794568061828,
+      "delta_clip": 0.004861772060394287,
+      "delta_siglip": 0.013021111488342313
+    }
+  ]
+}

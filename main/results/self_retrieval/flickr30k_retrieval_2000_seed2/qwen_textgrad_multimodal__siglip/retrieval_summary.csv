@@ -1,0 +1,76 @@
+method_id,prompt_id,run_id,prompt_name,prompt_text,model,n,r@1,r@5,r@10,mrr,median_rank,mean_rank,mean_positive_score,mean_hardest_negative_score,mean_margin
+qwen_textgrad_multimodal,textgrad_multimodal,qwen_textgrad_multimodal__flickr30k_retrieval_2000_seed2,TextGrad Multimodal,"Produce exactly one concise, information‑dense caption: a single grammatical sentence of comma‑separated short phrases. Output only that one sentence and nothing else.
+
+Output slots (emit in this order; slots 1–3 are mandatory and must be preserved if they contain MEDIUM/HIGH verified tokens):
+1) Subject token (0–3 subject groups) plus one chosen anchor/prop token (see deterministic anchor priority below).
+2) Micro‑action / contact (always emit one, see Micro‑action rules).
+3) Fine class (verified label or dataset token); if not MEDIUM/HIGH verified, use the safe plural fallback ""people/dogs/vehicles/vendor stand"".
+4) Clothing / clear pose / orientation — include only when MEDIUM/HIGH verified.
+5) Up to two anchors/signage (only if MEDIUM/HIGH verified; otherwise use neutral positional anchors such as ""storefront behind"", ""marquee above"").
+6) Spatial/cropping/depth token if MEDIUM/HIGH verified.
+
+Deterministic anchor priority (select the highest available and place it early):
+- 1st: OCR text (use full quoted text if OCR_conf ≥ 0.85; else one short quoted token ≤6 chars only if 0.50 ≤ OCR_conf < 0.85 AND saliency_score ≥ threshold).
+- 2nd: large prop/signage (largest segmented area or flagged prop).
+- 3rd: people/faces (detected fine class).
+- 4th: distinctive color/clothing patch.
+Place the chosen anchor within the first 6–8 words together with the subject token. If no MEDIUM/HIGH anchor exists, use a neutral anchor and still place it within the first 8 words.
+
+Verification gating (use provided detector/OCR/motion outputs with these actionable if/elif rules):
+- OCR_HIGH: OCR_conf ≥ 0.85 → emit full quoted text and placement phrase (e.g., ""on wall left"").
+- OCR_MED: 0.50 ≤ OCR_conf < 0.85 AND saliency_score ≥ threshold → emit one short quoted token (≤6 chars) and placement.
+- Otherwise → do not emit text; use neutral positional anchor.
+- SEGMENTATION_HIGH: segmentation_iou ≥ 0.75 (treat as HIGH verification).
+- SEGMENTATION_MED: 0.40 ≤ segmentation_iou < 0.75 (treat as MEDIUM verification).
+- COUNT_DIGITS: emit digits only if detector_count_confidence ≥ 0.70; otherwise use plural nouns. If detector strongly indicates zero, you may emit ""none"".
+
+Micro‑action rules (always emit one; pick the highest evidence template available):
+- HIGH evidence (use when part segmentation or motion_confidence ≥ 0.85): exact form ""left|right [hand|foot|part] [strong‑verb] [object]"" (e.g., ""right hand holding basket"").
+- MEDIUM evidence (use when segmentation_iou ≥ 0.40 OR detector_confidence ≥ 0.70): pick one verb from whitelist {jumping, pawing, clearing, showing, speaking, holding, carrying, pushing, pulling, strumming, leaning}. You may append a short orientation token (""back view"", ""seen from behind"") when MEDIUM verifies orientation.
+- LOW evidence (fallback): ""[part] near [object]"" (e.g., ""right hand near object"").
+Never omit or hedge this slot.
+
+Fine class and clothing:
+- Emit fine class or clothing only when verified at MEDIUM/HIGH. If not verified, use the safe plural fallback. MEDIUM whitelist tokens (boat, canoe, shrine/temple, ghats/steps, children, performer, vendor, vendor stand, parade participant, marquee, boats, canopies, flagpole, ladder, bicycle, hedgerow, trees, ""navy sweater"", ""red patterned dress"", ""white blouse"") may be emitted only when MEDIUM verification applies and only in their designated slot.
+
+OCR and signage specifics:
+- If emitting OCR text, always include a short placement phrase (e.g., ""on wall left"", ""above the doorway""). Do not invent, complete, or guess partial text. If OCR_MED has low saliency, revert to a neutral anchor.
+
+First‑words rule and deterministic minimal rewrite:
+- Within the first 8 words, include the subject token (or plural fallback) and the chosen anchor token (OCR token if selected, otherwise prop/people/color anchor). If this cannot be satisfied, auto‑rewrite to this minimal safe caption exactly (use this template and nothing else):
+  ""group of people, storefront behind, right hand near object, people/dogs/vehicles/vendor stand.""
+(This minimal template is the deterministic fallback to ensure a valid single sentence when requirements fail.)
+
+Pruning and length control:
+- Target: 10–16 words. Hard cap: 22 words. Allow +2 words beyond target when a HIGH anchor is present or when BOTH a MEDIUM anchor and a MEDIUM micro‑action are present.
+- Prune deterministically in this order until within caps:
+  1) Compress adjective chains (e.g., ""large red metal"" → ""large red metal"" compacted).
+  2) Remove lighting/reflection descriptors.
+  3) Remove object state/material descriptors.
+  4) Remove background/ancillary context.
+- Never prune tokens used to satisfy verification rules (OCR quoted text, MEDIUM/HIGH anchors, verified counts) in slots 1–3.
+
+Counts and numerals:
+- Emit exact digits only when detector_count_confidence ≥ 0.70. Otherwise use plural nouns; do not use vague quantifiers like ""several"" or ""a few"". If detector indicates zero with high confidence, emit ""none"".
+
+Anti‑hallucination absolutes (do not do these):
+- Do not invent brand names, complete partial text, invent ages, emotions, intentions, or unsupported attributes.
+- No hedging language or speculative words (may, maybe, possibly, appears to be).
+- If a detail is not verified at MEDIUM/HIGH, replace it with an approved neutral fallback (e.g., ""storefront behind"", ""marquee above"", ""object on table"", ""group of people"").
+
+Final validator (must pass before emitting caption):
+- One grammatical sentence of comma‑separated short phrases.
+- First 6–8 words include subject token (or plural fallback) and chosen anchor (or neutral anchor).
+- Micro‑action slot present and follows the templates above.
+- Length within caps and pruning rules applied.
+- No hedges, no invented text/brands, no duplicated phrases.
+- Only allowed MEDIUM tokens are used under MEDIUM verification.
+- If any check fails, emit the deterministic minimal safe caption given above.
+
+Succinct exemplars (ideal outputs for reference):
+- OCR_HIGH example: ""group of people, right hand holding 'Le Mignon' sign on wall left, storefront behind.""
+- PROP_MED example: ""woman, right hand holding red shopping bag, storefront behind, marquee above.""
+- PEOPLE_MED example: ""two people, back view sitting on bench, black tufted bench foreground, floor reflections.""
+- LOW evidence example: ""group of people, right hand near object, people/dogs/vehicles/vendor stand.""
+
+Adhere strictly to these rules and emit only the single final caption sentence.",Qwen/Qwen3-VL-8B-Instruct,2000,0.72,0.8635,0.899,0.784937465318526,1.0,14.6675,0.15890705936355518,0.13050589788798242,0.028401161475572735

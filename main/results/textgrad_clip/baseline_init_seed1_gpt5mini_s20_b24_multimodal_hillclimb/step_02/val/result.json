@@ -1,0 +1,142 @@
+{
+  "prompt": "Write exactly one concise image caption (one factual sentence, 10–30 words). Start with the subject: \"[count + subject]\" followed immediately by a present-participial action (e.g., \"A woman whittling...\", \"Two players dribbling...\"). Include 1–3 discriminative visual facts when clearly visible: counts, primary colors, specific objects/tools/clothing, and simple spatial relations (\"next to\", \"behind\", \"left of\"). Transcribe any readable letters or numbers exactly; if text is not legible, describe its appearance and placement (e.g., \"white jersey with blue lettering on front\"). Do not invent names, photographer credits, brands, dates, or background narratives. Prefer concrete action verbs over subjective adjectives; avoid emotion words unless clearly supported by pixels. Add one observable composition or lighting cue when applicable (viewpoint: \"side/profile\", \"back-facing\"; lighting: \"sunlit\", \"long shadows\"). Output only the single caption sentence—no lists, tags, JSON, extra metadata, or multiple candidates. Template to follow: \"[Count + subject] [present-participial verb] [object/location], wearing [distinct clothing], [holding/using object]; [short scene or lighting/viewpoint cue].\"",
+  "prompt_id": "textgrad_23f5b96a74",
+  "split_csv": "data/splits/flickr30k_main_seed1_val.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_02/val/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_02/val/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_02/val/scores.csv",
+  "data_root": "data",
+  "summary": {
+    "n": 150,
+    "mean_clip": 0.31201851983865103,
+    "mean_siglip": 0.18535353432099025,
+    "mean_caption_len": 19.96,
+    "generic_rate": 0.0,
+    "mean_delta_clip": -0.012546928475300468,
+    "mean_delta_siglip": -0.013487011368076004,
+    "clip_win_rate": 0.35,
+    "siglip_win_rate": 0.35
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_020068",
+      "image_relpath": "images/flickr30k/flickr30k_test_020068.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_020068.jpg",
+      "caption": "A woman sitting on a bench, holding a leash, wearing a white shirt and pink scarf; sunlit path with long shadows.",
+      "clip_score": 0.2468847632408142,
+      "siglip_score": 0.1944984495639801,
+      "delta_clip": -0.10531693696975708,
+      "delta_siglip": -0.02570295333862299
+    },
+    {
+      "image_id": "flickr30k_test_023317",
+      "image_relpath": "images/flickr30k/flickr30k_test_023317.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_023317.jpg",
+      "caption": "One woman standing at guest services counter, wearing pink jacket and blue skirt, holding black bag; red barrel beside her.",
+      "clip_score": 0.2942267656326294,
+      "siglip_score": 0.1777716279029846,
+      "delta_clip": -0.09692114591598511,
+      "delta_siglip": -0.04061692953109741
+    },
+    {
+      "image_id": "flickr30k_test_023900",
+      "image_relpath": "images/flickr30k/flickr30k_test_023900.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_023900.jpg",
+      "caption": "One man grilling skewers of meat behind a yellow stall with red \"UTIAH\" text, wearing a dark shirt; lit from above.",
+      "clip_score": 0.2674627900123596,
+      "siglip_score": 0.2081040441989898,
+      "delta_clip": -0.09434384107589716,
+      "delta_siglip": -0.08271157741546636
+    },
+    {
+      "image_id": "flickr30k_test_017698",
+      "image_relpath": "images/flickr30k/flickr30k_test_017698.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_017698.jpg",
+      "caption": "Six soldiers standing in formation, wearing camouflage uniforms and white helmets, holding papers; sunlit, long shadows cast on gravel ground.",
+      "clip_score": 0.2597240805625915,
+      "siglip_score": 0.1384138762950897,
+      "delta_clip": -0.09176218509674078,
+      "delta_siglip": -0.12162598967552188
+    },
+    {
+      "image_id": "flickr30k_test_007385",
+      "image_relpath": "images/flickr30k/flickr30k_test_007385.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_007385.jpg",
+      "caption": "Six dancers tossing green frisbees, wearing blue and multicolored patterned suits, long shadows cast sunlit on pavement.",
+      "clip_score": 0.2831318974494934,
+      "siglip_score": 0.1350575089454651,
+      "delta_clip": -0.0857249498367309,
+      "delta_siglip": -0.03987091779708862
+    },
+    {
+      "image_id": "flickr30k_test_003587",
+      "image_relpath": "images/flickr30k/flickr30k_test_003587.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_003587.jpg",
+      "caption": "One man sitting, wearing a black cap with number 3 and a black jacket with red and white sponsor logos, side profile view.",
+      "clip_score": 0.2810647487640381,
+      "siglip_score": 0.222665473818779,
+      "delta_clip": -0.08422219753265381,
+      "delta_siglip": -0.04163859784603119
+    },
+    {
+      "image_id": "flickr30k_test_026089",
+      "image_relpath": "images/flickr30k/flickr30k_test_026089.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_026089.jpg",
+      "caption": "Two dogs running in muddy field, one black with mud-splattered coat, other smaller with mottled gray fur, near rusted metal fence; side view, sunlit.",
+      "clip_score": 0.2512040138244629,
+      "siglip_score": 0.1304230242967605,
+      "delta_clip": -0.08376401662826533,
+      "delta_siglip": -0.09457650780677801
+    },
+    {
+      "image_id": "flickr30k_test_009512",
+      "image_relpath": "images/flickr30k/flickr30k_test_009512.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_009512.jpg",
+      "caption": "Five cheerleaders posing for photos, wearing red and black outfits, holding microphones; sunlit, side profile view.",
+      "clip_score": 0.2969195246696472,
+      "siglip_score": 0.1462703347206115,
+      "delta_clip": -0.0822722315788269,
+      "delta_siglip": -0.04212033748626712
+    },
+    {
+      "image_id": "flickr30k_test_006049",
+      "image_relpath": "images/flickr30k/flickr30k_test_006049.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_006049.jpg",
+      "caption": "Two judokas grappling on mat, wearing white and blue gi, one lifting opponent; black-suited official stands right, behind digital scoreboard.",
+      "clip_score": 0.2793464660644531,
+      "siglip_score": 0.1714750826358795,
+      "delta_clip": -0.07898414134979248,
+      "delta_siglip": -0.01958437263965601
+    },
+    {
+      "image_id": "flickr30k_test_024711",
+      "image_relpath": "images/flickr30k/flickr30k_test_024711.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_024711.jpg",
+      "caption": "Three people sitting on concrete steps, wearing yellow and gray clothing, holding drinks; sunlit, side profile view.",
+      "clip_score": 0.2519350051879883,
+      "siglip_score": 0.126000240445137,
+      "delta_clip": -0.07891455292701721,
+      "delta_siglip": -0.0889598876237869
+    },
+    {
+      "image_id": "flickr30k_test_016715",
+      "image_relpath": "images/flickr30k/flickr30k_test_016715.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_016715.jpg",
+      "caption": "One woman standing, holding a wooden hoe, wearing a patterned blue dress and striped skirt; sunlit field with dry stalks, long shadows.",
+      "clip_score": 0.2816329002380371,
+      "siglip_score": 0.141140878200531,
+      "delta_clip": -0.07879912853240967,
+      "delta_siglip": -0.049339950084686196
+    },
+    {
+      "image_id": "flickr30k_test_006851",
+      "image_relpath": "images/flickr30k/flickr30k_test_006851.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_006851.jpg",
+      "caption": "Two soldiers posing with children, wearing camouflage uniforms, holding a green sign reading \"KEEPING US SAFE FOR\"; behind them, a camera on a tripod.",
+      "clip_score": 0.314371645450592,
+      "siglip_score": 0.2188051789999008,
+      "delta_clip": -0.07832148671150213,
+      "delta_siglip": -0.0384363383054733
+    }
+  ]
+}

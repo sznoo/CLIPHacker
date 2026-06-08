@@ -1,0 +1,9 @@
+scorer,source,method_id,prompt_id,prompt_name,n,r@1,r@5,r@10,mrr,median_rank,mean_rank,mean_positive_score,mean_hardest_negative_score,mean_margin
+clip,qwen_prompt,qwen_prompt,observer_specific_supported,Observer Specific Supported,2000,0.815,0.9595,0.9805,0.8803329790251144,1.0,1.787,0.3290130605921149,0.3022949030548334,0.0267181575372815
+clip,qwen_prompt,qwen_prompt,baseline,Baseline,2000,0.7895,0.953,0.9785,0.862134655238994,1.0,2.212,0.3189243984669447,0.2932823963537812,0.0256420021131634
+clip,qwen_textgrad_constrained,qwen_textgrad_constrained,textgrad_constrained,TextGrad Constrained,2000,0.601,0.8505,0.9045,0.7108520419754063,1.0,6.869,0.3055162987783551,0.2968591687530279,0.0086571300253272
+clip,qwen_textgrad_multimodal,qwen_textgrad_multimodal,textgrad_multimodal,TextGrad Multimodal,2000,0.3935,0.618,0.7015,0.4979259743703207,3.0,40.033,0.2809343879297376,0.2892667032927274,-0.0083323153629899
+siglip,qwen_prompt,qwen_prompt,observer_specific_supported,Observer Specific Supported,2000,0.974,0.9985,0.9995,0.9848932234432234,1.0,1.0475,0.2038177400194108,0.1305800704918801,0.0732376695275306
+siglip,qwen_prompt,qwen_prompt,baseline,Baseline,2000,0.9475,0.991,0.997,0.96756424650229,1.0,1.275,0.1902355335839092,0.1195667485008016,0.0706687850831076
+siglip,qwen_textgrad_constrained,qwen_textgrad_constrained,textgrad_constrained,TextGrad Constrained,2000,0.8785,0.968,0.9815,0.918743620472626,1.0,2.225,0.173925871708896,0.1233972255855333,0.0505286461233627
+siglip,qwen_textgrad_multimodal,qwen_textgrad_multimodal,textgrad_multimodal,TextGrad Multimodal,2000,0.72,0.8635,0.899,0.784937465318526,1.0,14.6675,0.1589070593635551,0.1305058978879824,0.0284011614755727

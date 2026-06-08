@@ -1,0 +1,142 @@
+{
+  "prompt": "Produce exactly one concise caption (one sentence) that states only visually verifiable facts. Include 2–6 discrete visual facts drawn from this checklist in the given priority order when present: 1) legible text: transcribe exact words; 2) counts and object types (e.g., \"2 people\", \"one bicycle\"); 3) key color/material/texture for those objects (e.g., \"orange backpack\", \"wooden façade\"); 4) pose/action/orientation (e.g., \"person seen from behind walking away; holding two poles\"); 5) simple spatial layout (foreground / midground / background placement); 6) lighting/viewpoint/occlusion cues (e.g., \"bright sunlight casting long shadows\", \"elevated vantage; tree partially obscures façade\"). Use canonical object names and exact counts, standard direction words (left/right/foreground/background), and numerals or short words for numbers. Do not infer roles, emotions, intentions, or use metaphors, slogans, or marketing language (avoid \"farmer\", \"happy\", \"adventure\", etc.). If text is not clearly legible, omit it rather than guess. Keep the caption factual, compact, and limited to one sentence containing 2–6 concrete facts—no lists, tags, extra sentences, or commentary. Example (good): \"Sign reads 'Outdoor World'; two adults walk toward the store entrance; timber façade and concrete forecourt; overcast sky.\" Counterexample (bad): \"A happy farmer enjoys a sunny day in the countryside.\"",
+  "prompt_id": "textgrad_1d8c701270",
+  "split_csv": "data/splits/flickr30k_main_seed1_train.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_16/train/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_16/train/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_16/train/scores.csv",
+  "data_root": "data",
+  "summary": {
+    "n": 24,
+    "mean_clip": 0.32207658141851425,
+    "mean_siglip": 0.20135177299380294,
+    "mean_caption_len": 34.75,
+    "generic_rate": 0.041666666666666664,
+    "mean_delta_clip": -0.0024745215972264583,
+    "mean_delta_siglip": -0.0012271025528510476,
+    "clip_win_rate": 0.4166666666666667,
+    "siglip_win_rate": 0.5416666666666666
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_022494",
+      "image_relpath": "images/flickr30k/flickr30k_test_022494.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_022494.jpg",
+      "caption": "One person stands in the midground holding orange ladders; white cloth covers an object nearby; wooden planks form a walkway in the foreground; brick and white-painted walls are visible in the background.",
+      "clip_score": 0.3026489019393921,
+      "siglip_score": 0.2457698434591293,
+      "delta_clip": -0.05846920609474182,
+      "delta_siglip": 0.0300649702548981
+    },
+    {
+      "image_id": "flickr30k_test_023784",
+      "image_relpath": "images/flickr30k/flickr30k_test_023784.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_023784.jpg",
+      "caption": "One woman with dark hair and earrings wears a light blue sleeveless vest over a dark shirt; she is seated in the foreground, facing forward, with plastic bags and cardboard boxes visible in the background.",
+      "clip_score": 0.2862270176410675,
+      "siglip_score": 0.185353621840477,
+      "delta_clip": -0.03851941227912897,
+      "delta_siglip": -0.0326438099145889
+    },
+    {
+      "image_id": "flickr30k_test_024189",
+      "image_relpath": "images/flickr30k/flickr30k_test_024189.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_024189.jpg",
+      "caption": "Sign reads \"SUBWAY OPEN\"; two people near storefront; one person bends over a pile of bags; tree trunk in foreground; bright sunlight casting shadows.",
+      "clip_score": 0.2925479412078857,
+      "siglip_score": 0.2109207212924957,
+      "delta_clip": -0.034066408872604426,
+      "delta_siglip": -0.026495262980461093
+    },
+    {
+      "image_id": "flickr30k_test_013247",
+      "image_relpath": "images/flickr30k/flickr30k_test_013247.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_013247.jpg",
+      "caption": "Sign reads 'Outdoor World' and 'Bass Pro Shops'; four people walk on the concrete forecourt; wooden façade with rusted metal roof; overcast sky.",
+      "clip_score": 0.3059132397174835,
+      "siglip_score": 0.193254217505455,
+      "delta_clip": -0.03345635533332819,
+      "delta_siglip": 0.04206368327140808
+    },
+    {
+      "image_id": "flickr30k_test_030685",
+      "image_relpath": "images/flickr30k/flickr30k_test_030685.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_030685.jpg",
+      "caption": "Two people stand in a hallway; one holds a red cup, the other gestures with an open hand; white walls display stickers including \"Squidoo\" and \"Flock\"; wooden floor in foreground; recessed lighting visible.",
+      "clip_score": 0.3113686144351959,
+      "siglip_score": 0.2086710333824157,
+      "delta_clip": -0.028038829565048162,
+      "delta_siglip": -0.024857461452484214
+    },
+    {
+      "image_id": "flickr30k_test_007565",
+      "image_relpath": "images/flickr30k/flickr30k_test_007565.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_007565.jpg",
+      "caption": "Baby lies on wooden floor, reaching toward plastic water bottle; sunlight casts shadows across the floor; baby wears black short-sleeved outfit.",
+      "clip_score": 0.3205098509788513,
+      "siglip_score": 0.2930935025215149,
+      "delta_clip": -0.02334511280059809,
+      "delta_siglip": 0.02464735507965088
+    },
+    {
+      "image_id": "flickr30k_test_008727",
+      "image_relpath": "images/flickr30k/flickr30k_test_008727.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_008727.jpg",
+      "caption": "Two children sit on a carpeted floor; one wears a white shirt with red patterned sleeves and holds a magazine, the other wears a blue onesie and leans forward; a person in light blue pajamas sits in the background on a gray couch; scattered wrapping paper and a book are on the floor.",
+      "clip_score": 0.3245812654495239,
+      "siglip_score": 0.1967111676931381,
+      "delta_clip": -0.023273885250091553,
+      "delta_siglip": -0.0365803986787796
+    },
+    {
+      "image_id": "flickr30k_test_003863",
+      "image_relpath": "images/flickr30k/flickr30k_test_003863.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_003863.jpg",
+      "caption": "Six people jump mid-air over a cracked white salt flat; one yellow ball floats above them; clear blue sky overhead; long shadows cast on the ground.",
+      "clip_score": 0.3234221637248993,
+      "siglip_score": 0.2299017906188964,
+      "delta_clip": -0.022127300500869695,
+      "delta_siglip": 0.007141888141631997
+    },
+    {
+      "image_id": "flickr30k_test_028876",
+      "image_relpath": "images/flickr30k/flickr30k_test_028876.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_028876.jpg",
+      "caption": "One person in a blue jersey with the number 14 performs a handstand on grass in the foreground, while another person in a red jersey with the number 22 kneels beside them; a third person in a blue jersey runs in the background; the scene is viewed from a ground-level perspective under daylight.",
+      "clip_score": 0.3147275745868683,
+      "siglip_score": 0.1079884469509124,
+      "delta_clip": -0.018652170896530096,
+      "delta_siglip": -0.05054152011871339
+    },
+    {
+      "image_id": "flickr30k_test_009311",
+      "image_relpath": "images/flickr30k/flickr30k_test_009311.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_009311.jpg",
+      "caption": "One child with blonde hair, wearing a light-colored shirt, leans forward near a water fountain; water streams in the foreground, partially obscuring the child; background shows blurred green foliage.",
+      "clip_score": 0.3133480548858642,
+      "siglip_score": 0.1898166537284851,
+      "delta_clip": -0.01721355319023138,
+      "delta_siglip": 0.02213834226131442
+    },
+    {
+      "image_id": "flickr30k_test_006091",
+      "image_relpath": "images/flickr30k/flickr30k_test_006091.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_006091.jpg",
+      "caption": "A child wearing a blue cap and red sunglasses sits on a kitchen counter with bare feet, holding a metallic pull-down faucet that is dispensing water; behind them, wooden cabinets with glassware and white bowls are visible in the background.",
+      "clip_score": 0.3692543506622314,
+      "siglip_score": 0.2497670501470565,
+      "delta_clip": -0.015718042850494385,
+      "delta_siglip": 0.006585896015167209
+    },
+    {
+      "image_id": "flickr30k_test_000069",
+      "image_relpath": "images/flickr30k/flickr30k_test_000069.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_000069.jpg",
+      "caption": "One man in a dark suit stands beside a large red inflatable object; metal barricades are in the foreground; a building with windows is in the background; a lit street lamp is on the right; artificial lighting illuminates the scene.",
+      "clip_score": 0.3161395192146301,
+      "siglip_score": 0.1458128690719604,
+      "delta_clip": -0.012620270252227783,
+      "delta_siglip": -0.03356634080410001
+    }
+  ]
+}

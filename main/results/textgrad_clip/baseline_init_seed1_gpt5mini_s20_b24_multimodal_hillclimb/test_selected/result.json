@@ -1,0 +1,142 @@
+{
+  "prompt": "Produce exactly one concise caption (one sentence) that states only visually verifiable facts. Include 2–6 discrete visual facts drawn from this checklist in the given priority order when present: 1) legible text: transcribe exact words; 2) counts and object types (e.g., \"2 people\", \"one bicycle\"); 3) key color/material/texture for those objects (e.g., \"orange backpack\", \"wooden façade\"); 4) pose/action/orientation (e.g., \"person seen from behind walking away; holding two poles\"); 5) simple spatial layout (foreground / midground / background placement); 6) lighting/viewpoint/occlusion cues (e.g., \"bright sunlight casting long shadows\", \"elevated vantage; tree partially obscures façade\"). Use canonical object names and exact counts, standard direction words (left/right/foreground/background), and numerals or short words for numbers. Do not infer roles, emotions, intentions, or use metaphors, slogans, or marketing language (avoid \"farmer\", \"happy\", \"adventure\", etc.). If text is not clearly legible, omit it rather than guess. Keep the caption factual, compact, and limited to one sentence containing 2–6 concrete facts—no lists, tags, extra sentences, or commentary. Example (good): \"Sign reads 'Outdoor World'; two adults walk toward the store entrance; timber façade and concrete forecourt; overcast sky.\" Counterexample (bad): \"A happy farmer enjoys a sunny day in the countryside.\"",
+  "prompt_id": "textgrad_1d8c701270",
+  "split_csv": "data/splits/flickr30k_main_seed1_test.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/test_selected/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/test_selected/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/test_selected/scores.csv",
+  "data_root": "data",
+  "summary": {
+    "n": 150,
+    "mean_clip": 0.3284544610977173,
+    "mean_siglip": 0.1899890248477459,
+    "mean_caption_len": 36.89333333333333,
+    "generic_rate": 0.05333333333333334,
+    "mean_delta_clip": 0.0056300427516301444,
+    "mean_delta_siglip": -0.0020242381592591573,
+    "clip_win_rate": 0.59,
+    "siglip_win_rate": 0.49333333333333335
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_022515",
+      "image_relpath": "images/flickr30k/flickr30k_test_022515.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_022515.jpg",
+      "caption": "Person in orange patterned shirt holds phone; woman with blonde hair wears white lace top; multiple pedestrians in midground; striped awning above storefront; neon sign with green digits visible.",
+      "clip_score": 0.3212918043136596,
+      "siglip_score": 0.1731223613023758,
+      "delta_clip": -0.08824038505554199,
+      "delta_siglip": -0.08631078898906702
+    },
+    {
+      "image_id": "flickr30k_test_003421",
+      "image_relpath": "images/flickr30k/flickr30k_test_003421.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_003421.jpg",
+      "caption": "Three children stand in a foamy bath; one wears red shorts, another has dark shorts, and the third is barefoot; background shows green foliage; lighting suggests late afternoon.",
+      "clip_score": 0.2870962619781494,
+      "siglip_score": 0.1712102442979812,
+      "delta_clip": -0.07850009202957148,
+      "delta_siglip": 0.003973796963691711
+    },
+    {
+      "image_id": "flickr30k_test_029073",
+      "image_relpath": "images/flickr30k/flickr30k_test_029073.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_029073.jpg",
+      "caption": "A girl in a gray shirt and blue shorts stands in the foreground holding two hula hoops, one green and one blue; behind her, a man in a green jacket sits on the grass with a black backpack; further back, a man in a red shirt and blue jeans stands near a white tent; bright sunlight illumin",
+      "clip_score": 0.2899782061576843,
+      "siglip_score": 0.1920591294765472,
+      "delta_clip": -0.07211470603942866,
+      "delta_siglip": 0.001048386096954318
+    },
+    {
+      "image_id": "flickr30k_test_005620",
+      "image_relpath": "images/flickr30k/flickr30k_test_005620.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_005620.jpg",
+      "caption": "Sign reads 'Commercial Drive Station'; two people stand in foreground holding cups; one person wears a black jacket and jeans, the other wears a gray hoodie and black pants; bright daylight.",
+      "clip_score": 0.3199642598628998,
+      "siglip_score": 0.215904414653778,
+      "delta_clip": -0.06976962089538574,
+      "delta_siglip": -0.07287305593490609
+    },
+    {
+      "image_id": "flickr30k_test_025239",
+      "image_relpath": "images/flickr30k/flickr30k_test_025239.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_025239.jpg",
+      "caption": "One person sits at a desk holding a camera; the person wears an orange and black striped shirt and blue jeans; a computer monitor, keyboard, and coffee mug are on the desk; a corkboard and shelving unit are on the wall behind the desk; the scene is lit by indoor lighting.",
+      "clip_score": 0.3050048351287842,
+      "siglip_score": 0.2236245423555374,
+      "delta_clip": -0.05841630697250361,
+      "delta_siglip": 0.0028330832719802856
+    },
+    {
+      "image_id": "flickr30k_test_029073",
+      "image_relpath": "images/flickr30k/flickr30k_test_029073.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_029073.jpg",
+      "caption": "A girl in a gray shirt and blue shorts stands in the foreground holding two hula hoops, one green and one blue; behind her, a man in a green jacket sits on the grass with a black backpack; further back, a man in a red shirt and blue jeans stands near a white tent; bright sunlight illumin",
+      "clip_score": 0.2899782061576843,
+      "siglip_score": 0.1920591294765472,
+      "delta_clip": -0.058228164911270086,
+      "delta_siglip": 0.01819406449794772
+    },
+    {
+      "image_id": "flickr30k_test_009784",
+      "image_relpath": "images/flickr30k/flickr30k_test_009784.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_009784.jpg",
+      "caption": "Three people sit on a wooden dock with their feet in water, one holding a green can, another holding a glass, all with raised arms; background shows a wooden structure and a person standing.",
+      "clip_score": 0.2632130682468414,
+      "siglip_score": 0.1999180912971496,
+      "delta_clip": -0.05559000372886663,
+      "delta_siglip": -0.012906193733215388
+    },
+    {
+      "image_id": "flickr30k_test_018060",
+      "image_relpath": "images/flickr30k/flickr30k_test_018060.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_018060.jpg",
+      "caption": "Sign reads '15+ TEQUILAS'; three people on ice rink; white picket fence in foreground; tree with string lights in midground; artificial lighting illuminates scene.",
+      "clip_score": 0.278819739818573,
+      "siglip_score": 0.2350529134273529,
+      "delta_clip": -0.055332452058792114,
+      "delta_siglip": -0.015286237001419067
+    },
+    {
+      "image_id": "flickr30k_test_006742",
+      "image_relpath": "images/flickr30k/flickr30k_test_006742.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_006742.jpg",
+      "caption": "Four people stand on a stage; one holds a drum, another holds a microphone, and a third holds a tambourine; chairs and speakers are in the foreground and midground; stage lighting illuminates the performers.",
+      "clip_score": 0.2881461977958679,
+      "siglip_score": 0.1509938836097717,
+      "delta_clip": -0.05437028408050537,
+      "delta_siglip": -0.057421326637268094
+    },
+    {
+      "image_id": "flickr30k_test_018511",
+      "image_relpath": "images/flickr30k/flickr30k_test_018511.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_018511.jpg",
+      "caption": "One man wearing a straw hat and blue overalls holds a wooden-handled hammer and works on a metal object; another person in a brown jacket is partially visible to his right; the scene is outdoors with a green-painted wooden window frame in the background.",
+      "clip_score": 0.2941304445266723,
+      "siglip_score": 0.1682289540767669,
+      "delta_clip": -0.052403271198272705,
+      "delta_siglip": -0.06123912334442139
+    },
+    {
+      "image_id": "flickr30k_test_009784",
+      "image_relpath": "images/flickr30k/flickr30k_test_009784.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_009784.jpg",
+      "caption": "Three people sit on a wooden dock with their feet in water, one holding a green can, another holding a glass, all with raised arms; background shows a wooden structure and a person standing.",
+      "clip_score": 0.2632130682468414,
+      "siglip_score": 0.1999180912971496,
+      "delta_clip": -0.04859247803688055,
+      "delta_siglip": -0.016476511955261286
+    },
+    {
+      "image_id": "flickr30k_test_014065",
+      "image_relpath": "images/flickr30k/flickr30k_test_014065.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_014065.jpg",
+      "caption": "A man in a gold and blue shirt and white pants leaps backward in the foreground, avoiding a black bull charging toward him; spectators sit in tiered red seating in the background under bright daylight.",
+      "clip_score": 0.3023090958595276,
+      "siglip_score": 0.1830723583698272,
+      "delta_clip": -0.048351168632507324,
+      "delta_siglip": 0.0428612530231475
+    }
+  ]
+}

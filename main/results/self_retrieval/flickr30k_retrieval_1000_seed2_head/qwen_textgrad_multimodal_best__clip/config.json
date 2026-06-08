@@ -1,0 +1,18 @@
+{
+  "split_csv": "data/splits/flickr30k_retrieval_1000_seed2_head.csv",
+  "image_root": "data",
+  "prediction_csv": "results/predictions/qwen_textgrad_multimodal_best__flickr30k_retrieval_1000_seed2_head.csv",
+  "output_dir": "results/self_retrieval/flickr30k_retrieval_1000_seed2_head/qwen_textgrad_multimodal_best__clip",
+  "scorer": "clip",
+  "device": "cuda:0",
+  "image_batch_size": 32,
+  "text_batch_size": 64,
+  "cache_dir": "results/self_retrieval/cache",
+  "overwrite_cache": false,
+  "no_check_images": false,
+  "include_unselected": false,
+  "baseline_prompt_id": "baseline",
+  "save_similarity": false,
+  "n_gallery": 1000,
+  "split_id": "flickr30k_retrieval_1000_seed2_head"
+}

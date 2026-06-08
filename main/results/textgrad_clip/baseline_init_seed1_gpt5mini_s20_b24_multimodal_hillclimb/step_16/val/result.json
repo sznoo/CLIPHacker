@@ -1,0 +1,142 @@
+{
+  "prompt": "Produce exactly one concise caption (one sentence) containing 2–6 discrete visual facts separated by semicolons. Facts must appear in this strict priority order when present: \n1) legible text (transcribe exact words in double quotes, preserving capitalization and punctuation; omit if any characters are illegible); \n2) counts and object types (use numerals, e.g., \"2 people\", prefer canonical nouns); \n3) key color / material / condition adjectives placed immediately before the noun (e.g., \"orange extension ladder\", \"rusted metal roof\"); \n4) pose / action / orientation (e.g., \"holding\", \"bending over\", \"looking left\"); \n5) simple spatial layout using foreground / midground / background and left/right; \n6) lighting / viewpoint / occlusion cues (e.g., \"bright sunlight casting long shadows\", \"tree partially obscures façade\"). \n\nRules:\n- Use semicolons to separate facts; produce exactly one sentence with 2–6 facts; do not produce lists, tags, multiple sentences, or extra commentary.  \n- If text is legible, quote the exact text (e.g., Sign reads \"OPEN\"); do not paraphrase or guess partial words.  \n- Use numerals for counts (e.g., \"2 people\"). Use short canonical object names; place color/material adjectives immediately before the noun.  \n- When more than one person/object is present, include at least one visually verifiable distinguishing attribute for each (clothing color/type, accessory, hair, glasses) and associate it with left/right or foreground/midground if visible; if no distinguishing attribute is visible, state only the count and location.  \n- Do not infer roles, occupations, emotions, intentions, or use metaphors, slogans, or marketing language. Do not guess unreadable text or unconfirmed object classes—omit unsupported facts rather than hedge (\"appears\", \"maybe\").  \n- Preserve punctuation and case for any transcribed text. Internally verify each fact is visually supported before output.\n\nCompact canonical guidance (use when visually supported): step ladder = short hinged ladder with spreader bars; extension ladder = long multi-section ladder; backpack = bag with shoulder straps; if unsure, prefer a safe generic class only when visually evident (e.g., \"bag\" rather than a specific subtype).\n\nGood / Bad examples (each is a single-sentence caption; facts separated by semicolons):\nGood: Sign reads \"Outdoor World\"; 2 adults walk toward the store entrance; timber façade and concrete forecourt; overcast sky.\nBad: A happy farmer enjoys a sunny day in the countryside.\nGood: Sign reads \"SUBWAY\"; person in green shirt bends over a pile of bags; tree trunk in foreground; bright sunlight casting sharp shadows.\nBad: People outside a restaurant having a nice time in the sun.\nGood: 1 woman wearing a light-blue apron with large silver hoop earrings sits in foreground; plastic bags and stacked cardboard boxes in background; seated, facing forward.\nBad: A vendor smiling in a messy store.\nGood: 2 people stand in a hallway; right person holds a red cup; left person gestures with open hands; wooden floor in foreground; recessed lighting overhead.\nBad: Two friends chatting with stickers on the wall.\n\nProduce exactly one caption sentence that follows the rules above and nothing else.",
+  "prompt_id": "textgrad_d0b5e1047f",
+  "split_csv": "data/splits/flickr30k_main_seed1_val.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_16/val/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_16/val/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_16/val/scores.csv",
+  "data_root": "data",
+  "summary": {
+    "n": 150,
+    "mean_clip": 0.3035834343234698,
+    "mean_siglip": 0.18470624834299088,
+    "mean_caption_len": 32.54,
+    "generic_rate": 0.0,
+    "mean_delta_clip": -0.020982013990481694,
+    "mean_delta_siglip": -0.01413429734607537,
+    "clip_win_rate": 0.27,
+    "siglip_win_rate": 0.34
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_003587",
+      "image_relpath": "images/flickr30k/flickr30k_test_003587.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_003587.jpg",
+      "caption": "Cap reads \"3\" and \"ALBAN\"; 1 person in black jacket with red \"Plus\" and \"Coca-Cola\" logos; looking left; foreground; bright lighting.",
+      "clip_score": 0.2126169055700302,
+      "siglip_score": 0.1803270578384399,
+      "delta_clip": -0.15267004072666168,
+      "delta_siglip": -0.08397701382637027
+    },
+    {
+      "image_id": "flickr30k_test_028445",
+      "image_relpath": "images/flickr30k/flickr30k_test_028445.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_028445.jpg",
+      "caption": "\"XTR\" text on red truck tailgate; 1 man with gray hair and mustache rides bicycle; blue mesh laundry hamper on bike; midground with paved road and residential buildings; bright sunlight casting distinct shadows.",
+      "clip_score": 0.2446583956480026,
+      "siglip_score": 0.1727875769138336,
+      "delta_clip": -0.1227151304483414,
+      "delta_siglip": -0.044248998165130615
+    },
+    {
+      "image_id": "flickr30k_test_011250",
+      "image_relpath": "images/flickr30k/flickr30k_test_011250.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_011250.jpg",
+      "caption": "T-shirt reads \"LAKE PLACID NEW YORK\"; 2 people stand in grassy field; right child wears red striped shirt and blue jeans; both children hold hands; yellow caution tape in midground; bright sunlight.",
+      "clip_score": 0.2965377569198608,
+      "siglip_score": 0.1651153117418289,
+      "delta_clip": -0.11605602502822882,
+      "delta_siglip": -0.055400311946868896
+    },
+    {
+      "image_id": "flickr30k_test_028445",
+      "image_relpath": "images/flickr30k/flickr30k_test_028445.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_028445.jpg",
+      "caption": "\"XTR\" text on red truck tailgate; 1 man with gray hair and mustache rides bicycle; blue mesh laundry hamper on bike; midground with paved road and residential buildings; bright sunlight casting distinct shadows.",
+      "clip_score": 0.2446583956480026,
+      "siglip_score": 0.1727875769138336,
+      "delta_clip": -0.11500550806522372,
+      "delta_siglip": -0.0485607385635376
+    },
+    {
+      "image_id": "flickr30k_test_026142",
+      "image_relpath": "images/flickr30k/flickr30k_test_026142.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_026142.jpg",
+      "caption": "1 woman with dark hair tied back by a green hair tie; drinking from a metal water fountain; head tilted downward; midground; natural daylight.",
+      "clip_score": 0.2784278392791748,
+      "siglip_score": 0.2072412669658661,
+      "delta_clip": -0.09958374500274658,
+      "delta_siglip": -0.017709210515022222
+    },
+    {
+      "image_id": "flickr30k_test_014144",
+      "image_relpath": "images/flickr30k/flickr30k_test_014144.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_014144.jpg",
+      "caption": "1 person in dark blue uniform bends over; bright sparks fly from angle grinder in midground; metal lockers line right side; fluorescent lights illuminate scene from above.",
+      "clip_score": 0.2638913691043854,
+      "siglip_score": 0.2072580605745315,
+      "delta_clip": -0.0977120697498321,
+      "delta_siglip": -0.0235710889101029
+    },
+    {
+      "image_id": "flickr30k_test_017698",
+      "image_relpath": "images/flickr30k/flickr30k_test_017698.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_017698.jpg",
+      "caption": "No legible text; 7 people in military uniforms stand in midground; 1 woman in black jacket holds a white paper; group of civilians stands left of soldiers; bright sunlight casts distinct shadows.",
+      "clip_score": 0.256081223487854,
+      "siglip_score": 0.1591059565544128,
+      "delta_clip": -0.09540504217147827,
+      "delta_siglip": -0.10093390941619879
+    },
+    {
+      "image_id": "flickr30k_test_023317",
+      "image_relpath": "images/flickr30k/flickr30k_test_023317.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_023317.jpg",
+      "caption": "Sign reads \"GUEST SERVICES\"; 2 people; one wears a pink jacket and blue skirt, the other wears a black vest and light-blue shirt; woman in pink jacket holds a black bag and touches her mouth; woman in pink jacket stands in foreground, man in black vest sits at counter in midground; bright",
+      "clip_score": 0.2991294264793396,
+      "siglip_score": 0.1489591747522354,
+      "delta_clip": -0.0920184850692749,
+      "delta_siglip": -0.06942938268184659
+    },
+    {
+      "image_id": "flickr30k_test_013546",
+      "image_relpath": "images/flickr30k/flickr30k_test_013546.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_013546.jpg",
+      "caption": "1 person in black jacket stands on yellow platform; 1 hand in red sleeve grips black handle in foreground; blurred green trees and fence in background; motion blur indicates spinning motion.",
+      "clip_score": 0.2857789397239685,
+      "siglip_score": 0.1969675421714782,
+      "delta_clip": -0.09128925204277039,
+      "delta_siglip": -0.012461811304092407
+    },
+    {
+      "image_id": "flickr30k_test_030505",
+      "image_relpath": "images/flickr30k/flickr30k_test_030505.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_030505.jpg",
+      "caption": "Sign reads \"WELCOME\"; 2 people in dark uniforms hold light-blue pom-poms; crowd in midground; bright sunlight casting sharp shadows.",
+      "clip_score": 0.2472235262393951,
+      "siglip_score": 0.0955324545502662,
+      "delta_clip": -0.08846727013587949,
+      "delta_siglip": -0.07520065456628801
+    },
+    {
+      "image_id": "flickr30k_test_022222",
+      "image_relpath": "images/flickr30k/flickr30k_test_022222.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_022222.jpg",
+      "caption": "1 person in white shirt and dark pants stands in midground; 1 cart covered with green tarp carries white sack with \"SUN\" visible; person holds broom; wet pavement in foreground; overcast lighting.",
+      "clip_score": 0.2958950400352478,
+      "siglip_score": 0.2082840800285339,
+      "delta_clip": -0.0878678560256958,
+      "delta_siglip": -0.0318717956542969
+    },
+    {
+      "image_id": "flickr30k_test_030505",
+      "image_relpath": "images/flickr30k/flickr30k_test_030505.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_030505.jpg",
+      "caption": "Sign reads \"WELCOME\"; 2 people in dark uniforms hold light-blue pom-poms; crowd in midground; bright sunlight casting sharp shadows.",
+      "clip_score": 0.2472235262393951,
+      "siglip_score": 0.0955324545502662,
+      "delta_clip": -0.08638095855712888,
+      "delta_siglip": -0.12202557176351551
+    }
+  ]
+}

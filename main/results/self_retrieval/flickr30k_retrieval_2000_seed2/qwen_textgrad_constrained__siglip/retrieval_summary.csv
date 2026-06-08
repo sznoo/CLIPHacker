@@ -1,0 +1,41 @@
+method_id,prompt_id,run_id,prompt_name,prompt_text,model,n,r@1,r@5,r@10,mrr,median_rank,mean_rank,mean_positive_score,mean_hardest_negative_score,mean_margin
+qwen_textgrad_constrained,textgrad_constrained,qwen_textgrad_constrained__flickr30k_retrieval_2000_seed2,TextGrad Constrained,"Generate exactly one short, literal, factual caption: output exactly one grammatically correct English sentence and nothing else. The caption must describe only visually present content, avoid invented attributes, emotions, intentions, or unreadable text, and must not include extra commentary. Follow these rules in order.
+
+Length and style
+- One sentence only. Prefer 9–11 content words; allow 7–13 words when needed to include safe discriminative tokens. Leading articles (""a/an/the"") do not count as content words.
+- Prefer ""color + class"" or ""numeral + class"" (e.g., ""red bicycle"", ""2 dogs""). Use present‑tense active verbs for visible actions (walking, holding); otherwise use ""is/are"". Use Arabic numerals for visible counts.
+
+Subject selection (salience)
+- Compute salience = (area_fraction^0.9) × detector_confidence × (1 + center_bonus) + token_bonus.
+  - area_fraction = bbox area / image area.
+  - center_bonus = 0.25 if the detection centroid is inside the central 25% of image area, otherwise 0.
+- token_bonus increases with token confidence and area: token_bonus = 0.012 × token_confidence × sqrt(token_bbox_area / image_area). This lets medium, confident tokens (colors, numerals, logos, multiword classes) influence selection without letting tiny tokens dominate.
+- Consider the top 3 candidates by salience; require chosen_salience ≥ max(0.0035, 0.30 × max_salience_in_image). This prevents tiny incidental detections from winning.
+
+Detection usability and tie‑breakers
+- Treat a detection usable only if it meets the chosen_salience test above. Allow smaller detections only when they contain strong readable text or a clear numeral: either (OCR_confidence ≥ 0.75 and OCR_bbox_area ≥ 0.002) or (numeral_detection_confidence ≥ 0.80 and bbox_area ≥ 0.002).
+- If two candidates’ saliences are within 5%: prefer (in order) the candidate with a distinct high‑signal token, then a person only if person_bbox_area ≥ 0.8× competing area, then larger bbox area, then more centered bbox.
+
+High‑signal tokens and placement
+- High‑signal tokens: visible colors/patterns, concrete multiword classes (e.g., ""stop sign""), clear Arabic numerals, clothing/accessory names (e.g., ""baseball cap""), and short readable logos/text (1–3 tokens).
+- Include at least one high‑signal token that meets token/OCR gating either (A) within the first four content words, or (B) in a short post‑nominal relation immediately following the head noun (≤5 tokens). This preserves fluency while ensuring discriminative cues appear in the caption.
+- If a second distinct high‑signal token is present and useful, you may append one compact post‑nominal relation up to 5 tokens (for example, ""on the sidewalk"", ""with number 7"") only if that relation introduces a distinct high‑signal token meeting gating rules. Do not chain multiple relations.
+
+Token/OCR gating and copying rules
+- Token area gate: require token_bbox_area ≥ 0.0025 when token_confidence ≥ 0.85; otherwise require token_bbox_area ≥ 0.005. Small high‑confidence tokens thus contribute but cannot dominate.
+- Copy short readable text/logos (1–3 tokens) only if (OCR_confidence ≥ 0.60 and OCR_bbox_area ≥ 0.005) OR (OCR_confidence ≥ 0.75 and OCR_bbox_area ≥ 0.002). Never copy runs of ≥5 consecutive digits or low‑confidence/unreadable text. If OCR is borderline, describe generically (e.g., ""sign with letters"" or ""shirt with short logo"") rather than copying uncertain strings.
+
+Wording, grammar, and canonical labels
+- Prefer detector labels mapped to common canonical words (e.g., ""sneakers"" rather than obscure brand names). Use concise, concrete nouns and adjectives rather than vague terms like ""object."" Use determiners as needed; count content words excluding them.
+- Maintain grammatical fluency; if forcing a token into the first three words would break grammar, place it in the allowed post‑nominal slot instead.
+
+Safety and failure checks
+- Never invent unreadable text, emotions, thoughts, or dialogue. Do not output fallback phrases such as ""image unclear.""
+- If the chosen subject bbox_area < 0.002 but another detection’s bbox_area > 1.5× larger and is usable, switch to the larger detection.
+- Do not chain long descriptive phrases; keep the caption compact and focused on visible, discriminative tokens.
+
+Concise examples of desired style (do not reproduce exact phrasing)
+- Good: ""red bicycle is parked on the sidewalk."" ""two dogs stand in shallow water.""
+- Bad: ""object on left."" ""man happy.""
+
+Final constraint: one literal sentence only, satisfying the length guidance and token/OCR rules above, containing at least one validated high‑signal token in the early clause or short post‑nominal relation, and nothing else.",Qwen/Qwen3-VL-8B-Instruct,2000,0.8785,0.968,0.9815,0.9187436204726259,1.0,2.225,0.173925871708896,0.1233972255855333,0.050528646123362705

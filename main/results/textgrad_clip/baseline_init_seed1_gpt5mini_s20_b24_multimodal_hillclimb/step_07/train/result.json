@@ -1,0 +1,142 @@
+{
+  "prompt": "Produce exactly one concise caption (one sentence) that states only visually verifiable facts. Include 2–6 discrete visual facts drawn from this checklist in the given priority order when present: 1) legible text: transcribe exact words; 2) counts and object types (e.g., \"2 people\", \"one bicycle\"); 3) key color/material/texture for those objects (e.g., \"orange backpack\", \"wooden façade\"); 4) pose/action/orientation (e.g., \"person seen from behind walking away; holding two poles\"); 5) simple spatial layout (foreground / midground / background placement); 6) lighting/viewpoint/occlusion cues (e.g., \"bright sunlight casting long shadows\", \"elevated vantage; tree partially obscures façade\"). Use canonical object names and exact counts, standard direction words (left/right/foreground/background), and numerals or short words for numbers. Do not infer roles, emotions, intentions, or use metaphors, slogans, or marketing language (avoid \"farmer\", \"happy\", \"adventure\", etc.). If text is not clearly legible, omit it rather than guess. Keep the caption factual, compact, and limited to one sentence containing 2–6 concrete facts—no lists, tags, extra sentences, or commentary. Example (good): \"Sign reads 'Outdoor World'; two adults walk toward the store entrance; timber façade and concrete forecourt; overcast sky.\" Counterexample (bad): \"A happy farmer enjoys a sunny day in the countryside.\"",
+  "prompt_id": "textgrad_1d8c701270",
+  "split_csv": "data/splits/flickr30k_main_seed1_train.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_07/train/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_07/train/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_07/train/scores.csv",
+  "data_root": "data",
+  "summary": {
+    "n": 24,
+    "mean_clip": 0.32072341193755466,
+    "mean_siglip": 0.18586512530843413,
+    "mean_caption_len": 35.166666666666664,
+    "generic_rate": 0.0,
+    "mean_delta_clip": 0.003425483902295428,
+    "mean_delta_siglip": -0.005509126310547181,
+    "clip_win_rate": 0.5833333333333334,
+    "siglip_win_rate": 0.5416666666666666
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_024189",
+      "image_relpath": "images/flickr30k/flickr30k_test_024189.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_024189.jpg",
+      "caption": "Sign reads \"SUBWAY OPEN\"; two people near storefront; one person bends over a pile of bags; tree trunk in foreground; bright sunlight casting shadows.",
+      "clip_score": 0.2925479412078857,
+      "siglip_score": 0.2109207212924957,
+      "delta_clip": -0.034066408872604426,
+      "delta_siglip": -0.026495262980461093
+    },
+    {
+      "image_id": "flickr30k_test_013247",
+      "image_relpath": "images/flickr30k/flickr30k_test_013247.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_013247.jpg",
+      "caption": "Sign reads 'Outdoor World' and 'Bass Pro Shops'; four people walk on the concrete forecourt; wooden façade with rusted metal roof; overcast sky.",
+      "clip_score": 0.3059132397174835,
+      "siglip_score": 0.193254217505455,
+      "delta_clip": -0.03345635533332819,
+      "delta_siglip": 0.04206368327140808
+    },
+    {
+      "image_id": "flickr30k_test_015474",
+      "image_relpath": "images/flickr30k/flickr30k_test_015474.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_015474.jpg",
+      "caption": "Sign reads 'DUNG ANH MAI PHAT CO'; three people in boats on murky water; one person wears red pants; wooden stilt structures line the riverbank; elevated viewpoint.",
+      "clip_score": 0.2975950837135315,
+      "siglip_score": 0.144614040851593,
+      "delta_clip": -0.031188338994979803,
+      "delta_siglip": -0.02614656090736392
+    },
+    {
+      "image_id": "flickr30k_test_012278",
+      "image_relpath": "images/flickr30k/flickr30k_test_012278.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_012278.jpg",
+      "caption": "Three people sit on a rooftop terrace with a black-and-white goat nearby; a red cloth covers a bench in the background; satellite dishes are mounted on the wall; the scene is viewed from an elevated vantage.",
+      "clip_score": 0.2728696465492248,
+      "siglip_score": 0.1586209833621978,
+      "delta_clip": -0.025066941976547297,
+      "delta_siglip": -0.0483267605304718
+    },
+    {
+      "image_id": "flickr30k_test_010401",
+      "image_relpath": "images/flickr30k/flickr30k_test_010401.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_010401.jpg",
+      "caption": "One person in a blue sweater with white collar and cuffs jumps toward a pile of brown leaves in the foreground; a silver vehicle is visible in the background; green grass and scattered leaves surround the scene.",
+      "clip_score": 0.3124134838581085,
+      "siglip_score": 0.1969839483499527,
+      "delta_clip": -0.02335777878761286,
+      "delta_siglip": 0.01480840146541601
+    },
+    {
+      "image_id": "flickr30k_test_023641",
+      "image_relpath": "images/flickr30k/flickr30k_test_023641.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_023641.jpg",
+      "caption": "A woman in a pink and white striped shirt walks toward the camera on a wet cobblestone path; several people sit on benches under leafy trees in the midground; a dark metal lamppost stands on the left; buildings with light-colored walls are visible in the background.",
+      "clip_score": 0.3169930577278137,
+      "siglip_score": 0.1903418898582458,
+      "delta_clip": -0.02124994993209839,
+      "delta_siglip": 0.010703757405281095
+    },
+    {
+      "image_id": "flickr30k_test_014594",
+      "image_relpath": "images/flickr30k/flickr30k_test_014594.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_014594.jpg",
+      "caption": "One jockey on a brown horse jumps over a wooden fence; the horse has a white marking on its forehead; the jockey wears a yellow helmet and green-and-black jacket; the scene is set in a grassy field with trees in the background.",
+      "clip_score": 0.3161676526069641,
+      "siglip_score": 0.1952752918004989,
+      "delta_clip": -0.02088451385498047,
+      "delta_siglip": 0.0012416988611221036
+    },
+    {
+      "image_id": "flickr30k_test_009311",
+      "image_relpath": "images/flickr30k/flickr30k_test_009311.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_009311.jpg",
+      "caption": "One child with blonde hair, wearing a light-colored shirt, leans forward near a water fountain; water streams in the foreground, partially obscuring the child; background shows blurred green foliage.",
+      "clip_score": 0.3133480548858642,
+      "siglip_score": 0.1898166537284851,
+      "delta_clip": -0.01721355319023138,
+      "delta_siglip": 0.02213834226131442
+    },
+    {
+      "image_id": "flickr30k_test_021284",
+      "image_relpath": "images/flickr30k/flickr30k_test_021284.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_021284.jpg",
+      "caption": "Sign reads \"No Jews, No Arabs, No Muslims, No Christians\"; multiple people wearing black hats; some individuals holding Palestinian flags; crowd in foreground with barricades in midground; bright daylight.",
+      "clip_score": 0.3060727715492248,
+      "siglip_score": 0.1762964427471161,
+      "delta_clip": -0.016193628311157282,
+      "delta_siglip": -0.059562548995018005
+    },
+    {
+      "image_id": "flickr30k_test_007496",
+      "image_relpath": "images/flickr30k/flickr30k_test_007496.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_007496.jpg",
+      "caption": "Two men stand between two vintage cars; one holds an accordion, the other a smaller instrument; the right car has a visible license plate reading \"6ZE 638\"; brick building with white-trimmed windows in the background; bright sunlight casts distinct shadows.",
+      "clip_score": 0.3039939999580383,
+      "siglip_score": 0.213215172290802,
+      "delta_clip": -0.008707702159881647,
+      "delta_siglip": 0.006377547979354914
+    },
+    {
+      "image_id": "flickr30k_test_030359",
+      "image_relpath": "images/flickr30k/flickr30k_test_030359.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_030359.jpg",
+      "caption": "Sign reads \"THAT CALLS FOR A\"; goalkeeper in red jersey dives left; three players in yellow jerseys and one in white jersey jump for the ball; action occurs in midground with spectators in background.",
+      "clip_score": 0.2940182089805603,
+      "siglip_score": 0.1414361745119094,
+      "delta_clip": 0.0017847418785095215,
+      "delta_siglip": -0.012377157807350186
+    },
+    {
+      "image_id": "flickr30k_test_024934",
+      "image_relpath": "images/flickr30k/flickr30k_test_024934.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_024934.jpg",
+      "caption": "One person walks across a cobblestone street in front of a blue wall; wearing an orange shirt and gray pants; holding a phone; under bright daylight.",
+      "clip_score": 0.309369146823883,
+      "siglip_score": 0.2162506878376007,
+      "delta_clip": 0.0057593584060668945,
+      "delta_siglip": 0.029541641473770197
+    }
+  ]
+}

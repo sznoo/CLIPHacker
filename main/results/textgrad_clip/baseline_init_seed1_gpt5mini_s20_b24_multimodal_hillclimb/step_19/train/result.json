@@ -1,0 +1,142 @@
+{
+  "prompt": "Produce exactly one concise caption (one sentence) that states only visually verifiable facts. Include 2–6 discrete visual facts drawn from this checklist in the given priority order when present: 1) legible text: transcribe exact words; 2) counts and object types (e.g., \"2 people\", \"one bicycle\"); 3) key color/material/texture for those objects (e.g., \"orange backpack\", \"wooden façade\"); 4) pose/action/orientation (e.g., \"person seen from behind walking away; holding two poles\"); 5) simple spatial layout (foreground / midground / background placement); 6) lighting/viewpoint/occlusion cues (e.g., \"bright sunlight casting long shadows\", \"elevated vantage; tree partially obscures façade\"). Use canonical object names and exact counts, standard direction words (left/right/foreground/background), and numerals or short words for numbers. Do not infer roles, emotions, intentions, or use metaphors, slogans, or marketing language (avoid \"farmer\", \"happy\", \"adventure\", etc.). If text is not clearly legible, omit it rather than guess. Keep the caption factual, compact, and limited to one sentence containing 2–6 concrete facts—no lists, tags, extra sentences, or commentary. Example (good): \"Sign reads 'Outdoor World'; two adults walk toward the store entrance; timber façade and concrete forecourt; overcast sky.\" Counterexample (bad): \"A happy farmer enjoys a sunny day in the countryside.\"",
+  "prompt_id": "textgrad_1d8c701270",
+  "split_csv": "data/splits/flickr30k_main_seed1_train.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_19/train/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_19/train/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_19/train/scores.csv",
+  "data_root": "data",
+  "summary": {
+    "n": 24,
+    "mean_clip": 0.32309262702862424,
+    "mean_siglip": 0.20146370927492774,
+    "mean_caption_len": 34.958333333333336,
+    "generic_rate": 0.20833333333333334,
+    "mean_delta_clip": -0.0016962010413408303,
+    "mean_delta_siglip": -0.0035276263952255436,
+    "clip_win_rate": 0.5,
+    "siglip_win_rate": 0.4583333333333333
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_029824",
+      "image_relpath": "images/flickr30k/flickr30k_test_029824.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_029824.jpg",
+      "caption": "Sign reads \"Bienvenue Welcome\"; one person stands behind a black desk with \"London 2012\" and Olympic rings; red backdrop with white line drawings; pink informational cards on desk; person wears a lanyard with ID badge.",
+      "clip_score": 0.3239861726760864,
+      "siglip_score": 0.2457722872495651,
+      "delta_clip": -0.06766912341117859,
+      "delta_siglip": -0.00023417174816131592
+    },
+    {
+      "image_id": "flickr30k_test_021046",
+      "image_relpath": "images/flickr30k/flickr30k_test_021046.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_021046.jpg",
+      "caption": "Two people sit side by side; one holds a paper with \"21000\" visible, the other holds a cylindrical object; both are in foreground; lighting casts greenish tint.",
+      "clip_score": 0.2771599292755127,
+      "siglip_score": 0.123906061053276,
+      "delta_clip": -0.04531151056289673,
+      "delta_siglip": -0.0813551396131516
+    },
+    {
+      "image_id": "flickr30k_test_003961",
+      "image_relpath": "images/flickr30k/flickr30k_test_003961.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_003961.jpg",
+      "caption": "A woman holds a red bag with \"American Girl Place\" text; she stands behind a white tablecloth-covered table; an American flag hangs above; foliage is in the foreground; glass window reflects interior and exterior elements.",
+      "clip_score": 0.3100873827934265,
+      "siglip_score": 0.2482828199863433,
+      "delta_clip": -0.0393612384796142,
+      "delta_siglip": -0.0223625600337983
+    },
+    {
+      "image_id": "flickr30k_test_015736",
+      "image_relpath": "images/flickr30k/flickr30k_test_015736.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_015736.jpg",
+      "caption": "A white and brown dog with a red collar walks through shallow water; its legs are partially submerged, and its reflection is visible in the water; the dog is oriented toward the left side of the frame.",
+      "clip_score": 0.3111463785171509,
+      "siglip_score": 0.1898394972085952,
+      "delta_clip": -0.03659921884536743,
+      "delta_siglip": -0.0199308842420578
+    },
+    {
+      "image_id": "flickr30k_test_013247",
+      "image_relpath": "images/flickr30k/flickr30k_test_013247.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_013247.jpg",
+      "caption": "Sign reads 'Outdoor World' and 'Bass Pro Shops'; four people walk on the concrete forecourt; wooden façade with rusted metal roof; overcast sky.",
+      "clip_score": 0.3059132397174835,
+      "siglip_score": 0.193254217505455,
+      "delta_clip": -0.03345635533332819,
+      "delta_siglip": 0.04206368327140808
+    },
+    {
+      "image_id": "flickr30k_test_010401",
+      "image_relpath": "images/flickr30k/flickr30k_test_010401.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_010401.jpg",
+      "caption": "One person in a blue sweater with white collar and cuffs jumps toward a pile of brown leaves in the foreground; a silver vehicle is visible in the background; green grass and scattered leaves surround the scene.",
+      "clip_score": 0.3124134838581085,
+      "siglip_score": 0.1969839483499527,
+      "delta_clip": -0.02335777878761286,
+      "delta_siglip": 0.01480840146541601
+    },
+    {
+      "image_id": "flickr30k_test_003863",
+      "image_relpath": "images/flickr30k/flickr30k_test_003863.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_003863.jpg",
+      "caption": "Six people jump mid-air over a cracked white salt flat; one yellow ball floats above them; clear blue sky overhead; long shadows cast on the ground.",
+      "clip_score": 0.3234221637248993,
+      "siglip_score": 0.2299017906188964,
+      "delta_clip": -0.022127300500869695,
+      "delta_siglip": 0.007141888141631997
+    },
+    {
+      "image_id": "flickr30k_test_009311",
+      "image_relpath": "images/flickr30k/flickr30k_test_009311.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_009311.jpg",
+      "caption": "One child with blonde hair, wearing a light-colored shirt, leans forward near a water fountain; water streams in the foreground, partially obscuring the child; background shows blurred green foliage.",
+      "clip_score": 0.3133480548858642,
+      "siglip_score": 0.1898166537284851,
+      "delta_clip": -0.01721355319023138,
+      "delta_siglip": 0.02213834226131442
+    },
+    {
+      "image_id": "flickr30k_test_006091",
+      "image_relpath": "images/flickr30k/flickr30k_test_006091.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_006091.jpg",
+      "caption": "A child wearing a blue cap and red sunglasses sits on a kitchen counter with bare feet, holding a metallic pull-down faucet that is dispensing water; behind them, wooden cabinets with glassware and white bowls are visible in the background.",
+      "clip_score": 0.3692543506622314,
+      "siglip_score": 0.2497670501470565,
+      "delta_clip": -0.015718042850494385,
+      "delta_siglip": 0.006585896015167209
+    },
+    {
+      "image_id": "flickr30k_test_023643",
+      "image_relpath": "images/flickr30k/flickr30k_test_023643.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_023643.jpg",
+      "caption": "A young girl with curly hair and a red-and-white patterned top sits in the foreground under a large black umbrella with \"Capehart\" printed on it; behind her, a wooden easel displays two black-and-white caricatures; a blue backpack rests on the ground to her left; a person in a white",
+      "clip_score": 0.3181234002113342,
+      "siglip_score": 0.2028076350688934,
+      "delta_clip": -0.008788645267486628,
+      "delta_siglip": -0.07311734557151797
+    },
+    {
+      "image_id": "flickr30k_test_019904",
+      "image_relpath": "images/flickr30k/flickr30k_test_019904.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_019904.jpg",
+      "caption": "A man in a beige jacket walks on a metal railing; two red signs read \"LE MIGNON\" and \"FRANK SPECIALITIES RESTAURANT\"; the building has a yellow brick façade with black lanterns; the viewpoint is from above the railing.",
+      "clip_score": 0.323911041021347,
+      "siglip_score": 0.2435669749975204,
+      "delta_clip": -0.007410734891891535,
+      "delta_siglip": -0.04095767438411718
+    },
+    {
+      "image_id": "flickr30k_test_016246",
+      "image_relpath": "images/flickr30k/flickr30k_test_016246.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_016246.jpg",
+      "caption": "Child in blue shorts and flip-flops carries a bundle of colorful balloons including one with \"FELIZ\" text; motorcycle visible in background left; another motorcycle and person partially visible in background right; scene viewed from ground level.",
+      "clip_score": 0.3279543817043304,
+      "siglip_score": 0.2220242321491241,
+      "delta_clip": -0.006689637899398804,
+      "delta_siglip": 0.014591991901397677
+    }
+  ]
+}

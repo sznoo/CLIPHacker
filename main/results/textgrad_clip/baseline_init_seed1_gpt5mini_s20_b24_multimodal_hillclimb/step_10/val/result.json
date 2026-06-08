@@ -1,0 +1,142 @@
+{
+  "prompt": "Produce exactly one concise caption (one sentence) that states only visually verifiable facts. Output a single sentence — no lists, tags, JSON, multiple candidates, commentary, or explanations. The caption must contain 2–6 discrete facts and should be composed as short clauses separated by semicolons (each clause = one fact).\n\nSelection priorities (choose facts by this descending order; if more than six candidate facts exist, pick the highest‑priority ones; tie‑breaker = visually larger / centered / foreground):\n1) Legible text: transcribe exact words only if clearly readable.\n2) Counts and canonical object types: use numerals for counts (e.g., \"2 people\", \"1 bicycle\").\n3) Distinctive props & context cues and their placement: describe visible props (open instrument case with coins, baskets strapped to a vehicle, stools, microphones, numbered obstacles, scales) and where they sit relative to people/objects.\n4) Specific object subtype / material / texture: prefer more specific labels when visually supported (e.g., motorbike/moped/scooter if engine/handles visible; wooden flute/recorder if wood grain or finger holes visible).\n5) Pose/action/state with dynamic modifiers when obvious (e.g., \"jumping mid‑air\", \"playing a wooden flute\", \"holding a microphone\").\n6) Simple spatial layout (foreground / midground / background placement of at least one key object/person).\n7) Lighting / viewpoint / occlusion only when visually salient (sharp shadows, elevated vantage, partial occlusion that affects visibility).\n\nRoles and event nouns (e.g., \"busker\", \"vendor\", \"competitor\", \"presenter\", \"driver\") are allowed only when supported by explicit visual triggers (examples of triggers: open instrument case with visible coins or tip money → busker; baskets/produce strapped to a bike → vendor; numbered jumps/tents with handlers → competition; person speaking into microphone with audience and stage → presenter; visible engine/exhaust/rearview mirrors and helmet/plate → driver). If no trigger is present, do not infer roles, intentions, emotions, or motivations.\n\nStrict rules:\n- State only what you can see; do not use hedging words (\"appears\", \"probably\") or infer emotions/intentions or metaphors.\n- If text is not clearly legible, omit transcription rather than guessing.\n- Use canonical object names and include at least one distinguishing attribute (color/position/pose) when multiple similar objects appear.\n- Keep caption concise (soft target ~10–22 tokens) and limited to 2–6 facts.\n\nMicro‑examples (one line each):\nGood: \"Sign reads 'Outdoor World'; 2 adults walk toward the entrance; timber façade in background; overcast sky.\"\nBad: \"A happy farmer enjoys a sunny day in the countryside.\"",
+  "prompt_id": "textgrad_e386bee3c9",
+  "split_csv": "data/splits/flickr30k_main_seed1_val.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_10/val/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_10/val/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_10/val/scores.csv",
+  "data_root": "data",
+  "summary": {
+    "n": 150,
+    "mean_clip": 0.323218132853508,
+    "mean_siglip": 0.19551441133022307,
+    "mean_caption_len": 31.926666666666666,
+    "generic_rate": 0.11333333333333333,
+    "mean_delta_clip": -0.0013473154604435014,
+    "mean_delta_siglip": -0.0033261343588431675,
+    "clip_win_rate": 0.49,
+    "siglip_win_rate": 0.44666666666666666
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_016835",
+      "image_relpath": "images/flickr30k/flickr30k_test_016835.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_016835.jpg",
+      "caption": "Man in black hat and checkered shirt stands on street; fire burns from metal frame overhead; crowd watches from sidewalk; blue street sign reads \"Front St E\"; traffic light shows yellow.",
+      "clip_score": 0.2934892475605011,
+      "siglip_score": 0.1709960550069809,
+      "delta_clip": -0.08954629302024841,
+      "delta_siglip": -0.06989695131778711
+    },
+    {
+      "image_id": "flickr30k_test_006161",
+      "image_relpath": "images/flickr30k/flickr30k_test_006161.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_006161.jpg",
+      "caption": "Person in straw hat and green vest holds broom; person carries large gray trash bag; crowd lines narrow street; buildings with barred windows and signs flank walkway; red lantern hangs overhead.",
+      "clip_score": 0.2522821426391601,
+      "siglip_score": 0.2443718910217285,
+      "delta_clip": -0.08569976687431341,
+      "delta_siglip": 3.212690353399106e-05
+    },
+    {
+      "image_id": "flickr30k_test_023317",
+      "image_relpath": "images/flickr30k/flickr30k_test_023317.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_023317.jpg",
+      "caption": "Sign reads 'GUEST SERVICES'; 1 woman in pink jacket and white hat stands at counter; 1 man in cowboy hat sits at counter; red barrel with 'WM' logo is in foreground; trash bag inside barrel.",
+      "clip_score": 0.3069541156291961,
+      "siglip_score": 0.2509796023368835,
+      "delta_clip": -0.08419379591941839,
+      "delta_siglip": 0.032591044902801486
+    },
+    {
+      "image_id": "flickr30k_test_007385",
+      "image_relpath": "images/flickr30k/flickr30k_test_007385.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_007385.jpg",
+      "caption": "Dancers in blue and multicolored suits throw green frisbees; one dancer raises a white frisbee; store sign reads \"Foods\"; clear blue sky above; shadows cast on pavement.",
+      "clip_score": 0.2852400541305542,
+      "siglip_score": 0.1808513104915619,
+      "delta_clip": -0.08361679315567011,
+      "delta_siglip": 0.005922883749008179
+    },
+    {
+      "image_id": "flickr30k_test_006537",
+      "image_relpath": "images/flickr30k/flickr30k_test_006537.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_006537.jpg",
+      "caption": "Person in orange vest walks on platform; sign reads 'KILBURN'; yellow train on right track; digital display shows 'Next Train to Harrow & Wealdstone'; wet ground near foreground; overhead canopy extends over platform.",
+      "clip_score": 0.3141096830368042,
+      "siglip_score": 0.2330819070339203,
+      "delta_clip": -0.07737118005752558,
+      "delta_siglip": 0.015378654003143394
+    },
+    {
+      "image_id": "flickr30k_test_002308",
+      "image_relpath": "images/flickr30k/flickr30k_test_002308.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_002308.jpg",
+      "caption": "Person holds red cup; wears red tank top and blue-dyed hair; stands before patterned wall; poster reads \"VAN GOGH MUSEUM AMSTERDAM\" on adjacent door.",
+      "clip_score": 0.2295532524585724,
+      "siglip_score": 0.0986672341823577,
+      "delta_clip": -0.07658201456069941,
+      "delta_siglip": -0.11042705178260809
+    },
+    {
+      "image_id": "flickr30k_test_012572",
+      "image_relpath": "images/flickr30k/flickr30k_test_012572.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_012572.jpg",
+      "caption": "Person wears purple knitted hat; has long brown hair; holds dark jacket; sign reads \"Pizza\"; background shows blue wall and framed picture.",
+      "clip_score": 0.3180526196956634,
+      "siglip_score": 0.2157113403081894,
+      "delta_clip": -0.07173925638198858,
+      "delta_siglip": -0.07693348824977869
+    },
+    {
+      "image_id": "flickr30k_test_006161",
+      "image_relpath": "images/flickr30k/flickr30k_test_006161.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_006161.jpg",
+      "caption": "Person in straw hat and green vest holds broom; person carries large gray trash bag; crowd lines narrow street; buildings with barred windows and signs flank walkway; red lantern hangs overhead.",
+      "clip_score": 0.2522821426391601,
+      "siglip_score": 0.2443718910217285,
+      "delta_clip": -0.06899145245552069,
+      "delta_siglip": 0.04385904967784879
+    },
+    {
+      "image_id": "flickr30k_test_016538",
+      "image_relpath": "images/flickr30k/flickr30k_test_016538.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_016538.jpg",
+      "caption": "Rider on brown horse chases black calf; rider wears blue shirt and white hat; horse gallops with reins taut; spectators sit behind white fence; sign reads \"Ed's Body Shop\"; another sign shows \"First Interstate Bank Buffalo\".",
+      "clip_score": 0.2791428864002228,
+      "siglip_score": 0.1749418377876281,
+      "delta_clip": -0.06684395670890803,
+      "delta_siglip": 0.034203499555587685
+    },
+    {
+      "image_id": "flickr30k_test_016835",
+      "image_relpath": "images/flickr30k/flickr30k_test_016835.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_016835.jpg",
+      "caption": "Man in black hat and checkered shirt stands on street; fire burns from metal frame overhead; crowd watches from sidewalk; blue street sign reads \"Front St E\"; traffic light shows yellow.",
+      "clip_score": 0.2934892475605011,
+      "siglip_score": 0.1709960550069809,
+      "delta_clip": -0.0609876811504364,
+      "delta_siglip": -0.036471441388130105
+    },
+    {
+      "image_id": "flickr30k_test_005250",
+      "image_relpath": "images/flickr30k/flickr30k_test_005250.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_005250.jpg",
+      "caption": "Woman in black dress holds red flowers; another woman holds purple flowers; staircase visible in background; people walking behind; text \"100 TO 117\" on wall.",
+      "clip_score": 0.3007974028587341,
+      "siglip_score": 0.1955275237560272,
+      "delta_clip": -0.06058692932128912,
+      "delta_siglip": -0.0137126743793487
+    },
+    {
+      "image_id": "flickr30k_test_030505",
+      "image_relpath": "images/flickr30k/flickr30k_test_030505.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_030505.jpg",
+      "caption": "Crowd marches down street; people hold colorful pom-poms; buildings with awnings line the street; American flag visible; street lamps present.",
+      "clip_score": 0.2754731774330139,
+      "siglip_score": 0.1420093178749084,
+      "delta_clip": -0.06021761894226069,
+      "delta_siglip": -0.028723791241645813
+    }
+  ]
+}

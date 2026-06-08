@@ -1,0 +1,142 @@
+{
+  "prompt": "Write a caption for this image.",
+  "prompt_id": "textgrad_7f3b4f879f",
+  "split_csv": "data/splits/flickr30k_main_seed1_train.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_05/train/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_05/train/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_05/train/scores.csv",
+  "data_root": "data",
+  "summary": {
+    "n": 24,
+    "mean_clip": 0.3211502196888129,
+    "mean_siglip": 0.1821387838572263,
+    "mean_caption_len": 28.708333333333332,
+    "generic_rate": 0.0,
+    "mean_delta_clip": -7.450580596923828e-09,
+    "mean_delta_siglip": 6.829698874731098e-09,
+    "clip_win_rate": 0.08333333333333333,
+    "siglip_win_rate": 0.25
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_012886",
+      "image_relpath": "images/flickr30k/flickr30k_test_012886.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_012886.jpg",
+      "caption": "A joyful hiker beams with delight while trekking through a snowy forest, equipped with poles and a backpack, embracing the winter adventure.",
+      "clip_score": 0.2952877879142761,
+      "siglip_score": 0.1845297366380691,
+      "delta_clip": -8.940696716308594e-08,
+      "delta_siglip": 5.96046448031462e-08
+    },
+    {
+      "image_id": "flickr30k_test_017070",
+      "image_relpath": "images/flickr30k/flickr30k_test_017070.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_017070.jpg",
+      "caption": "A farmer walks through a golden cornfield, heading toward a distant farmhouse and silo under a clear blue sky.",
+      "clip_score": 0.3402104377746582,
+      "siglip_score": 0.1950360983610153,
+      "delta_clip": -5.960464477539063e-08,
+      "delta_siglip": 1.4901161193847656e-08
+    },
+    {
+      "image_id": "flickr30k_test_013247",
+      "image_relpath": "images/flickr30k/flickr30k_test_013247.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_013247.jpg",
+      "caption": "Welcome to Outdoor World — where adventure meets Americana under a cloudy sky.",
+      "clip_score": 0.339369535446167,
+      "siglip_score": 0.1511905193328857,
+      "delta_clip": -5.9604644719879474e-08,
+      "delta_siglip": -1.4901161221603232e-08
+    },
+    {
+      "image_id": "flickr30k_test_024370",
+      "image_relpath": "images/flickr30k/flickr30k_test_024370.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_024370.jpg",
+      "caption": "A sunny day in a European city, with a grand, tree-lined street flanked by classic architecture and pedestrians strolling along the sidewalks.",
+      "clip_score": 0.2645592391490936,
+      "siglip_score": 0.1000408753752708,
+      "delta_clip": -2.9802322443206464e-08,
+      "delta_siglip": -7.450580599699386e-08
+    },
+    {
+      "image_id": "flickr30k_test_018651",
+      "image_relpath": "images/flickr30k/flickr30k_test_018651.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_018651.jpg",
+      "caption": "A street vendor in a straw hat and worn jacket tends to his fruit stand, surrounded by baskets of oranges and melons, with a bicycle parked nearby against a weathered orange wall.",
+      "clip_score": 0.4022236764431,
+      "siglip_score": 0.1965436786413192,
+      "delta_clip": 0.0,
+      "delta_siglip": 0.0
+    },
+    {
+      "image_id": "flickr30k_test_021351",
+      "image_relpath": "images/flickr30k/flickr30k_test_021351.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_021351.jpg",
+      "caption": "A street musician plays violin in a vibrant underground station, surrounded by colorful abstract art installations that illuminate the tunnel-like space.",
+      "clip_score": 0.3453696668148041,
+      "siglip_score": 0.2322316020727157,
+      "delta_clip": 0.0,
+      "delta_siglip": 0.0
+    },
+    {
+      "image_id": "flickr30k_test_012773",
+      "image_relpath": "images/flickr30k/flickr30k_test_012773.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_012773.jpg",
+      "caption": "A passionate crowd member raises his hand in support as a performer sings on stage at an Amnesty International event, illuminated by vibrant stage lights.",
+      "clip_score": 0.2867348194122314,
+      "siglip_score": 0.1798425018787384,
+      "delta_clip": 0.0,
+      "delta_siglip": 0.0
+    },
+    {
+      "image_id": "flickr30k_test_019904",
+      "image_relpath": "images/flickr30k/flickr30k_test_019904.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_019904.jpg",
+      "caption": "A man in a tan jacket walks across a metal bridge, passing by the charming \"Le Mignon\" restaurant with its vintage signage and classic street lamps.",
+      "clip_score": 0.3313217759132385,
+      "siglip_score": 0.2845246493816376,
+      "delta_clip": 0.0,
+      "delta_siglip": 0.0
+    },
+    {
+      "image_id": "flickr30k_test_018116",
+      "image_relpath": "images/flickr30k/flickr30k_test_018116.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_018116.jpg",
+      "caption": "A skilled artisan meticulously crafts intricate gold jewelry by hand, surrounded by tools and raw materials on a worn workshop floor.",
+      "clip_score": 0.3280435502529144,
+      "siglip_score": 0.1538444459438324,
+      "delta_clip": 0.0,
+      "delta_siglip": 0.0
+    },
+    {
+      "image_id": "flickr30k_test_030359",
+      "image_relpath": "images/flickr30k/flickr30k_test_030359.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_030359.jpg",
+      "caption": "A dramatic moment in a football match as a goalkeeper dives to his left, attempting to save a high ball, while players from both teams leap and jostle for position in a chaotic scramble near the goal.",
+      "clip_score": 0.2922334671020508,
+      "siglip_score": 0.1538133323192596,
+      "delta_clip": 0.0,
+      "delta_siglip": 0.0
+    },
+    {
+      "image_id": "flickr30k_test_030024",
+      "image_relpath": "images/flickr30k/flickr30k_test_030024.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_030024.jpg",
+      "caption": "A group of men engaged in conversation at a formal dinner table, with wine glasses and bottles on the table, suggesting a business or celebratory gathering.",
+      "clip_score": 0.3024714589118957,
+      "siglip_score": 0.1842152923345565,
+      "delta_clip": 0.0,
+      "delta_siglip": 0.0
+    },
+    {
+      "image_id": "flickr30k_test_018233",
+      "image_relpath": "images/flickr30k/flickr30k_test_018233.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_018233.jpg",
+      "caption": "A dazzling circus performance unfolds as a trapeze artist balances gracefully on a performer’s shoulders, while a young girl in a tutu leaps mid-air beneath a glowing red lantern. The vibrant red and blue stage, surrounded by an enthralled audience, captures the magic and energy of a live circus show.",
+      "clip_score": 0.2508755326271057,
+      "siglip_score": 0.1578098833560943,
+      "delta_clip": 0.0,
+      "delta_siglip": 0.0
+    }
+  ]
+}

@@ -1,0 +1,142 @@
+{
+  "prompt": "Write a caption for this image.",
+  "prompt_id": "textgrad_7f3b4f879f",
+  "split_csv": "data/splits/flickr30k_main_seed1_train.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_01/train/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_01/train/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_01/train/scores.csv",
+  "data_root": "data",
+  "summary": {
+    "n": 24,
+    "mean_clip": 0.33062488089005154,
+    "mean_siglip": 0.18968747028460098,
+    "mean_caption_len": 27.083333333333332,
+    "generic_rate": 0.0,
+    "mean_delta_clip": 2.4835268702672053e-09,
+    "mean_delta_siglip": -6.519258026934279e-09,
+    "clip_win_rate": 0.16666666666666666,
+    "siglip_win_rate": 0.041666666666666664
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_009311",
+      "image_relpath": "images/flickr30k/flickr30k_test_009311.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_009311.jpg",
+      "caption": "A joyful child with blonde hair laughs and sticks out their tongue, playfully interacting with a cascading fountain in a sunlit park.",
+      "clip_score": 0.3305615186691284,
+      "siglip_score": 0.1676783114671707,
+      "delta_clip": -8.940696716308594e-08,
+      "delta_siglip": 0.0
+    },
+    {
+      "image_id": "flickr30k_test_027728",
+      "image_relpath": "images/flickr30k/flickr30k_test_027728.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_027728.jpg",
+      "caption": "A scuba diver in full gear stands confidently on a boat, ready for an underwater adventure, with a scenic coastal landscape in the background.",
+      "clip_score": 0.3194379210472107,
+      "siglip_score": 0.1293139308691024,
+      "delta_clip": -5.9604644719879474e-08,
+      "delta_siglip": -2.980232241545089e-08
+    },
+    {
+      "image_id": "flickr30k_test_019300",
+      "image_relpath": "images/flickr30k/flickr30k_test_019300.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_019300.jpg",
+      "caption": "A builder climbs the wooden frame of a house under construction, working on the roof structure against a clear blue sky.",
+      "clip_score": 0.3315618932247162,
+      "siglip_score": 0.1109300255775451,
+      "delta_clip": -2.9802322387695312e-08,
+      "delta_siglip": -5.215406420622237e-08
+    },
+    {
+      "image_id": "flickr30k_test_012141",
+      "image_relpath": "images/flickr30k/flickr30k_test_012141.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_012141.jpg",
+      "caption": "Two children playfully climb through a giant, metallic spiral slide at a vibrant playground, surrounded by colorful structures and the joyful energy of a sunny day.",
+      "clip_score": 0.3295176327228546,
+      "siglip_score": 0.1730313450098037,
+      "delta_clip": -2.9802322387695312e-08,
+      "delta_siglip": -4.4703483609298544e-08
+    },
+    {
+      "image_id": "flickr30k_test_002067",
+      "image_relpath": "images/flickr30k/flickr30k_test_002067.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_002067.jpg",
+      "caption": "A street musician plays an electric guitar for passersby in a lively urban square, captivating a young girl in a pink dress and drawing the attention of nearby diners at an outdoor café.",
+      "clip_score": 0.3339895009994507,
+      "siglip_score": 0.2306694835424423,
+      "delta_clip": 0.0,
+      "delta_siglip": 0.0
+    },
+    {
+      "image_id": "flickr30k_test_025844",
+      "image_relpath": "images/flickr30k/flickr30k_test_025844.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_025844.jpg",
+      "caption": "Two children playfully wrestle in the sand, laughter and joy filling the sunny outdoor scene.",
+      "clip_score": 0.3003557026386261,
+      "siglip_score": 0.1814916878938675,
+      "delta_clip": 0.0,
+      "delta_siglip": 0.0
+    },
+    {
+      "image_id": "flickr30k_test_003075",
+      "image_relpath": "images/flickr30k/flickr30k_test_003075.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_003075.jpg",
+      "caption": "Children play joyfully in a puddle on a rainy day, with one in a blue raincoat and another in a white shirt and sunglasses, surrounded by parked cars.",
+      "clip_score": 0.3705548048019409,
+      "siglip_score": 0.2195499688386917,
+      "delta_clip": 0.0,
+      "delta_siglip": 0.0
+    },
+    {
+      "image_id": "flickr30k_test_008727",
+      "image_relpath": "images/flickr30k/flickr30k_test_008727.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_008727.jpg",
+      "caption": "Two children, a girl in pajamas and a toddler in blue, are engrossed in unwrapping a gift together, surrounded by wrapping paper and festive cheer.",
+      "clip_score": 0.3478551506996155,
+      "siglip_score": 0.2332915663719177,
+      "delta_clip": 0.0,
+      "delta_siglip": 0.0
+    },
+    {
+      "image_id": "flickr30k_test_030774",
+      "image_relpath": "images/flickr30k/flickr30k_test_030774.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_030774.jpg",
+      "caption": "A child swims underwater, bubbles swirling around as they explore the pool's depths with joyful curiosity.",
+      "clip_score": 0.3310607373714447,
+      "siglip_score": 0.1580583453178405,
+      "delta_clip": 0.0,
+      "delta_siglip": 0.0
+    },
+    {
+      "image_id": "flickr30k_test_000951",
+      "image_relpath": "images/flickr30k/flickr30k_test_000951.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_000951.jpg",
+      "caption": "A lone traveler walks across golden dunes under a brooding, storm-filled sky — solitude and adventure meet beneath the weight of impending weather.",
+      "clip_score": 0.3178962469100952,
+      "siglip_score": 0.208938181400299,
+      "delta_clip": 0.0,
+      "delta_siglip": 0.0
+    },
+    {
+      "image_id": "flickr30k_test_016246",
+      "image_relpath": "images/flickr30k/flickr30k_test_016246.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_016246.jpg",
+      "caption": "A child in a blue outfit and flip-flops walks down a bustling street, balancing a colorful bundle of festive balloons. The vibrant, cartoon-themed balloons contrast with the everyday urban backdrop, capturing a moment of playful innocence amid daily life.",
+      "clip_score": 0.3346440196037292,
+      "siglip_score": 0.2074322402477264,
+      "delta_clip": 0.0,
+      "delta_siglip": 0.0
+    },
+    {
+      "image_id": "flickr30k_test_030359",
+      "image_relpath": "images/flickr30k/flickr30k_test_030359.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_030359.jpg",
+      "caption": "A dramatic moment in a football match as a goalkeeper dives to his left, attempting to save a high ball, while players from both teams leap and jostle for position in a chaotic scramble near the goal.",
+      "clip_score": 0.2922334671020508,
+      "siglip_score": 0.1538133323192596,
+      "delta_clip": 0.0,
+      "delta_siglip": 0.0
+    }
+  ]
+}

@@ -1,0 +1,142 @@
+{
+  "prompt": "You must output exactly one sentence: a concise, factual caption containing between 2 and 6 comma‑separated visually verifiable facts. Each fact shall be directly visible and presented in this exact priority order (omit any items that are not clearly readable/visible): \n1) Legible text (transcribe exact words, including punctuation, if readable); \n2) Counts and object types (use numerals and canonical nouns); \n3) Key color / material / texture for those counted objects; \n4) Pose / action / orientation (precise phrasing, e.g., \"diving mid-air, fully outstretched\", \"holding with both hands\", \"leaning on vehicle\"); \n5) Simple spatial layout (foreground / midground / background or left / right placement); \n6) Lighting / viewpoint / occlusion cues (e.g., \"bright sunlight casting long shadows\", \"backlit\", \"partly obscured by tree\"). \n\nHard rules:\n- Use numerals for counts (e.g., \"2 people\", \"1 motorbike\"). Use canonical nouns when visible (prefer \"motorbike\"/\"scooter\"/\"moped\" not generic \"bike\" if engine/structure is visible; prefer \"soccer ball\", \"flute case\", \"weighing scale\" when identifiable). If you cannot name an object confidently, omit that fact rather than guess a vague noun. \n- Do not use hedging or inference words (\"appears\", \"seems\", \"probably\") or infer roles, intentions, or emotions (no \"happy\", \"vendor\", \"customer\") unless a role is visually and unambiguously evidenced; if you use a role, immediately include the visible evidence (example: \"player wearing #1 jersey and gloves, diving toward ball\"). \n- If small discriminative props are visible (ball, baskets, scale, folded stool, instrument case, signage), include at least one with a minimal spatial relation (e.g., \"baskets on front rack\", \"ball to player's left\"). \n- Keep language compact, factual, lowercase preferred, commas only between facts, no lists, no parentheses, no extra sentences.  \n- Before output, verify each fact is directly visible; remove any unverifiable fact.\n\nFormat requirements:\n- Exactly one sentence.\n- 2–6 comma‑separated facts in the priority order above. If fewer than 2 verifiable facts exist, produce a one-sentence caption containing the single strongest verifiable token(s) (e.g., clearly legible text or a single unambiguous object and its color/position).\n\nMicro‑templates (positive examples):\n- \"Sign reads 'Open Market', 2 adults walking toward entrance, timber façade, concrete forecourt, overcast sky.\"\n- \"Player wearing #1 jersey and gloves, diving mid-air toward ball, green grass foreground, goal net in background, bright sunlight casting shadows.\"\n\nNegative examples (avoid these styles):\n- \"a happy vendor selling oranges\" (role/emotion inference) \n- \"someone standing\" (vague; no specific object, pose, or discriminative detail) \n- \"appears to be a bike\" (hedging / uncertain noun)\n\nAdhere strictly to these rules: one sentence, 2–6 ordered facts, no inference or hedging, specific nouns and counts, include small props and spatial/lighting cues when visible, and self‑check visibility before emitting the caption.",
+  "prompt_id": "textgrad_894f47666a",
+  "split_csv": "data/splits/flickr30k_main_seed1_val.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_12/val/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_12/val/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_12/val/scores.csv",
+  "data_root": "data",
+  "summary": {
+    "n": 150,
+    "mean_clip": 0.3069107962648074,
+    "mean_siglip": 0.19103112568457922,
+    "mean_caption_len": 25.28,
+    "generic_rate": 0.0,
+    "mean_delta_clip": -0.01765465204914411,
+    "mean_delta_siglip": -0.0078094200044870315,
+    "clip_win_rate": 0.2966666666666667,
+    "siglip_win_rate": 0.36
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_007385",
+      "image_relpath": "images/flickr30k/flickr30k_test_007385.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_007385.jpg",
+      "caption": "sign reads 'fundus', 10 people in blue and multicolored suits, throwing green frisbees, mid-air throws, foreground, bright sunlight casting long shadows",
+      "clip_score": 0.2205348908901214,
+      "siglip_score": 0.1042336672544479,
+      "delta_clip": -0.1483219563961029,
+      "delta_siglip": -0.07069475948810582
+    },
+    {
+      "image_id": "flickr30k_test_011250",
+      "image_relpath": "images/flickr30k/flickr30k_test_011250.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_011250.jpg",
+      "caption": "two children standing in grass, one wearing brown shirt with \"lake placid\" text, yellow caution tape in midground, clear blue sky background, bright sunlight.",
+      "clip_score": 0.3093015551567077,
+      "siglip_score": 0.2057237923145294,
+      "delta_clip": -0.10329222679138189,
+      "delta_siglip": -0.014791831374168396
+    },
+    {
+      "image_id": "flickr30k_test_019151",
+      "image_relpath": "images/flickr30k/flickr30k_test_019151.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_019151.jpg",
+      "caption": "two people seated at table, 1 cup with pepsi logo, 1 cup with peg pl logo, food on tray, dim ambient lighting, background with hanging lights",
+      "clip_score": 0.2168550193309784,
+      "siglip_score": 0.1686659902334213,
+      "delta_clip": -0.09623029828071589,
+      "delta_siglip": -0.009415313601493808
+    },
+    {
+      "image_id": "flickr30k_test_016538",
+      "image_relpath": "images/flickr30k/flickr30k_test_016538.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_016538.jpg",
+      "caption": "sign reads 'Ed's Body Shop', 1 rider on horse, horse brown, cow black, rider leaning forward, background fence and spectators, bright sunlight casting shadows",
+      "clip_score": 0.254380315542221,
+      "siglip_score": 0.1493802964687347,
+      "delta_clip": -0.09160652756690979,
+      "delta_siglip": 0.008641958236694308
+    },
+    {
+      "image_id": "flickr30k_test_019151",
+      "image_relpath": "images/flickr30k/flickr30k_test_019151.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_019151.jpg",
+      "caption": "two people seated at table, 1 cup with pepsi logo, 1 cup with peg pl logo, food on tray, dim ambient lighting, background with hanging lights",
+      "clip_score": 0.2168550193309784,
+      "siglip_score": 0.1686659902334213,
+      "delta_clip": -0.091425210237503,
+      "delta_siglip": 0.0187333226203919
+    },
+    {
+      "image_id": "flickr30k_test_007385",
+      "image_relpath": "images/flickr30k/flickr30k_test_007385.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_007385.jpg",
+      "caption": "sign reads 'fundus', 10 people in blue and multicolored suits, throwing green frisbees, mid-air throws, foreground, bright sunlight casting long shadows",
+      "clip_score": 0.2205348908901214,
+      "siglip_score": 0.1042336672544479,
+      "delta_clip": -0.089954823255539,
+      "delta_siglip": -0.023186743259429918
+    },
+    {
+      "image_id": "flickr30k_test_028445",
+      "image_relpath": "images/flickr30k/flickr30k_test_028445.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_028445.jpg",
+      "caption": "man holding blue mesh laundry hamper on bicycle handlebars, red pickup truck to right, building in background, bright sunlight casting shadows.",
+      "clip_score": 0.2799412310123443,
+      "siglip_score": 0.2076219916343689,
+      "delta_clip": -0.08743229508399969,
+      "delta_siglip": -0.00941458344459531
+    },
+    {
+      "image_id": "flickr30k_test_008305",
+      "image_relpath": "images/flickr30k/flickr30k_test_008305.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_008305.jpg",
+      "caption": "sign reads 'gk', 1 white van parked, 1 bicycle with rider, 1 person crouching holding white bag, cobblestone pavement foreground, trees partially obscuring view.",
+      "clip_score": 0.2142864465713501,
+      "siglip_score": 0.1245776116847992,
+      "delta_clip": -0.085246741771698,
+      "delta_siglip": -0.030390605330467196
+    },
+    {
+      "image_id": "flickr30k_test_028445",
+      "image_relpath": "images/flickr30k/flickr30k_test_028445.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_028445.jpg",
+      "caption": "man holding blue mesh laundry hamper on bicycle handlebars, red pickup truck to right, building in background, bright sunlight casting shadows.",
+      "clip_score": 0.2799412310123443,
+      "siglip_score": 0.2076219916343689,
+      "delta_clip": -0.07972267270088201,
+      "delta_siglip": -0.013726323843002292
+    },
+    {
+      "image_id": "flickr30k_test_008362",
+      "image_relpath": "images/flickr30k/flickr30k_test_008362.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_008362.jpg",
+      "caption": "woman in floral dress standing, 3 children nearby, dirt ground, wooden fence right, bright sunlight casting shadows",
+      "clip_score": 0.2382832020521164,
+      "siglip_score": 0.1876746267080307,
+      "delta_clip": -0.07738609611988062,
+      "delta_siglip": -0.02624386548995969
+    },
+    {
+      "image_id": "flickr30k_test_020068",
+      "image_relpath": "images/flickr30k/flickr30k_test_020068.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_020068.jpg",
+      "caption": "woman wearing white shirt and black pants sitting on wooden bench, st. bernard dog on leash beside her, pink scarf around neck, bright sunlight casting long shadows, grassy area to right of path.",
+      "clip_score": 0.2748550772666931,
+      "siglip_score": 0.2150145173072815,
+      "delta_clip": -0.07734662294387817,
+      "delta_siglip": -0.0051868855953216
+    },
+    {
+      "image_id": "flickr30k_test_008802",
+      "image_relpath": "images/flickr30k/flickr30k_test_008802.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_008802.jpg",
+      "caption": "dog holding white frisbee with blue paw print, 1 dog, black brown and white fur, running on grass, yellow cone in background, bright sunlight casting shadow.",
+      "clip_score": 0.2926076650619507,
+      "siglip_score": 0.1808601766824722,
+      "delta_clip": -0.07620632648468012,
+      "delta_siglip": -0.012718245387077304
+    }
+  ]
+}

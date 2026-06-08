@@ -1,0 +1,142 @@
+{
+  "prompt": "Write a caption for this image.",
+  "prompt_id": "textgrad_7f3b4f879f",
+  "split_csv": "data/splits/flickr30k_main_seed1_train.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_02/train/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_02/train/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_02/train/scores.csv",
+  "data_root": "data",
+  "summary": {
+    "n": 24,
+    "mean_clip": 0.32344165196021396,
+    "mean_siglip": 0.20033487118780613,
+    "mean_caption_len": 27.375,
+    "generic_rate": 0.0,
+    "mean_delta_clip": -1.490116120078655e-08,
+    "mean_delta_siglip": 2.110997835910733e-08,
+    "clip_win_rate": 0.041666666666666664,
+    "siglip_win_rate": 0.25
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_027523",
+      "image_relpath": "images/flickr30k/flickr30k_test_027523.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_027523.jpg",
+      "caption": "A skilled woodcarver, wearing a blue cap and apron, meticulously shapes a wooden figure with chisels and tools, surrounded by his art in a sunlit outdoor workshop.",
+      "clip_score": 0.3417374491691589,
+      "siglip_score": 0.2034803330898285,
+      "delta_clip": -1.192092896062924e-07,
+      "delta_siglip": 1.4901161199398771e-07
+    },
+    {
+      "image_id": "flickr30k_test_028917",
+      "image_relpath": "images/flickr30k/flickr30k_test_028917.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_028917.jpg",
+      "caption": "Intense basketball action as a player in a white \"Bridgette\" jersey (#5) drives toward the basket, guarded tightly by an opponent in a black jersey (#0). The referee watches closely as the game unfolds under bright arena lights, with spectators filling the stands in the background. © Michael Hart Photography.",
+      "clip_score": 0.2538557946681976,
+      "siglip_score": 0.2044800668954849,
+      "delta_clip": -8.940696721859709e-08,
+      "delta_siglip": 1.9371509549226396e-07
+    },
+    {
+      "image_id": "flickr30k_test_009311",
+      "image_relpath": "images/flickr30k/flickr30k_test_009311.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_009311.jpg",
+      "caption": "A joyful child with blonde hair laughs and sticks out their tongue, playfully interacting with a cascading fountain in a sunlit park.",
+      "clip_score": 0.3305615186691284,
+      "siglip_score": 0.1676783114671707,
+      "delta_clip": -8.940696716308594e-08,
+      "delta_siglip": 0.0
+    },
+    {
+      "image_id": "flickr30k_test_026129",
+      "image_relpath": "images/flickr30k/flickr30k_test_026129.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_026129.jpg",
+      "caption": "Two snowshoers pause in a snowy forest, adjusting their gear and preparing for their winter trek through the serene, snow-covered woods.",
+      "clip_score": 0.2994169890880584,
+      "siglip_score": 0.1786375641822815,
+      "delta_clip": -8.940696716308594e-08,
+      "delta_siglip": 4.470348358154297e-08
+    },
+    {
+      "image_id": "flickr30k_test_017070",
+      "image_relpath": "images/flickr30k/flickr30k_test_017070.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_017070.jpg",
+      "caption": "A farmer walks through a golden cornfield, heading toward a distant farmhouse and silo under a clear blue sky.",
+      "clip_score": 0.3402104377746582,
+      "siglip_score": 0.1950360983610153,
+      "delta_clip": -5.960464477539063e-08,
+      "delta_siglip": 1.4901161193847656e-08
+    },
+    {
+      "image_id": "flickr30k_test_026288",
+      "image_relpath": "images/flickr30k/flickr30k_test_026288.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_026288.jpg",
+      "caption": "A vendor crouches beside his vibrant stall, skillfully preparing and displaying fresh jackfruit slices on banana leaves, with a whole fruit and colorful produce in the background.",
+      "clip_score": 0.3779732286930084,
+      "siglip_score": 0.2201389819383621,
+      "delta_clip": 0.0,
+      "delta_siglip": 0.0
+    },
+    {
+      "image_id": "flickr30k_test_008358",
+      "image_relpath": "images/flickr30k/flickr30k_test_008358.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_008358.jpg",
+      "caption": "A soccer goalkeeper in a red jersey dives dramatically across the grass, fully extended in an athletic save attempt.",
+      "clip_score": 0.3581133484840393,
+      "siglip_score": 0.2015118300914764,
+      "delta_clip": 0.0,
+      "delta_siglip": 0.0
+    },
+    {
+      "image_id": "flickr30k_test_002067",
+      "image_relpath": "images/flickr30k/flickr30k_test_002067.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_002067.jpg",
+      "caption": "A street musician plays an electric guitar for passersby in a lively urban square, captivating a young girl in a pink dress and drawing the attention of nearby diners at an outdoor café.",
+      "clip_score": 0.3339895009994507,
+      "siglip_score": 0.2306694835424423,
+      "delta_clip": 0.0,
+      "delta_siglip": 0.0
+    },
+    {
+      "image_id": "flickr30k_test_017741",
+      "image_relpath": "images/flickr30k/flickr30k_test_017741.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_017741.jpg",
+      "caption": "Two silhouetted figures sit side by side on a bench, gazing out at a vast, glass-paneled window. The cool blue tones and soft light evoke a quiet, contemplative mood — a moment of shared stillness in a modern, open space.",
+      "clip_score": 0.3193768262863159,
+      "siglip_score": 0.2421696782112121,
+      "delta_clip": 0.0,
+      "delta_siglip": 0.0
+    },
+    {
+      "image_id": "flickr30k_test_028876",
+      "image_relpath": "images/flickr30k/flickr30k_test_028876.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_028876.jpg",
+      "caption": "A rugby player in a blue jersey executes a dramatic flip over the grass, while his opponent in red watches intently from the ground.",
+      "clip_score": 0.3333797454833984,
+      "siglip_score": 0.1585299670696258,
+      "delta_clip": 0.0,
+      "delta_siglip": 0.0
+    },
+    {
+      "image_id": "flickr30k_test_007097",
+      "image_relpath": "images/flickr30k/flickr30k_test_007097.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_007097.jpg",
+      "caption": "A sunny afternoon at a bustling outdoor café, where families gather under bright yellow umbrellas, enjoying coffee and conversation amidst the gentle rustle of tree leaves. A curious child in a beige shirt stands near a metal chair, gazing at the lively scene around him.",
+      "clip_score": 0.3124001026153564,
+      "siglip_score": 0.2067485749721527,
+      "delta_clip": 0.0,
+      "delta_siglip": 0.0
+    },
+    {
+      "image_id": "flickr30k_test_021351",
+      "image_relpath": "images/flickr30k/flickr30k_test_021351.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_021351.jpg",
+      "caption": "A street musician plays violin in a vibrant underground station, surrounded by colorful abstract art installations that illuminate the tunnel-like space.",
+      "clip_score": 0.3453696668148041,
+      "siglip_score": 0.2322316020727157,
+      "delta_clip": 0.0,
+      "delta_siglip": 0.0
+    }
+  ]
+}

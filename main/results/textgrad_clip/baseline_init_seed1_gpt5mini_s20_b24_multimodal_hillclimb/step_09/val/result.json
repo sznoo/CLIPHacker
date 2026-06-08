@@ -1,0 +1,142 @@
+{
+  "prompt": "Produce exactly one concise sentence as the image caption and nothing else. The sentence must contain 2–6 discrete, visually verifiable facts only, presented in this priority order when present: (1) legible text, (2) counts and canonical object types, (3) color/material/garment modifiers tied to those nouns, (4) pose/action/orientation if visibly discriminative, (5) a simple placement tag (foreground / midground / background) for each non-text fact, (6) lighting or viewpoint only if distinctive. If any legible text appears, transcribe it exactly in double quotes and immediately follow the quotes with a location phrase using on/in/above + the named object (e.g., \"Sign reads \"London 2012\" on the black tablecloth\"). If text is not clearly legible, omit it. Use numerals for counts, prefer precise nouns (ladder, food cart, tablecloth, poster, newspaper, bicycle, child, man, woman), place color/material modifiers directly after the noun (\"orange ladder\", \"navy sweater with white collar\"), and include a short verb phrase for visible actions (\"holding\", \"leaning\", \"suspended mid‑air\") only when distinctive. For each non‑text fact include a placement tag (e.g., \"foreground: orange ladder\"). Do not infer roles, intentions, emotions, or functions (do not write \"staff\", \"vendor\", \"selling\", \"happy\") unless a visible label explicitly shows that word. Do not attribute text to an object unless that object is named; if uncertain which object contains the text, omit the transcription. Keep phrasing simple (present or present‑progressive verbs), separate facts with commas or semicolons, and keep the sentence compact (aim for ≤25 words). Before outputting, ensure the caption is one sentence, contains 2–6 facts, follows the required order and formatting for any included text, and contains no extra commentary.",
+  "prompt_id": "textgrad_6c48ca3bfe",
+  "split_csv": "data/splits/flickr30k_main_seed1_val.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_09/val/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_09/val/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_09/val/scores.csv",
+  "data_root": "data",
+  "summary": {
+    "n": 150,
+    "mean_clip": 0.31378739098707836,
+    "mean_siglip": 0.19057136992613474,
+    "mean_caption_len": 23.186666666666667,
+    "generic_rate": 0.013333333333333334,
+    "mean_delta_clip": -0.01077805732687314,
+    "mean_delta_siglip": -0.008269175762931506,
+    "clip_win_rate": 0.36,
+    "siglip_win_rate": 0.38
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_014144",
+      "image_relpath": "images/flickr30k/flickr30k_test_014144.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_014144.jpg",
+      "caption": "Man in dark blue jacket and brown pants grinds metal in midground; sparks fly; lockers line background; bright light illuminates scene.",
+      "clip_score": 0.2477784603834152,
+      "siglip_score": 0.1957606226205825,
+      "delta_clip": -0.11382497847080228,
+      "delta_siglip": -0.0350685268640519
+    },
+    {
+      "image_id": "flickr30k_test_013546",
+      "image_relpath": "images/flickr30k/flickr30k_test_013546.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_013546.jpg",
+      "caption": "Child stands on yellow platform with blue accents, midground; adult hand grips black handlebar, foreground; blurred green trees in background.",
+      "clip_score": 0.2785837650299072,
+      "siglip_score": 0.1984321177005767,
+      "delta_clip": -0.09848442673683167,
+      "delta_siglip": -0.010997235774993896
+    },
+    {
+      "image_id": "flickr30k_test_026753",
+      "image_relpath": "images/flickr30k/flickr30k_test_026753.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_026753.jpg",
+      "caption": "Man in black t-shirt with \"LOVE\" text on it, mid-air above rail, foreground; another man in blue shirt, background; grassy field, bright daylight.",
+      "clip_score": 0.2430058866739273,
+      "siglip_score": 0.1314279586076736,
+      "delta_clip": -0.0885853618383407,
+      "delta_siglip": -0.0261130481958389
+    },
+    {
+      "image_id": "flickr30k_test_014144",
+      "image_relpath": "images/flickr30k/flickr30k_test_014144.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_014144.jpg",
+      "caption": "Man in dark blue jacket and brown pants grinds metal in midground; sparks fly; lockers line background; bright light illuminates scene.",
+      "clip_score": 0.2477784603834152,
+      "siglip_score": 0.1957606226205825,
+      "delta_clip": -0.08801205456256869,
+      "delta_siglip": -0.0271748900413514
+    },
+    {
+      "image_id": "flickr30k_test_029485",
+      "image_relpath": "images/flickr30k/flickr30k_test_029485.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_029485.jpg",
+      "caption": "Child in red \"TRIPLE THREAT SPORTS\" shirt waves, foreground; two other children in red shirts behind, midground; bright sunlight.",
+      "clip_score": 0.2891984581947326,
+      "siglip_score": 0.1978307962417602,
+      "delta_clip": -0.08162596821784979,
+      "delta_siglip": -0.0648297667503357
+    },
+    {
+      "image_id": "flickr30k_test_027582",
+      "image_relpath": "images/flickr30k/flickr30k_test_027582.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_027582.jpg",
+      "caption": "Woman in red tank top and black shorts runs across street; man in red shirt runs behind her; traffic light glows green above; trees line midground.",
+      "clip_score": 0.2737525701522827,
+      "siglip_score": 0.1781269162893295,
+      "delta_clip": -0.08157938718795776,
+      "delta_siglip": -0.0028813630342482965
+    },
+    {
+      "image_id": "flickr30k_test_026753",
+      "image_relpath": "images/flickr30k/flickr30k_test_026753.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_026753.jpg",
+      "caption": "Man in black t-shirt with \"LOVE\" text on it, mid-air above rail, foreground; another man in blue shirt, background; grassy field, bright daylight.",
+      "clip_score": 0.2430058866739273,
+      "siglip_score": 0.1314279586076736,
+      "delta_clip": -0.08079008758068079,
+      "delta_siglip": -0.08951207995414731
+    },
+    {
+      "image_id": "flickr30k_test_020473",
+      "image_relpath": "images/flickr30k/flickr30k_test_020473.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_020473.jpg",
+      "caption": "Woman in black leather jacket and sunglasses holds phone, foreground; man in dark jacket walks, midground; stone pavement, overcast lighting.",
+      "clip_score": 0.2907904386520386,
+      "siglip_score": 0.2030331194400787,
+      "delta_clip": -0.07590019702911371,
+      "delta_siglip": -0.024044007062911987
+    },
+    {
+      "image_id": "flickr30k_test_029485",
+      "image_relpath": "images/flickr30k/flickr30k_test_029485.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_029485.jpg",
+      "caption": "Child in red \"TRIPLE THREAT SPORTS\" shirt waves, foreground; two other children in red shirts behind, midground; bright sunlight.",
+      "clip_score": 0.2891984581947326,
+      "siglip_score": 0.1978307962417602,
+      "delta_clip": -0.074730783700943,
+      "delta_siglip": -0.0241911709308624
+    },
+    {
+      "image_id": "flickr30k_test_020473",
+      "image_relpath": "images/flickr30k/flickr30k_test_020473.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_020473.jpg",
+      "caption": "Woman in black leather jacket and sunglasses holds phone, foreground; man in dark jacket walks, midground; stone pavement, overcast lighting.",
+      "clip_score": 0.2907904386520386,
+      "siglip_score": 0.2030331194400787,
+      "delta_clip": -0.07311147451400751,
+      "delta_siglip": 0.002019643783569308
+    },
+    {
+      "image_id": "flickr30k_test_006537",
+      "image_relpath": "images/flickr30k/flickr30k_test_006537.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_006537.jpg",
+      "caption": "Sign reads \"KILBURN\" on the white brick wall; man in orange vest walks toward train; yellow train on tracks in background; overhead lights illuminate platform.",
+      "clip_score": 0.3204903602600097,
+      "siglip_score": 0.267013669013977,
+      "delta_clip": -0.07099050283432007,
+      "delta_siglip": 0.0493104159832001
+    },
+    {
+      "image_id": "flickr30k_test_000682",
+      "image_relpath": "images/flickr30k/flickr30k_test_000682.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_000682.jpg",
+      "caption": "A man and child are in the midground; a woman sits in the foreground; several people are in the background.",
+      "clip_score": 0.262992799282074,
+      "siglip_score": 0.123133510351181,
+      "delta_clip": -0.06617030501365662,
+      "delta_siglip": -0.0901564210653305
+    }
+  ]
+}

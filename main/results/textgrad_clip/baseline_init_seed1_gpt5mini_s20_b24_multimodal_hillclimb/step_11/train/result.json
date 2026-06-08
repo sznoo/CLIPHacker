@@ -1,0 +1,142 @@
+{
+  "prompt": "Produce exactly one concise caption (one sentence) that states only visually verifiable facts. Include 2–6 discrete visual facts drawn from this checklist in the given priority order when present: 1) legible text: transcribe exact words; 2) counts and object types (e.g., \"2 people\", \"one bicycle\"); 3) key color/material/texture for those objects (e.g., \"orange backpack\", \"wooden façade\"); 4) pose/action/orientation (e.g., \"person seen from behind walking away; holding two poles\"); 5) simple spatial layout (foreground / midground / background placement); 6) lighting/viewpoint/occlusion cues (e.g., \"bright sunlight casting long shadows\", \"elevated vantage; tree partially obscures façade\"). Use canonical object names and exact counts, standard direction words (left/right/foreground/background), and numerals or short words for numbers. Do not infer roles, emotions, intentions, or use metaphors, slogans, or marketing language (avoid \"farmer\", \"happy\", \"adventure\", etc.). If text is not clearly legible, omit it rather than guess. Keep the caption factual, compact, and limited to one sentence containing 2–6 concrete facts—no lists, tags, extra sentences, or commentary. Example (good): \"Sign reads 'Outdoor World'; two adults walk toward the store entrance; timber façade and concrete forecourt; overcast sky.\" Counterexample (bad): \"A happy farmer enjoys a sunny day in the countryside.\"",
+  "prompt_id": "textgrad_1d8c701270",
+  "split_csv": "data/splits/flickr30k_main_seed1_train.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_11/train/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_11/train/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_11/train/scores.csv",
+  "data_root": "data",
+  "summary": {
+    "n": 24,
+    "mean_clip": 0.324025763819615,
+    "mean_siglip": 0.19299785979092118,
+    "mean_caption_len": 37.25,
+    "generic_rate": 0.125,
+    "mean_delta_clip": -0.0014401655644178553,
+    "mean_delta_siglip": -0.0007674029717842784,
+    "clip_win_rate": 0.4583333333333333,
+    "siglip_win_rate": 0.625
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_014180",
+      "image_relpath": "images/flickr30k/flickr30k_test_014180.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_014180.jpg",
+      "caption": "Three people ride bicycles in the foreground; two tricycle vendors operate in the midground; a large white curved building with blue accents is in the background; trees with green and red leaves frame the scene.",
+      "clip_score": 0.2770926058292389,
+      "siglip_score": 0.1700573861598968,
+      "delta_clip": -0.0451380312442779,
+      "delta_siglip": -0.007005482912063599
+    },
+    {
+      "image_id": "flickr30k_test_013576",
+      "image_relpath": "images/flickr30k/flickr30k_test_013576.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_013576.jpg",
+      "caption": "Boy rides a red toy motorcycle; jersey with \"Mets\" text; chain-link fence and painted wall in background; bright daylight.",
+      "clip_score": 0.3685386776924133,
+      "siglip_score": 0.211759552359581,
+      "delta_clip": -0.04021930694580084,
+      "delta_siglip": -0.060682669281959534
+    },
+    {
+      "image_id": "flickr30k_test_009495",
+      "image_relpath": "images/flickr30k/flickr30k_test_009495.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_009495.jpg",
+      "caption": "Two people stand in a room with patterned wallpaper; one carries a yellow and black bag over their shoulder, the other holds a white paper; a wooden table is in the foreground; a wall-mounted light fixture is visible above.",
+      "clip_score": 0.250187337398529,
+      "siglip_score": 0.1343316733837127,
+      "delta_clip": -0.03979599475860601,
+      "delta_siglip": -0.06682553887367249
+    },
+    {
+      "image_id": "flickr30k_test_024189",
+      "image_relpath": "images/flickr30k/flickr30k_test_024189.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_024189.jpg",
+      "caption": "Sign reads \"SUBWAY OPEN\"; two people near storefront; one person bends over a pile of bags; tree trunk in foreground; bright sunlight casting shadows.",
+      "clip_score": 0.2925479412078857,
+      "siglip_score": 0.2109207212924957,
+      "delta_clip": -0.034066408872604426,
+      "delta_siglip": -0.026495262980461093
+    },
+    {
+      "image_id": "flickr30k_test_021782",
+      "image_relpath": "images/flickr30k/flickr30k_test_021782.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_021782.jpg",
+      "caption": "Sign reads '(212)625-9212'; one man leans on a yellow sign covered in stickers; another man walks past in the background; concrete sidewalk and building facade visible; bright daylight.",
+      "clip_score": 0.3060295879840851,
+      "siglip_score": 0.1514227092266082,
+      "delta_clip": -0.03341850638389582,
+      "delta_siglip": -0.04960253834724432
+    },
+    {
+      "image_id": "flickr30k_test_023641",
+      "image_relpath": "images/flickr30k/flickr30k_test_023641.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_023641.jpg",
+      "caption": "A woman in a pink and white striped shirt walks toward the camera on a wet cobblestone path; several people sit on benches under leafy trees in the midground; a dark metal lamppost stands on the left; buildings with light-colored walls are visible in the background.",
+      "clip_score": 0.3169930577278137,
+      "siglip_score": 0.1903418898582458,
+      "delta_clip": -0.02124994993209839,
+      "delta_siglip": 0.010703757405281095
+    },
+    {
+      "image_id": "flickr30k_test_012029",
+      "image_relpath": "images/flickr30k/flickr30k_test_012029.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_012029.jpg",
+      "caption": "A floating shrine with a white domed roof and red doors is surrounded by people on a wooden platform; behind it, a stone embankment rises to a temple complex with white domed structures; several small boats are moored nearby; the scene is viewed from across the water under diffuse daylight.",
+      "clip_score": 0.3305006027221679,
+      "siglip_score": 0.1843058913946151,
+      "delta_clip": -0.02068418264389038,
+      "delta_siglip": 0.04269103705883018
+    },
+    {
+      "image_id": "flickr30k_test_021284",
+      "image_relpath": "images/flickr30k/flickr30k_test_021284.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_021284.jpg",
+      "caption": "Sign reads \"No Jews, No Arabs, No Muslims, No Christians\"; multiple people wearing black hats; some individuals holding Palestinian flags; crowd in foreground with barricades in midground; bright daylight.",
+      "clip_score": 0.3060727715492248,
+      "siglip_score": 0.1762964427471161,
+      "delta_clip": -0.016193628311157282,
+      "delta_siglip": -0.059562548995018005
+    },
+    {
+      "image_id": "flickr30k_test_027960",
+      "image_relpath": "images/flickr30k/flickr30k_test_027960.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_027960.jpg",
+      "caption": "Five boys in athletic attire run across a dirt field; one wears a white shirt with visible green trim, another wears a black shirt with the number 58, and a third wears a white shirt with blue pants; cars are parked in the background behind a low wall; bright sunlight casts long shadows.",
+      "clip_score": 0.2998857796192169,
+      "siglip_score": 0.1582955718040466,
+      "delta_clip": -0.0159778892993927,
+      "delta_siglip": 0.0025036484003067017
+    },
+    {
+      "image_id": "flickr30k_test_023643",
+      "image_relpath": "images/flickr30k/flickr30k_test_023643.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_023643.jpg",
+      "caption": "A young girl with curly hair and a red-and-white patterned top sits in the foreground under a large black umbrella with \"Capehart\" printed on it; behind her, a wooden easel displays two black-and-white caricatures; a blue backpack rests on the ground to her left; a person in a white",
+      "clip_score": 0.3181234002113342,
+      "siglip_score": 0.2028076350688934,
+      "delta_clip": -0.008788645267486628,
+      "delta_siglip": -0.07311734557151797
+    },
+    {
+      "image_id": "flickr30k_test_027797",
+      "image_relpath": "images/flickr30k/flickr30k_test_027797.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_027797.jpg",
+      "caption": "One baseball player in a black and white uniform pitches from a dirt mound; a white baseball is airborne above his right hand; green grass and brown dirt in foreground and midground; bright sunlight casts a long shadow.",
+      "clip_score": 0.3019992113113403,
+      "siglip_score": 0.1575539112091064,
+      "delta_clip": -0.008175492286682129,
+      "delta_siglip": 0.000628054141998291
+    },
+    {
+      "image_id": "flickr30k_test_016246",
+      "image_relpath": "images/flickr30k/flickr30k_test_016246.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_016246.jpg",
+      "caption": "Child in blue shorts and flip-flops carries a bundle of colorful balloons including one with \"FELIZ\" text; motorcycle visible in background left; another motorcycle and person partially visible in background right; scene viewed from ground level.",
+      "clip_score": 0.3279543817043304,
+      "siglip_score": 0.2220242321491241,
+      "delta_clip": -0.006689637899398804,
+      "delta_siglip": 0.014591991901397677
+    }
+  ]
+}

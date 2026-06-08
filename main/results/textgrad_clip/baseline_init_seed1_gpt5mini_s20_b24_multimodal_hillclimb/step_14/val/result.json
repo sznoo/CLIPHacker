@@ -1,0 +1,142 @@
+{
+  "prompt": "Produce exactly one concise caption (one sentence) containing 2–6 discrete visual facts. Follow these mandatory rules:\n\n1) Order and separators: place facts in this priority order when present — (A) legible text, (B) exact count + canonical object noun, (C) color/material/marking/equipment for those counted objects, (D) pose/action/orientation, (E) simple spatial placement (foreground/midground/background or short relative phrase), (F) lighting/viewpoint/occlusion if salient. Separate facts with semicolons or commas; keep a single sentence.\n\n2) Legible text: if any word or number is clearly readable, transcribe it exactly (include quotes around the text). If text is not clearly legible, omit it — do not guess or approximate.\n\n3) Counts and prominence: \"Prominent\" = an item that occupies a meaningful area or is the scene focal point (center, foreground, or clearly foregrounded). If a prominent person/object is visible, include an exact count and a canonical noun (use numerals, e.g., \"2 people\", \"1 bicycle\"). Use exact counts only when confident; otherwise omit the count.\n\n4) Color/marking/equipment: for each counted person/vehicle/object include up to one compact distinguishing modifier when visible (color, printed number/text, pattern, or equipment), e.g., \"red jersey with '1'\", \"yellow umbrella\", \"wooden façade\".\n\n5) Role nouns and inference: allow role labels (goalkeeper, vendor, child) only when there is explicit visible evidence; the caption MUST also include the evidence token (e.g., \"jersey with '1'\"; \"pushcart with canopy\"; \"helmet/child seat\"). If evidence is absent or uncertain, use neutral object+action language (e.g., \"person kicking\", \"person pushing a cart\").\n\n6) Pose/action + spatial relation: include one concise action/pose word or short phrase adjacent to the object it modifies (e.g., \"dives horizontally\", \"rides toward left\"); include at most one simple spatial placement (e.g., \"foreground\", \"midground\", \"background\", \"above center person\", \"to left of sculpture\").\n\n7) Lighting/viewpoint/occlusion: include only if visually obvious (e.g., \"bright sunlight casting long shadows\", \"elevated vantage\", \"partially obscured by tree\").\n\n8) Definition of a fact: one discrete visual property (legible text; count+object; color/marking; pose/action; spatial placement; lighting/viewpoint). Provide 2–6 distinct facts.\n\n9) Wording conventions: use numerals for counts, short canonical nouns and common color/material words (red, blue, white, black, wooden, metal, cracked). Prefer concise modifiers (avoid vague adjectives like \"large\", \"several\", \"many\"). Use semicolons or commas to separate facts.\n\n10) Do not infer or hedge: do not use inference or subjective/emotional language or hedging phrases (e.g., \"appears to be\", \"looks like\", \"probably\", \"maybe\", \"someone\", \"something\", \"seems to\"). Do not invent words, numbers, brands, or logos. If unsure about a fact (count, text, role), omit it.\n\nTemplate (use as pattern, not a caption): [legible text if any]; [# + object + color/marking]; [pose/action]; [foreground/midground/background or short relative placement]; [lighting/viewpoint if salient].\n\nThree positive exemplars:\n- \"Sign reads 'Outdoor World'; 2 adults walk toward the store entrance; timber façade and concrete forecourt; overcast sky.\"\n- \"1 goalkeeper in a red jersey with '1' dives horizontally toward a white net; green grass foreground; bright sunlight casting long shadows.\"\n- \"3 pedicabs with yellow umbrellas line the midground; child on a small blue bicycle in the foreground; curved white metal pavilion in background.\"\n\nThree negative exemplars (do not follow these patterns):\n- \"A happy farmer enjoys a sunny day in the countryside.\" (emotion/role without visible evidence)\n- \"Several people are having fun.\" (vague count and subjective)\n- \"There might be a building and some market stalls.\" (hedging and vague terms)\n\nProduce exactly one one-line sentence caption following these rules — 2–6 discrete, verifiable facts in the specified priority and format.",
+  "prompt_id": "textgrad_face8ce7ec",
+  "split_csv": "data/splits/flickr30k_main_seed1_val.csv",
+  "batch_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_14/val/batch_split.csv",
+  "prediction_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_14/val/predictions.csv",
+  "score_csv": "results/textgrad_clip/baseline_init_seed1_gpt5mini_s20_b24_multimodal_hillclimb/step_14/val/scores.csv",
+  "data_root": "data",
+  "summary": {
+    "n": 150,
+    "mean_clip": 0.3100163386265437,
+    "mean_siglip": 0.19036704689264294,
+    "mean_caption_len": 29.86,
+    "generic_rate": 0.0,
+    "mean_delta_clip": -0.014549109687407809,
+    "mean_delta_siglip": -0.008473498796423281,
+    "clip_win_rate": 0.32666666666666666,
+    "siglip_win_rate": 0.41
+  },
+  "cases": [
+    {
+      "image_id": "flickr30k_test_028445",
+      "image_relpath": "images/flickr30k/flickr30k_test_028445.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_028445.jpg",
+      "caption": "1 man rides a bicycle; 1 blue mesh laundry hamper on the bike; red pickup truck with \"XTR\" text visible to right; bright sunlight casting long shadows.",
+      "clip_score": 0.2404408603906631,
+      "siglip_score": 0.1958784162998199,
+      "delta_clip": -0.1269326657056809,
+      "delta_siglip": -0.021158158779144315
+    },
+    {
+      "image_id": "flickr30k_test_028445",
+      "image_relpath": "images/flickr30k/flickr30k_test_028445.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_028445.jpg",
+      "caption": "1 man rides a bicycle; 1 blue mesh laundry hamper on the bike; red pickup truck with \"XTR\" text visible to right; bright sunlight casting long shadows.",
+      "clip_score": 0.2404408603906631,
+      "siglip_score": 0.1958784162998199,
+      "delta_clip": -0.11922304332256323,
+      "delta_siglip": -0.025469899177551297
+    },
+    {
+      "image_id": "flickr30k_test_008802",
+      "image_relpath": "images/flickr30k/flickr30k_test_008802.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_008802.jpg",
+      "caption": "1 dog with black, white, and tan markings runs across grass foreground; white frisbee with blue paw print in mouth; bright sunlight casting long shadows.",
+      "clip_score": 0.2624890804290771,
+      "siglip_score": 0.184594988822937,
+      "delta_clip": -0.10632491111755371,
+      "delta_siglip": -0.008983433246612493
+    },
+    {
+      "image_id": "flickr30k_test_003587",
+      "image_relpath": "images/flickr30k/flickr30k_test_003587.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_003587.jpg",
+      "caption": "1 person in a black jacket with '3' and 'Plus' logos; wearing a black cap with '3' and 'ALBAN' text; looking down and to the right; foreground; blurred background.",
+      "clip_score": 0.267126590013504,
+      "siglip_score": 0.1750589609146118,
+      "delta_clip": -0.09816035628318792,
+      "delta_siglip": -0.08924511075019839
+    },
+    {
+      "image_id": "flickr30k_test_011250",
+      "image_relpath": "images/flickr30k/flickr30k_test_011250.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_011250.jpg",
+      "caption": "2 children stand in the foreground; one wears a brown shirt with \"LAKE PLACID\" text; the other wears a red striped shirt and blue jeans; both hold hands; yellow caution tape stretches across midground; bright sunlight.",
+      "clip_score": 0.3168485164642334,
+      "siglip_score": 0.203165590763092,
+      "delta_clip": -0.0957452654838562,
+      "delta_siglip": -0.017350032925605774
+    },
+    {
+      "image_id": "flickr30k_test_016538",
+      "image_relpath": "images/flickr30k/flickr30k_test_016538.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_016538.jpg",
+      "caption": "1 person rides a brown horse; 1 black calf runs ahead; rider wears a white hat and blue shirt; scene in midground; dirt arena under bright sunlight.",
+      "clip_score": 0.258102536201477,
+      "siglip_score": 0.1522303521633148,
+      "delta_clip": -0.08788430690765381,
+      "delta_siglip": 0.011492013931274386
+    },
+    {
+      "image_id": "flickr30k_test_005250",
+      "image_relpath": "images/flickr30k/flickr30k_test_005250.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_005250.jpg",
+      "caption": "1 woman in black dress holds red poinsettias; 1 woman in black coat holds purple bouquet; 2 people walk in background; staircase with wooden railing midground; indoor ambient lighting.",
+      "clip_score": 0.2763456106185913,
+      "siglip_score": 0.1601859033107757,
+      "delta_clip": -0.08503872156143188,
+      "delta_siglip": -0.04905429482460019
+    },
+    {
+      "image_id": "flickr30k_test_026772",
+      "image_relpath": "images/flickr30k/flickr30k_test_026772.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_026772.jpg",
+      "caption": "1 person in a pink shirt and black leggings; catching a blue frisbee; midground on grass; bright sunlight casting long shadows.",
+      "clip_score": 0.2614396810531616,
+      "siglip_score": 0.1913843303918838,
+      "delta_clip": -0.08470773696899409,
+      "delta_siglip": 0.035143092274665805
+    },
+    {
+      "image_id": "flickr30k_test_026142",
+      "image_relpath": "images/flickr30k/flickr30k_test_026142.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_026142.jpg",
+      "caption": "1 person drinks from a metal water fountain; dark green shirt; head tilted downward; foreground; natural daylight.",
+      "clip_score": 0.2957034111022949,
+      "siglip_score": 0.2067610025405883,
+      "delta_clip": -0.08230817317962646,
+      "delta_siglip": -0.018189474940300016
+    },
+    {
+      "image_id": "flickr30k_test_029485",
+      "image_relpath": "images/flickr30k/flickr30k_test_029485.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_029485.jpg",
+      "caption": "Jersey reads \"TRIPLE THREAT SPORTS\"; 1 person in a red shirt with \"NLGSA\" visor waves; 2 other people in red shirts stand behind; bright sunlight; foreground.",
+      "clip_score": 0.2888766825199127,
+      "siglip_score": 0.2185978442430496,
+      "delta_clip": -0.08194774389266968,
+      "delta_siglip": -0.0440627187490463
+    },
+    {
+      "image_id": "flickr30k_test_018933",
+      "image_relpath": "images/flickr30k/flickr30k_test_018933.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_018933.jpg",
+      "caption": "1 person sits on a metal stool; blue t-shirt with green leaf pattern; holds a phone to ear; foreground; indoor ambient lighting.",
+      "clip_score": 0.2401824295520782,
+      "siglip_score": 0.1610062718391418,
+      "delta_clip": -0.0814715325832367,
+      "delta_siglip": -0.03206619620323181
+    },
+    {
+      "image_id": "flickr30k_test_026753",
+      "image_relpath": "images/flickr30k/flickr30k_test_026753.jpg",
+      "image_path": "data/images/flickr30k/flickr30k_test_026753.jpg",
+      "caption": "T-shirt with \"LOVE\" and \"FUCK\" text; 1 person on inline skates grinds a metal rail; arms outstretched for balance; foreground; bright sunlight.",
+      "clip_score": 0.2534390091896057,
+      "siglip_score": 0.1838968992233276,
+      "delta_clip": -0.0781522393226623,
+      "delta_siglip": 0.02635589241981512
+    }
+  ]
+}
